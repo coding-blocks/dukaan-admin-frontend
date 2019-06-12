@@ -1,4 +1,11 @@
-This project was bootstrapped with [Create Next App](https://github.com/segmentio/create-next-app).
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/5569219/59345917-cbe05700-8d2e-11e9-8676-342236d47d3d.png" />
+</p>
+
+---
+
+
+Frontend for Coding Blocks Dukaan.
 
 Find the most recent version of this guide at [here](https://github.com/segmentio/create-next-app/blob/master/lib/templates/default/README.md). And check out [Next.js repo](https://github.com/zeit/next.js) for the most up-to-date info.
 

@@ -1,13 +1,34 @@
 {
-  "name": "create-next-example-app",
+  "name": "dukaan-admin-frontend",
+  "version": "0.0.1",
+  "description": "Frontend for Coding Blocks Dukaan",
   "scripts": {
     "dev": "next",
     "build": "next build",
     "start": "next start"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coding-blocks/dukaan-admin-frontend.git"
+  },
+  "keywords": [
+    "dukaan",
+    "coding",
+    "blocks",
+    "nextjs",
+    "next",
+    "react",
+    "node",
+    "nodejs",
+    "frontend"
+  ],
   "dependencies": {
     "next": "^8.1.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/coding-blocks/dukaan-admin-frontend"
+  },
+  "homepage": "https://github.com/coding-blocks/dukaan-admin-frontend#readme"
 }
