@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next -p 5959",
     "build": "next build",
-    "start": "next start"
+    "start": "next -p 6000 start"
   },
   "repository": {
     "type": "git",
