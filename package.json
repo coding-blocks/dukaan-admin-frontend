@@ -6,6 +6,8 @@
     "dev": "next -p 5959",
     "build": "next build",
     "start": "next -p 6000 start"
+    "export": "next export",
+    "deploy": "next build && next export"
   },
   "repository": {
     "type": "git",
