@@ -19,10 +19,17 @@ class Home extends React.Component {
     });
   };
 
-  toggleTab = () => {
+  toggleCompleteTab = () => {
     this.setState(prevstate => ({
-      completeTab: !prevstate.completeTab,
-      incompleteTab: !prevstate.incompleteTab
+      completeTab: true,
+      incompleteTab: false
+    }));
+  };
+
+  toggleIncompleteTab = () => {
+    this.setState(prevstate => ({
+      completeTab: false,
+      incompleteTab: true
     }));
   };
 
@@ -106,13 +113,13 @@ class Home extends React.Component {
                 <div className="tab-nav-underline mb-5">
                   <div
                     className={this.state.completeTab ? "tab active" : "tab"}
-                    onClick={this.toggleTab}
+                    onClick={this.toggleCompleteTab}
                   >
                     Completed Orders
                   </div>
                   <div
                     className={this.state.incompleteTab ? "tab active" : "tab"}
-                    onClick={this.toggleTab}
+                    onClick={this.toggleIncompleteTab}
                   >
                     Incomplete Orders
                   </div>
