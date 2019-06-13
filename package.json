@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next -p 5959",
     "build": "next build",
-    "start": "next start"
+    "export": "next export",
+    "start": "next start",
+    "deploy": "next build && next export"
   },
   "repository": {
     "type": "git",
