@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Frontend for Coding Blocks Dukaan",
   "scripts": {
-    "dev": "next",
+    "dev": "next -p 5959",
     "build": "next build",
     "start": "next start"
   },
