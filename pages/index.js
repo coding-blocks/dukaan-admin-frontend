@@ -78,23 +78,16 @@ class Home extends React.Component {
             <div className="col-md-12 col-12">
               <div className="border-card br-20 bg-light-grey mb-5">
                 <h5>User Details</h5>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <p
-                    style={{ margin: "1.6vh", marginLeft: "0" }}
-                    className="red"
-                  >
-                    Username : Tathagat2006
-                  </p>
+                <div style={{ alignItems: "center" }}>
+                  <p className="red">Username : Tathagat2006</p>
 
-                  <p style={{ margin: "1.6vh" }}>Name : Tathagat Thapliyal</p>
+                  <p>Name : Tathagat Thapliyal</p>
 
-                  <p style={{ margin: "1.6vh" }}>
-                    Email : tathagat.thapliyal@gmail.com
-                  </p>
+                  <p>Email : tathagat.thapliyal@gmail.com</p>
 
-                  <p style={{ margin: "1.6vh" }}>Mobile : +91-7503681329</p>
+                  <p>Mobile : +91-7503681329</p>
 
-                  <p style={{ margin: "1.6vh" }}>Wallet Amount : ₹ 2320</p>
+                  <p>Wallet Amount : ₹ 2320</p>
 
                   <div>
                     <button className="button-solid">Make New Payment</button>
