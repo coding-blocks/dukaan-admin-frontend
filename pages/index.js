@@ -53,8 +53,6 @@ class Home extends React.Component {
         <div className="container mt-5">
           <div className="row">
             <div className="col-md-12 col-12">
-              {/* <div className="border-card br-20 bg-light-grey mb-5"> */}
-              {/* <h5 className="mb-3">Find User</h5> */}
               <div style={{ display: "flex" }}>
                 <input
                   name="email"
@@ -73,77 +71,60 @@ class Home extends React.Component {
                   Search
                 </button>
               </div>
-              {/* </div> */}
             </div>
           </div>
-        </div>
-        {/* Form 2  */}
-        <div
-          className="container mt-4"
-          style={{ display: "flex", justifyContent: "center" }}
-        >
-          <div className="row">
-            <div className="col-md-12 col-12">
-              <div className="border-card br-20 bg-light-grey mb-5">
-                <h5>User Details</h5>
-                <div
-                  style={{
-                    alignItems: "center"
-                  }}
-                >
-                  <p className="red" style={{ fontSize: "1.3rem" }}>
-                    Username : Tathagat2006
-                  </p>
+          {/* Form 2  */}
+          <div className=" mt-4">
+            <div className="row w-100">
+              <div className="col-md-4 col-12">
+                <div className="border-card br-20 bg-light-grey mb-5">
+                  <h5>User Details</h5>
+                  <div
+                    style={{
+                      alignItems: "center"
+                    }}
+                  >
+                    <p className="red">Username : Tathagat2006</p>
 
-                  <p style={{ fontSize: "1.3rem" }}>
-                    Name : Tathagat Thapliyal
-                  </p>
+                    <p>Name : Tathagat Thapliyal</p>
 
-                  <p style={{ fontSize: "1.3rem" }}>
-                    Email : tathagat.thapliyal@gmail.com
-                  </p>
+                    <p>Email : tathagat.thapliyal@gmail.com</p>
 
-                  <p style={{ fontSize: "1.3rem" }}>Mobile : +91-7503681329</p>
+                    <p>Mobile : +91-7503681329</p>
 
-                  <p style={{ fontSize: "1.3rem" }}>Wallet Amount : ₹ 2320</p>
+                    <p>Wallet Amount : ₹ 2320</p>
 
-                  <div>
-                    <button
-                      className="button-solid"
-                      style={{ fontSize: "1.3rem" }}
+                    <div>
+                      <button className="button-solid">Make New Payment</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-8 col-12">
+                <div className="border-card br-20 bg-light-grey mb-5">
+                  <div className="tab-nav-underline mb-5">
+                    <div
+                      className={this.state.completeTab ? "tab active" : "tab"}
+                      onClick={this.toggleCompleteTab}
                     >
-                      Make New Payment
-                    </button>
+                      Complete Orders
+                    </div>
+                    <div
+                      className={
+                        this.state.incompleteTab ? "tab active" : "tab"
+                      }
+                      onClick={this.toggleIncompleteTab}
+                    >
+                      Incomplete Orders
+                    </div>
                   </div>
+                  {orders}
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Order history card */}
-        <div className="container">
-          <div className="row">
-            <div className="col-md-12 col-12">
-              <div className="border-card br-20 bg-light-grey mb-5">
-                <div className="tab-nav-underline mb-5">
-                  <div
-                    className={this.state.completeTab ? "tab active" : "tab"}
-                    onClick={this.toggleCompleteTab}
-                  >
-                    Complete Orders
-                  </div>
-                  <div
-                    className={this.state.incompleteTab ? "tab active" : "tab"}
-                    onClick={this.toggleIncompleteTab}
-                  >
-                    Incomplete Orders
-                  </div>
-                </div>
-                {orders}
-              </div>
-            </div>
-          </div>
+          {/* Order history card */}
         </div>
       </div>
     );
