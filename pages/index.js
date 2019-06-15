@@ -66,7 +66,7 @@ class Home extends React.Component {
                 />
                 <button
                   id="search"
-                  className="button-solid ml-4 mb-1"
+                  className="button-solid ml-4 mb-2"
                   style={{ fontSize: "1.3rem" }}
                 >
                   Search
@@ -76,7 +76,7 @@ class Home extends React.Component {
           </div>
         </div>
         {/* Form 2  */}
-        <div className="container">
+        <div className="container mt-5">
           <div className="row">
             <div className="col-md-12 col-12">
               <div className="border-card br-20 bg-light-grey mb-5">
@@ -107,33 +107,33 @@ class Home extends React.Component {
                   </div>
                   <div class="row">
                     <div className="col-md-12 mt-5" align="center">
-                      <button className="button-solid p-4 h6">Make New Payment</button>
+                      <button className="button-solid p-4 h6">
+                        Make New Payment
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="col-md-8 col-12">
-                <div className="border-card br-20 bg-light-grey mb-5">
-                  <div className="tab-nav-underline mb-5">
-                    <div
-                      className={this.state.completeTab ? "tab active" : "tab"}
-                      onClick={this.toggleCompleteTab}
-                    >
-                      Complete Orders
-                    </div>
-                    <div
-                      className={
-                        this.state.incompleteTab ? "tab active" : "tab"
-                      }
-                      onClick={this.toggleIncompleteTab}
-                    >
-                      Incomplete Orders
-                    </div>
+            </div>
+            <div className="col-md-12 col-12">
+              <div className="border-card br-20 bg-light-grey mb-5">
+                <div className="tab-nav-underline mb-5">
+                  <div
+                    className={this.state.completeTab ? "tab active" : "tab"}
+                    onClick={this.toggleCompleteTab}
+                  >
+                    Complete Orders
                   </div>
-                  {orders}
-                  {orders}
-                  {orders}
+                  <div
+                    className={this.state.incompleteTab ? "tab active" : "tab"}
+                    onClick={this.toggleIncompleteTab}
+                  >
+                    Incomplete Orders
+                  </div>
                 </div>
+                {orders}
+                {orders}
+                {orders}
               </div>
             </div>
           </div>
