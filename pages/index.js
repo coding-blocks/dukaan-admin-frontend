@@ -4,6 +4,7 @@ import Head from "../components/Head";
 import Layout from "../components/Layout";
 import CompleteOrders from "../components/CompleteOrder";
 import "./styles/index.scss";
+import Price from "../components/Price";
 
 class Home extends React.Component {
   constructor(props) {
@@ -93,11 +94,8 @@ class Home extends React.Component {
                         <i className="fa fa-phone-square fa-2x icon_middle red" />
                         <span className="info">+919560043231</span>
                       </div>
-                      <div className="col-md-2 p-4 red userinfo">
-                        <div className="money p-2">
-                          <i className="fa fa-rupee-sign fa-1x icon_middle red" />
-                          <span className="info">15,000</span>
-                        </div>
+                      <div className='col-md-2 p-4 red'>
+                        <Price amount={1670} />
                       </div>
                       <div className="col-md-5 mt-1 p-4 userinfo">
                         <i className="fa fa-envelope fa-2x icon_middle red" />

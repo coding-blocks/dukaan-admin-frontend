@@ -1,16 +1,17 @@
-.username {
-    font-size: 18pt;
-    text-align: center;
-}
-
-.userinfo {
+.price {
     text-align: center;
     font-size: 13pt;
     .icon_middle {
-        vertical-align: middle;
+        position: relative;
     }
     .info {
         margin-left: 20px;
         font-weight: bold;
     }
+}
+
+.money {
+    border: 3px solid #f66;
+    border-radius: 40px;
+    font-size: 14pt;
 }
