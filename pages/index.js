@@ -3,6 +3,7 @@ import Link from "next/link";
 import Head from "../components/Head";
 import Layout from "../components/Layout";
 import CompleteOrders from "../components/CompleteOrder";
+import "./styles/index.scss";
 
 class Home extends React.Component {
   constructor(props) {
@@ -73,29 +74,40 @@ class Home extends React.Component {
               </div>
             </div>
           </div>
-          {/* Form 2  */}
-          <div className=" mt-4">
-            <div className="row w-100">
-              <div className="col-md-4 col-12">
-                <div className="border-card br-20 bg-light-grey mb-5">
-                  <h5>User Details</h5>
-                  <div
-                    style={{
-                      alignItems: "center"
-                    }}
-                  >
-                    <p className="red">Username : Tathagat2006</p>
-
-                    <p>Name : Tathagat Thapliyal</p>
-
-                    <p>Email : tathagat.thapliyal@gmail.com</p>
-
-                    <p>Mobile : +91-7503681329</p>
-
-                    <p>Wallet Amount : ₹ 2320</p>
-
-                    <div>
-                      <button className="button-solid">Make New Payment</button>
+        </div>
+        {/* Form 2  */}
+        <div className="container">
+          <div className="row">
+            <div className="col-md-12 col-12">
+              <div className="border-card br-20 bg-light-grey mb-5">
+                <h5>User Details</h5>
+                <div style={{ alignItems: "center" }}>
+                  <div className="container">
+                    <div className="row">
+                      <div className="col-md-12 p-4 username">
+                        Ananay Arora (@ananay)
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-5 mt-1 p-4 userinfo">
+                        <i className="fa fa-phone-square fa-2x icon_middle red" />
+                        <span className="info">+919560043231</span>
+                      </div>
+                      <div className="col-md-2 p-4 red userinfo">
+                        <div className="money p-2">
+                          <i className="fa fa-rupee-sign fa-1x icon_middle red" />
+                          <span className="info">15,000</span>
+                        </div>
+                      </div>
+                      <div className="col-md-5 mt-1 p-4 userinfo">
+                        <i className="fa fa-envelope fa-2x icon_middle red" />
+                        <span className="info">i@ananayarora.com</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div className="col-md-12 mt-5" align="center">
+                      <button className="button-solid p-4 h6">Make New Payment</button>
                     </div>
                   </div>
                 </div>

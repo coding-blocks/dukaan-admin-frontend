@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "export": "next export",
-    "deploy": "next build && next export"
+    "deploy": "next build && next export",
+    "eject":"next eject"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,7 @@
     "frontend"
   ],
   "dependencies": {
+    "@zeit/next-sass": "^1.0.1",
     "next": "^8.1.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
@@ -32,5 +34,9 @@
   "bugs": {
     "url": "https://github.com/coding-blocks/dukaan-admin-frontend"
   },
-  "homepage": "https://github.com/coding-blocks/dukaan-admin-frontend#readme"
+  "homepage": "https://github.com/coding-blocks/dukaan-admin-frontend#readme",
+  "devDependencies": {
+    "node-sass": "^4.12.0",
+    "sass-loader": "^7.1.0"
+  }
 }
