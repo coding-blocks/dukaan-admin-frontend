@@ -131,6 +131,8 @@ class Home extends React.Component {
                     </div>
                   </div>
                   {orders}
+                  {orders}
+                  {orders}
                 </div>
               </div>
             </div>
