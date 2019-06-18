@@ -105,7 +105,7 @@ const Nav = () => (
           <li className="nav-items pointer">
             <form method="GET" action="/logout">
               <div className="button-solid lg">
-                <button type="submit">Logout</button>
+                <button type="submit" className="pl-1">Logout</button>
               </div>
             </form>
           </li>
