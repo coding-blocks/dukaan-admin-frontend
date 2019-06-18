@@ -26,8 +26,8 @@ const Nav = () => (
 
           <li className="dropdown">
             <button className="dropbtn dropdown-toggle">
-              COUPONS
-              <i className="fa fa-caret-down" />
+              Coupons
+              <i className="fa fa-caret-down pl-2" />
             </button>
             <div className = "dropdown-content">
               <div className="flex-row justify-content-center">
@@ -44,8 +44,8 @@ const Nav = () => (
           </li>
 
           <li className="dropdown">
-              <button className="dropbtn dropdown-toggle">PAYMENTS
-                  <i className="fa fa-caret-down"></i>
+              <button className="dropbtn dropdown-toggle">Payments
+                  <i className="fa fa-caret-down pl-2"></i>
               </button>
               <div className="dropdown-content">
                   <div className="flex-row justify-content-center">
@@ -62,8 +62,8 @@ const Nav = () => (
           </li>
 
           <li className="dropdown">
-              <button className="dropbtn dropdown-toggle">PRODUCTS
-                  <i className="fa fa-caret-down"></i>
+              <button className="dropbtn dropdown-toggle">Products
+                  <i className="fa fa-caret-down pl-2"></i>
               </button>
               <div className="dropdown-content">
                   <div className="flex-row justify-content-center">
@@ -81,7 +81,7 @@ const Nav = () => (
 
           <li className="dropdown">
               <button className="dropbtn dropdown-toggle">Users
-                  <i className="fa fa-caret-down"></i>
+                  <i className="fa fa-caret-down pl-2"></i>
               </button>
               <div className="dropdown-content">
                   <div className="flex-row justify-content-center">
