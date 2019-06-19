@@ -2,9 +2,15 @@
     width: 100px;
 }
 .text {
-    font-size: 15pt;
+    font-size: 13pt;
     position: relative;
     top: 9px;
+}
+
+.element {
+    input {
+        font-size: 12pt;
+    }
 }
 
 @media (max-width: 800px) {

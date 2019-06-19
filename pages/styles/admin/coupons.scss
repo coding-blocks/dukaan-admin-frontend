@@ -1,11 +1,15 @@
 @import "../global.scss";
 
 .coupon-card {
-    width: 600px;
+  width: 600px;
+}
+
+#search {
+  font-size: 14pt;
 }
 
 @media (max-width: 600px) {
-    .coupon-card {
-        width: 100%;
-    }
+  .coupon-card {
+      width: 100%;
+  }
 }

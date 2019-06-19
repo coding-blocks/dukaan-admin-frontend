@@ -9,11 +9,14 @@ class Coupons extends React.Component {
       <div>
         <Head title="Coding Blocks | Dukaan | Coupons" />
         <Layout />
-        <div class="d-flex justify-content-center align-items-center mt-5">
+        <div class="d-flex justify-content-center align-items-center mt-2">
           <div class="border-card coupon-card">
+
+            {/* Title */}
             <div class="d-flex justify-content-center mt-2 pb-3">
-              <h1 class="title">Search Coupons</h1>
+              <h2 class="title">Search Coupons</h2>
             </div>
+
             {/* Code */}
             <FieldWithElement nameCols={3} elementCols={9} name={"Code"}>
               <input type="text" className="input-text" placeholder="Enter Code" />
@@ -63,6 +66,27 @@ class Coupons extends React.Component {
                 <option value="false">False</option>
               </select>
             </FieldWithElement>
+
+            {/* Show only listed products? */}
+            <FieldWithElement name={"Show only listed products?"} nameCols={6} elementCols={6} elementClassName={"pl-4"}>
+              <select id="listed" name="listed">
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
+              </select>
+            </FieldWithElement>
+            
+            {/* Results per page */}
+            <FieldWithElement name={"Results per page"} nameCols={4} elementCols={8} elementClassName={"pl-4"}>
+              <input type="text" className="input-text" placeholder="Enter Code" value={10} />
+            </FieldWithElement>
+            <div class="d-flex justify-content-center">
+              <button
+                id="search"
+                className="button-solid ml-4 mb-2 mt-4 pl-5 pr-5"
+              >
+                Search
+              </button>
+            </div>
           </div>
         </div>
       </div>

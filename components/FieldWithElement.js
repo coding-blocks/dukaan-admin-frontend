@@ -4,7 +4,7 @@ import "./styles/FieldWithElement.scss";
 class FieldWithElement extends React.Component {
   render() {
     return (
-        <div className={`mt-4 row d-flex ${ this.props.className }`}>
+        <div className={`mt-3 row d-flex ${ this.props.className }`}>
           <div className={`col-md-${ this.props.nameCols } name`}>
             <span class="text">{this.props.name}</span>
           </div>
