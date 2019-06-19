@@ -1,0 +1,17 @@
+.name {
+    width: 100px;
+}
+.text {
+    font-size: 15pt;
+    position: relative;
+    top: 9px;
+}
+
+@media (max-width: 800px) {
+    .text {
+       top: 0px;
+    }
+    .element {
+        margin-top: 5px;
+    }
+}

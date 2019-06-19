@@ -1,0 +1,11 @@
+@import "../global.scss";
+
+.coupon-card {
+    width: 600px;
+}
+
+@media (max-width: 600px) {
+    .coupon-card {
+        width: 100%;
+    }
+}
