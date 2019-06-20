@@ -67,8 +67,7 @@ class Home extends React.Component {
                 />
                 <button
                   id="search"
-                  className="button-solid ml-4 mb-2"
-                  style={{ fontSize: "1.3rem" }}
+                  className="button-solid ml-4 mb-2 pl-5 pr-5"
                 >
                   Search
                 </button>
