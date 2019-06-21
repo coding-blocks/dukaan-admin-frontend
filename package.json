@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "description": "Frontend for Coding Blocks Dukaan",
   "scripts": {
-    "dev": "next -p 5959",
+    "dev": "node server.js",
     "build": "next build",
-    "start": "next start",
+    "start": "NODE_ENV=production node server.js",
     "export": "next export",
     "deploy": "next build && next export",
     "eject": "next eject"
@@ -28,6 +28,7 @@
   "dependencies": {
     "@zeit/next-sass": "^1.0.1",
     "axios": "^0.19.0",
+    "express": "^4.17.1",
     "next": "^8.1.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
