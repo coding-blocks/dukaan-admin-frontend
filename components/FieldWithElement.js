@@ -1,5 +1,5 @@
 import React from 'react';
-import "./styles/FieldWithElement.scss";
+import "../styles/components/FieldWithElement.scss";
 
 class FieldWithElement extends React.Component {
   render() {

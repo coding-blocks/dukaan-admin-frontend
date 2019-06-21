@@ -1,7 +1,7 @@
 import React from 'react';
 import Head from "../../components/head";
 import Layout from "../../components/Layout";
-import "../styles/admin/coupons.scss";
+import "../../styles/pages/admin/coupons.scss";
 import FieldWithElement from '../../components/FieldWithElement';
 import Loader from '../../components/loader';
 import controller from "../../controllers/admin/coupons.js";

@@ -1,5 +1,5 @@
 import React from "react";
-import "./styles/Price.scss"
+import "../styles/components/Price.scss";
 class Price extends React.Component {
     
 constructor(props) {

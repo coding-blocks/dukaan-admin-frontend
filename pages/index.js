@@ -3,7 +3,7 @@ import Link from "next/link";
 import Head from "../components/Head";
 import Layout from "../components/Layout";
 import CompleteOrders from "../components/CompleteOrder";
-import "./styles/index.scss";
+import "../styles/pages/index.scss";
 import Price from "../components/Price";
 
 class Home extends React.Component {
