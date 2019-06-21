@@ -5,6 +5,7 @@ import "../styles/admin/coupons.scss";
 import FieldWithElement from '../../components/FieldWithElement';
 import Loader from '../../components/loader';
 import controller from "../../controllers/admin/coupons.js";
+import Link from 'next/link';
 
 class Coupons extends React.Component {
 
@@ -236,8 +237,20 @@ class Coupons extends React.Component {
                             <td>{coupon.left}</td>
                             <td>{coupon.products}</td>
                             <td>{coupon.active}</td>
-                            <td><a href={`/admin/coupons/edit/${coupon.id}`}><button class="button-solid btn btn-default">Edit</button></a></td>
-                            <td><a href={`/admin/coupons/${coupon.id}`}><button class="button-solid btn btn-default">View</button></a></td>
+                            <td>
+                              <Link as={`/admin/coupons/edit/${coupon.id}`} href={`/admin/coupons/edit?id=${coupon.id}`}>
+                                <button class="button-solid btn btn-default">
+                                  Edit
+                                </button>
+                              </Link>
+                            </td>
+                            <td>
+                              <Link as={`/admin/coupons/edit/${coupon.id}`} href={`/admin/coupons/${coupon.id}`}>
+                                <button class="button-solid btn btn-default">
+                                  View
+                                </button>
+                              </Link>
+                            </td>
                           </tr>
                         )
                       )}
