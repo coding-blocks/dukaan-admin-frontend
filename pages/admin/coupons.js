@@ -92,11 +92,10 @@ class Coupons extends React.Component {
               </FieldWithElement>
 
               {/* Categories */}
-              <div>
+              <FieldWithElement name={"Category"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                 <select 
                   id="category" 
                   name="category"
-                  className="mt-3 col-md-12"
                   onChange={this.handleQueryParamChange}
                 >
                   <option value="">All Categories</option>
@@ -105,21 +104,21 @@ class Coupons extends React.Component {
                   <option value="campaign">Campaign</option>
                   <option value="special_discount">Special Discount</option>
                 </select>
-              </div>
+              </FieldWithElement>
               
               {/* Products */}
-              <div class="mt-3"  className="col-md-12">
-                <select 
+              <FieldWithElement name={"Products"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                <select
                   id="product" 
                   name="product"
                   onChange={this.handleQueryParamChange}
                 >
                   <option value="">All Products</option>
                 </select>
-              </div>
+              </FieldWithElement>
 
               {/* Mode */}
-              <div class="mt-3" className="col-md-12">
+              <FieldWithElement name={"Mode"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                 <select 
                   id="mode" 
                   name="mode"
@@ -129,7 +128,7 @@ class Coupons extends React.Component {
                   <option value="flat">Flat</option>
                   <option value="percentage">Percentage</option>
                 </select>
-              </div>
+              </FieldWithElement>
 
               {/* Amount */}
               <FieldWithElement name={"Amount"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
@@ -166,7 +165,7 @@ class Coupons extends React.Component {
               </FieldWithElement>
 
               {/* Show only listed products? */}
-              <FieldWithElement name={"Show only listed products?"} nameCols={6} elementCols={6} elementClassName={"pl-4"}>
+              <FieldWithElement name={"Show only listed products?"} nameCols={7} elementCols={5} elementClassName={"pl-4"}>
                 <select 
                   id="listed"
                   name="listed"
@@ -178,7 +177,7 @@ class Coupons extends React.Component {
               </FieldWithElement>
               
               {/* Results per page */}
-              <FieldWithElement name={"Results per page"} nameCols={4} elementCols={8} elementClassName={"pl-4"}>
+              <FieldWithElement name={"Results per page"} nameCols={5} elementCols={7} elementClassName={"pl-4"}>
                 <input 
                   type="text"
                   className="input-text"
