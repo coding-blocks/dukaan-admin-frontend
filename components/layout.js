@@ -12,7 +12,7 @@ const Nav = () => (
         <Link href="/">
           <a className="logo-link">
             <img
-              src="../static/img/dukaan.png"
+              src="/static/img/dukaan.png"
               className="nav-logo pointer"
             />
           </a>
