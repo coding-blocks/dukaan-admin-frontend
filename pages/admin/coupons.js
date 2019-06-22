@@ -244,7 +244,7 @@ class Coupons extends React.Component {
                               </Link>
                             </td>
                             <td>
-                              <Link as={`/admin/coupons/edit/${coupon.id}`} href={`/admin/coupons/${coupon.id}`}>
+                              <Link as={`/admin/coupons/${coupon.id}`} href={`/admin/coupons/?id=${coupon.id}`}>
                                 <button class="button-solid btn btn-default">
                                   View
                                 </button>
