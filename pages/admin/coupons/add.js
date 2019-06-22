@@ -13,9 +13,8 @@ class EditCoupon extends React.Component {
     super(props);
     this.state = {
       couponID: props.router.query.id,
-      loading: true,
-      queryParams: {},
-      couponInfo: {}
+      loading: false,
+      queryParams: {}
     };
   }
 
@@ -42,11 +41,11 @@ class EditCoupon extends React.Component {
   /**
    * Method to handle saving of coupon
    */
-  handleSaveCoupon = () => {
+  handleAddCoupon = () => {
     this.setState({
       loading: true
     });
-    controller.handleSaveCoupon(this.state.queryParams).then((response) => {
+    controller.handleAddCoupon(this.state.queryParams).then((response) => {
       if (response == true) {
         this.setState({
           loading: false
@@ -57,21 +56,10 @@ class EditCoupon extends React.Component {
     });
   }
 
-  componentDidMount() {
-    controller.handleGetCouponFromID(this.state.couponID).then((response) => {
-      this.setState({
-        couponInfo: response,
-        loading: false
-      });
-    }).catch(() => {
-      // TODO: Handle error here
-    });
-  }
-
   render() {
     return (
       <div>
-        <Head title="Coding Blocks | Dukaan | Edit Coupon" />
+        <Head title="Coding Blocks | Dukaan | Add Coupon" />
         <Layout />
         <div className={"d-flex align-items-center justify-content-center"}>
           <div className={"border-card coupon-card col-md-4 mt-5"}>
@@ -79,11 +67,11 @@ class EditCoupon extends React.Component {
               <Loader />
             }
             {!this.state.loading &&
-              <div className={"edit-coupon-card"}>
+              <div className={"add-coupon-card"}>
 
                 {/* Title */}
                 <div className={"d-flex justify-content-center mt-1 pb-3"}>
-                  <h2 className={"title"}>Edit Coupon</h2>
+                  <h2 className={"title"}>Add Coupon</h2>
                 </div>
 
                 {/* Code */}
@@ -93,7 +81,6 @@ class EditCoupon extends React.Component {
                     className="input-text" 
                     placeholder="Enter Code"
                     name="code"
-                    defaultValue={this.state.couponInfo.code}
                     onChange={this.handleQueryParamChange}
                   />
                 </FieldWithElement>
@@ -103,7 +90,6 @@ class EditCoupon extends React.Component {
                   <select 
                     id="category" 
                     name="category"
-                    defaultValue={this.state.couponInfo.category}
                     onChange={this.handleQueryParamChange}
                   >
                     <option value="referral">Referral</option>
@@ -120,7 +106,6 @@ class EditCoupon extends React.Component {
                     className="input-text" 
                     placeholder="Enter Referrer Cashback" 
                     name="cashback"
-                    defaultValue={this.state.couponInfo.cashback}
                     onChange={this.handleQueryParamChange}
                   />
                 </FieldWithElement>
@@ -130,7 +115,6 @@ class EditCoupon extends React.Component {
                   <select 
                     id="mode"
                     name="mode"
-                    defaultValue={this.state.couponInfo.mode}
                     onChange={this.handleQueryParamChange}
                   >
                     <option value="flat">Flat</option>
@@ -145,7 +129,6 @@ class EditCoupon extends React.Component {
                     className="input-text"
                     placeholder="Enter Amount" 
                     name="amount"
-                    defaultValue={this.state.couponInfo.amount}
                     onChange={this.handleQueryParamChange}
                   />
                 </FieldWithElement>
@@ -157,7 +140,6 @@ class EditCoupon extends React.Component {
                     className="input-text" 
                     placeholder="Enter Percentage"
                     name="percentage"
-                    defaultValue={this.state.couponInfo.percentage}
                     onChange={this.handleQueryParamChange}
                   />
                 </FieldWithElement>
@@ -169,7 +151,6 @@ class EditCoupon extends React.Component {
                     className="input-text" 
                     placeholder="Enter Left"
                     name="left"
-                    defaultValue={this.state.couponInfo.left}
                     onChange={this.handleQueryParamChange}
                   />
                 </FieldWithElement>
@@ -181,7 +162,6 @@ class EditCoupon extends React.Component {
                     className="input-text" 
                     placeholder="Enter Products"
                     name="products"
-                    defaultValue={this.state.couponInfo.products}
                     onChange={this.handleQueryParamChange}
                   />
                 </FieldWithElement>
@@ -191,7 +171,6 @@ class EditCoupon extends React.Component {
                   <select 
                     id="active" 
                     name="active"
-                    defaultValue={this.state.couponInfo.active}
                     onChange={this.handleQueryParamChange}
                   >
                     <option value="true">True</option>
@@ -202,9 +181,9 @@ class EditCoupon extends React.Component {
                   <button
                     id="search"
                     className="button-solid ml-4 mb-2 mt-4 pl-5 pr-5"
-                    onClick={this.handleSaveCoupon}
+                    onClick={this.handleAddCoupon}
                   >
-                    Save
+                    Add
                   </button>
                 </div>
               </div>

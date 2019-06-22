@@ -6,10 +6,11 @@ import axios from 'axios';
  * @return {Promise<Array>} response - Promise with the response
  */
 const handleGetCoupons = (queryParams) => {
+  // Generate mock coupons
   let mockData = []
   for (let i = 0; i < 100; i++) {
     let mockCoupon = {
-      id: i,
+      id: i + 10,
       code: "ANANAY",
       category: 'referral',
       cashback: Math.floor(Math.random() * 10000),
@@ -22,7 +23,7 @@ const handleGetCoupons = (queryParams) => {
     };
     mockData.push(mockCoupon);
   }
-
+  // Prepare mock response
   let response = new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve(mockData);
@@ -39,6 +40,7 @@ const handleGetCoupons = (queryParams) => {
  *  successful or not
  */
 const handleSaveCoupon = (queryParams) => {
+  // Prepare mock response
   let response = new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve(true);
@@ -53,7 +55,7 @@ const handleSaveCoupon = (queryParams) => {
  * @return {Promise<object>} response – Coupon info object
  */
 const handleGetCouponFromID = (id) => {
-
+  // Mock coupon
   let couponInfo = {
     id,
     code: "ANANAY",
@@ -65,20 +67,49 @@ const handleGetCouponFromID = (id) => {
     left: Math.floor(Math.random() * 500),
     products: 'CB',
     active: 'true'
-  }  
-
+  }
+  // Prepare mock response
   let response = new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve(couponInfo);
     }, 1000);
   });
-
   return response;
+}
 
+/**
+ * Sends the coupon info to the database
+ * @param {object} queryParams – New coupon params
+ * @return {Promise<string>} response – Server response
+ */
+const handleAddCoupon = (queryParams) => {
+  // Prepare mock response
+  let response = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(true);
+    }, 1000);
+  });
+  return response;
+}
+
+/**
+ * Sends the coupon ID to delete
+ * @param {int} id 
+ */
+const handleDeleteCoupon = (id) => {
+  // Prepare mock response
+  let response = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(true);
+    });
+  });
+  return response;
 }
 
 module.exports = {
   handleGetCoupons,
   handleSaveCoupon,
-  handleGetCouponFromID
+  handleGetCouponFromID,
+  handleAddCoupon,
+  handleDeleteCoupon
 };

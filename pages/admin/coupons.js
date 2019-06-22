@@ -67,6 +67,25 @@ class Coupons extends React.Component {
     });
   }
 
+  /**
+   * Coupon delete action method
+   * @param {object} coupon
+   */
+
+  handleDeleteCoupon = (coupon) => {
+    // TODO: Add Swal2 confirmation
+    // Confirmation passed, delete coupon.
+    controller.handleDeleteCoupon(coupon.id).then((response) => {
+      // Remove the coupon from the table.
+      let coupons = this.state.results;
+      let couponIndex = this.state.results.indexOf(coupon);
+      coupons.splice(couponIndex, 1);
+      this.setState({
+        results: coupons
+      });
+    });
+  }
+
   render() {
     return (
       <div>
@@ -221,7 +240,7 @@ class Coupons extends React.Component {
                         <th>Products</th>
                         <th>Active</th>
                         <th>Edit</th>
-                        <th>Details</th>
+                        <th>Delete</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -244,11 +263,9 @@ class Coupons extends React.Component {
                               </Link>
                             </td>
                             <td>
-                              <Link as={`/admin/coupons/${coupon.id}`} href={`/admin/coupons/?id=${coupon.id}`}>
-                                <button class="button-solid btn btn-default">
-                                  View
-                                </button>
-                              </Link>
+                              <button class="button-solid btn btn-default" onClick={() => {this.handleDeleteCoupon(coupon)}}>
+                                Delete
+                              </button>
                             </td>
                           </tr>
                         )
