@@ -32,7 +32,8 @@
     "next": "^8.1.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "sweetalert2": "^8.13.0"
+    "sweetalert2": "^8.13.0",
+    "sweetalert2-react-content": "^1.1.0"
   },
   "bugs": {
     "url": "https://github.com/coding-blocks/dukaan-admin-frontend"

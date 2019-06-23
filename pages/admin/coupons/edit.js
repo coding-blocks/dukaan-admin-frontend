@@ -1,5 +1,5 @@
 import React from 'react';
-import { withRouter } from 'next/router';
+// import { withRouter } from 'next/router';
 import Head from '../../../components/head';
 import Layout from "../../../components/Layout";
 import Loader from '../../../components/loader';
@@ -12,20 +12,9 @@ class EditCoupon extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      couponID: props.router.query.id,
-      loading: true,
-      queryParams: {
-        code: "",
-        category: "",
-        product: "",
-        mode: "",
-        amount: "",
-        percentage: "",
-        active: "true",
-        listed: "no",
-        resultsperpage: "10"
-      },
-      couponInfo: {}
+      loading: false,
+      queryParams: props.coupon,
+      couponInfo: props.coupon
     };
   }
 
@@ -61,30 +50,29 @@ class EditCoupon extends React.Component {
         this.setState({
           loading: false
         });
+        this.props.callback(this.state.queryParams);
       }
     }).catch(() => {
-      // TODO: Handle error here
+      // TODO: Handle Error
     });
   }
 
   componentDidMount() {
-    controller.handleGetCouponFromID(this.state.couponID).then((response) => {
-      this.setState({
-        couponInfo: response,
-        loading: false
-      });
-    }).catch(() => {
-      // TODO: Handle error here
-    });
+    // controller.handleGetCouponFromID(this.state.couponID).then((response) => {
+    //   this.setState({
+    //     couponInfo: response,
+    //     loading: false
+    //   });
+    // }).catch(() => {
+    //   // TODO: Handle error here
+    // });
   }
 
   render() {
     return (
       <div>
-        <Head title="Coding Blocks | Dukaan | Edit Coupon" />
-        <Layout />
         <div className={"d-flex align-items-center justify-content-center"}>
-          <div className={"border-card coupon-card col-md-4 mt-5"}>
+          <div className={"coupon-card col-md-12 mt-5"}>
             {this.state.loading &&
               <Loader />
             }
@@ -227,4 +215,4 @@ class EditCoupon extends React.Component {
 
 }
 
-export default withRouter(EditCoupon);
+export default EditCoupon;

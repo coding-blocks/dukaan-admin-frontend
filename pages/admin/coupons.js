@@ -9,6 +9,8 @@ import Loader from '../../components/loader';
 import controller from "../../controllers/admin/coupons.js";
 import Link from 'next/link';
 import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+import EditCoupon from "./coupons/edit";
 
 class Coupons extends React.Component {
 
@@ -29,6 +31,7 @@ class Coupons extends React.Component {
       results: [],
       loading: false
     };
+    this.ReactSwal = withReactContent(Swal);
   }
 
   /**
@@ -114,7 +117,31 @@ class Coupons extends React.Component {
         });
       }
     });
+  }
 
+
+  /**
+   * Edit Coupon action handler.
+   * @param {object} coupon
+   */
+
+  handleEditCoupon = (coupon) => {
+    this.ReactSwal.fire({
+      html: <EditCoupon
+              coupon={coupon}
+              callback={(newCoupon) => {
+                this.ReactSwal.close();
+                let coupons = this.state.results;
+                let couponIndex = this.state.results.indexOf(coupon);
+                coupons[couponIndex] = newCoupon;
+                this.setState({
+                  results: coupons
+                });
+              }} 
+            />,
+      customClass: "col-md-6",
+      showConfirmButton: false
+    });
   }
 
   render() {
@@ -343,12 +370,11 @@ class Coupons extends React.Component {
                             <td>{coupon.products}</td>
                             <td>{coupon.active}</td>
                             <td>
-                              <Link as={`/admin/coupons/edit/${coupon.id}`}
-                              href={`/admin/coupons/edit?id=${coupon.id}`}>
-                                <button className={"button-solid btn btn-default"}>
-                                  Edit
-                                </button>
-                              </Link>
+                              <button
+                                className={"button-solid btn btn-default"}
+                                onClick={() => {this.handleEditCoupon(coupon)}}>
+                                Edit
+                              </button>
                             </td>
                             <td>
                               <button

@@ -11,7 +11,7 @@ const handleGetCoupons = (queryParams) => {
   for (let i = 0; i < 100; i++) {
     let mockCoupon = {
       id: i + 10,
-      code: "ANANAY",
+      code: "ANANAY" + i,
       category: 'referral',
       cashback: Math.floor(Math.random() * 10000),
       mode: 'Flat',
