@@ -108,6 +108,7 @@ class AddCoupon extends React.Component {
                       placeholder="Enter Code"
                       name="code"
                       onChange={this.handleQueryParamChange}
+                      required
                     />
                   </FieldWithElement>
 
@@ -117,6 +118,7 @@ class AddCoupon extends React.Component {
                       id="category"
                       name="category"
                       onChange={this.handleQueryParamChange}
+                      required
                     >
                       <option value="referral">Referral</option>
                       <option value="campus_ambassador">Campus Ambassador</option>
@@ -133,6 +135,7 @@ class AddCoupon extends React.Component {
                       placeholder="Enter Referrer Cashback"
                       name="cashback"
                       onChange={this.handleQueryParamChange}
+                      required
                     />
                   </FieldWithElement>
 
@@ -142,6 +145,7 @@ class AddCoupon extends React.Component {
                       id="mode"
                       name="mode"
                       onChange={this.handleQueryParamChange}
+                      required
                     >
                       <option value="flat">Flat</option>
                       <option value="percentage">Percentage</option>
@@ -156,6 +160,7 @@ class AddCoupon extends React.Component {
                       placeholder="Enter Amount"
                       name="amount"
                       onChange={this.handleQueryParamChange}
+                      required
                     />
                   </FieldWithElement>
 
@@ -167,6 +172,7 @@ class AddCoupon extends React.Component {
                       placeholder="Enter Left"
                       name="left"
                       onChange={this.handleQueryParamChange}
+                      required
                     />
                   </FieldWithElement>
 
@@ -178,6 +184,7 @@ class AddCoupon extends React.Component {
                       placeholder="Enter Products"
                       name="products"
                       onChange={this.handleQueryParamChange}
+                      required
                     />
                   </FieldWithElement>
 
@@ -187,6 +194,7 @@ class AddCoupon extends React.Component {
                       id="active"
                       name="active"
                       onChange={this.handleQueryParamChange}
+                      required
                     >
                       <option value="true">True</option>
                       <option value="false">False</option>
