@@ -2,15 +2,13 @@ import React from 'react';
 import Head from "../../components/head";
 import Layout from "../../components/Layout";
 import "../../styles/pages/admin/coupons.scss";
-import FieldWithElement
-    from '../../components/FieldWithElement'
-    ;
+import FieldWithElement from '../../components/FieldWithElement';
 import Loader from '../../components/loader';
 import controller from "../../controllers/admin/coupons.js";
-import Link from 'next/link';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import EditCoupon from "./coupons/edit";
+import Pagination from "../../components/Pagination";
 
 class Coupons extends React.Component {
 
@@ -23,12 +21,15 @@ class Coupons extends React.Component {
         product: "",
         mode: "flat",
         amount: "",
-        percentage: "",
         active: "true",
         listed: "no",
-        resultsperpage: "10"
+        resultsperpage: 10
       },
       results: [],
+      results_meta: {
+        offset: 0,
+        count: 0
+      },
       loading: false
     };
     this.ReactSwal = withReactContent(Swal);
@@ -55,16 +56,30 @@ class Coupons extends React.Component {
   };
 
   /**
+   * Callback for page change
+   * @param {int} offset
+   */
+  handleChangePage = (offset) => {
+    let results_meta = this.state.results_meta;
+    results_meta.offset = offset;
+    this.setState({
+      results_meta: results_meta
+    });
+    this.handleCouponSearch();
+  }
+
+  /**
    * Coupon search action method
    */
   handleCouponSearch = () => {
     this.setState({
       loading: true
     });
-    controller.handleGetCoupons(this.state.queryParams).then((response) => {
+    controller.handleGetCoupons(this.state.queryParams, this.state.results_meta).then((response) => {
       this.setState({
         loading: false,
-        results: response
+        results: response.results,
+        results_meta: response.meta
       });
     }).catch(() => {
       this.setState({
@@ -124,7 +139,6 @@ class Coupons extends React.Component {
    * Edit Coupon action handler.
    * @param {object} coupon
    */
-
   handleEditCoupon = (coupon) => {
     this.ReactSwal.fire({
       html: <EditCoupon
@@ -249,24 +263,6 @@ class Coupons extends React.Component {
                 />
               </FieldWithElement>
 
-
-              {/* Percentage */}
-              <FieldWithElement
-                name={"Percentage"}
-                nameCols={3}
-                elementCols={9}
-                elementClassName={"pl-4"}
-              >
-                <input
-                  type="text"
-                  className={"input-text"}
-                  placeholder="Enter Percentage"
-                  name="percentage"
-                  onChange={this.handleQueryParamChange}
-                />
-              </FieldWithElement>
-
-
               {/* Active */}
               <FieldWithElement
                 name={"Active"}
@@ -349,7 +345,6 @@ class Coupons extends React.Component {
                         <th>Referrer Cashback</th>
                         <th>Mode</th>
                         <th>Amount</th>
-                        <th>Percentage</th>
                         <th>Left</th>
                         <th>Products</th>
                         <th>Active</th>
@@ -365,7 +360,6 @@ class Coupons extends React.Component {
                             <td>{coupon.cashback}</td>
                             <td>{coupon.mode}</td>
                             <td>{coupon.amount}</td>
-                            <td>{coupon.percentage}</td>
                             <td>{coupon.left}</td>
                             <td>{coupon.products}</td>
                             <td>{coupon.active}</td>
@@ -388,6 +382,13 @@ class Coupons extends React.Component {
                       )}
                     </tbody>
                   </table>
+                </div>
+                <div class={"col-md-12 pt-4"}>
+                  <Pagination 
+                    count={this.state.results_meta.count}
+                    limit={this.state.queryParams.resultsperpage}
+                    changePageCallback={this.handleChangePage}
+                  />
                 </div>
               </div>
             </div>

@@ -1,0 +1,23 @@
+.page-num {
+  background: rgba(255, 102, 102, 0.5);
+  color:#fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  position: relative;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: all 0.5s;
+
+  span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &:hover {
+    background: rgba(255, 102, 102, 1);
+  }
+
+}

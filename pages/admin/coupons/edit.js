@@ -14,7 +14,8 @@ class EditCoupon extends React.Component {
     this.state = {
       loading: false,
       queryParams: props.coupon,
-      couponInfo: props.coupon
+      couponInfo: props.coupon,
+      errorMessage: ''
     };
   }
 
@@ -42,30 +43,28 @@ class EditCoupon extends React.Component {
    * Method to handle saving of coupon
    */
   handleSaveCoupon = () => {
-    this.setState({
-      loading: true
-    });
-    controller.handleSaveCoupon(this.state.queryParams).then((response) => {
-      if (response == true) {
+    if (!document.getElementById("editCouponForm").checkValidity()) {
+      document.getElementById("editCouponForm").reportValidity();
+    } else {
+      this.setState({
+        loading: true,
+        errorMessage: ''
+      });
+      controller.handleSaveCoupon(this.state.queryParams).then((response) => {
+        if (response == true) {
+          this.setState({
+            loading: false,
+            errorMessage: ''
+          });
+          this.props.callback(this.state.queryParams);
+        }
+      }).catch((error) => {
         this.setState({
-          loading: false
+          loading: false,
+          errorMessage: error
         });
-        this.props.callback(this.state.queryParams);
-      }
-    }).catch(() => {
-      // TODO: Handle Error
-    });
-  }
-
-  componentDidMount() {
-    // controller.handleGetCouponFromID(this.state.couponID).then((response) => {
-    //   this.setState({
-    //     couponInfo: response,
-    //     loading: false
-    //   });
-    // }).catch(() => {
-    //   // TODO: Handle error here
-    // });
+      });
+    }
   }
 
   render() {
@@ -83,128 +82,130 @@ class EditCoupon extends React.Component {
                 <div className={"d-flex justify-content-center mt-1 pb-3"}>
                   <h2 className={"title"}>Edit Coupon</h2>
                 </div>
+                {this.state.errorMessage.length != 0 && 
+                    <div className={"d-flex red justify-content-center mt-1 pb-3"}>
+                      {this.state.errorMessage}
+                    </div>
+                }
+                <form id="editCouponForm">
+                  {/* Code */}
+                  <FieldWithElement name={"Code"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    <input 
+                      type="text"
+                      className={"input-text"}
+                      placeholder="Enter Code"
+                      name="code"
+                      defaultValue={this.state.couponInfo.code}
+                      onChange={this.handleQueryParamChange}
+                      required
+                    />
+                  </FieldWithElement>
 
-                {/* Code */}
-                <FieldWithElement name={"Code"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                  <input 
-                    type="text"
-                    className={"input-text"}
-                    placeholder="Enter Code"
-                    name="code"
-                    defaultValue={this.state.couponInfo.code}
-                    onChange={this.handleQueryParamChange}
-                  />
-                </FieldWithElement>
+                  {/* Categories */}
+                  <FieldWithElement name={"Category"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    <select 
+                      id="category" 
+                      name="category"
+                      defaultValue={this.state.couponInfo.category}
+                      onChange={this.handleQueryParamChange}
+                      required
+                    >
+                      <option value="referral">Referral</option>
+                      <option value="campus_ambassador">Campus Ambassador</option>
+                      <option value="campaign">Campaign</option>
+                      <option value="special_discount">Special Discount</option>
+                    </select>
+                  </FieldWithElement>
 
-                {/* Categories */}
-                <FieldWithElement name={"Category"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                  <select 
-                    id="category" 
-                    name="category"
-                    defaultValue={this.state.couponInfo.category}
-                    onChange={this.handleQueryParamChange}
-                  >
-                    <option value="referral">Referral</option>
-                    <option value="campus_ambassador">Campus Ambassador</option>
-                    <option value="campaign">Campaign</option>
-                    <option value="special_discount">Special Discount</option>
-                  </select>
-                </FieldWithElement>
+                  {/* Cashback */}
+                  <FieldWithElement name={"Cashback"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    <input 
+                      type="text" 
+                      className="input-text" 
+                      placeholder="Enter Referrer Cashback" 
+                      name="cashback"
+                      defaultValue={this.state.couponInfo.cashback}
+                      onChange={this.handleQueryParamChange}
+                      required
+                    />
+                  </FieldWithElement>
 
-                {/* Cashback */}
-                <FieldWithElement name={"Cashback"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                  <input 
-                    type="text" 
-                    className="input-text" 
-                    placeholder="Enter Referrer Cashback" 
-                    name="cashback"
-                    defaultValue={this.state.couponInfo.cashback}
-                    onChange={this.handleQueryParamChange}
-                  />
-                </FieldWithElement>
+                  {/* Mode */}
+                  <FieldWithElement name={"Mode"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    <select 
+                      id="mode"
+                      name="mode"
+                      defaultValue={this.state.couponInfo.mode}
+                      onChange={this.handleQueryParamChange}
+                      required
+                    >
+                      <option value="flat">Flat</option>
+                      <option value="percentage">Percentage</option>
+                    </select>
+                  </FieldWithElement>
 
-                {/* Mode */}
-                <FieldWithElement name={"Mode"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                  <select 
-                    id="mode"
-                    name="mode"
-                    defaultValue={this.state.couponInfo.mode}
-                    onChange={this.handleQueryParamChange}
-                  >
-                    <option value="flat">Flat</option>
-                    <option value="percentage">Percentage</option>
-                  </select>
-                </FieldWithElement>
+                  {/* Amount */}
+                  <FieldWithElement name={"Amount"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    <input 
+                      type="text" 
+                      className="input-text"
+                      placeholder="Enter Amount" 
+                      name="amount"
+                      defaultValue={this.state.couponInfo.amount}
+                      onChange={this.handleQueryParamChange}
+                      required
+                    />
+                  </FieldWithElement>
 
-                {/* Amount */}
-                <FieldWithElement name={"Amount"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                  <input 
-                    type="text" 
-                    className="input-text"
-                    placeholder="Enter Amount" 
-                    name="amount"
-                    defaultValue={this.state.couponInfo.amount}
-                    onChange={this.handleQueryParamChange}
-                  />
-                </FieldWithElement>
+                  {/* Left */}
+                  <FieldWithElement name={"Left"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    <input 
+                      type="text" 
+                      className="input-text" 
+                      placeholder="Enter Left"
+                      name="left"
+                      defaultValue={this.state.couponInfo.left}
+                      onChange={this.handleQueryParamChange}
+                      required
+                    />
+                  </FieldWithElement>
 
-                {/* Percentage */}
-                <FieldWithElement name={"Percentage"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                  <input 
-                    type="text" 
-                    className="input-text" 
-                    placeholder="Enter Percentage"
-                    name="percentage"
-                    defaultValue={this.state.couponInfo.percentage}
-                    onChange={this.handleQueryParamChange}
-                  />
-                </FieldWithElement>
+                  {/* Products */}
+                  <FieldWithElement name={"Products"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    <input 
+                      type="text" 
+                      className="input-text" 
+                      placeholder="Enter Products"
+                      name="products"
+                      defaultValue={this.state.couponInfo.products}
+                      onChange={this.handleQueryParamChange}
+                      required
+                    />
+                  </FieldWithElement>
 
-                {/* Left */}
-                <FieldWithElement name={"Left"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                  <input 
-                    type="text" 
-                    className="input-text" 
-                    placeholder="Enter Left"
-                    name="left"
-                    defaultValue={this.state.couponInfo.left}
-                    onChange={this.handleQueryParamChange}
-                  />
-                </FieldWithElement>
-
-                {/* Products */}
-                <FieldWithElement name={"Products"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                  <input 
-                    type="text" 
-                    className="input-text" 
-                    placeholder="Enter Products"
-                    name="products"
-                    defaultValue={this.state.couponInfo.products}
-                    onChange={this.handleQueryParamChange}
-                  />
-                </FieldWithElement>
-
-                {/* Active */}
-                <FieldWithElement name={"Active"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                  <select 
-                    id="active" 
-                    name="active"
-                    defaultValue={this.state.couponInfo.active}
-                    onChange={this.handleQueryParamChange}
-                  >
-                    <option value="true">True</option>
-                    <option value="false">False</option>
-                  </select>
-                </FieldWithElement>
-                <div className={"d-flex justify-content-center"}>
-                  <button
-                    id="search"
-                    className={"button-solid ml-4 mb-2 mt-4 pl-5 pr-5"}
-                    onClick={this.handleSaveCoupon}
-                  >
-                    Save
-                  </button>
-                </div>
+                  {/* Active */}
+                  <FieldWithElement name={"Active"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    <select 
+                      id="active" 
+                      name="active"
+                      defaultValue={this.state.couponInfo.active}
+                      onChange={this.handleQueryParamChange}
+                      required
+                    >
+                      <option value="true">True</option>
+                      <option value="false">False</option>
+                    </select>
+                  </FieldWithElement>
+                  <div className={"d-flex justify-content-center"}>
+                    <button
+                      id="search"
+                      className={"button-solid ml-4 mb-2 mt-4 pl-5 pr-5"}
+                      onClick={this.handleSaveCoupon}
+                    >
+                      Save
+                    </button>
+                  </div>
+                </form>
               </div>
             }
           </div>

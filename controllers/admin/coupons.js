@@ -5,10 +5,12 @@ import axios from 'axios';
  * @param {object} queryParams - Search filter params to be sent
  * @return {Promise<Array>} response - Promise with the response
  */
-const handleGetCoupons = (queryParams) => {
+const handleGetCoupons = (queryParams, meta) => {
   // Generate mock coupons
   let mockData = []
-  for (let i = 0; i < 100; i++) {
+  console.log(queryParams);
+  console.log(meta);
+  for (let i = meta.offset; i < meta.offset + queryParams.resultsperpage; i++) {
     let mockCoupon = {
       id: i + 10,
       code: "ANANAY" + i,
@@ -16,18 +18,24 @@ const handleGetCoupons = (queryParams) => {
       cashback: Math.floor(Math.random() * 10000),
       mode: 'Flat',
       amount: Math.floor(Math.random() * 10000),
-      percentage: Math.floor(Math.random() * 100),
       left: Math.floor(Math.random() * 500),
       products: 'CB',
       active: 'true'
     };
     mockData.push(mockCoupon);
   }
+  let mockResponse = {
+    results: mockData,
+    meta: {
+      count: 100,
+      offset: meta.offset
+    }
+  }
   // Prepare mock response
   let response = new Promise((resolve, reject) => {
     setTimeout(() => {
-      resolve(mockData);
-    }, 1000);
+      resolve(mockResponse);
+    }, 100);
   });
 
   return response;
@@ -63,7 +71,6 @@ const handleGetCouponFromID = (id) => {
     cashback: Math.floor(Math.random() * 10000),
     mode: 'Flat',
     amount: Math.floor(Math.random() * 10000),
-    percentage: Math.floor(Math.random() * 100),
     left: Math.floor(Math.random() * 500),
     products: 'CB',
     active: 'true'
