@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import "./styles/layout.scss";
+import "../styles/components/layout.scss";
 
 const Nav = () => (
   <nav className="main-nav">

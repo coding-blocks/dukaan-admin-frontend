@@ -52,22 +52,22 @@ class Home extends React.Component {
         <Layout />
 
         {/* Search User */}
-        <div className="container mt-5">
-          <div className="row">
-            <div className="col-md-12 col-12">
+        <div className={"container mt-5"}>
+          <div className={"row"}>
+            <div className={"col-md-12 col-12"}>
               <div style={{ display: "flex" }}>
                 <input
                   name="email"
                   required
                   id="email"
                   type="email"
-                  className="input-text mb-2"
+                  className={"input-text mb-2"}
                   placeholder="Enter email"
                   onChange={this.handleChange}
                 />
                 <button
                   id="search"
-                  className="button-solid ml-4 mb-2 pl-5 pr-5"
+                  className={"button-solid ml-4 mb-2 pl-5 pr-5"}
                 >
                   Search
                 </button>
@@ -76,35 +76,35 @@ class Home extends React.Component {
           </div>
         </div>
         {/* Form 2  */}
-        <div className="container mt-5">
-          <div className="row">
-            <div className="col-md-12 col-12">
-              <div className="border-card br-20 bg-light-grey mb-5">
+        <div className={"container mt-5"}>
+          <div className={"row"}>
+            <div className={"col-md-12 col-12"}>
+              <div className={"border-card br-20 bg-light-grey mb-5"}>
                 <h5>User Details</h5>
                 <div style={{ alignItems: "center" }}>
-                  <div className="container">
-                    <div className="row">
-                      <div className="col-md-12 p-4 username">
+                  <div className={"container"}>
+                    <div className={"row"}>
+                      <div className={"col-md-12 p-4 username"}>
                         Ananay Arora (@ananay)
                       </div>
                     </div>
-                    <div className="row">
-                      <div className="col-md-5 mt-1 p-4 userinfo">
-                        <i className="fa fa-phone-square fa-2x icon_middle red" />
-                        <span className="info">+919560043231</span>
+                    <div className={"row"}>
+                      <div className={"col-md-5 mt-1 p-4 userinfo"}>
+                        <i className={"fa fa-phone-square fa-2x icon_middle red"} />
+                        <span className={"info"}>+919560043231</span>
                       </div>
                       <div className='col-md-2 p-4 red'>
                         <Price amount={1670} />
                       </div>
-                      <div className="col-md-5 mt-1 p-4 userinfo">
-                        <i className="fa fa-envelope fa-2x icon_middle red" />
-                        <span className="info">i@ananayarora.com</span>
+                      <div className={"col-md-5 mt-1 p-4 userinfo"}>
+                        <i className={"fa fa-envelope fa-2x icon_middle red"} />
+                        <span className={"info"}>i@ananayarora.com</span>
                       </div>
                     </div>
                   </div>
                   <div class="row">
-                    <div className="col-md-12 mt-5" align="center">
-                      <button className="button-solid p-4 h6">
+                    <div className={"col-md-12 mt-5"} align="center">
+                      <button className={"button-solid p-4 h6"}>
                         Make New Payment
                       </button>
                     </div>
@@ -112,9 +112,9 @@ class Home extends React.Component {
                 </div>
               </div>
             </div>
-            <div className="col-md-12 col-12">
-              <div className="border-card br-20 bg-light-grey mb-5">
-                <div className="tab-nav-underline mb-5">
+            <div className={"col-md-12 col-12"}>
+              <div className={"border-card br-20 bg-light-grey mb-5"}>
+                <div className={"tab-nav-underline mb-5"}>
                   <div
                     className={this.state.completeTab ? "tab active" : "tab"}
                     onClick={this.toggleCompleteTab}

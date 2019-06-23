@@ -14,7 +14,17 @@ class EditCoupon extends React.Component {
     this.state = {
       couponID: props.router.query.id,
       loading: true,
-      queryParams: {},
+      queryParams: {
+        code: "",
+        category: "",
+        product: "",
+        mode: "",
+        amount: "",
+        percentage: "",
+        active: "true",
+        listed: "no",
+        resultsperpage: "10"
+      },
       couponInfo: {}
     };
   }
@@ -90,7 +100,7 @@ class EditCoupon extends React.Component {
                 <FieldWithElement name={"Code"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                   <input 
                     type="text"
-                    className="input-text" 
+                    className={"input-text"}
                     placeholder="Enter Code"
                     name="code"
                     defaultValue={this.state.couponInfo.code}
@@ -198,10 +208,10 @@ class EditCoupon extends React.Component {
                     <option value="false">False</option>
                   </select>
                 </FieldWithElement>
-                <div class="d-flex justify-content-center">
+                <div className={"d-flex justify-content-center"}>
                   <button
                     id="search"
-                    className="button-solid ml-4 mb-2 mt-4 pl-5 pr-5"
+                    className={"button-solid ml-4 mb-2 mt-4 pl-5 pr-5"}
                     onClick={this.handleSaveCoupon}
                   >
                     Save

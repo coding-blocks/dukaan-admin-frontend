@@ -5391,6 +5391,11 @@ supports-color@^6.1.0:
   dependencies:
     has-flag "^3.0.0"
 
+sweetalert2@^8.13.0:
+  version "8.13.0"
+  resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-8.13.0.tgz#6a57279ba84e9f7ac3e0fc60586bfd2cd40de78f"
+  integrity sha512-jxsGw0+9jJS123rPzsaRVUJPm8HJnvuY6a02appPohW7I46DIIYnd/F7B6036uHSeunHfHRYLhtVcfTjDufjuQ==
+
 tapable@^1.0.0, tapable@^1.1.0:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/tapable/-/tapable-1.1.3.tgz#a1fccc06b58db61fd7a45da2da44f5f3a3e67ba2"

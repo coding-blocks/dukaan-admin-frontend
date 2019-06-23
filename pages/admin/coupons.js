@@ -2,10 +2,13 @@ import React from 'react';
 import Head from "../../components/head";
 import Layout from "../../components/Layout";
 import "../../styles/pages/admin/coupons.scss";
-import FieldWithElement from '../../components/FieldWithElement';
+import FieldWithElement
+    from '../../components/FieldWithElement'
+    ;
 import Loader from '../../components/loader';
 import controller from "../../controllers/admin/coupons.js";
 import Link from 'next/link';
+import Swal from 'sweetalert2';
 
 class Coupons extends React.Component {
 
@@ -14,12 +17,12 @@ class Coupons extends React.Component {
     this.state = {
       queryParams: {
         code: "",
-        category: "",
+        category: "referral",
         product: "",
-        mode: "",
+        mode: "flat",
         amount: "",
         percentage: "",
-        active: "listed",
+        active: "true",
         listed: "no",
         resultsperpage: "10"
       },
@@ -47,7 +50,7 @@ class Coupons extends React.Component {
       queryParams: newQueryParams
     }));
   };
-  
+
   /**
    * Coupon search action method
    */
@@ -71,19 +74,47 @@ class Coupons extends React.Component {
    * Coupon delete action method
    * @param {object} coupon
    */
-
   handleDeleteCoupon = (coupon) => {
-    // TODO: Add Swal2 confirmation
-    // Confirmation passed, delete coupon.
-    controller.handleDeleteCoupon(coupon.id).then((response) => {
-      // Remove the coupon from the table.
-      let coupons = this.state.results;
-      let couponIndex = this.state.results.indexOf(coupon);
-      coupons.splice(couponIndex, 1);
-      this.setState({
-        results: coupons
-      });
+    Swal.fire({
+      title: "Are you sure you want to delete coupon – " + coupon.code + " ?",
+      type: 'question',
+      confirmButtonColor: '#f66',
+      confirmButtonText: "Yes, delete!",
+      cancelButtonText: "No, stop!",
+      showCancelButton: true,
+      showConfirmButton: true,
+      showCloseButton: true
+    }).then((result) => {
+      if (result.value) {
+         // Confirmation passed, delete coupon.
+        controller.handleDeleteCoupon(coupon.id).then((response) => {
+          // Remove the coupon from the table.
+          let coupons = this.state.results;
+          let couponIndex = this.state.results.indexOf(coupon);
+          coupons.splice(couponIndex, 1);
+          this.setState({
+            results: coupons
+          });
+          // Show that the job is done
+          Swal.fire({
+            title: 'Coupon ' + coupon.code + ' Deleted!',
+            type: "info",
+            timer: '1500',
+            showConfirmButton: true,
+            confirmButtonText: "Okay"
+          });
+        }).catch((error) => {
+          console.log("PROMISE REJECT");
+          Swal.fire({
+            title: "Error while deleting coupon!",
+            html: "Error: " + error,
+            type: "error",
+            showConfirmButton: true
+          });
+        });
+      }
     });
+
   }
 
   render() {
@@ -91,29 +122,42 @@ class Coupons extends React.Component {
       <div>
         <Head title="Coding Blocks | Dukaan | Coupons" />
         <Layout />
-        <div class="d-flex mr-5 pr-5">
-          <div class="d-flex align-items-center col-md-4 mt-2 ml-5">
-            <div class="border-card coupon-card mt-2">
+        <div className={"d-flex mr-5 pr-5"}>
+          <div className={"d-flex align-items-center col-md-4 mt-2 ml-5"}>
+            <div className={"border-card coupon-card mt-2"}>
               {/* Title */}
-              <div class="d-flex justify-content-center mt-1 pb-3">
-                <h2 class="title">Search Coupons</h2>
+              <div className={"d-flex justify-content-center mt-1 pb-3"}>
+                <h2 className={"title"}>
+                    Search Coupons
+                </h2>
               </div>
 
               {/* Code */}
-              <FieldWithElement nameCols={3} elementCols={9} name={"Code"}>
-                <input 
-                  type="text" 
-                  className="input-text" 
+              <FieldWithElement
+
+                nameCols={3}
+                elementCols={9}
+                name={"Code"}>
+
+              <input
+                  type="text"
+                  className={"input-text"}
                   placeholder="Enter Code"
                   name={"code"}
                   onChange={this.handleQueryParamChange}
                 />
               </FieldWithElement>
 
+
               {/* Categories */}
-              <FieldWithElement name={"Category"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                <select 
-                  id="category" 
+              <FieldWithElement
+                name={"Category"}
+                nameCols={3}
+                elementCols={9}
+                elementClassName={"pl-4"}
+              >
+                <select
+                  id="category"
                   name="category"
                   onChange={this.handleQueryParamChange}
                 >
@@ -124,11 +168,17 @@ class Coupons extends React.Component {
                   <option value="special_discount">Special Discount</option>
                 </select>
               </FieldWithElement>
-              
+
+
               {/* Products */}
-              <FieldWithElement name={"Products"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+              <FieldWithElement
+                name={"Products"}
+                nameCols={3}
+                elementCols={9}
+                elementClassName={"pl-4"}
+              >
                 <select
-                  id="product" 
+                  id="product"
                   name="product"
                   onChange={this.handleQueryParamChange}
                 >
@@ -136,10 +186,16 @@ class Coupons extends React.Component {
                 </select>
               </FieldWithElement>
 
+
               {/* Mode */}
-              <FieldWithElement name={"Mode"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                <select 
-                  id="mode" 
+              <FieldWithElement
+                name={"Mode"}
+                nameCols={3}
+                elementCols={9}
+                elementClassName={"pl-4"}
+              >
+                <select
+                  id="mode"
                   name="mode"
                   onChange={this.handleQueryParamChange}
                 >
@@ -149,32 +205,50 @@ class Coupons extends React.Component {
                 </select>
               </FieldWithElement>
 
+
               {/* Amount */}
-              <FieldWithElement name={"Amount"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                <input 
-                  type="text" 
-                  className="input-text" 
-                  placeholder="Enter Amount" 
+              <FieldWithElement
+                name={"Amount"}
+                nameCols={3}
+                elementCols={9}
+                elementClassName={"pl-4"}
+              >
+                <input
+                  type="text"
+                  className={"input-text"}
+                  placeholder="Enter Amount"
                   name="amount"
                   onChange={this.handleQueryParamChange}
                 />
               </FieldWithElement>
 
+
               {/* Percentage */}
-              <FieldWithElement name={"Percentage"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                <input 
-                  type="text" 
-                  className="input-text" 
-                  placeholder="Enter Percentage" 
+              <FieldWithElement
+                name={"Percentage"}
+                nameCols={3}
+                elementCols={9}
+                elementClassName={"pl-4"}
+              >
+                <input
+                  type="text"
+                  className={"input-text"}
+                  placeholder="Enter Percentage"
                   name="percentage"
                   onChange={this.handleQueryParamChange}
                 />
               </FieldWithElement>
 
+
               {/* Active */}
-              <FieldWithElement name={"Active"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                <select 
-                  id="active" 
+              <FieldWithElement
+                name={"Active"}
+                nameCols={3}
+                elementCols={9}
+                elementClassName={"pl-4"}
+              >
+                <select
+                  id="active"
                   name="active"
                   onChange={this.handleQueryParamChange}
                 >
@@ -183,9 +257,15 @@ class Coupons extends React.Component {
                 </select>
               </FieldWithElement>
 
+
               {/* Show only listed products? */}
-              <FieldWithElement name={"Show only listed products?"} nameCols={7} elementCols={5} elementClassName={"pl-4"}>
-                <select 
+              <FieldWithElement
+                name={"Show only listed products?"}
+                nameCols={7}
+                elementCols={5}
+                elementClassName={"pl-4"}
+              >
+                <select
                   id="listed"
                   name="listed"
                   onChange={this.handleQueryParamChange}
@@ -194,22 +274,29 @@ class Coupons extends React.Component {
                   <option value="yes">Yes</option>
                 </select>
               </FieldWithElement>
-              
+
+
               {/* Results per page */}
-              <FieldWithElement name={"Results per page"} nameCols={5} elementCols={7} elementClassName={"pl-4"}>
-                <input 
+              <FieldWithElement
+                name={"Results per page"}
+                nameCols={5}
+                elementCols={7}
+                elementClassName={"pl-4"}
+              >
+                <input
                   type="text"
-                  className="input-text"
+                  className={"input-text"}
                   placeholder="Enter Results Per Page..."
                   name="resultsperpage"
                   defaultValue={10}
                   onChange={this.handleQueryParamChange}
                 />
               </FieldWithElement>
-              <div class="d-flex justify-content-center">
+
+              <div className={"d-flex justify-content-center"}>
                 <button
                   id="search"
-                  className="button-solid ml-4 mb-2 mt-4 pl-5 pr-5"
+                  className={"button-solid ml-4 mb-2 mt-4 pl-5 pr-5"}
                   onClick={this.handleCouponSearch}
                 >
                   Search
@@ -217,17 +304,17 @@ class Coupons extends React.Component {
               </div>
             </div>
           </div>
-          
+
           {!this.state.loading && this.state.results.length > 0 &&
-            <div class="d-flex ml-4 mt-3 col-md-8">
-              <div class="border-card">
+            <div className={"d-flex ml-4 mt-3 col-md-8"}>
+              <div className={"border-card"}>
                 {/* Title */}
-                <div class="d-flex justify-content-center mt-1">
-                  <h2 class="title">Coupon Results</h2>
+                <div className={"d-flex justify-content-center mt-1"}>
+                  <h2 className={"title"}>Coupon Results</h2>
                 </div>
                 {/* Results Table */}
-                <div class="c-overview-leaderboard coupons-results">
-                  <table class="table table-responsive coupons-results-table">
+                <div className={"c-overview-leaderboard coupons-results"}>
+                  <table className={"table table-responsive coupons-results-table"}>
                     <thead>
                       <tr>
                         <th>Code</th>
@@ -256,14 +343,17 @@ class Coupons extends React.Component {
                             <td>{coupon.products}</td>
                             <td>{coupon.active}</td>
                             <td>
-                              <Link as={`/admin/coupons/edit/${coupon.id}`} href={`/admin/coupons/edit?id=${coupon.id}`}>
-                                <button class="button-solid btn btn-default">
+                              <Link as={`/admin/coupons/edit/${coupon.id}`}
+                              href={`/admin/coupons/edit?id=${coupon.id}`}>
+                                <button className={"button-solid btn btn-default"}>
                                   Edit
                                 </button>
                               </Link>
                             </td>
                             <td>
-                              <button class="button-solid btn btn-default" onClick={() => {this.handleDeleteCoupon(coupon)}}>
+                              <button
+                                className={"button-solid btn btn-default"}
+                                onClick={() => {this.handleDeleteCoupon(coupon)}}>
                                 Delete
                               </button>
                             </td>
@@ -276,8 +366,8 @@ class Coupons extends React.Component {
               </div>
             </div>
           }
-          {this.state.loading && 
-            <div class="border-card mt-3">
+          {this.state.loading &&
+            <div className={"border-card mt-3"}>
               <Loader />
             </div>
           }
