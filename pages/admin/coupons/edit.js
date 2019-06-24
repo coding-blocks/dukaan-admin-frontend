@@ -11,9 +11,26 @@ class EditCoupon extends React.Component {
     this.state = {
       loading: false,
       queryParams: props.coupon,
-      couponInfo: props.coupon,
+      couponInfo: {
+        id: 0,
+        code: "",
+        category: 'referral',
+        cashback: 0,
+        mode: 'Flat',
+        amount: 0,
+        left: 0,
+        products: '',
+        active: true
+      },
       errorMessage: ''
     };
+  }
+
+  componentWillMount() {
+    this.setState({
+      queryParams: this.props.coupon,
+      couponInfo: this.props.coupon
+    });
   }
 
   /**
