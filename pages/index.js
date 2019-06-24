@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
-import Head from "../components/Head";
-import Layout from "../components/Layout";
+import Head from "../components/head";
+import Layout from "../components/layout";
 import CompleteOrders from "../components/CompleteOrder";
 import "../styles/pages/index.scss";
 import Price from "../components/Price";

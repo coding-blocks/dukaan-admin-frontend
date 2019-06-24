@@ -1,7 +1,4 @@
 import React from 'react';
-// import { withRouter } from 'next/router';
-import Head from '../../../components/head';
-import Layout from "../../../components/Layout";
 import Loader from '../../../components/loader';
 import FieldWithElement from '../../../components/FieldWithElement';
 import controller from '../../../controllers/admin/coupons';
