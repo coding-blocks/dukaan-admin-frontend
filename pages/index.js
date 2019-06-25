@@ -102,7 +102,7 @@ class Home extends React.Component {
                       </div>
                     </div>
                   </div>
-                  <div class="row">
+                  <div className={"row"}>
                     <div className={"col-md-12 mt-5"} align="center">
                       <button className={"button-solid p-4 h6"}>
                         Make New Payment

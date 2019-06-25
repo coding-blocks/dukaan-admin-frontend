@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import EditCoupon from "./coupons/edit";
 import Pagination from "../../components/Pagination";
+import { randomBytes } from 'crypto';
 
 class Coupons extends React.Component {
 
@@ -26,9 +27,9 @@ class Coupons extends React.Component {
         resultsperpage: 10
       },
       results: [],
-      results_meta: {
-        offset: 0,
-        count: 0
+      pagesInfo: {
+        page: 1,
+        limit: 10
       },
       loading: false
     };
@@ -60,12 +61,12 @@ class Coupons extends React.Component {
    * @param {int} offset
    */
   handleChangePage = (offset) => {
-    let results_meta = this.state.results_meta;
-    results_meta.offset = offset;
-    this.setState({
-      results_meta: results_meta
-    });
-    this.handleCouponSearch();
+    // let results_meta = this.state.results_meta;
+    // results_meta.offset = offset;
+    // this.setState({
+    //   results_meta: results_meta
+    // });
+    // this.handleCouponSearch();
   }
 
   /**
@@ -75,12 +76,14 @@ class Coupons extends React.Component {
     this.setState({
       loading: true
     });
-    controller.handleGetCoupons(this.state.queryParams, this.state.results_meta).then((response) => {
+    controller.handleGetCoupons(this.state.queryParams, this.state.pagesInfo).then((response) => {
       this.setState({
         loading: false,
         results: response.results,
-        results_meta: response.meta
+        pagesInfo: response.pagesInfo
       });
+      console.log(response.results);
+      // console.log("results.length", response.results.length);
     }).catch(() => {
       this.setState({
         loading: false
@@ -310,9 +313,15 @@ class Coupons extends React.Component {
                   type="text"
                   className={"input-text"}
                   placeholder="Enter Results Per Page..."
-                  name="resultsperpage"
+                  name="limit"
                   defaultValue={10}
-                  onChange={this.handleQueryParamChange}
+                  onChange={(event) => { 
+                    let pagesInfo = this.state.pagesInfo;
+                    pagesInfo['limit'] = event.target.value;
+                    this.setState({
+                      pagesInfo
+                    });
+                  }}
                 />
               </FieldWithElement>
 
@@ -354,15 +363,18 @@ class Coupons extends React.Component {
                     </thead>
                     <tbody>
                       {this.state.results.map(coupon => (
-                          <tr>
+                          <tr key={coupon.id}>
                             <td>{coupon.code}</td>
                             <td>{coupon.category}</td>
-                            <td>{coupon.cashback}</td>
+                            <td>{coupon.referrer_cashback}</td>
                             <td>{coupon.mode}</td>
                             <td>{coupon.amount}</td>
                             <td>{coupon.left}</td>
-                            <td>{coupon.products}</td>
-                            <td>{coupon.active}</td>
+                            <td>{coupon.products.length}</td>
+                            <td>
+                              {coupon.active && "True"}
+                              {!coupon.active && "False"}
+                            </td>
                             <td>
                               <button
                                 className={"button-solid btn btn-default"}
@@ -383,10 +395,10 @@ class Coupons extends React.Component {
                     </tbody>
                   </table>
                 </div>
-                <div class={"col-md-12 pt-4"}>
+                <div className={"col-md-12 pt-4"}>
                   <Pagination 
-                    count={this.state.results_meta.count}
-                    limit={this.state.queryParams.resultsperpage}
+                    page={this.state.pagesInfo.page}
+                    limit={this.state.pagesInfo.limit}
                     changePageCallback={this.handleChangePage}
                   />
                 </div>

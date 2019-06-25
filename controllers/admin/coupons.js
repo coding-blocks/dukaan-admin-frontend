@@ -1,44 +1,54 @@
 import axios from 'axios';
 
+// Set axios defaults
+axios.defaults.baseURL = 'http://localhost:2929';
+axios.defaults.headers['dukaan-token'] = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImNsaWVudE5hbWUiOiJvbmxpbmVDYiIsIm9uZWF1dGhJZCI6MTQ1OSwicHJvZHVjdElkIjoxNTYsInF1YW50aXR5IjoxfSwiaWF0IjoxNTYwMjQwNzkwfQ.x6pSdQA2bQndnnMoxSgwn6GdKiPmm82E8AE2BPIPRRQ";
+
 /**
  * Fetches the coupons from the server
  * @param {object} queryParams - Search filter params to be sent
  * @return {Promise<Array>} response - Promise with the response
  */
-const handleGetCoupons = (queryParams, meta) => {
-  // Generate mock coupons
-  let mockData = []
-  console.log(queryParams);
-  console.log(meta);
-  for (let i = meta.offset; i < meta.offset + queryParams.resultsperpage; i++) {
-    let mockCoupon = {
-      id: i + 10,
-      code: "ANANAY" + i,
-      category: 'referral',
-      cashback: Math.floor(Math.random() * 10000),
-      mode: 'Flat',
-      amount: Math.floor(Math.random() * 10000),
-      left: Math.floor(Math.random() * 500),
-      products: 'CB',
-      active: 'true'
-    };
-    mockData.push(mockCoupon);
-  }
-  let mockResponse = {
-    results: mockData,
-    meta: {
-      count: 100,
-      offset: meta.offset
-    }
-  }
-  // Prepare mock response
+const handleGetCoupons = (queryParams, pageInfo) => {
+  
+  // // Generate mock coupons
+  // let mockData = []
+  // for (let i = meta.offset; i < meta.offset + queryParams.resultsperpage; i++) {
+  //   let mockCoupon = {
+  //     id: i + 10,
+  //     code: "ANANAY" + i,
+  //     category: 'referral',
+  //     cashback: Math.floor(Math.random() * 10000),
+  //     mode: 'Flat',
+  //     amount: Math.floor(Math.random() * 10000),
+  //     left: Math.floor(Math.random() * 500),
+  //     products: 'CB',
+  //     active: 'true'
+  //   };
+  //   mockData.push(mockCoupon);
+  // }
+  // let mockResponse = {
+  //   results: mockData,
+  //   meta: {
+  //     count: 100,
+  //     offset: meta.offset
+  //   }
+  // }
+
   let response = new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve(mockResponse);
-    }, 100);
+    axios.get(`/api/v2/admin/coupons?page=`+pageInfo.page+`&limit=`+pageInfo.limit).then((r) => {
+      let data = {
+        results: r.data.coupons,
+        pagesInfo: r.data.pagesInfo
+      }
+      resolve(data);
+    }).catch((error) => {
+      reject(error);
+    });
   });
 
   return response;
+
 };
 
 /**

@@ -10,16 +10,13 @@ class Pagination extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      count: props.count,
-      limit: props.limit,
-      numPages: 0
+      pages: props.pages
     }
   }
 
   handleClick = (event) => {
-    let paginationButton = event.currentTarget.getAttribute("name").split("-")[1];
-    let offset = (paginationButton - 1) * this.state.limit;
-    this.props.changePageCallback(offset);
+    let selectedPage = event.currentTarget.getAttribute("name").split("-")[1];
+    this.props.changePageCallback(selectedPage);
   }
 
   /**
@@ -28,7 +25,7 @@ class Pagination extends React.Component {
    */
   createPageButtons = () => {
     let pageButtons = [];
-    for (let i = 1; i <= this.state.numPages; i++) {
+    for (let i = 1; i <= this.state.pages; i++) {
       pageButtons.push(
         <div 
           className={"page-num"}
@@ -40,13 +37,6 @@ class Pagination extends React.Component {
       );
     }
     return pageButtons;
-  }
-
-  componentDidMount() {
-    let numPages = Math.ceil(this.state.count / this.state.limit);
-    this.setState({
-      numPages
-    });
   }
   
   render() {
