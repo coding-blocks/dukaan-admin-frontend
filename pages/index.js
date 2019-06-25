@@ -5,6 +5,8 @@ import Layout from "../components/layout";
 import CompleteOrders from "../components/CompleteOrder";
 import "../styles/pages/index.scss";
 import Price from "../components/Price";
+// import axios from '../config'
+import axios from 'axios'
 
 class Home extends React.Component {
   constructor(props) {
@@ -35,6 +37,11 @@ class Home extends React.Component {
       incompleteTab: true
     }));
   };
+
+    handleSearch =  async () => {
+    let userData = await axios.get(`http://localhost:2929/api/v2/admin/users/?email=${this.state.email}`)
+    console.log(this.state)
+  }
 
   render() {
     const completeTab = this.state.completeTab;
@@ -68,6 +75,8 @@ class Home extends React.Component {
                 <button
                   id="search"
                   className={"button-solid ml-4 mb-2 pl-5 pr-5"}
+                  style={{ fontSize: "1.3rem" }}
+                  onClick = {this.handleSearch}
                 >
                   Search
                 </button>
