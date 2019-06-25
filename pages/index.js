@@ -2,6 +2,9 @@ import React from "react";
 import Link from "next/link";
 import Head from "../components/head";
 import Layout from "../components/layout";
+import CompleteOrders from "../components/CompleteOrder";
+import "../styles/pages/index.scss";
+import Price from "../components/Price";
 
 class Home extends React.Component {
   constructor(props) {
@@ -38,7 +41,7 @@ class Home extends React.Component {
     let orders;
 
     if (completeTab) {
-      orders = <div>Completed Orders.</div>;
+      orders = <CompleteOrders />;
     } else {
       orders = <div>No Incomplete Orders Found.</div>;
     }
@@ -49,66 +52,74 @@ class Home extends React.Component {
         <Layout />
 
         {/* Search User */}
-        <div className="container mt-5">
-          <div className="row">
-            <div className="col-md-12 col-12">
-              <div className="border-card br-20 bg-light-grey mb-5">
-                <h5 className="mb-3">Find User</h5>
-                <div style={{ display: "flex" }}>
-                  <input
-                    name="email"
-                    required
-                    id="email"
-                    type="email"
-                    className="input-text mb-2"
-                    placeholder="Enter email"
-                    onChange={this.handleChange}
-                  />
-                  <button id="search" className="button-solid ml-4 mb-1">
-                    Search
-                  </button>
-                </div>
+        <div className={"container mt-5"}>
+          <div className={"row"}>
+            <div className={"col-md-12 col-12"}>
+              <div style={{ display: "flex" }}>
+                <input
+                  name="email"
+                  required
+                  id="email"
+                  type="email"
+                  className={"input-text mb-2"}
+                  placeholder="Enter email"
+                  onChange={this.handleChange}
+                />
+                <button
+                  id="search"
+                  className={"button-solid ml-4 mb-2 pl-5 pr-5"}
+                >
+                  Search
+                </button>
               </div>
             </div>
           </div>
         </div>
         {/* Form 2  */}
-        <div className="container">
-          <div className="row">
-            <div className="col-md-12 col-12">
-              <div className="border-card br-20 bg-light-grey mb-5">
+        <div className={"container mt-5"}>
+          <div className={"row"}>
+            <div className={"col-md-12 col-12"}>
+              <div className={"border-card br-20 bg-light-grey mb-5"}>
                 <h5>User Details</h5>
                 <div style={{ alignItems: "center" }}>
-                  <p className="red">Username : Tathagat2006</p>
-
-                  <p>Name : Tathagat Thapliyal</p>
-
-                  <p>Email : tathagat.thapliyal@gmail.com</p>
-
-                  <p>Mobile : +91-7503681329</p>
-
-                  <p>Wallet Amount : ₹ 2320</p>
-
-                  <div>
-                    <button className="button-solid">Make New Payment</button>
+                  <div className={"container"}>
+                    <div className={"row"}>
+                      <div className={"col-md-12 p-4 username"}>
+                        Ananay Arora (@ananay)
+                      </div>
+                    </div>
+                    <div className={"row"}>
+                      <div className={"col-md-5 mt-1 p-4 userinfo"}>
+                        <i className={"fa fa-phone-square fa-2x icon_middle red"} />
+                        <span className={"info"}>+919560043231</span>
+                      </div>
+                      <div className='col-md-2 p-4 red'>
+                        <Price amount={1670} />
+                      </div>
+                      <div className={"col-md-5 mt-1 p-4 userinfo"}>
+                        <i className={"fa fa-envelope fa-2x icon_middle red"} />
+                        <span className={"info"}>i@ananayarora.com</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div className={"col-md-12 mt-5"} align="center">
+                      <button className={"button-solid p-4 h6"}>
+                        Make New Payment
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Order history card */}
-        <div className="container">
-          <div className="row">
-            <div className="col-md-12 col-12">
-              <div className="border-card br-20 bg-light-grey mb-5">
-                <div className="tab-nav-underline mb-5">
+            <div className={"col-md-12 col-12"}>
+              <div className={"border-card br-20 bg-light-grey mb-5"}>
+                <div className={"tab-nav-underline mb-5"}>
                   <div
                     className={this.state.completeTab ? "tab active" : "tab"}
                     onClick={this.toggleCompleteTab}
                   >
-                    Completed Orders
+                    Complete Orders
                   </div>
                   <div
                     className={this.state.incompleteTab ? "tab active" : "tab"}
@@ -118,9 +129,13 @@ class Home extends React.Component {
                   </div>
                 </div>
                 {orders}
+                {orders}
+                {orders}
               </div>
             </div>
           </div>
+
+          {/* Order history card */}
         </div>
       </div>
     );

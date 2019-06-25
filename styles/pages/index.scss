@@ -1,0 +1,16 @@
+.username {
+    font-size: 18pt;
+    text-align: center;
+}
+
+.userinfo {
+    text-align: center;
+    font-size: 13pt;
+    .icon_middle {
+        vertical-align: middle;
+    }
+    .info {
+        margin-left: 20px;
+        font-weight: bold;
+    }
+}
