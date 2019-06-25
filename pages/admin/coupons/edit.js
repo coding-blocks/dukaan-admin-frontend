@@ -5,7 +5,6 @@ import controller from '../../../controllers/admin/coupons';
 import "../../../styles/pages/admin/coupons.scss";
 
 class EditCoupon extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -29,7 +28,7 @@ class EditCoupon extends React.Component {
   componentWillMount() {
     this.setState({
       queryParams: this.props.coupon,
-      couponInfo: this.props.coupon
+      couponInfo: this.props.coupon || {}
     });
   }
 
