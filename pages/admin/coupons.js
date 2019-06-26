@@ -15,22 +15,25 @@ class Coupons extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      queryParams: {
+    /*
+    queryParams: {
         code: "",
         category: "referral",
-        product: "",
+        products: [],
         mode: "flat",
         amount: "",
         active: "true",
-        listed: "no",
-        resultsperpage: 10
-      },
+        listed: "no"
+      }
+    */
+    this.state = {
+      queryParams: {},
       results: [],
-      pagesInfo: {
+      pageInfoQuery: {
         page: 1,
         limit: 10
       },
+      pagesInfo: {},
       loading: false
     };
     this.ReactSwal = withReactContent(Swal);
@@ -76,14 +79,13 @@ class Coupons extends React.Component {
     this.setState({
       loading: true
     });
-    controller.handleGetCoupons(this.state.queryParams, this.state.pagesInfo).then((response) => {
+    controller.handleGetCoupons(this.state.queryParams, this.state.pageInfoQuery).then((response) => {
       this.setState({
         loading: false,
         results: response.results,
         pagesInfo: response.pagesInfo
       });
       console.log(this.state.pagesInfo);
-      // console.log("results.length", response.results.length);
     }).catch(() => {
       this.setState({
         loading: false
@@ -224,7 +226,6 @@ class Coupons extends React.Component {
                 <select
                   id="product"
                   name="product"
-                  onChange={this.handleQueryParamChange}
                 >
                   <option value="">All Products</option>
                 </select>
@@ -294,7 +295,6 @@ class Coupons extends React.Component {
                 <select
                   id="listed"
                   name="listed"
-                  onChange={this.handleQueryParamChange}
                 >
                   <option value="no">No</option>
                   <option value="yes">Yes</option>

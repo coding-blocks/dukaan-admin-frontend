@@ -1,4 +1,5 @@
 import axios from 'axios';
+const querystring = require('querystring');
 
 // Set axios defaults
 axios.defaults.baseURL = 'http://localhost:2929';
@@ -34,9 +35,11 @@ const handleGetCoupons = (queryParams, pageInfo) => {
   //     offset: meta.offset
   //   }
   // }
-
+  console.log(queryParams);
+  let query = querystring.stringify(queryParams);
+  console.log(query);
   let response = new Promise((resolve, reject) => {
-    axios.get(`/api/v2/admin/coupons?page=`+pageInfo.page+`&limit=`+pageInfo.limit).then((r) => {
+    axios.get(`/api/v2/admin/coupons?page=`+pageInfo.page+`&limit=`+pageInfo.limit+`&`+query).then((r) => {
       let data = {
         results: r.data.coupons,
         pagesInfo: r.data.pagesInfo
