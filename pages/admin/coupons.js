@@ -82,7 +82,7 @@ class Coupons extends React.Component {
         results: response.results,
         pagesInfo: response.pagesInfo
       });
-      console.log(response.results);
+      console.log(this.state.pagesInfo);
       // console.log("results.length", response.results.length);
     }).catch(() => {
       this.setState({
@@ -397,8 +397,7 @@ class Coupons extends React.Component {
                 </div>
                 <div className={"col-md-12 pt-4"}>
                   <Pagination 
-                    page={this.state.pagesInfo.page}
-                    limit={this.state.pagesInfo.limit}
+                    pagesInfo={this.state.pagesInfo}
                     changePageCallback={this.handleChangePage}
                   />
                 </div>
