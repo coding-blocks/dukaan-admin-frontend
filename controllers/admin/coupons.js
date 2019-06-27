@@ -11,33 +11,8 @@ axios.defaults.headers['dukaan-token'] = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e
  * @return {Promise<Array>} response - Promise with the response
  */
 const handleGetCoupons = (queryParams, pageInfo) => {
-  
-  // // Generate mock coupons
-  // let mockData = []
-  // for (let i = meta.offset; i < meta.offset + queryParams.resultsperpage; i++) {
-  //   let mockCoupon = {
-  //     id: i + 10,
-  //     code: "ANANAY" + i,
-  //     category: 'referral',
-  //     cashback: Math.floor(Math.random() * 10000),
-  //     mode: 'Flat',
-  //     amount: Math.floor(Math.random() * 10000),
-  //     left: Math.floor(Math.random() * 500),
-  //     products: 'CB',
-  //     active: 'true'
-  //   };
-  //   mockData.push(mockCoupon);
-  // }
-  // let mockResponse = {
-  //   results: mockData,
-  //   meta: {
-  //     count: 100,
-  //     offset: meta.offset
-  //   }
-  // }
-  console.log(queryParams);
+
   let query = querystring.stringify(queryParams);
-  console.log(query);
   let response = new Promise((resolve, reject) => {
     axios.get(`/api/v2/admin/coupons?page=`+pageInfo.page+`&limit=`+pageInfo.limit+`&`+query).then((r) => {
       let data = {
@@ -103,11 +78,10 @@ const handleGetCouponFromID = (id) => {
  * @return {Promise<string>} response – Server response
  */
 const handleAddCoupon = (queryParams) => {
-  // Prepare mock response
   let response = new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve(true);
-    }, 1000);
+    axios.post(`/api/v2/admin/coupons`, queryParams).then((r) => {
+      
+    });
   });
   return response;
 }

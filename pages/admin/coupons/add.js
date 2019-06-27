@@ -7,6 +7,7 @@ import FieldWithElement from '../../../components/FieldWithElement';
 import controller from '../../../controllers/admin/coupons';
 import "../../../styles/pages/admin/coupons.scss";
 import Swal from 'sweetalert2';
+import ProductsChooser from "../../../components/ProductsChooser";
 
 class AddCoupon extends React.Component {
 
@@ -15,14 +16,19 @@ class AddCoupon extends React.Component {
     this.state = {
       loading: false,
       queryParams: {
+        authority_doc: "Coding Blocks",
         code: "",
-        category: 'referral',
-        cashback: "",
-        mode: 'Flat',
-        amount: "",
-        left: "",
-        products: 'CB',
-        active: 'true'
+        products: [],
+        referrer_cashback: 0,
+        allProducts: false,
+        type: "",
+        mode: "flat",
+        percentage: "",
+        amount: 0,
+        left: 0,
+        category: "referral",
+        active: true,
+        referrer: 60
       },
     };
   }
@@ -46,6 +52,18 @@ class AddCoupon extends React.Component {
       queryParams: newQueryParams
     }));
   };
+
+  /**
+   * Callback function for ProductsChooser component that updates
+   * them in the state when ProductsChooser returns an array of 
+   * products added
+   * @param {array} products – Array of with the names of products
+   */
+  handleProductsChange = (products) => {
+    this.setState({
+      products
+    })
+  }
 
   /**
    * Method to handle saving of coupon
@@ -133,9 +151,16 @@ class AddCoupon extends React.Component {
                       type="text"
                       className="input-text"
                       placeholder="Enter Referrer Cashback"
-                      name="cashback"
+                      name="referrer_cashback"
                       onChange={this.handleQueryParamChange}
                       required
+                    />
+                  </FieldWithElement>
+
+                  {/* Products */}
+                  <FieldWithElement name={"Products"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    <ProductsChooser 
+                      productsCallback={this.handleProductsChange}
                     />
                   </FieldWithElement>
 
@@ -152,17 +177,37 @@ class AddCoupon extends React.Component {
                     </select>
                   </FieldWithElement>
 
-                  {/* Amount */}
-                  <FieldWithElement name={"Amount"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                    <input
-                      type="text"
-                      className={"input-text"}
-                      placeholder="Enter Amount"
-                      name="amount"
-                      onChange={this.handleQueryParamChange}
-                      required
-                    />
-                  </FieldWithElement>
+                  {this.state.queryParams.mode == "flat" && 
+                    /* Amount */
+                    <FieldWithElement 
+                      name={"Amount"} 
+                      nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <input
+                        type="text"
+                        className={"input-text"}
+                        placeholder="Enter Amount"
+                        name="amount"
+                        onChange={this.handleQueryParamChange}
+                        required
+                      />
+                    </FieldWithElement>
+                  }
+
+                  {this.state.queryParams.mode == "percentage" && 
+                    /* Percentage */
+                    <FieldWithElement 
+                      name={"Percentage"} 
+                      nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <input
+                        type="text"
+                        className={"input-text"}
+                        placeholder="Enter Percentage"
+                        name="percentage"
+                        onChange={this.handleQueryParamChange}
+                        required
+                      />
+                    </FieldWithElement>
+                  }
 
                   {/* Left */}
                   <FieldWithElement name={"Left"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
@@ -171,18 +216,6 @@ class AddCoupon extends React.Component {
                       className={"input-text"}
                       placeholder="Enter Left"
                       name="left"
-                      onChange={this.handleQueryParamChange}
-                      required
-                    />
-                  </FieldWithElement>
-
-                  {/* Products */}
-                  <FieldWithElement name={"Products"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                    <input
-                      type="text"
-                      className={"input-text"}
-                      placeholder="Enter Products"
-                      name="products"
                       onChange={this.handleQueryParamChange}
                       required
                     />
