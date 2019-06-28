@@ -3,6 +3,7 @@ import Loader from '../../../components/loader';
 import FieldWithElement from '../../../components/FieldWithElement';
 import controller from '../../../controllers/admin/coupons';
 import "../../../styles/pages/admin/coupons.scss";
+import ProductsChooser from '../../../components/ProductsChooser';
 
 class EditCoupon extends React.Component {
   constructor(props) {
@@ -10,17 +11,7 @@ class EditCoupon extends React.Component {
     this.state = {
       loading: false,
       queryParams: props.coupon,
-      couponInfo: {
-        id: 0,
-        code: "",
-        category: 'referral',
-        cashback: 0,
-        mode: 'Flat',
-        amount: 0,
-        left: 0,
-        products: '',
-        active: true
-      },
+      couponInfo: props.coupon,
       errorMessage: ''
     };
   }
@@ -136,8 +127,8 @@ class EditCoupon extends React.Component {
                       type="text" 
                       className="input-text" 
                       placeholder="Enter Referrer Cashback" 
-                      name="cashback"
-                      defaultValue={this.state.couponInfo.cashback}
+                      name="referrer_cashback"
+                      defaultValue={this.state.couponInfo.referrer_cashback}
                       onChange={this.handleQueryParamChange}
                       required
                     />
@@ -185,14 +176,9 @@ class EditCoupon extends React.Component {
 
                   {/* Products */}
                   <FieldWithElement name={"Products"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                    <input 
-                      type="text" 
-                      className="input-text" 
-                      placeholder="Enter Products"
-                      name="products"
-                      defaultValue={this.state.couponInfo.products}
-                      onChange={this.handleQueryParamChange}
-                      required
+                    <ProductsChooser
+                      products={this.state.couponInfo.products}
+                      multiple={true}
                     />
                   </FieldWithElement>
 

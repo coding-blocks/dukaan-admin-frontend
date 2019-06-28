@@ -15,17 +15,6 @@ class Coupons extends React.Component {
 
   constructor(props) {
     super(props);
-    /*
-    queryParams: {
-        code: "",
-        category: "referral",
-        products: [],
-        mode: "flat",
-        amount: "",
-        active: "true",
-        listed: "no"
-      }
-    */
     this.state = {
       queryParams: {},
       results: [],

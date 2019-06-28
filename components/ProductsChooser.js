@@ -1,4 +1,6 @@
 import React from 'react';
+import axios from 'axios';
+import "../controllers/config";
 import "../styles/components/ProductsChooser.scss";
 
 class ProductsChooser extends React.Component {
@@ -14,8 +16,24 @@ class ProductsChooser extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      products: [""]
+      products: props.products || [""],
+      productsList: [
+        {
+          id: 0,
+          name: "Fetching..."
+        }
+      ],
+      singleProductID: ''
     };
+  }
+
+  componentDidMount() {
+    // Fetch all products
+    axios.get('/api/products').then((results) => {
+      this.setState({
+        productsList: results.data.products
+      });
+    });
   }
 
   /**
@@ -61,44 +79,84 @@ class ProductsChooser extends React.Component {
     let productsArray = products.map((key,value) => {
       return key;
     });
-    this.props.handleProductsChange(productsArray);
+    this.props.productsCallback(productsArray);
+  }
+
+  setSingleProductID = (e) => {
+    this.setState({
+      singleProductID: e.target.value
+    });
+    this.props.productsCallback(e.target.value);
   }
 
   render() {
+    let productsListTags = this.state.productsList.map((p) => {
+        return <option value={p.id}>{p.name}</option>
+      }
+    )
     return (
       <div>
         <div id="products_list">
           {
+            !this.props.multiple &&
+            <select
+              className={"productInput input-text mt-2 col-12"} 
+              placeholder={"Choose Product"}
+              type={"text"}
+              onChange={this.setSingleProductID}
+              required
+            >
+              <option value="">Choose a product</option>
+              {productsListTags}
+            </select>
+          }
+          {
+            this.props.multiple &&
             this.state.products.map((key, index) => {
               return (
                 <div 
                   className={"d-flex"}
                   key={`product-`+index}
                 >
-                  <input 
+                  <select
                     className={"productInput input-text mt-2 col-10"} 
                     placeholder={"Choose Product"} 
                     product-index={index}
                     type={"text"}
                     onChange={this.setProductName}
                     required
-                  />
-                  <i 
-                    className={"fa fa-times align-middle mt-3 d-flex align-items-center justify-content-center ml-4 remove-button red"}
-                    product-index={index}
-                    onClick={this.removeProduct}
-                  />
+                  >
+                    <option value="">Choose a product</option>
+                    {productsListTags}
+                  </select>
+                  {this.state.products.length > 1 &&
+                    <i 
+                      className={"fa fa-times align-middle mt-3 d-flex align-items-center justify-content-center ml-4 remove-button red"}
+                      product-index={index}
+                      onClick={this.removeProduct}
+                    />
+                  }
+                  {
+                    this.state.products.length == 1 &&
+                    <i 
+                      className={"fa fa-times align-middle mt-3 d-flex align-items-center justify-content-center ml-4 remove-button red disabled"}
+                      product-index={index}
+                    />
+                  }
                 </div>
               )
             })
           }
         </div>
-        <button 
-          className={"button-solid mt-3"}
-          onClick={this.addProduct}
-        >
-          Add More Products
-        </button>
+        {
+          this.props.multiple &&
+          <button 
+            className={"button-solid mt-3"}
+            onClick={this.addProduct}
+          >
+            Add More Products
+          </button>
+        }
       </div>
 
     )

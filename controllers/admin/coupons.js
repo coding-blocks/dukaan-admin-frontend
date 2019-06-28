@@ -1,9 +1,6 @@
 import axios from 'axios';
+import "../config";
 const querystring = require('querystring');
-
-// Set axios defaults
-axios.defaults.baseURL = 'http://localhost:2929';
-axios.defaults.headers['dukaan-token'] = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImNsaWVudE5hbWUiOiJvbmxpbmVDYiIsIm9uZWF1dGhJZCI6MTQ1OSwicHJvZHVjdElkIjoxNTYsInF1YW50aXR5IjoxfSwiaWF0IjoxNTYwMjQwNzkwfQ.x6pSdQA2bQndnnMoxSgwn6GdKiPmm82E8AE2BPIPRRQ";
 
 /**
  * Fetches the coupons from the server
@@ -81,7 +78,9 @@ const handleGetCouponFromID = (id) => {
 const handleAddCoupon = (queryParams) => {
   let response = new Promise((resolve, reject) => {
     axios.post(`/api/v2/admin/coupons`, queryParams).then((r) => {
-      
+      resolve(r);
+    }).catch((error) => {
+      reject(error);
     });
   });
   return response;
