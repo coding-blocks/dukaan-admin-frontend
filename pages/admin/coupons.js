@@ -29,6 +29,7 @@ class Coupons extends React.Component {
     this.state = {
       queryParams: {},
       results: [],
+      products: [],
       pageInfoQuery: {
         page: 1,
         limit: 10
@@ -63,13 +64,13 @@ class Coupons extends React.Component {
    * Callback for page change
    * @param {int} offset
    */
-  handleChangePage = (offset) => {
-    // let results_meta = this.state.results_meta;
-    // results_meta.offset = offset;
-    // this.setState({
-    //   results_meta: results_meta
-    // });
-    // this.handleCouponSearch();
+  handleChangePage = (page) => {
+    let pageInfoQuery = this.state.pageInfoQuery;
+    pageInfoQuery['page'] = page;
+    this.setState({
+      pageInfoQuery
+    });
+    this.handleCouponSearch();
   }
 
   /**
@@ -78,14 +79,14 @@ class Coupons extends React.Component {
   handleCouponSearch = () => {
     this.setState({
       loading: true
-    });
+    })
     controller.handleGetCoupons(this.state.queryParams, this.state.pageInfoQuery).then((response) => {
       this.setState({
         loading: false,
         results: response.results,
+        products: response.products,
         pagesInfo: response.pagesInfo
       });
-      console.log(this.state.pagesInfo);
     }).catch(() => {
       this.setState({
         loading: false
@@ -168,8 +169,8 @@ class Coupons extends React.Component {
       <div>
         <Head title="Coding Blocks | Dukaan | Coupons" />
         <Layout />
-        <div className={"d-flex mr-5 pr-5"}>
-          <div className={"d-flex align-items-center col-md-4 mt-2 ml-5"}>
+        <div className={"d-flex align-items-center mr-5 pr-5"}>
+          <div className={"d-flex col-4 mt-2 ml-5"}>
             <div className={"border-card coupon-card mt-2"}>
               {/* Title */}
               <div className={"d-flex justify-content-center mt-1 pb-3"}>
@@ -316,10 +317,10 @@ class Coupons extends React.Component {
                   name="limit"
                   defaultValue={10}
                   onChange={(event) => { 
-                    let pagesInfo = this.state.pagesInfo;
-                    pagesInfo['limit'] = event.target.value;
+                    let pageInfoQuery = this.state.pageInfoQuery;
+                    pageInfoQuery['limit'] = event.target.value;
                     this.setState({
-                      pagesInfo
+                      pageInfoQuery
                     });
                   }}
                 />
@@ -338,7 +339,7 @@ class Coupons extends React.Component {
           </div>
 
           {!this.state.loading && this.state.results.length > 0 &&
-            <div className={"d-flex ml-4 mt-3 col-md-8"}>
+            <div className={"d-flex ml-3 mt-3 col-md-8"}>
               <div className={"border-card"}>
                 {/* Title */}
                 <div className={"d-flex justify-content-center mt-1"}>
@@ -365,10 +366,35 @@ class Coupons extends React.Component {
                       {this.state.results.map(coupon => (
                           <tr key={coupon.id}>
                             <td>{coupon.code}</td>
-                            <td>{coupon.category}</td>
+                            <td>
+                            {coupon.category == "referral" && 
+                              "Referral"
+                            }
+                            {coupon.category == "campus_ambassador" && 
+                              "Campus Ambassador"
+                            }
+                            {coupon.category == "campaign" && 
+                              "Campaign"
+                            }
+                            {coupon.category == "special_discount" && 
+                              "Special Discount"
+                            }
+                            </td>
                             <td>{coupon.referrer_cashback}</td>
-                            <td>{coupon.mode}</td>
-                            <td>{coupon.amount}</td>
+                            <td>
+                              {coupon.mode == "flat" &&
+                                "Flat"
+                              }
+                              {coupon.mode == "percentage" &&
+                                "Percentage"
+                              }
+                            </td>
+                            {(coupon.mode == "flat") && 
+                              <td>{coupon.amount/100}</td>
+                            }
+                            {coupon.mode == "percentage" && 
+                              <td>{coupon.percentage}%</td>
+                            }
                             <td>{coupon.left}</td>
                             <td>{coupon.products.length}</td>
                             <td>
@@ -405,7 +431,7 @@ class Coupons extends React.Component {
             </div>
           }
           {this.state.loading &&
-            <div className={"border-card mt-3"}>
+            <div className={"border-card mt-3 loading-container"}>
               <Loader />
             </div>
           }

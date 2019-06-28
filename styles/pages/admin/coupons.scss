@@ -2,6 +2,7 @@
 
 .coupon-card {
   width: 600px;
+  height: 100%;
 }
 
 #search {
@@ -11,9 +12,13 @@
 .coupons-results {
   padding-bottom: 0px;
   margin-bottom: 0px;
-  height: 580px;
   margin-top: 20px;
   overflow: scroll;
+  height: 650px;
+}
+
+.loading-container {
+  height: 845px;
 }
 
 .coupons-results-table {

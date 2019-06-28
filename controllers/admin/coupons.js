@@ -17,6 +17,7 @@ const handleGetCoupons = (queryParams, pageInfo) => {
     axios.get(`/api/v2/admin/coupons?page=`+pageInfo.page+`&limit=`+pageInfo.limit+`&`+query).then((r) => {
       let data = {
         results: r.data.coupons,
+        products: r.data.products,
         pagesInfo: r.data.pagesInfo
       }
       resolve(data);
