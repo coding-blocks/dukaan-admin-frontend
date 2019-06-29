@@ -33,7 +33,7 @@ const handleGetCoupons = (queryParams, pageInfo) => {
  * @return {Promise<string>} response – Returns if the request was
  *  successful or not
  */
-const handleSaveCoupon = (queryParams) => {
+const handleEditCoupon = (queryParams) => {
   // Prepare mock response
   let response = new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -102,7 +102,7 @@ const handleDeleteCoupon = (id) => {
 
 module.exports = {
   handleGetCoupons,
-  handleSaveCoupon,
+  handleEditCoupon,
   handleGetCouponFromID,
   handleAddCoupon,
   handleDeleteCoupon

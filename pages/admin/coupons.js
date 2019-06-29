@@ -21,7 +21,7 @@ class Coupons extends React.Component {
       products: [],
       pageInfoQuery: {
         page: 1,
-        limit: 10
+        limit: 5
       },
       pagesInfo: {},
       loading: false
@@ -160,7 +160,7 @@ class Coupons extends React.Component {
         <Layout />
         <div className={"d-flex align-items-center mr-5 pr-5"}>
           <div className={"d-flex col-4 mt-2 ml-5"}>
-            <div className={"border-card coupon-card mt-2"}>
+            <div className={"border-card coupon-card"}>
               {/* Title */}
               <div className={"d-flex justify-content-center mt-1 pb-3"}>
                 <h2 className={"title"}>
@@ -170,12 +170,11 @@ class Coupons extends React.Component {
 
               {/* Code */}
               <FieldWithElement
-
                 nameCols={3}
                 elementCols={9}
                 name={"Code"}>
 
-              <input
+                <input
                   type="text"
                   className={"input-text"}
                   placeholder="Enter Code"
@@ -304,7 +303,7 @@ class Coupons extends React.Component {
                   className={"input-text"}
                   placeholder="Enter Results Per Page..."
                   name="limit"
-                  defaultValue={10}
+                  defaultValue={5}
                   onChange={(event) => { 
                     let pageInfoQuery = this.state.pageInfoQuery;
                     pageInfoQuery['limit'] = event.target.value;

@@ -1,4 +1,5 @@
 import React from 'react';
+import Select from 'react-select';
 import axios from 'axios';
 import "../controllers/config";
 import "../styles/components/ProductsChooser.scss";
@@ -41,7 +42,7 @@ class ProductsChooser extends React.Component {
    * input field shows up.
    * @param {SyntheticEvent} e – event triggered by onClick
    */
-  addProduct = (e) => {
+  addProduct = (e, index) => {
     e.preventDefault();
     this.setState({
       products: this.state.products.concat("")
@@ -68,11 +69,12 @@ class ProductsChooser extends React.Component {
    * function passed via the props to update it to the state of the
    * component where it is imported.
    * @param {SyntheticEvent} e – event triggered by onChange
+   * @param {int} index – the index of the list of all select objects;
+   *  the first select box is going to be index 0 (etc.)
    */
-  setProductName = (e) => {
-    let index = e.target.getAttribute("product-index");
+  setProductName = (e, index) => {
     let products = this.state.products;
-    products[index] = e.target.value;
+    products[index] = e.value.toString();
     this.setState({
       products
     });
@@ -91,7 +93,7 @@ class ProductsChooser extends React.Component {
 
   render() {
     let productsListTags = this.state.productsList.map((p) => {
-        return <option value={p.id}>{p.name}</option>
+        return {"value": p.id, "label": p.name}
       }
     )
     return (
@@ -118,17 +120,17 @@ class ProductsChooser extends React.Component {
                   className={"d-flex"}
                   key={`product-`+index}
                 >
-                  <select
-                    className={"productInput input-text mt-2 col-10"} 
-                    placeholder={"Choose Product"} 
+                  <Select
+                    className={"productInput mt-2 col-10"}
                     product-index={index}
                     type={"text"}
-                    onChange={this.setProductName}
+                    placeholder={"Choose a product"}
+                    defaultValue={{value: key.id, label: key.name}}
+                    onChange={(e) => {this.setProductName(e, index)}}
+                    options={productsListTags}
                     required
                   >
-                    <option value="">Choose a product</option>
-                    {productsListTags}
-                  </select>
+                  </Select>
                   {this.state.products.length > 1 &&
                     <i 
                       className={"fa fa-times align-middle mt-3 d-flex align-items-center justify-content-center ml-4 remove-button red"}

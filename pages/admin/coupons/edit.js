@@ -18,9 +18,24 @@ class EditCoupon extends React.Component {
 
   componentWillMount() {
     this.setState({
-      queryParams: this.props.coupon,
+      queryParams: this.props.coupon || {},
       couponInfo: this.props.coupon || {}
     });
+    console.log(this.props.coupon);
+  }
+
+  /**
+   * Callback function for ProductsChooser component that updates
+   * them in the state when ProductsChooser returns an array of 
+   * products added
+   * @param {array} products – Array of with the names of products
+   */
+  handleProductsChange = (products) => {
+    let queryParams = this.state.queryParams;
+    queryParams['products'] = products;
+    this.setState({
+      queryParams
+    })
   }
 
   /**
@@ -54,7 +69,7 @@ class EditCoupon extends React.Component {
         loading: true,
         errorMessage: ''
       });
-      controller.handleSaveCoupon(this.state.queryParams).then((response) => {
+      controller.handleEditCoupon(this.state.queryParams).then((response) => {
         if (response == true) {
           this.setState({
             loading: false,
@@ -178,6 +193,7 @@ class EditCoupon extends React.Component {
                   <FieldWithElement name={"Products"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                     <ProductsChooser
                       products={this.state.couponInfo.products}
+                      productsCallback={this.handleProductsChange}
                       multiple={true}
                     />
                   </FieldWithElement>
