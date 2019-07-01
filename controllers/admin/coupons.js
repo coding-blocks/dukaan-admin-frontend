@@ -35,11 +35,31 @@ const handleGetCoupons = (queryParams, pageInfo) => {
  */
 const handleEditCoupon = (queryParams) => {
   // Prepare mock response
-  let response = new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve(true);
-    }, 1000);
+  queryParams.categories = "1";
+  // queryParams.referrer_cashback = queryParams.referrer_cashback.toString();
+  // queryParams.total = queryParams.total.toString();
+  // queryParams.left = queryParams.left.toString();
+  // queryParams.amount = queryParams.amount.toString();
+  // queryParams.percentage = queryParams.percentage.toString();
+  // queryParams.active = queryParams.active.toString();
+  Object.keys(queryParams).forEach((key) => {
+    if (queryParams[key] == null) {
+      queryParams[key] = "";
+    }
+    if (typeof(queryParams[key]) == 'number' || typeof(queryParams[key]) == 'boolean') {
+      queryParams[key] = queryParams[key].toString();
+    }
   });
+  let response = new Promise((resolve, reject) => {
+    axios.patch(`/api/v2/admin/coupons/`+queryParams.id, queryParams).then((r) => {
+      resolve(r);
+    }).catch((error) => {
+      reject(error);
+    });
+  });
+  // let response = new Promise((resolve, reject) => {
+  //   resolve(true);
+  // });
   return response;
 };
 

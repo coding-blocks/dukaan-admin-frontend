@@ -12,12 +12,15 @@ class ProductsChooser extends React.Component {
    * @param {function} props.productsCallback – Method that is called when the
    *  state of the products array is updated. This supplies the products array back
    *  to the component where it has been used.
+   * @param {boolean} props.all – Changes if the dropdown should have an option to
+   *  show the "All Products" option
    */
 
   constructor(props) {
     super(props);
     this.state = {
       products: props.products || [""],
+      all: props.all || false,
       productsList: [
         {
           id: 0,
@@ -79,16 +82,32 @@ class ProductsChooser extends React.Component {
       products
     });
     let productsArray = products.map((key,value) => {
-      return key;
+      return key.toString();
     });
     this.props.productsCallback(productsArray);
   }
 
+  /**
+   * If props.multiple is not true, then this is
+   * called when the Select is changed
+   * @param {SyntheticEvent} e – event triggered by onChange
+   */
   setSingleProductID = (e) => {
     this.setState({
-      singleProductID: e.target.value
+      singleProductID: e.value
     });
-    this.props.productsCallback(e.target.value);
+    this.props.productsCallback(e.value);
+  }
+
+  /**
+   * Get product from list
+   */
+  findProductNameByID = (id) => {
+    return this.state.productsList.map((p) => {
+      if (p.id == id) {
+        return p.name;
+      }
+    });
   }
 
   render() {
@@ -96,24 +115,27 @@ class ProductsChooser extends React.Component {
         return {"value": p.id, "label": p.name}
       }
     )
+    if (this.state.all) {
+      productsListTags = [{"value": "", "label": "All Products"}, ...productsListTags];
+    }
     return (
       <div>
         <div id="products_list">
           {
             !this.props.multiple &&
-            <select
-              className={"productInput input-text mt-2 col-12"} 
+            <Select
+              className={"productInput mt-2 col-12"} 
               placeholder={"Choose Product"}
+              defaultValue={{value: "", label: "All Products"}}
               type={"text"}
               onChange={this.setSingleProductID}
               required
-            >
-              <option value="">Choose a product</option>
-              {productsListTags}
-            </select>
+              options={productsListTags}
+            />
           }
           {
             this.props.multiple &&
+            this.state.productsList.length > 2 &&
             this.state.products.map((key, index) => {
               return (
                 <div 
@@ -125,12 +147,11 @@ class ProductsChooser extends React.Component {
                     product-index={index}
                     type={"text"}
                     placeholder={"Choose a product"}
-                    defaultValue={{value: key.id, label: key.name}}
+                    defaultValue={{label: this.findProductNameByID(key), value: parseInt(key)}}
                     onChange={(e) => {this.setProductName(e, index)}}
                     options={productsListTags}
-                    required
-                  >
-                  </Select>
+                    required 
+                  />
                   {this.state.products.length > 1 &&
                     <i 
                       className={"fa fa-times align-middle mt-3 d-flex align-items-center justify-content-center ml-4 remove-button red"}

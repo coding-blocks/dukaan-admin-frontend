@@ -10,6 +10,7 @@ import withReactContent from 'sweetalert2-react-content';
 import EditCoupon from "./coupons/edit";
 import Pagination from "../../components/Pagination";
 import { randomBytes } from 'crypto';
+import ProductsChooser from '../../components/ProductsChooser';
 
 class Coupons extends React.Component {
 
@@ -153,6 +154,20 @@ class Coupons extends React.Component {
     });
   }
 
+  /**
+   * Callback function for ProductsChooser component that updates
+   * them in the state when ProductsChooser returns an array of 
+   * products added
+   * @param {int} productID – ID of the product
+   */
+  handleProductsChange = (productID) => {
+    let queryParams = this.state.queryParams;
+    queryParams['product'] = productID.toString();
+    this.setState({
+      queryParams
+    })
+  }
+
   render() {
     return (
       <div>
@@ -212,12 +227,11 @@ class Coupons extends React.Component {
                 elementCols={9}
                 elementClassName={"pl-4"}
               >
-                <select
-                  id="product"
-                  name="product"
-                >
-                  <option value="">All Products</option>
-                </select>
+                <ProductsChooser
+                  productsCallback={this.handleProductsChange}
+                  all={true}
+                  multiple={false}
+                />
               </FieldWithElement>
 
 

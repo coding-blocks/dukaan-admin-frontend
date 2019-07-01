@@ -70,7 +70,8 @@ class EditCoupon extends React.Component {
         errorMessage: ''
       });
       controller.handleEditCoupon(this.state.queryParams).then((response) => {
-        if (response == true) {
+        console.log("Response", response);
+        if (response) {
           this.setState({
             loading: false,
             errorMessage: ''
@@ -78,6 +79,7 @@ class EditCoupon extends React.Component {
           this.props.callback(this.state.queryParams);
         }
       }).catch((error) => {
+        console.log("Error", error);
         this.setState({
           loading: false,
           errorMessage: error
