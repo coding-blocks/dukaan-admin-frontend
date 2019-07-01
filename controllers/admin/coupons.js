@@ -34,20 +34,27 @@ const handleGetCoupons = (queryParams, pageInfo) => {
  *  successful or not
  */
 const handleEditCoupon = (queryParams) => {
-  // Prepare mock response
-  queryParams.categories = "1";
-  // queryParams.referrer_cashback = queryParams.referrer_cashback.toString();
-  // queryParams.total = queryParams.total.toString();
-  // queryParams.left = queryParams.left.toString();
-  // queryParams.amount = queryParams.amount.toString();
-  // queryParams.percentage = queryParams.percentage.toString();
-  // queryParams.active = queryParams.active.toString();
+
+  // Remove extra params from the request
+  delete queryParams.created_at;
+  delete queryParams.deleted_at;
+  delete queryParams.updated_at;
+  delete queryParams.valid_end;
+  delete queryParams.valid_start;
+
+  queryParams["categories"] = "1"
+
   Object.keys(queryParams).forEach((key) => {
     if (queryParams[key] == null) {
       queryParams[key] = "";
     }
     if (typeof(queryParams[key]) == 'number' || typeof(queryParams[key]) == 'boolean') {
       queryParams[key] = queryParams[key].toString();
+    }
+    if (typeof(queryParams[key]) == 'array') {
+      queryParams[key] = queryParams[key].map((p) => {
+        return p.toString();
+      });
     }
   });
   let response = new Promise((resolve, reject) => {
@@ -57,9 +64,6 @@ const handleEditCoupon = (queryParams) => {
       reject(error);
     });
   });
-  // let response = new Promise((resolve, reject) => {
-  //   resolve(true);
-  // });
   return response;
 };
 
@@ -69,25 +73,28 @@ const handleEditCoupon = (queryParams) => {
  * @return {Promise<object>} response – Coupon info object
  */
 const handleGetCouponFromID = (id) => {
-  // Mock coupon
-  let couponInfo = {
-    id,
-    code: "ANANAY",
-    category: 'referral',
-    cashback: Math.floor(Math.random() * 10000),
-    mode: 'Flat',
-    amount: Math.floor(Math.random() * 10000),
-    left: Math.floor(Math.random() * 500),
-    products: 'CB',
-    active: 'true'
-  }
-  // Prepare mock response
-  let response = new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve(couponInfo);
-    }, 1000);
-  });
-  return response;
+
+  /** TODO */
+
+  // // Mock coupon
+  // let couponInfo = {
+  //   id,
+  //   code: "ANANAY",
+  //   category: 'referral',
+  //   cashback: Math.floor(Math.random() * 10000),
+  //   mode: 'Flat',
+  //   amount: Math.floor(Math.random() * 10000),
+  //   left: Math.floor(Math.random() * 500),
+  //   products: 'CB',
+  //   active: 'true'
+  // }
+  // // Prepare mock response
+  // let response = new Promise((resolve, reject) => {
+  //   setTimeout(() => {
+  //     resolve(couponInfo);
+  //   }, 1000);
+  // });
+  // return response;
 }
 
 /**
@@ -111,11 +118,12 @@ const handleAddCoupon = (queryParams) => {
  * @param {int} id 
  */
 const handleDeleteCoupon = (id) => {
-  // Prepare mock response
   let response = new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve(true);
-    });
+    axios.delete(`/api/v2/admin/coupons/`+id).then((response) => {
+      resolve(response);
+    }).catch((error) => {
+      reject(error);
+    });  
   });
   return response;
 }

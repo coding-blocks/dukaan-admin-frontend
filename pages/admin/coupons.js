@@ -77,7 +77,12 @@ class Coupons extends React.Component {
         products: response.products,
         pagesInfo: response.pagesInfo
       });
-    }).catch(() => {
+    }).catch((error) => {
+      Swal.fire({
+        type: 'error',
+        title: 'Error while fetching coupons!',
+        text: error
+      });
       this.setState({
         loading: false
       });
@@ -118,7 +123,6 @@ class Coupons extends React.Component {
             confirmButtonText: "Okay"
           });
         }).catch((error) => {
-          console.log("PROMISE REJECT");
           Swal.fire({
             title: "Error while deleting coupon!",
             html: "Error: " + error,
@@ -392,7 +396,7 @@ class Coupons extends React.Component {
                               }
                             </td>
                             {(coupon.mode == "flat") && 
-                              <td>{coupon.amount/100}</td>
+                              <td>{coupon.amount}</td>
                             }
                             {coupon.mode == "percentage" && 
                               <td>{coupon.percentage}%</td>
