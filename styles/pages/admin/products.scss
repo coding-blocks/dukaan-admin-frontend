@@ -1,0 +1,107 @@
+@import "../global.scss";
+@import "./coupons.scss";
+
+.product-search-card {
+  height: 100%;
+  border: 2px solid #e9e9e9;
+  border-radius: 10px;
+}
+
+.product-name {
+  justify-content: left;
+  text-align: left !important;
+  padding: 10px;
+
+  .name {
+    position: relative;
+    top: 4px;
+    left: 10px;
+  }
+}
+
+.products-results-table {
+  margin-top: 15px;
+  border: 1px solid #e9e9e9;
+  td {
+    border: 1px solid #e9e9e9;
+  }
+}
+
+.product-card {
+  height: 100%;
+  position: relative;
+  top: 50px;
+  margin: 10px;
+  border: 2px solid #e9e9e9;
+  border-radius: 10px;
+  width: 31%;
+
+  img {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+
+  .name {
+    width: 100%;
+    padding: 10px;
+    font-size: 13pt;
+    text-align: center;
+  }
+
+  .description {
+    font-size: 12pt;
+    width: 100%;
+    padding: 10px;
+  }
+
+}
+
+
+.floating-button {
+  width: 60px;
+  height: 60px;
+  position: fixed;
+  bottom: 50px;
+  right: 100px;
+  border-radius: 100%;
+  box-shadow: 5px 5px 10px rgba(0,0,0,0.15);
+  transition: all 0.5s;
+  opacity: 0.8;
+  cursor: pointer;
+  &:hover {
+    opacity: 1;
+    box-shadow: 5px 5px 10px rgba(0,0,0,0.15);
+  }
+  .fa-search {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 14pt;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.product-image {
+  width: 80px;
+  height: 80px;
+  margin-top: 5px;
+  border-radius: 100%;
+  padding: 10px;
+  margin-left: 20px;
+}
+
+// .product-name {
+//   width: 150px;
+//   padding: 10px;
+// }
+
+// .product-description {
+//   width: 200px;
+// }
+
+// .products-results-table {
+//   td {
+//     border-top: 2px solid #e9e9e9;
+//     border-bottom: 2px solid #e9e9e9;
+//   }
+// }
