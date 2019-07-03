@@ -2,7 +2,6 @@ import React from "react";
 import FieldWithElement from "./FieldWithElement";
 import "../styles/pages/admin/coupons.scss";
 import axios from "axios";
-import { Checkbox } from "semantic-ui-react";
 
 class NewPayment extends React.Component {
   constructor(props) {
