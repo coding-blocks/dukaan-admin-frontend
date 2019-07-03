@@ -4,6 +4,8 @@ import Head from "../components/Head";
 import Layout from "../components/Layout";
 import CompleteOrders from "../components/CompleteOrder";
 import AddUser from "../components/AddUser";
+import NewPayment from "../components/NewPayment";
+// import "semantic-ui-css/semantic.min.css";
 // import axios from '../config'
 import axios from "axios";
 
@@ -15,9 +17,10 @@ class Home extends React.Component {
       completeTab: true,
       incompleteTab: false,
       userFound: false,
-      userInfo: {},
+      userInfo: null,
       courseInfo: null,
-      createUser: false
+      createUser: false,
+      newpayment: false
     };
   }
 
@@ -41,7 +44,23 @@ class Home extends React.Component {
     }));
   };
 
+  handleNewPayment = () => {
+    this.setState({
+      newpayment: true
+    });
+  };
+
   handleSearch = async () => {
+    this.setState({
+      email: "",
+      completeTab: true,
+      incompleteTab: false,
+      userFound: false,
+      userInfo: {},
+      courseInfo: null,
+      createUser: false,
+      newpayment: false
+    });
     let userData = await axios.get(
       `http://localhost:2929/api/v2/admin/users?email=${this.state.email}`,
       {
@@ -56,31 +75,32 @@ class Home extends React.Component {
     });
 
     console.log(userData.data[0]);
-
-    axios
-      .get(
-        `http://localhost:2929/api/v2/admin/purchases?user_id=${
-          this.state.userInfo.id
-        }`,
-        {
-          headers: {
-            "dukaan-token":
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImNsaWVudE5hbWUiOiJvbmxpbmVDYiIsIm9uZWF1dGhJZCI6MTQ1OSwicHJvZHVjdElkIjoxNTYsInF1YW50aXR5IjoxfSwiaWF0IjoxNTYwMjQwNzkwfQ.x6pSdQA2bQndnnMoxSgwn6GdKiPmm82E8AE2BPIPRRQ"
+    if (this.state.userInfo) {
+      axios
+        .get(
+          `http://localhost:2929/api/v2/admin/purchases?user_id=${
+            this.state.userInfo.id
+          }`,
+          {
+            headers: {
+              "dukaan-token":
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImNsaWVudE5hbWUiOiJvbmxpbmVDYiIsIm9uZWF1dGhJZCI6MTQ1OSwicHJvZHVjdElkIjoxNTYsInF1YW50aXR5IjoxfSwiaWF0IjoxNTYwMjQwNzkwfQ.x6pSdQA2bQndnnMoxSgwn6GdKiPmm82E8AE2BPIPRRQ"
+            }
           }
-        }
-      )
-      .then(res => {
-        console.log(res);
-        this.setState({
-          courseInfo: res.data
+        )
+        .then(res => {
+          console.log(res);
+          this.setState({
+            courseInfo: res.data
+          });
+        })
+        .catch(err => {
+          console.log(err);
+          this.setState({
+            courseInfo: null
+          });
         });
-      })
-      .catch(err => {
-        console.log(err);
-        this.setState({
-          courseInfo: null
-        });
-      });
+    }
 
     if (userData) {
       this.setState({
@@ -103,7 +123,12 @@ class Home extends React.Component {
     let orders;
     const completeTab = this.state.completeTab;
 
-    if (completeTab && this.state.userFound && this.state.courseInfo !== null) {
+    if (
+      completeTab &&
+      this.state.userFound &&
+      this.state.courseInfo !== null &&
+      !this.state.newpayment
+    ) {
       console.log(this.state.courseInfo);
       orders = this.state.courseInfo.completePayments.map(coursePurchased => {
         // console.log(coursePurchased);
@@ -117,6 +142,8 @@ class Home extends React.Component {
           />
         );
       });
+    } else if (this.state.newpayment) {
+      orders = <NewPayment />;
     } else if (completeTab) {
       orders = <div>No Complete Orders Found.</div>;
     } else {
@@ -124,7 +151,7 @@ class Home extends React.Component {
     }
 
     const Usercard = () => {
-      if (this.state.userFound) {
+      if (this.state.userFound && this.state.userInfo) {
         return (
           <div className=" mt-4">
             <div className="row w-100">
@@ -152,32 +179,43 @@ class Home extends React.Component {
                     <p>Wallet Amount : ₹ {this.state.userInfo.wallet_amount}</p>
 
                     <div>
-                      <button className="button-solid">Make New Payment</button>
+                      <button
+                        className="button-solid"
+                        onClick={this.handleNewPayment}
+                      >
+                        Make New Payment
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="col-md-8 col-12">
-                <div className="border-card br-20 bg-light-grey mb-5">
-                  <div className="tab-nav-underline mb-5">
-                    <div
-                      className={this.state.completeTab ? "tab active" : "tab"}
-                      onClick={this.toggleCompleteTab}
-                    >
-                      Complete Orders
+              {!this.state.newpayment ? (
+                <div className="col-md-8 col-12">
+                  <div className="border-card br-20 bg-light-grey mb-5">
+                    <div className="tab-nav-underline mb-5">
+                      <div
+                        className={
+                          this.state.completeTab ? "tab active" : "tab"
+                        }
+                        onClick={this.toggleCompleteTab}
+                      >
+                        Complete Orders
+                      </div>
+                      <div
+                        className={
+                          this.state.incompleteTab ? "tab active" : "tab"
+                        }
+                        onClick={this.toggleIncompleteTab}
+                      >
+                        Incomplete Orders
+                      </div>
                     </div>
-                    <div
-                      className={
-                        this.state.incompleteTab ? "tab active" : "tab"
-                      }
-                      onClick={this.toggleIncompleteTab}
-                    >
-                      Incomplete Orders
-                    </div>
+                    {orders}
                   </div>
-                  {orders}
                 </div>
-              </div>
+              ) : (
+                <NewPayment />
+              )}
             </div>
           </div>
         );
@@ -216,7 +254,7 @@ class Home extends React.Component {
         <Layout />
 
         {/* Search User */}
-        <div className="container mt-5">
+        <div className="container mt-4">
           <div className="row">
             <div className="col-md-12 col-12">
               <div style={{ display: "flex" }}>

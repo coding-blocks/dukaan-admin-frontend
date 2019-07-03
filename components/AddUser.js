@@ -7,19 +7,54 @@ class AddUser extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      colleges: [],
+      branches: [],
+      gradYear: [],
+      countries: [],
       formValues: {
-        username: "test1",
-        firstname: "test1",
-        lastname: "test1",
-        gender: "male",
-        dial_code: "+91",
-        mobile_number: "+91-2222222222",
-        collegeId: "1",
-        branchId: "1",
-        gradYear: "2020",
-        email: "e@e.com"
+        username: "",
+        firstname: "",
+        lastname: "",
+        gender: "",
+        dial_code: "",
+        collegeId: "",
+        branchId: "",
+        mobile_number: "",
+        email: ""
       }
     };
+  }
+
+  componentDidMount() {
+    Promise.all([
+      axios.get("http://localhost:2929/api/v2/admin/resources/demographics", {
+        headers: {
+          "dukaan-token":
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImNsaWVudE5hbWUiOiJvbmxpbmVDYiIsIm9uZWF1dGhJZCI6MTQ1OSwicHJvZHVjdElkIjoxNTYsInF1YW50aXR5IjoxfSwiaWF0IjoxNTYwMjQwNzkwfQ.x6pSdQA2bQndnnMoxSgwn6GdKiPmm82E8AE2BPIPRRQ"
+        }
+      }),
+      axios.get("http://localhost:2929/api/v2/admin/resources/countries", {
+        headers: {
+          "dukaan-token":
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImNsaWVudE5hbWUiOiJvbmxpbmVDYiIsIm9uZWF1dGhJZCI6MTQ1OSwicHJvZHVjdElkIjoxNTYsInF1YW50aXR5IjoxfSwiaWF0IjoxNTYwMjQwNzkwfQ.x6pSdQA2bQndnnMoxSgwn6GdKiPmm82E8AE2BPIPRRQ"
+        }
+      })
+    ]).then(([res1, res2]) => {
+      console.log(res2.data);
+      this.setState({
+        colleges: res1.data.colleges,
+        branches: res1.data.branches,
+        countries: res2.data
+      });
+    });
+
+    let gradYear = [];
+    for (let i = 2026; i >= 2000; i--) {
+      gradYear.push(i.toString());
+    }
+    this.setState({
+      gradYear
+    });
   }
 
   onChangeValue = e => {
@@ -65,7 +100,7 @@ class AddUser extends React.Component {
         <div className={"border-card coupon-card "}>
           {/* Title */}
           <div className={"d-flex justify-content-center mt-1 pb-3"}>
-            <h2 className={"title"}>Create User</h2>
+            <h2 className={"title red"}>Create User</h2>
           </div>
 
           {/* username */}
@@ -134,10 +169,14 @@ class AddUser extends React.Component {
               id="dial_code"
               name="dial_code"
               onChange={this.onChangeValue}
-              value={this.state.formValues.dial_code}
             >
-              <option value="">Select Code</option>
-              <option value="+91">+91</option>
+              {this.state.countries.map(country => {
+                return (
+                  <option value={country.dial_code}>
+                    {country.name} {`(${country.dial_code})`}
+                  </option>
+                );
+              })}
             </select>
           </FieldWithElement>
 
@@ -166,10 +205,9 @@ class AddUser extends React.Component {
               onChange={this.onChangeValue}
               value={this.state.formValues.collegeId}
             >
-              <option selected value="">
-                All Colleges
-              </option>
-              <option value="1">List of colleges</option>
+              {this.state.colleges.map(college => {
+                return <option value={college.id}>{college.name}</option>;
+              })}
             </select>
           </FieldWithElement>
 
@@ -186,10 +224,9 @@ class AddUser extends React.Component {
               onChange={this.onChangeValue}
               value={this.state.formValues.branchId}
             >
-              <option selected value="">
-                All Courses
-              </option>
-              <option value="1">List of courses</option>
+              {this.state.branches.map(branch => {
+                return <option value={branch.id}>{branch.name}</option>;
+              })}
             </select>
           </FieldWithElement>
 
@@ -204,12 +241,10 @@ class AddUser extends React.Component {
               id="grad_year"
               name="gradYear"
               onChange={this.onChangeValue}
-              value={this.state.formValues.gradYear}
             >
-              <option selected value="">
-                Select Graduation Year
-              </option>
-              <option value="2019">List Of Years</option>
+              {this.state.gradYear.map(year => {
+                return <option value={year}>{year}</option>;
+              })}
             </select>
           </FieldWithElement>
 
