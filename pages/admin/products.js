@@ -8,6 +8,7 @@ import withReactContent from 'sweetalert2-react-content';
 import controller from "../../controllers/admin/products.js";
 import Loader from '../../components/loader';
 import Pagination from "../../components/Pagination";
+import EditProduct from "./products/edit";
 
 class Products extends React.Component {
 
@@ -101,6 +102,29 @@ class Products extends React.Component {
     });
   }
 
+  /**
+   * Edit Product action handler.
+   * @param {object} coupon
+   */
+  handleEditProduct = (product) => {
+    this.ReactSwal.fire({
+      html: <EditProduct
+              product={product}
+              callback={(newProduct) => {
+                this.ReactSwal.close();
+                let products = this.state.results;
+                let productIndex = this.state.results.indexOf(product);
+                products[productIndex] = newProduct;
+                this.setState({
+                  results: products
+                });
+              }}
+            />,
+      customClass: "col-md-6",
+      showConfirmButton: false
+    });
+  }
+
   render() {
     return (
       <div>
@@ -190,7 +214,6 @@ class Products extends React.Component {
                         <th>Display Slug</th>
                         <th>Listed</th>
                         <th>Edit</th>
-                        <th>View</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -206,8 +229,13 @@ class Products extends React.Component {
                             <td>{p.list_price}</td>
                             <td>{p.display_slug}</td>
                             <td>{p.listed && "Yes"}{!p.listed && "No"}</td>
-                            <td>Edit</td>
-                            <td>View</td>
+                            <td>
+                              <button
+                                className={"button-solid btn btn-default"}
+                                onClick={() => {this.handleEditProduct(p)}}>
+                                Edit
+                              </button>
+                            </td>
                           </tr>
                         )
                       )}

@@ -90,18 +90,13 @@
   margin-left: 20px;
 }
 
-// .product-name {
-//   width: 150px;
-//   padding: 10px;
-// }
+#search {
+  cursor: pointer;
+}
 
-// .product-description {
-//   width: 200px;
-// }
-
-// .products-results-table {
-//   td {
-//     border-top: 2px solid #e9e9e9;
-//     border-bottom: 2px solid #e9e9e9;
-//   }
-// }
+.checkboxes {
+  padding: 30px;
+  input {
+    margin: 30px;
+  }
+}
