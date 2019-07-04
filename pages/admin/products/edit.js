@@ -29,7 +29,6 @@ class EditProduct extends React.Component {
       productInfo: props.product,
       errorMessage: ''
     };
-    console.log(props.product);
   }
 
   /**

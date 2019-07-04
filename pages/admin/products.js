@@ -22,8 +22,7 @@ class Products extends React.Component {
         limit: 5
       },
       pagesInfo: {},
-      loading: false,
-      searchHidden: false
+      loading: false
     };
     this.ReactSwal = withReactContent(Swal);
   }
@@ -62,27 +61,11 @@ class Products extends React.Component {
   }
 
   /**
-   * Toggles the visibility of search box
-   */
-  toggleSearch = () => {
-    if (this.state.searchHidden) {
-      this.setState({
-        searchHidden: false
-      });
-    } else {
-      this.setState({
-        searchHidden: true
-      });
-    }
-  }
-
-  /**
    * Product search action method
    */
   handleProductSearch = () => {
     this.setState({
-      loading: true,
-      searchHidden: true
+      loading: true
     })
     controller.handleGetProducts(this.state.queryParams, this.state.pageInfoQuery).then((response) => {
       this.setState({
@@ -130,73 +113,71 @@ class Products extends React.Component {
       <div>
         <Head title="Coding Blocks | Dukaan | Products" />
         <Layout />
-        <div className={"d-flex align-items-center mr-5 pr-5"}>
+        <div className={"mr-5 pr-5"}>
           {/* Product Search */}
-          {!this.state.searchHidden && 
-            <div className={"d-flex col-4 mt-5 ml-5"}>
-              <div className={"border-card product-search-card"}>
-                
-                {/* Title */}
-                <div className={"d-flex justify-content-center mt-1 pb-3"}>
-                  <h2 className={"title"}>
-                      Search Products
-                  </h2>
-                </div>
-
-                {/* Name */}
-                <FieldWithElement
-                  nameCols={3}
-                  elementCols={9}
-                  name={"Name"}
-                >
-                  <input
-                    type="text"
-                    className={"input-text"}
-                    placeholder="Enter Product Name"
-                    name={"name"}
-                    onChange={this.handleQueryParamChange}
-                  />
-                </FieldWithElement>
-
-                {/* Results per page */}
-                <FieldWithElement
-                  name={"Results per page"}
-                  nameCols={5}
-                  elementCols={7}
-                  elementClassName={"pl-4"}
-                >
-                  <input
-                    type="text"
-                    className={"input-text"}
-                    placeholder="Enter Results Per Page..."
-                    name="limit"
-                    defaultValue={5}
-                    onChange={(event) => { 
-                      let pageInfoQuery = this.state.pageInfoQuery;
-                      pageInfoQuery['limit'] = event.target.value;
-                      this.setState({
-                        pageInfoQuery
-                      });
-                    }}
-                  />
-                </FieldWithElement>
-                
-                <div className={"d-flex justify-content-center"}>
-                  <button
-                    id="search"
-                    className={"button-solid ml-4 mb-2 mt-4 pl-5 pr-5"}
-                    onClick={this.handleProductSearch}
-                  >
-                    Search
-                  </button>
-                </div>
-
+          <div className={"mt-5 ml-5 col-12"}>
+            <div className={"border-card"}>
+              
+              {/* Title */}
+              <div className={"d-flex justify-content-center mt-1 pb-3"}>
+                <h2 className={"title"}>
+                    Search Products
+                </h2>
               </div>
+
+              {/* Name */}
+              <FieldWithElement
+                nameCols={3}
+                elementCols={9}
+                name={"Name"}
+              >
+                <input
+                  type="text"
+                  className={"input-text"}
+                  placeholder="Enter Product Name"
+                  name={"name"}
+                  onChange={this.handleQueryParamChange}
+                />
+              </FieldWithElement>
+
+              {/* Results per page */}
+              <FieldWithElement
+                name={"Results per page"}
+                nameCols={5}
+                elementCols={7}
+                elementClassName={"pl-4"}
+              >
+                <input
+                  type="text"
+                  className={"input-text"}
+                  placeholder="Enter Results Per Page..."
+                  name="limit"
+                  defaultValue={5}
+                  onChange={(event) => { 
+                    let pageInfoQuery = this.state.pageInfoQuery;
+                    pageInfoQuery['limit'] = event.target.value;
+                    this.setState({
+                      pageInfoQuery
+                    });
+                  }}
+                />
+              </FieldWithElement>
+              
+              <div className={"d-flex justify-content-center"}>
+                <button
+                  id="search"
+                  className={"button-solid ml-4 mb-2 mt-4 pl-5 pr-5"}
+                  onClick={this.handleProductSearch}
+                >
+                  Search
+                </button>
+              </div>
+
             </div>
-          }
+          </div>
           {/* Product Results */}
           {!this.state.loading && this.state.results.length > 0 &&
-            <div className={`d-flex justify-content-center ml-5 mt-5 ${this.state.searchHidden ? 'col-md-12' : 'col-md-8'}`}>
+            <div className={`ml-5 mt-5 col-md-12`}>
               <div className={"border-card"}>
                 {/* Title */}
                 <div className={"d-flex justify-content-center mt-1"}>
@@ -267,13 +248,6 @@ class Products extends React.Component {
               <Loader />
             </div>
           }
-          {/* Floating */}
-          <div 
-            className={"floating-button button-solid"}
-            onClick={this.toggleSearch}
-          >
-            <i className={"fa fa-search"} />
-          </div>
         </div>
       </div>
     );
