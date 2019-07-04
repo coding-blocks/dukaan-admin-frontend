@@ -78,13 +78,14 @@ class EditProduct extends React.Component {
         errorMessage: ''
       });
       controller.handleEditProduct(this.state.productInfo.id, this.state.queryParams).then((response) => {
-        console.log("Response", response);
         if (response) {
           this.setState({
             loading: false,
             errorMessage: ''
           });
-          this.props.callback(this.state.queryParams);
+          let productInfo = this.state.queryParams;
+          productInfo.id = this.state.productInfo.id;
+          this.props.callback(productInfo);
         }
       }).catch((error) => {
         console.log("Error", error);
