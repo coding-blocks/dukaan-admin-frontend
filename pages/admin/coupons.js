@@ -355,7 +355,7 @@ class Coupons extends React.Component {
                 <div className={"c-overview-leaderboard coupons-results"}>
                   <table className={"table table-responsive coupons-results-table"}>
                     <thead>
-                      <tr>
+                      <tr className={"red"}>
                         <th>Code</th>
                         <th>Category</th>
                         <th>Referrer Cashback</th>
@@ -368,7 +368,7 @@ class Coupons extends React.Component {
                         <th>Delete</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className={`t-align-c`}>
                       {this.state.results.map(coupon => (
                           <tr key={coupon.id}>
                             <td>{coupon.code}</td>
