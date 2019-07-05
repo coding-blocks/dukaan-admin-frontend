@@ -6,6 +6,7 @@ import Head from '../../../components/head';
 import Layout from "../../../components/layout";
 import Loader from '../../../components/loader';
 import "../../../styles/pages/admin/products.scss";
+import ImageChooser from '../../../components/ImageChooser';
 
 class AddProduct extends React.Component {
 
@@ -185,14 +186,37 @@ class AddProduct extends React.Component {
 
                   {/* Image URL */}
                   <FieldWithElement name={"Image URL"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                    <input
-                      type="text"
-                      className="input-text"
-                      placeholder="Enter Image URL"
-                      name="image_url"
-                      onChange={this.handleQueryParamChange}
-                      required
-                    />
+                    {this.state.queryParams.image_url && 
+                      <img 
+                        src={this.state.queryParams.image_url}
+                        width={100}
+                        height={100}
+                      />
+                    }
+                    <div className={"d-flex"}>
+                      <div className={"col-7 imageurlbox"}>
+                        <input
+                          type="text"
+                          className={"input-text"}
+                          placeholder="Enter Image URL"
+                          name="image_url"
+                          defaultValue={this.state.queryParams.image_url}
+                          onChange={this.handleQueryParamChange}
+                          required
+                        />
+                      </div>
+                      <div className={"col-12"}>
+                        <ImageChooser
+                          callback={(image_url) => {
+                            let queryParams = this.state.queryParams;
+                            queryParams.image_url = image_url;
+                            this.setState({
+                              queryParams
+                            });
+                          }}
+                        />
+                      </div>
+                    </div>
                   </FieldWithElement>
 
                   {/* Image URL */}
