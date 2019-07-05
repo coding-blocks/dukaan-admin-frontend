@@ -368,7 +368,7 @@ class Coupons extends React.Component {
                         <th>Delete</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className={`t-align-c`}>
                       {this.state.results.map(coupon => (
                           <tr key={coupon.id}>
                             <td>{coupon.code}</td>
