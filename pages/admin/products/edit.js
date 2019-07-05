@@ -66,6 +66,7 @@ class EditProduct extends React.Component {
 
   /**
    * Method to handle saving of product
+   * @param {SyntheticEvent} e – Handles the form submission
    */
   handleSaveProduct = (e) => {
     e.preventDefault();
@@ -115,7 +116,7 @@ class EditProduct extends React.Component {
                       {this.state.errorMessage}
                     </div>
                 }
-                <form id="editProductForm" onSubmit={e => {e.preventDefault()}}>
+                <form id="editProductForm">
                   {/* Product Name */}
                   <FieldWithElement name={"Product Name"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                     <input 
