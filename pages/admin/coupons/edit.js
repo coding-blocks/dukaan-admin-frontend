@@ -3,6 +3,7 @@ import Loader from '../../../components/loader';
 import FieldWithElement from '../../../components/FieldWithElement';
 import controller from '../../../controllers/admin/coupons';
 import "../../../styles/pages/admin/coupons.scss";
+import ProductsChooser from '../../../components/ProductsChooser';
 
 class EditCoupon extends React.Component {
   constructor(props) {
@@ -10,26 +11,31 @@ class EditCoupon extends React.Component {
     this.state = {
       loading: false,
       queryParams: props.coupon,
-      couponInfo: {
-        id: 0,
-        code: "",
-        category: 'referral',
-        cashback: 0,
-        mode: 'Flat',
-        amount: 0,
-        left: 0,
-        products: '',
-        active: true
-      },
+      couponInfo: props.coupon,
       errorMessage: ''
     };
   }
 
   componentWillMount() {
     this.setState({
-      queryParams: this.props.coupon,
+      queryParams: this.props.coupon || {},
       couponInfo: this.props.coupon || {}
     });
+    console.log(this.props.coupon);
+  }
+
+  /**
+   * Callback function for ProductsChooser component that updates
+   * them in the state when ProductsChooser returns an array of 
+   * products added
+   * @param {array} products – Array of with the names of products
+   */
+  handleProductsChange = (products) => {
+    let queryParams = this.state.queryParams;
+    queryParams['products'] = products;
+    this.setState({
+      queryParams
+    })
   }
 
   /**
@@ -63,8 +69,9 @@ class EditCoupon extends React.Component {
         loading: true,
         errorMessage: ''
       });
-      controller.handleSaveCoupon(this.state.queryParams).then((response) => {
-        if (response == true) {
+      controller.handleEditCoupon(this.state.queryParams).then((response) => {
+        console.log("Response", response);
+        if (response) {
           this.setState({
             loading: false,
             errorMessage: ''
@@ -72,6 +79,7 @@ class EditCoupon extends React.Component {
           this.props.callback(this.state.queryParams);
         }
       }).catch((error) => {
+        console.log("Error", error);
         this.setState({
           loading: false,
           errorMessage: error
@@ -136,8 +144,8 @@ class EditCoupon extends React.Component {
                       type="text" 
                       className="input-text" 
                       placeholder="Enter Referrer Cashback" 
-                      name="cashback"
-                      defaultValue={this.state.couponInfo.cashback}
+                      name="referrer_cashback"
+                      defaultValue={this.state.couponInfo.referrer_cashback}
                       onChange={this.handleQueryParamChange}
                       required
                     />
@@ -185,14 +193,10 @@ class EditCoupon extends React.Component {
 
                   {/* Products */}
                   <FieldWithElement name={"Products"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                    <input 
-                      type="text" 
-                      className="input-text" 
-                      placeholder="Enter Products"
-                      name="products"
-                      defaultValue={this.state.couponInfo.products}
-                      onChange={this.handleQueryParamChange}
-                      required
+                    <ProductsChooser
+                      products={this.state.couponInfo.products}
+                      productsCallback={this.handleProductsChange}
+                      multiple={true}
                     />
                   </FieldWithElement>
 
