@@ -186,7 +186,7 @@ class Products extends React.Component {
                 {/* Results Table */}
                 <div className={"c-overview-leaderboard coupons"}>
                   <table className={"table table-responsive products-results-table"}>
-                    <thead>
+                    <thead className={"red"}>
                       <tr>
                         <th>Name</th>
                         <th>Description</th>
@@ -197,7 +197,7 @@ class Products extends React.Component {
                         <th>Edit</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className={`t-align-c`}>
                       {
                         this.state.results.map(p => (
                           <tr>

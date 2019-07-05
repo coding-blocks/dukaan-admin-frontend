@@ -21,9 +21,13 @@
 
 .products-results-table {
   margin-top: 15px;
+  width: 100%;
   border: 1px solid #e9e9e9;
   td {
     border: 1px solid #e9e9e9;
+  }
+  th, td {
+    padding: 20px;
   }
 }
 

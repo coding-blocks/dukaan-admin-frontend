@@ -193,15 +193,17 @@ class AddProduct extends React.Component {
                         height={100}
                       />
                     }
-                    <input
-                      type="text"
-                      className={"input-text"}
-                      placeholder="Enter Image URL"
-                      name="image_url"
-                      defaultValue={this.state.queryParams.image_url}
-                      onChange={this.handleQueryParamChange}
-                      required
-                    />
+                    <div className={"pb-3"}>
+                      <input
+                        type="text"
+                        className={"input-text"}
+                        placeholder="Enter Image URL"
+                        name="image_url"
+                        defaultValue={this.state.queryParams.image_url}
+                        onChange={this.handleQueryParamChange}
+                        required
+                      />
+                    </div>
                     <ImageChooser
                       callback={(image_url) => {
                         let queryParams = this.state.queryParams;
