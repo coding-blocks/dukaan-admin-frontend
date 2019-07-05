@@ -193,30 +193,24 @@ class AddProduct extends React.Component {
                         height={100}
                       />
                     }
-                    <div className={"d-flex"}>
-                      <div className={"col-7 imageurlbox"}>
-                        <input
-                          type="text"
-                          className={"input-text"}
-                          placeholder="Enter Image URL"
-                          name="image_url"
-                          defaultValue={this.state.queryParams.image_url}
-                          onChange={this.handleQueryParamChange}
-                          required
-                        />
-                      </div>
-                      <div className={"col-12"}>
-                        <ImageChooser
-                          callback={(image_url) => {
-                            let queryParams = this.state.queryParams;
-                            queryParams.image_url = image_url;
-                            this.setState({
-                              queryParams
-                            });
-                          }}
-                        />
-                      </div>
-                    </div>
+                    <input
+                      type="text"
+                      className={"input-text"}
+                      placeholder="Enter Image URL"
+                      name="image_url"
+                      defaultValue={this.state.queryParams.image_url}
+                      onChange={this.handleQueryParamChange}
+                      required
+                    />
+                    <ImageChooser
+                      callback={(image_url) => {
+                        let queryParams = this.state.queryParams;
+                        queryParams.image_url = image_url;
+                        this.setState({
+                          queryParams
+                        });
+                      }}
+                    />
                   </FieldWithElement>
 
                   {/* Image URL */}

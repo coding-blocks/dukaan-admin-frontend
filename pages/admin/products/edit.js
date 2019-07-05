@@ -2,6 +2,7 @@ import React from 'react';
 import FieldWithElement from '../../../components/FieldWithElement';
 import controller from '../../../controllers/admin/products';
 import Loader from '../../../components/loader';
+import ImageChooser from '../../../components/ImageChooser';
 
 class EditProduct extends React.Component {
   
@@ -168,7 +169,7 @@ class EditProduct extends React.Component {
                   <FieldWithElement name={"List Price"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                     <input
                       type={"text"}
-                      className={"input-text" }
+                      className={"input-text"}
                       placeholder="Enter List Price" 
                       name="list_price"
                       multiline={true}

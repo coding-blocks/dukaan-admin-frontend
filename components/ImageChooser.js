@@ -24,17 +24,8 @@ class ImageChooser extends React.Component {
       'https://minio.codingblocks.com/amoeba/aecc8ce8-77f6-4178-a47a-eb72c8746daa.mljpg',
       'https://minio.codingblocks.com/amoeba/c896bde5-e629-461d-877c-243d9a44cf15.compprog2png'
     ];
-    this.setState({
-      images
-    });
-  }
 
-  /**
-   * Choose Image Dialog
-   */
-  chooseImage = () => {
-
-    let images = this.state.images.map((url) => {
+    this.imagesHTML = images.map((url) => {
       return (
         <img 
           src={url}
@@ -46,19 +37,31 @@ class ImageChooser extends React.Component {
       );
     });
 
-    const dialogHTML = (
-      <div>
-        <h3>Choose an Image</h3>
-        {images}
-      </div>
-    );
-
-    this.ReactSwal.fire({
-      html: dialogHTML,
-      showConfirmButton: false,
-      showCloseButton: true
+    this.setState({
+      images
     });
 
+    this.dialogHTML = (
+      <div>
+        {!this.props.disableSwal &&
+          <h3>Choose an Image</h3>
+        }
+        {this.imagesHTML}
+      </div>
+    );
+  }
+
+  /**
+   * Choose Image Dialog
+   */
+  chooseImage = () => {
+    if (!this.props.disableSwal) {
+      this.ReactSwal.fire({
+        html: this.dialogHTML,
+        showConfirmButton: false,
+        showCloseButton: true
+      });
+    }
   }
   
   /**
@@ -67,13 +70,18 @@ class ImageChooser extends React.Component {
    */
   chooseImageURL = (url) => {
     this.props.callback(url);
-    this.ReactSwal.close();
+    if (!this.props.disableSwal) {
+      this.ReactSwal.close();
+    }
   }
 
   render() {
     return (
       <div>
-        <div 
+        {this.props.disableSwal &&
+          this.dialogHTML
+        }
+        <div
           className={"button-solid col-md-4 d-flex justify-content-center"}
           onClick={this.chooseImage}
         >
