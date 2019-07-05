@@ -1,7 +1,7 @@
 import React from 'react';
 import Head from "../../components/head";
 import Layout from "../../components/layout";
-import "../../styles/pages/admin/Products.scss";
+import "../../styles/pages/admin/products.scss";
 import FieldWithElement from '../../components/FieldWithElement';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
