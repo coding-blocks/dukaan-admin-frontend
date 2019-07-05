@@ -355,7 +355,7 @@ class Coupons extends React.Component {
                 <div className={"c-overview-leaderboard coupons-results"}>
                   <table className={"table table-responsive coupons-results-table"}>
                     <thead>
-                      <tr>
+                      <tr className={"red"}>
                         <th>Code</th>
                         <th>Category</th>
                         <th>Referrer Cashback</th>

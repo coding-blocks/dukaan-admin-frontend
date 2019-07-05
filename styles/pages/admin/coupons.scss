@@ -9,8 +9,6 @@
 }
 
 .coupons-results {
-  padding-bottom: 0px;
-  margin-bottom: 0px;
   margin-top: 20px;
   overflow: scroll;
 }
@@ -28,6 +26,7 @@
   td {
     border-top: 2px solid #e9e9e9;
     border-bottom: 2px solid #e9e9e9;
+    padding: 20px;
   }
 }
 
