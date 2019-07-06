@@ -14,13 +14,14 @@ class AddUser extends React.Component {
       formValues: {
         username: "",
         firstname: "",
-        lastname: "",
+        lastname: "male",
         gender: "",
-        dial_code: "",
+        dial_code: "+91",
         collegeId: "",
         branchId: "",
         mobile_number: "",
-        email: ""
+        email: "",
+        gradYear: "2026"
       }
     };
   }
@@ -40,6 +41,7 @@ class AddUser extends React.Component {
         }
       })
     ]).then(([res1, res2]) => {
+      console.log(res1.data);
       console.log(res2.data);
       this.setState({
         colleges: res1.data.colleges,
@@ -65,7 +67,7 @@ class AddUser extends React.Component {
     });
   };
 
-  handleSubmit = async e => {
+  handleSubmit = e => {
     e.preventDefault();
     const data = this.state.formValues;
 
@@ -77,21 +79,30 @@ class AddUser extends React.Component {
     }
     formBody = formBody.join("&");
 
-    const response = await axios.post(
-      "http://localhost:2929/api/v2/admin/users",
-      formBody,
-      {
+    axios
+      .post("http://localhost:2929/api/v2/admin/users", formBody, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
           "dukaan-token":
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImNsaWVudE5hbWUiOiJvbmxpbmVDYiIsIm9uZWF1dGhJZCI6MTQ1OSwicHJvZHVjdElkIjoxNTYsInF1YW50aXR5IjoxfSwiaWF0IjoxNTYwMjQwNzkwfQ.x6pSdQA2bQndnnMoxSgwn6GdKiPmm82E8AE2BPIPRRQ"
         }
-      }
-    );
-    console.log(response);
-    this.setState({
-      formValues: {}
-    });
+      })
+      .then(() => {
+        this.setState({
+          formValues: {
+            username: "",
+            firstname: "",
+            lastname: "",
+            gender: "",
+            dial_code: "",
+            collegeId: "",
+            branchId: "",
+            mobile_number: "",
+            email: ""
+          }
+        });
+      });
+    // console.log(response);
   };
 
   render() {
@@ -171,11 +182,19 @@ class AddUser extends React.Component {
               onChange={this.onChangeValue}
             >
               {this.state.countries.map(country => {
-                return (
-                  <option value={country.dial_code}>
-                    {country.name} {`(${country.dial_code})`}
-                  </option>
-                );
+                if (country.dial_code === "+91") {
+                  return (
+                    <option value={country.dial_code} selected>
+                      {country.name} {`(${country.dial_code})`}
+                    </option>
+                  );
+                } else {
+                  return (
+                    <option value={country.dial_code}>
+                      {country.name} {`(${country.dial_code})`}
+                    </option>
+                  );
+                }
               })}
             </select>
           </FieldWithElement>

@@ -20,7 +20,8 @@ class Home extends React.Component {
       userInfo: null,
       courseInfo: null,
       createUser: false,
-      newpayment: false
+      newpayment: false,
+      refund: false
     };
   }
 
@@ -131,7 +132,7 @@ class Home extends React.Component {
     ) {
       console.log(this.state.courseInfo);
       orders = this.state.courseInfo.completePayments.map(coursePurchased => {
-        // console.log(coursePurchased);
+        console.log(coursePurchased);
         return (
           <CompleteOrders
             key={coursePurchased.id}
@@ -139,6 +140,8 @@ class Home extends React.Component {
             product_name={coursePurchased.product.name}
             status={coursePurchased.cart.transactions[0].status}
             amount={coursePurchased.amount}
+            invoice_url={coursePurchased.invoice_link}
+            refunded={coursePurchased.cart.transactions[0].status}
           />
         );
       });

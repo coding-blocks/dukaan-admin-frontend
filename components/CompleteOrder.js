@@ -31,10 +31,14 @@ class CompleteOrder extends React.Component {
             </div>
           </div>
           <div className="d-flex justify-content-between">
-            <a target="blank">
+            <a href={this.props.invoice_url} target="blank">
               <button className="button-solid lg">View Invoice</button>
             </a>
-
+            {this.props.refunded ? (
+              <button className="button-solid lg">Refund</button>
+            ) : (
+              ""
+            )}
             <input id="orderIdInput" type="hidden" />
             <div className="row justify-content-center">
               <a target="blank" id="anchorInvoiceUpdate" />
