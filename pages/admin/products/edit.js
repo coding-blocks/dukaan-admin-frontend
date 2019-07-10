@@ -3,6 +3,7 @@ import FieldWithElement from '../../../components/FieldWithElement';
 import controller from '../../../controllers/admin/products';
 import Loader from '../../../components/loader';
 import ImageChooser from '../../../components/ImageChooser';
+import Swal from 'sweetalert2';
 
 class EditProduct extends React.Component {
   
@@ -12,8 +13,8 @@ class EditProduct extends React.Component {
       loading: false,
       queryParams: {
         name: props.product.name,
-        emi_min_base: props.product.emi_min_base,
-        emi_min_repeat: props.product.emi_min_repeat,
+        emi_min_base: props.product.emi_min_base || "",
+        emi_min_repeat: props.product.emi_min_repeat || "",
         description: props.product.description,
         mrp: props.product.mrp,
         list_price: props.product.list_price,
@@ -89,11 +90,17 @@ class EditProduct extends React.Component {
           this.props.callback(productInfo);
         }
       }).catch((error) => {
-        console.log("Error", error);
         this.setState({
-          loading: false,
-          errorMessage: error
+          loading: false
         });
+        Swal.fire({
+          type: "error",
+          text: error
+        });
+        // this.setState({
+        //   loading: false,
+        //   errorMessage: error
+        // });
       });
     }
   }
