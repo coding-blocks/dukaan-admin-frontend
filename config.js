@@ -1,9 +1,21 @@
-import axios from 'axios'
+/**
+ * Frontend Configuration for Dukaan
+ */
 
-export default  axios.create({
-    baseURL: "http://localhost:2929",
-    headers:{
-        "dukaan-token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImNsaWVudE5hbWUiOiJvbmxpbmVDYiIsIm9uZWF1dGhJZCI6MTQ1OSwicHJvZHVjdElkIjoxNTYsInF1YW50aXR5IjoxfSwiaWF0IjoxNTYwMjQwNzkwfQ.x6pSdQA2bQndnnMoxSgwn6GdKiPmm82E8AE2BPIPRRQ",
-        "Access-Control-Allow-Origin":"*"
-    }
-  });
+let development = {};
+let production = {};
+
+development.domain = "http://localhost:5959";
+
+development.callback_url = development.domain + "/auth";
+development.client_id = "2106494837";
+
+development.oneauth = {};
+development.oneauth.domain = "https://account.codingblocks.com";
+development.oneauth.login_url = development.oneauth.domain + `/oauth/authorize?response_type=code&client_id=${development.client_id}&redirect_uri=${development.callback_url}`;
+
+development.backend = {};
+development.backend.domain = "http://localhost:2929";
+development.backend.token_url = development.backend.domain + "/auth/token";
+
+module.exports = development;

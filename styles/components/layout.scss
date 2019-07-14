@@ -1,8 +1,19 @@
+nav {
+    .name {
+        margin-left: 20px;
+        position: relative;
+        top: 3px;
+    }
+    
+    .pic {
+        border-radius: 100%;
+    }
+}
+
 .dropdown {
     overflow: hidden;
     float: left;
     margin-left: 40px;
-
 }
 .dropdown .dropbtn {
     border: none;

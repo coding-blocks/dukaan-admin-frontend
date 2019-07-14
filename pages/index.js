@@ -5,6 +5,7 @@ import Layout from "../components/layout";
 import CompleteOrders from "../components/CompleteOrder";
 import AddUser from "../components/AddUser";
 import NewPayment from "../components/NewPayment";
+import CheckLogin from "../components/CheckLogin";
 // import "semantic-ui-css/semantic.min.css";
 // import axios from '../config'
 import axios from "axios";
@@ -62,13 +63,7 @@ class Home extends React.Component {
       newpayment: false
     });
     let userData = await axios.get(
-      `http://localhost:2929/api/v2/admin/users?email=${this.state.email}`,
-      {
-        headers: {
-          "dukaan-token":
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImNsaWVudE5hbWUiOiJvbmxpbmVDYiIsIm9uZWF1dGhJZCI6MTQ1OSwicHJvZHVjdElkIjoxNTYsInF1YW50aXR5IjoxfSwiaWF0IjoxNTYwMjQwNzkwfQ.x6pSdQA2bQndnnMoxSgwn6GdKiPmm82E8AE2BPIPRRQ"
-        }
-      }
+      `http://localhost:2929/api/v2/admin/users?email=${this.state.email}`
     );
     this.setState({
       userInfo: userData.data[0]
@@ -80,13 +75,7 @@ class Home extends React.Component {
         .get(
           `http://localhost:2929/api/v2/admin/purchases?user_id=${
             this.state.userInfo.id
-          }`,
-          {
-            headers: {
-              "dukaan-token":
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImNsaWVudE5hbWUiOiJvbmxpbmVDYiIsIm9uZWF1dGhJZCI6MTQ1OSwicHJvZHVjdElkIjoxNTYsInF1YW50aXR5IjoxfSwiaWF0IjoxNTYwMjQwNzkwfQ.x6pSdQA2bQndnnMoxSgwn6GdKiPmm82E8AE2BPIPRRQ"
-            }
-          }
+          }`
         )
         .then(res => {
           console.log(res);
@@ -249,41 +238,43 @@ class Home extends React.Component {
     };
 
     return (
-      <div>
-        <Head title="Coding Blocks | Dukaan" />
-        <Layout />
+      <CheckLogin>
+        <div>
+          <Head title="Coding Blocks | Dukaan" />
+          <Layout />
 
-        {/* Search User */}
-        <div className="container mt-4">
-          <div className="row">
-            <div className="col-md-12 col-12">
-              <div style={{ display: "flex" }}>
-                <input
-                  name="email"
-                  required
-                  id="email"
-                  type="email"
-                  className="input-text mb-2"
-                  placeholder="Enter email"
-                  onChange={this.handleChange}
-                />
-                <button
-                  id="search"
-                  className="button-solid ml-4 mb-1"
-                  style={{ fontSize: "1.3rem" }}
-                  onClick={this.handleSearch}
-                >
-                  Search
-                </button>
+          {/* Search User */}
+          <div className="container mt-4">
+            <div className="row">
+              <div className="col-md-12 col-12">
+                <div style={{ display: "flex" }}>
+                  <input
+                    name="email"
+                    required
+                    id="email"
+                    type="email"
+                    className="input-text mb-2"
+                    placeholder="Enter email"
+                    onChange={this.handleChange}
+                  />
+                  <button
+                    id="search"
+                    className="button-solid ml-4 mb-1"
+                    style={{ fontSize: "1.3rem" }}
+                    onClick={this.handleSearch}
+                  >
+                    Search
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-          {/* Form 2  */}
-          <Usercard />
+            {/* Form 2  */}
+            <Usercard />
 
-          {/* Order history card */}
+            {/* Order history card */}
+          </div>
         </div>
-      </div>
+      </CheckLogin>
     );
   }
 }
