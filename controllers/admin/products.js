@@ -10,7 +10,7 @@ const querystring = require('querystring');
 const handleGetProducts = (queryParams, pageInfo) => {
   let query = querystring.stringify(queryParams);
   let response = new Promise((resolve, reject) => {
-    axios.get(`/api/products?page=`+pageInfo.page+`&limit=`+pageInfo.limit+`&`+query).then((r) => {
+    axios.get(`/api/v2/admin/products?page=`+pageInfo.page+`&limit=`+pageInfo.limit+`&`+query).then((r) => {
       let data = {
         results: r.data.products,
         pagesInfo: r.data.pagesInfo
@@ -46,7 +46,7 @@ const handleEditProduct = (id,queryParams) => {
   });
 
   let response = new Promise((resolve, reject) => {
-    axios.patch(`/api/products/`+id, queryParams).then((r) => {
+    axios.patch(`/api/v2/admin/products/`+id, queryParams).then((r) => {
       resolve(r);
     }).catch((error) => {
       reject(error);
