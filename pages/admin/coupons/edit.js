@@ -4,6 +4,7 @@ import FieldWithElement from '../../../components/FieldWithElement';
 import controller from '../../../controllers/admin/coupons';
 import "../../../styles/pages/admin/coupons.scss";
 import ProductsChooser from '../../../components/ProductsChooser';
+import Swal from 'sweetalert2';
 
 class EditCoupon extends React.Component {
   constructor(props) {
@@ -59,32 +60,52 @@ class EditCoupon extends React.Component {
   };
 
   /**
+   * Custom Validations for the edit form
+   * @return {boolean} isValid – Returns a bool that tells
+   *  if the form passed validation
+   */
+
+  customValidations = () => {
+    // No Duplicate Products in ProductChooser
+    let products = this.state.queryParams.products;
+    if (products.length !== new Set(products).size) {
+      this.setState({
+        'errorMessage': "You have added the same product multiple times! \
+         Please make sure that each product is only added once."
+      });
+      return false;
+    }
+    return true;
+  }
+
+  /**
    * Method to handle saving of coupon
    */
-  handleSaveCoupon = () => {
+  handleSaveCoupon = (e) => {
+    e.preventDefault();
     if (!document.getElementById("editCouponForm").checkValidity()) {
       document.getElementById("editCouponForm").reportValidity();
     } else {
-      this.setState({
-        loading: true,
-        errorMessage: ''
-      });
-      controller.handleEditCoupon(this.state.queryParams).then((response) => {
-        console.log("Response", response);
-        if (response) {
+      if (this.customValidations()) {
+        this.setState({
+          loading: true,
+          errorMessage: ''
+        });
+        controller.handleEditCoupon(this.state.queryParams).then((response) => {
+          if (response) {
+            this.setState({
+              loading: false,
+              errorMessage: ''
+            });
+            this.props.callback(this.state.queryParams);
+          }
+        }).catch((error) => {
           this.setState({
             loading: false,
-            errorMessage: ''
+            errorMessage: error.toString()
           });
-          this.props.callback(this.state.queryParams);
-        }
-      }).catch((error) => {
-        console.log("Error", error);
-        this.setState({
-          loading: false,
-          errorMessage: error
         });
-      });
+      }
     }
   }
 
@@ -145,6 +166,8 @@ class EditCoupon extends React.Component {
                       className="input-text" 
                       placeholder="Enter Referrer Cashback" 
                       name="referrer_cashback"
+                      pattern="[0-9]{1,10}"
+                      title="Cashback must be a number"
                       defaultValue={this.state.couponInfo.referrer_cashback}
                       onChange={this.handleQueryParamChange}
                       required
@@ -172,6 +195,8 @@ class EditCoupon extends React.Component {
                       className="input-text"
                       placeholder="Enter Amount" 
                       name="amount"
+                      pattern="[0-9]{3,10}"
+                      title="Amount can only have 3 to 10 digit numbers"
                       defaultValue={this.state.couponInfo.amount}
                       onChange={this.handleQueryParamChange}
                       required
@@ -186,6 +211,8 @@ class EditCoupon extends React.Component {
                       placeholder="Enter Left"
                       name="left"
                       defaultValue={this.state.couponInfo.left}
+                      pattern="[0-9]{1,10}"
+                      title="Left can only have numbers"
                       onChange={this.handleQueryParamChange}
                       required
                     />

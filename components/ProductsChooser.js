@@ -33,10 +33,30 @@ class ProductsChooser extends React.Component {
 
   componentDidMount() {
     // Fetch all products
-    axios.get('/api/products').then((results) => {
+    axios.get('/api/products?limit=100').then((results) => {
       this.setState({
         productsList: results.data.products
       });
+      if (this.props.products) {
+        // Cross check if all products exist.
+        // If they don't, get rid of them.
+        // const products = this.props.products.map((p) => {
+        //   console.log(p);
+        //   if (this.findProductNameByID(p) == "Product Not Found") {
+        //     console.log("Removing ID: ", p);
+        //     return null;
+        //   } else {
+        //     return p;
+        //   }
+        // });
+        const products = this.props.products.filter((p) => {
+          return this.findProductNameByID(p) != "Product Not Found"
+        });
+        console.log("PRODUCTS", products);
+        this.setState({
+          products
+        });
+      }
     });
   }
 
@@ -103,11 +123,12 @@ class ProductsChooser extends React.Component {
    * Get product from list
    */
   findProductNameByID = (id) => {
-    return this.state.productsList.map((p) => {
-      if (p.id == id) {
-        return p.name;
-      }
-    });
+    if (id.toString() == "") {
+      return "";
+    }
+    const productObject = this.state.productsList.find(p => p.id == id);
+    const name = typeof productObject == 'undefined' ? "Product Not Found" : productObject.name;
+    return name;
   }
 
   render() {
@@ -174,7 +195,7 @@ class ProductsChooser extends React.Component {
         {
           this.props.multiple &&
           <button 
-            className={"button-solid mt-3"}
+            className={"button-solid d-flex mt-3"}
             onClick={this.addProduct}
           >
             Add More Products

@@ -62,10 +62,10 @@ class Pagination extends React.Component {
             className={"navbutton right"}
             onClick={this.previous}
           >
-            <i class="fa fa-chevron-left"></i>
+            <i className={"fa fa-chevron-left"}></i>
           </button> 
         }
-        <div class="info">
+        <div className={"info"}>
           {this.props.pagesInfo.currentPage} of {this.props.pagesInfo.pageCount}
         </div>
         {
@@ -75,7 +75,7 @@ class Pagination extends React.Component {
             className={"navbutton left"}
             onClick={this.next}
           >
-            <i class="fa fa-chevron-right"></i>
+            <i className={"fa fa-chevron-right"}></i>
           </button>
         }
       </div>

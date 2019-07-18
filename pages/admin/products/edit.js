@@ -67,6 +67,17 @@ class EditProduct extends React.Component {
   }
 
   /**
+   * Custom Validations for the edit form
+   * @return {boolean} isValid – Returns a bool that tells
+   *  if the form passed validation
+   */
+
+  customValidations = () => {
+    
+    return true;
+  }
+
+  /**
    * Method to handle saving of product
    * @param {SyntheticEvent} e – Handles the form submission
    */
@@ -75,33 +86,28 @@ class EditProduct extends React.Component {
     if (!document.getElementById("editProductForm").checkValidity()) {
       document.getElementById("editProductForm").reportValidity();
     } else {
-      this.setState({
-        loading: true,
-        errorMessage: ''
-      });
-      controller.handleEditProduct(this.state.productInfo.id, this.state.queryParams).then((response) => {
-        if (response) {
+      if (this.customValidations()) {
+        this.setState({
+          loading: true,
+          errorMessage: ''
+        });
+        controller.handleEditProduct(this.state.productInfo.id, this.state.queryParams).then((response) => {
+          if (response) {
+            this.setState({
+              loading: false,
+              errorMessage: ''
+            });
+            let productInfo = this.state.queryParams;
+            productInfo.id = this.state.productInfo.id;
+            this.props.callback(productInfo);
+          }
+        }).catch((error) => {
           this.setState({
             loading: false,
-            errorMessage: ''
+            errorMessage: error.toString()
           });
-          let productInfo = this.state.queryParams;
-          productInfo.id = this.state.productInfo.id;
-          this.props.callback(productInfo);
-        }
-      }).catch((error) => {
-        this.setState({
-          loading: false
         });
-        Swal.fire({
-          type: "error",
-          text: error
-        });
-        // this.setState({
-        //   loading: false,
-        //   errorMessage: error
-        // });
-      });
+      }
     }
   }
 
@@ -170,6 +176,8 @@ class EditProduct extends React.Component {
                       multiline={true}
                       defaultValue={this.state.productInfo.mrp}
                       onChange={this.handleQueryParamChange}
+                      title="MRP should be a number of 3 to 10 digits"
+                      pattern={"[0-9]{3,10}"}
                       required
                     />
                   </FieldWithElement>
@@ -182,6 +190,8 @@ class EditProduct extends React.Component {
                       multiline={true}
                       defaultValue={this.state.productInfo.list_price}
                       onChange={this.handleQueryParamChange}
+                      pattern={"[0-9]{3,10}"}
+                      title="List Price should be a number of 3 to 10 digits"
                       required
                     />
                   </FieldWithElement>

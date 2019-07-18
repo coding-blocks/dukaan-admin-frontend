@@ -1,5 +1,6 @@
 import axios from 'axios';
 import "../config";
+import ErrorHandler from "../ErrorHandler";
 const querystring = require('querystring');
 
 /**
@@ -17,7 +18,7 @@ const handleGetProducts = (queryParams, pageInfo) => {
       }
       resolve(data);
     }).catch((error) => {
-      reject(error);
+      reject(ErrorHandler.handle(error));
     });
   });
   return response;
@@ -49,7 +50,7 @@ const handleEditProduct = (id,queryParams) => {
     axios.patch(`/api/v2/admin/products/`+id, queryParams).then((r) => {
       resolve(r);
     }).catch((error) => {
-      reject(error);
+      reject(ErrorHandler.handle(error));
     });
   });
 
@@ -81,7 +82,7 @@ const handleAddProduct = (queryParams) => {
     axios.post(`/api/products`, queryParams).then((r) => {
       resolve(r);
     }).catch((error) => {
-      reject(error);
+      reject(ErrorHandler.handle(error));
     });
   });
   return response;
