@@ -170,6 +170,8 @@ class AddCoupon extends React.Component {
                           placeholder="Enter Referrer Cashback"
                           name="referrer_cashback"
                           onChange={this.handleQueryParamChange}
+                          pattern="[0-9]{1,10}"
+                          title="Cashback must be a number"
                           required
                         />
                       </FieldWithElement>
@@ -208,6 +210,8 @@ class AddCoupon extends React.Component {
                         placeholder="Enter Amount"
                         name="amount"
                         onChange={this.handleQueryParamChange}
+                        pattern="[0-9]{3,10}"
+                        title="Amount can only have 3 to 10 digit numbers"
                         required
                       />
                     </FieldWithElement>
@@ -237,6 +241,8 @@ class AddCoupon extends React.Component {
                       placeholder="Enter Left"
                       name="left"
                       onChange={this.handleQueryParamChange}
+                      pattern="[0-9]{1,10}"
+                      title="Left can only have numbers"
                       required
                     />
                   </FieldWithElement>

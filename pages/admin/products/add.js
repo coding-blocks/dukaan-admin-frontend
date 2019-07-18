@@ -167,6 +167,8 @@ class AddProduct extends React.Component {
                       className="input-text"
                       placeholder="Enter MRP"
                       name="mrp"
+                      title="MRP should be a number of 3 to 10 digits"
+                      pattern={"[0-9]{3,10}"}
                       onChange={this.handleQueryParamChange}
                       required
                     />
@@ -180,6 +182,8 @@ class AddProduct extends React.Component {
                       placeholder="Enter List Price"
                       name="list_price"
                       onChange={this.handleQueryParamChange}
+                      pattern={"[0-9]{3,10}"}
+                      title="List Price should be a number of 3 to 10 digits"
                       required
                     />
                   </FieldWithElement>
