@@ -37,26 +37,6 @@ class ProductsChooser extends React.Component {
       this.setState({
         productsList: results.data.products
       });
-      if (this.props.products) {
-        // Cross check if all products exist.
-        // If they don't, get rid of them.
-        // const products = this.props.products.map((p) => {
-        //   console.log(p);
-        //   if (this.findProductNameByID(p) == "Product Not Found") {
-        //     console.log("Removing ID: ", p);
-        //     return null;
-        //   } else {
-        //     return p;
-        //   }
-        // });
-        const products = this.props.products.filter((p) => {
-          return this.findProductNameByID(p) != "Product Not Found"
-        });
-        console.log("PRODUCTS", products);
-        this.setState({
-          products
-        });
-      }
     });
   }
 
