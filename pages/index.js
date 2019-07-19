@@ -7,7 +7,6 @@ import AddUser from "../components/AddUser";
 import NewPayment from "../components/NewPayment";
 import CheckLogin from "../components/CheckLogin";
 // import "semantic-ui-css/semantic.min.css";
-// import axios from '../config'
 import axios from "axios";
 
 class Home extends React.Component {

@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "description": "Frontend for Coding Blocks Dukaan",
   "scripts": {
-    "dev": "nodemon server.js",
+    "dev": "next dev -p 5959",
     "build": "next build",
-    "start": "NODE_ENV=production node server.js",
+    "start": "NODE_ENV=production next start",
     "export": "next export",
     "deploy": "next build && next export",
     "eject": "next eject"

@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import cookies from 'js-cookies';
 import jwt from 'jsonwebtoken';
+import config from '../config';
 import "../styles/components/layout.scss";
 
 class Layout extends React.Component {
@@ -144,7 +145,7 @@ class Layout extends React.Component {
               </li>
               {this.state.loggedIn &&
                 <li className="nav-items pointer">
-                  <a href="/logout">
+                  <a href={config.oneauth.logout_url}>
                     <div className="button-solid lg">
                       <button type="submit" className="pl-1">
                         Logout
