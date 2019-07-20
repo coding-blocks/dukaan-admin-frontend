@@ -33,7 +33,7 @@ class ProductsChooser extends React.Component {
 
   componentDidMount() {
     // Fetch all products
-    axios.get('/api/products').then((results) => {
+    axios.get('/api/v2/admin/products').then((results) => {
       this.setState({
         productsList: results.data.products
       });
