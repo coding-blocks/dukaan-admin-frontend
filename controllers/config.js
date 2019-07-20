@@ -1,4 +1,23 @@
 import axios from 'axios';
 
 axios.defaults.baseURL = 'http://localhost:2929';
-axios.defaults.headers['dukaan-token'] = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImNsaWVudE5hbWUiOiJvbmxpbmVDYiIsIm9uZWF1dGhJZCI6MTQ1OSwicHJvZHVjdElkIjoxNTYsInF1YW50aXR5IjoxfSwiaWF0IjoxOTYwMjQwNzkwfQ.RHWerZRpOfJrwfkud1AZcpdSwsfWbalSv2cUIxLaasI";
+
+if (typeof document != 'undefined')  {
+    function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+    
+    axios.defaults.headers['dukaan-token'] = getCookie('dukaan-token');
+}
