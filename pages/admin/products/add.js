@@ -7,6 +7,7 @@ import Layout from "../../../components/layout";
 import Loader from '../../../components/loader';
 import "../../../styles/pages/admin/products.scss";
 import ImageChooser from '../../../components/ImageChooser';
+import ErrorHandler from '../../../controllers/ErrorHandler';
 
 class AddProduct extends React.Component {
 
@@ -74,7 +75,7 @@ class AddProduct extends React.Component {
             loading: false
           });
           Swal.fire({
-            title: "Coupon " + this.state.queryParams.name + " added!",
+            title: "Product " + this.state.queryParams.name + " added!",
             type: "success",
             showConfirmButton: true
           });
@@ -84,7 +85,7 @@ class AddProduct extends React.Component {
           loading: false
         });
         Swal.fire({
-          title: "Error adding coupon!",
+          title: "Error adding product!",
           text: error,
           type: "error",
           showConfirmButton: true
@@ -131,6 +132,7 @@ class AddProduct extends React.Component {
                       className="input-text"
                       placeholder="Enter Name"
                       name="name"
+                      defaultValue={this.state.queryParams.name}
                       onChange={this.handleQueryParamChange}
                       required
                     />
@@ -144,6 +146,7 @@ class AddProduct extends React.Component {
                       placeholder="Enter Description"
                       name="description"
                       onChange={this.handleQueryParamChange}
+                      defaultValue={this.state.queryParams.description}
                       required
                     />
                   </FieldWithElement>
@@ -156,6 +159,7 @@ class AddProduct extends React.Component {
                       placeholder="Enter Display Slug"
                       name="display_slug"
                       onChange={this.handleQueryParamChange}
+                      defaultValue={this.state.queryParams.display_slug}
                       required
                     />
                   </FieldWithElement>
@@ -170,6 +174,7 @@ class AddProduct extends React.Component {
                       title="MRP should be a number of 3 to 10 digits"
                       pattern={"[0-9]{3,10}"}
                       onChange={this.handleQueryParamChange}
+                      defaultValue={this.state.queryParams.mrp}
                       required
                     />
                   </FieldWithElement>
@@ -183,6 +188,7 @@ class AddProduct extends React.Component {
                       name="list_price"
                       onChange={this.handleQueryParamChange}
                       pattern={"[0-9]{3,10}"}
+                      defaultValue={this.state.queryParams.list_price}
                       title="List Price should be a number of 3 to 10 digits"
                       required
                     />
@@ -203,7 +209,7 @@ class AddProduct extends React.Component {
                         className={"input-text"}
                         placeholder="Enter Image URL"
                         name="image_url"
-                        defaultValue={this.state.queryParams.image_url}
+                        value={this.state.queryParams.image_url}
                         onChange={this.handleQueryParamChange}
                         required
                       />
@@ -227,6 +233,7 @@ class AddProduct extends React.Component {
                       placeholder="Enter Redirect URL"
                       name="redirect_url"
                       onChange={this.handleQueryParamChange}
+                      defaultValue={this.state.queryParams.redirect_url}
                       required
                     />
                   </FieldWithElement>
@@ -236,6 +243,7 @@ class AddProduct extends React.Component {
                   <select 
                       name="type"
                       onChange={this.handleQueryParamChange}
+                      defaultValue={this.state.queryParams.type}
                       required
                     >
                       <option value="course">Course</option>

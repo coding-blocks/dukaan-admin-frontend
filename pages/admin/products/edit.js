@@ -102,9 +102,10 @@ class EditProduct extends React.Component {
             this.props.callback(productInfo);
           }
         }).catch((error) => {
+          console.log(error);
           this.setState({
             loading: false,
-            errorMessage: error.toString()
+            errorMessage: error
           });
         });
       }

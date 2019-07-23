@@ -222,16 +222,6 @@ class Products extends React.Component {
                       )}
                     </tbody>
                   </table>
-                {/* {
-                  this.state.results.map(p => (
-                      <div className={"product-card d-inline-block"}>
-                        <img src={p.image_url}></img>
-                        <div className={"name"}>{p.name}</div>
-                        <div className={"description"}>{p.description}</div>
-                      </div>
-                    )
-                  )
-                } */}
                 </div>
                 <div className={"col-md-12 pt-4"}>
                   <Pagination 

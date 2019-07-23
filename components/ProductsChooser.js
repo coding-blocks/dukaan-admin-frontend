@@ -12,6 +12,8 @@ class ProductsChooser extends React.Component {
    * @param {function} props.productsCallback – Method that is called when the
    *  state of the products array is updated. This supplies the products array back
    *  to the component where it has been used.
+   * @param {array} props.products – Array of product ids that allow you to populate the
+   *  ProductsChooser component with a list of products.
    * @param {boolean} props.all – Changes if the dropdown should have an option to
    *  show the "All Products" option
    */
@@ -19,7 +21,7 @@ class ProductsChooser extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      products: props.products || [""],
+      products: props.products || [],
       all: props.all || false,
       productsList: [
         {
@@ -32,6 +34,13 @@ class ProductsChooser extends React.Component {
   }
 
   componentDidMount() {
+
+    if (this.state.products.length == 0) {
+      this.setState({
+        products: ["0"]
+      });
+    }
+
     // Fetch all products
     axios.get('/api/products?limit=100').then((results) => {
       this.setState({
@@ -107,7 +116,7 @@ class ProductsChooser extends React.Component {
       return "";
     }
     const productObject = this.state.productsList.find(p => p.id == id);
-    const name = typeof productObject == 'undefined' ? "Product Not Found" : productObject.name;
+    const name = typeof productObject == 'undefined' ? "Choose a product" : productObject.name;
     return name;
   }
 

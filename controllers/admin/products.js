@@ -50,6 +50,8 @@ const handleEditProduct = (id,queryParams) => {
     axios.patch(`/api/v2/admin/products/`+id, queryParams).then((r) => {
       resolve(r);
     }).catch((error) => {
+      console.log(error);
+      console.log(error.response.data);
       reject(ErrorHandler.handle(error));
     });
   });

@@ -113,7 +113,7 @@ class AddCoupon extends React.Component {
               <Loader />
             }
             {!this.state.loading &&
-              <form id="addCouponForm">
+              <form id="addCouponForm" onSubmit={(e) => e.preventDefault()}>
                 <div className={"add-coupon-card"}>
 
                   {/* Title */}
@@ -128,6 +128,7 @@ class AddCoupon extends React.Component {
                       className="input-text"
                       placeholder="Enter Code"
                       name="code"
+                      defaultValue={this.state.queryParams.code}
                       onChange={this.handleQueryParamChange}
                       required
                     />
@@ -139,6 +140,7 @@ class AddCoupon extends React.Component {
                       id="category"
                       name="category"
                       onChange={this.handleQueryParamChange}
+                      defaultValue={this.state.queryParams.category}
                       required
                     >
                       <option value="referral">Referral</option>
@@ -170,6 +172,7 @@ class AddCoupon extends React.Component {
                           placeholder="Enter Referrer Cashback"
                           name="referrer_cashback"
                           onChange={this.handleQueryParamChange}
+                          defaultValue={this.state.queryParams.referrer_cashback}
                           pattern="[0-9]{1,10}"
                           title="Cashback must be a number"
                           required
@@ -192,6 +195,7 @@ class AddCoupon extends React.Component {
                       id="mode"
                       name="mode"
                       onChange={this.handleQueryParamChange}
+                      defaultValue={this.state.queryParams.mode}
                       required
                     >
                       <option value="flat">Flat</option>
@@ -210,6 +214,7 @@ class AddCoupon extends React.Component {
                         placeholder="Enter Amount"
                         name="amount"
                         onChange={this.handleQueryParamChange}
+                        defaultValue={this.state.queryParams.amount}
                         pattern="[0-9]{3,10}"
                         title="Amount can only have 3 to 10 digit numbers"
                         required
@@ -227,6 +232,7 @@ class AddCoupon extends React.Component {
                         className={"input-text"}
                         placeholder="Enter Percentage"
                         name="percentage"
+                        defaultValue={this.state.queryParams.percentage}
                         onChange={this.handleQueryParamChange}
                         required
                       />
@@ -241,6 +247,7 @@ class AddCoupon extends React.Component {
                       placeholder="Enter Left"
                       name="left"
                       onChange={this.handleQueryParamChange}
+                      defaultValue={this.state.queryParams.left}
                       pattern="[0-9]{1,10}"
                       title="Left can only have numbers"
                       required
@@ -252,6 +259,7 @@ class AddCoupon extends React.Component {
                     <select
                       name="allProducts"
                       onChange={this.handleQueryParamChange}
+                      defaultValue={this.state.queryParams.allProducts}
                     >
                       <option value={"false"}>No</option>
                       <option value={"true"}>Yes</option>
@@ -264,6 +272,7 @@ class AddCoupon extends React.Component {
                       id="active"
                       name="active"
                       onChange={this.handleQueryParamChange}
+                      defaultValue={this.state.queryParams.active}
                       required
                     >
                       <option value="true">True</option>
