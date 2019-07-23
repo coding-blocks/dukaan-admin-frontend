@@ -12,6 +12,8 @@ class ProductsChooser extends React.Component {
    * @param {function} props.productsCallback – Method that is called when the
    *  state of the products array is updated. This supplies the products array back
    *  to the component where it has been used.
+   * @param {array} props.products – Array of product ids that allow you to populate the
+   *  ProductsChooser component with a list of products.
    * @param {boolean} props.all – Changes if the dropdown should have an option to
    *  show the "All Products" option
    */
@@ -19,7 +21,7 @@ class ProductsChooser extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      products: props.products || [""],
+      products: props.products || [],
       all: props.all || false,
       productsList: [
         {
@@ -32,8 +34,15 @@ class ProductsChooser extends React.Component {
   }
 
   componentDidMount() {
+
+    if (this.state.products.length == 0) {
+      this.setState({
+        products: ["0"]
+      });
+    }
+
     // Fetch all products
-    axios.get('/api/v2/admin/products').then((results) => {
+    axios.get('/api/products?limit=100').then((results) => {
       this.setState({
         productsList: results.data.products
       });
@@ -103,11 +112,12 @@ class ProductsChooser extends React.Component {
    * Get product from list
    */
   findProductNameByID = (id) => {
-    return this.state.productsList.map((p) => {
-      if (p.id == id) {
-        return p.name;
-      }
-    });
+    if (id.toString() == "") {
+      return "";
+    }
+    const productObject = this.state.productsList.find(p => p.id == id);
+    const name = typeof productObject == 'undefined' ? "Choose a product" : productObject.name;
+    return name;
   }
 
   render() {
@@ -174,7 +184,7 @@ class ProductsChooser extends React.Component {
         {
           this.props.multiple &&
           <button 
-            className={"button-solid mt-3"}
+            className={"button-solid d-flex mt-3"}
             onClick={this.addProduct}
           >
             Add More Products

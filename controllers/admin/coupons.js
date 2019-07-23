@@ -1,5 +1,6 @@
 import axios from 'axios';
 import "../config";
+import ErrorHandler from "../ErrorHandler";
 const querystring = require('querystring');
 
 /**
@@ -19,7 +20,7 @@ const handleGetCoupons = (queryParams, pageInfo) => {
       }
       resolve(data);
     }).catch((error) => {
-      reject(error);
+      reject(ErrorHandler.handle(error));
     });
   });
 
@@ -61,7 +62,7 @@ const handleEditCoupon = (queryParams) => {
     axios.patch(`/api/v2/admin/coupons/`+queryParams.id, queryParams).then((r) => {
       resolve(r);
     }).catch((error) => {
-      reject(error);
+      reject(ErrorHandler.handle(error));
     });
   });
   return response;
@@ -107,7 +108,7 @@ const handleAddCoupon = (queryParams) => {
     axios.post(`/api/v2/admin/coupons`, queryParams).then((r) => {
       resolve(r);
     }).catch((error) => {
-      reject(error);
+      reject(ErrorHandler.handle(error));
     });
   });
   return response;
@@ -122,7 +123,7 @@ const handleDeleteCoupon = (id) => {
     axios.delete(`/api/v2/admin/coupons/`+id).then((response) => {
       resolve(response);
     }).catch((error) => {
-      reject(error);
+      reject(ErrorHandler.handle(error));
     });  
   });
   return response;

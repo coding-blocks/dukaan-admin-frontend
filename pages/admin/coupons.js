@@ -146,6 +146,15 @@ class Coupons extends React.Component {
               coupon={coupon}
               callback={(newCoupon) => {
                 this.ReactSwal.close();
+                Swal.mixin({
+                  toast: true,
+                  position: "center",
+                  showConfirmButton: false,
+                  timer: 3000
+                }).fire({
+                  type: 'success',
+                  title: 'Coupon Edited Successfully'
+                })
                 let coupons = this.state.results;
                 let couponIndex = this.state.results.indexOf(coupon);
                 coupons[couponIndex] = newCoupon;
