@@ -8,6 +8,8 @@ import NewPayment from "../components/NewPayment";
 // import "semantic-ui-css/semantic.min.css";
 // import axios from '../config'
 import axios from "axios";
+import InCompleteOrder from "../components/InCompleteOrders";
+import PartialPayments from "../components/PartialPayments";
 
 class Home extends React.Component {
   constructor(props) {
@@ -65,10 +67,7 @@ class Home extends React.Component {
     let userData = await axios.get(
       `http://localhost:2929/api/v2/admin/users?email=${this.state.email}`,
       {
-        headers: {
-          "dukaan-token":
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImNsaWVudE5hbWUiOiJvbmxpbmVDYiIsIm9uZWF1dGhJZCI6MTQ1OSwicHJvZHVjdElkIjoxNTYsInF1YW50aXR5IjoxfSwiaWF0IjoxNTYwMjQwNzkwfQ.x6pSdQA2bQndnnMoxSgwn6GdKiPmm82E8AE2BPIPRRQ"
-        }
+        withCredentials: true
       }
     );
     this.setState({
@@ -83,10 +82,7 @@ class Home extends React.Component {
             this.state.userInfo.id
           }`,
           {
-            headers: {
-              "dukaan-token":
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImNsaWVudE5hbWUiOiJvbmxpbmVDYiIsIm9uZWF1dGhJZCI6MTQ1OSwicHJvZHVjdElkIjoxNTYsInF1YW50aXR5IjoxfSwiaWF0IjoxNTYwMjQwNzkwfQ.x6pSdQA2bQndnnMoxSgwn6GdKiPmm82E8AE2BPIPRRQ"
-            }
+            withCredentials: true
           }
         )
         .then(res => {
@@ -130,27 +126,54 @@ class Home extends React.Component {
       this.state.courseInfo !== null &&
       !this.state.newpayment
     ) {
-      console.log(this.state.courseInfo);
+      // console.log(this.state.courseInfo, "hi");
       orders = this.state.courseInfo.completePayments.map(coursePurchased => {
-        console.log(coursePurchased);
-        return (
-          <CompleteOrders
-            key={coursePurchased.id}
-            image={coursePurchased.product.image_url}
-            product_name={coursePurchased.product.name}
-            status={coursePurchased.cart.transactions[0].status}
-            amount={coursePurchased.amount}
-            invoice_url={coursePurchased.invoice_link}
-            refunded={coursePurchased.cart.transactions[0].status}
-          />
-        );
+        console.log(coursePurchased, "heloooooooo");
+        if (coursePurchased.cart !== null) {
+          coursePurchased.cart.transactions.map(transaction => {
+            console.log(transaction, "hello");
+          });
+
+          return coursePurchased.cart.transactions.map(transaction => {
+            return (
+              <CompleteOrders
+                txn_id={transaction.id}
+                key={coursePurchased.id}
+                image={coursePurchased.product.image_url}
+                product_name={coursePurchased.product.name}
+                status={transaction.status}
+                amount={coursePurchased.amount / 100}
+                invoice_url={coursePurchased.invoice_link}
+                refunded={transaction.status}
+                userid={this.state.userInfo.id}
+                payment_type={transaction.payment_type}
+              />
+            );
+            console.log(coursePurchased.cart.transaction.payment_type);
+          });
+        }
       });
-    } else if (this.state.newpayment) {
-      orders = <NewPayment />;
     } else if (completeTab) {
       orders = <div>No Complete Orders Found.</div>;
-    } else {
-      orders = <div>No Incomplete Orders Found.</div>;
+    } else if (InCompleteOrder) {
+      if (this.state.courseInfo && this.state.courseInfo.partialPayments) {
+        orders = this.state.courseInfo.partialPayments.map(partialPurchase => {
+          console.log(partialPurchase, "Ppsds");
+          return (
+            <InCompleteOrder
+              key={partialPurchase.id}
+              image={partialPurchase.product.image_url}
+              product_name={partialPurchase.product.name}
+              amount={partialPurchase.amount / 100}
+              created_at={partialPurchase.created_at}
+              userid={this.state.userInfo.id}
+              cart_id={partialPurchase.cart_id}
+            />
+          );
+        });
+      } else {
+        orders = <div>No Incomplete Orders Found.</div>;
+      }
     }
 
     const Usercard = () => {
@@ -179,7 +202,10 @@ class Home extends React.Component {
 
                     <p>Mobile : {this.state.userInfo.mobile_number}</p>
 
-                    <p>Wallet Amount : ₹ {this.state.userInfo.wallet_amount}</p>
+                    <p>
+                      Wallet Amount : ₹{" "}
+                      {this.state.userInfo.wallet_amount / 100}
+                    </p>
 
                     <div>
                       <button
@@ -217,7 +243,7 @@ class Home extends React.Component {
                   </div>
                 </div>
               ) : (
-                <NewPayment />
+                <NewPayment userid={this.state.userInfo.id} />
               )}
             </div>
           </div>

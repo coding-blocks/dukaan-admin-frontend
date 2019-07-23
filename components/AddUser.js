@@ -29,16 +29,10 @@ class AddUser extends React.Component {
   componentDidMount() {
     Promise.all([
       axios.get("http://localhost:2929/api/v2/admin/resources/demographics", {
-        headers: {
-          "dukaan-token":
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImNsaWVudE5hbWUiOiJvbmxpbmVDYiIsIm9uZWF1dGhJZCI6MTQ1OSwicHJvZHVjdElkIjoxNTYsInF1YW50aXR5IjoxfSwiaWF0IjoxNTYwMjQwNzkwfQ.x6pSdQA2bQndnnMoxSgwn6GdKiPmm82E8AE2BPIPRRQ"
-        }
+        withCredentials:true
       }),
       axios.get("http://localhost:2929/api/v2/admin/resources/countries", {
-        headers: {
-          "dukaan-token":
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImNsaWVudE5hbWUiOiJvbmxpbmVDYiIsIm9uZWF1dGhJZCI6MTQ1OSwicHJvZHVjdElkIjoxNTYsInF1YW50aXR5IjoxfSwiaWF0IjoxNTYwMjQwNzkwfQ.x6pSdQA2bQndnnMoxSgwn6GdKiPmm82E8AE2BPIPRRQ"
-        }
+        withCredentials:true
       })
     ]).then(([res1, res2]) => {
       console.log(res1.data);
@@ -81,11 +75,7 @@ class AddUser extends React.Component {
 
     axios
       .post("http://localhost:2929/api/v2/admin/users", formBody, {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-          "dukaan-token":
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImNsaWVudE5hbWUiOiJvbmxpbmVDYiIsIm9uZWF1dGhJZCI6MTQ1OSwicHJvZHVjdElkIjoxNTYsInF1YW50aXR5IjoxfSwiaWF0IjoxNTYwMjQwNzkwfQ.x6pSdQA2bQndnnMoxSgwn6GdKiPmm82E8AE2BPIPRRQ"
-        }
+        withCredentials:true
       })
       .then(() => {
         this.setState({
