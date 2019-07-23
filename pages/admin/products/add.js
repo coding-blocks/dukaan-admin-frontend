@@ -205,7 +205,7 @@ class AddProduct extends React.Component {
                     }
                     <div className={"pb-3"}>
                       <input
-                        type="text"
+                        type="url"
                         className={"input-text"}
                         placeholder="Enter Image URL"
                         name="image_url"
@@ -228,7 +228,7 @@ class AddProduct extends React.Component {
                   {/* Image URL */}
                   <FieldWithElement name={"Redirect URL"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                     <input
-                      type="text"
+                      type="url"
                       className="input-text"
                       placeholder="Enter Redirect URL"
                       name="redirect_url"

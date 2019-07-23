@@ -24,8 +24,11 @@ const handle = (error) => {
         return "You are not logged in! Please log into Dukaan again by <a href='/login'>clicking here</a>.";
       } else if (error.response.status == 400) {
         if (typeof error.response.data.data == "object" && typeof error.response.data.data[0].message == "string") {
-          console.log(typeof error.response.data.data[0].message);
-          return error.response.data.data[0].message;
+          let errorString = ``;
+          for (let i = 0; i < error.response.data.data.length; i++) {
+            errorString = errorString + error.response.data.data[i].message + '\n';
+          }
+          return errorString;
         } else {
           throw "Invalid error response syntax";
         }
@@ -42,6 +45,6 @@ const handle = (error) => {
   }
 }
 
-module.exports = {
+export default {
   handle
 }

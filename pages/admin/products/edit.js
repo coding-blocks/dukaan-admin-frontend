@@ -12,14 +12,14 @@ class EditProduct extends React.Component {
     this.state = {
       loading: false,
       queryParams: {
-        name: props.product.name,
+        name: props.product.name || "",
         emi_min_base: props.product.emi_min_base || "",
         emi_min_repeat: props.product.emi_min_repeat || "",
-        description: props.product.description,
-        mrp: props.product.mrp,
-        list_price: props.product.list_price,
-        display_slug: props.product.display_slug,
-        image_url: props.product.image_url,
+        description: props.product.description || "",
+        mrp: props.product.mrp || 0,
+        list_price: props.product.list_price || 0,
+        display_slug: props.product.display_slug || "",
+        image_url: props.product.image_url || "",
         listed: props.product.listed,
         referral: false,
         campaign: false,
@@ -127,8 +127,10 @@ class EditProduct extends React.Component {
                   <h2 className={"title"}>Edit Product</h2>
                 </div>
                 {this.state.errorMessage.length != 0 && 
-                    <div className={"d-flex red justify-content-center mt-1 pb-3"}>
-                      {this.state.errorMessage}
+                    <div className={"red justify-content-center mt-1 pb-3"}>
+                      {this.state.errorMessage.split("\n").map((i,key) => {
+                          return <p key={key}>{i}</p>;
+                      })}
                     </div>
                 }
                 <form id="editProductForm">
@@ -203,7 +205,7 @@ class EditProduct extends React.Component {
                       placeholder="Enter Image URL" 
                       name="image_url"
                       multiline={true}
-                      defaultValue={this.state.productInfo.image_url}
+                      defaultValue={this.state.queryParams.image_url}
                       onChange={this.handleQueryParamChange}
                       required
                     />

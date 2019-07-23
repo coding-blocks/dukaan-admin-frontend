@@ -95,6 +95,15 @@ class Products extends React.Component {
               product={product}
               callback={(newProduct) => {
                 this.ReactSwal.close();
+                Swal.mixin({
+                  toast: true,
+                  position: "center",
+                  showConfirmButton: false,
+                  timer: 3000
+                }).fire({
+                  type: 'success',
+                  title: 'Product Edited Successfully'
+                })
                 let products = this.state.results;
                 let productIndex = this.state.results.indexOf(product);
                 products[productIndex] = newProduct;

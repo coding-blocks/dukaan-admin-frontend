@@ -159,20 +159,38 @@ class EditCoupon extends React.Component {
                     </select>
                   </FieldWithElement>
 
-                  {/* Cashback */}
-                  <FieldWithElement name={"Cashback"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                    <input 
-                      type="text" 
-                      className="input-text" 
-                      placeholder="Enter Referrer Cashback" 
-                      name="referrer_cashback"
-                      pattern="[0-9]{1,10}"
-                      title="Cashback must be a number"
-                      defaultValue={this.state.couponInfo.referrer_cashback}
-                      onChange={this.handleQueryParamChange}
-                      required
-                    />
-                  </FieldWithElement>
+                  {this.state.queryParams.category == 'referral' &&
+                    /* Cashback */
+                    <FieldWithElement name={"Cashback"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <input 
+                        type="text" 
+                        className="input-text" 
+                        placeholder="Enter Referrer Cashback" 
+                        name="referrer_cashback"
+                        pattern="[0-9]{1,10}"
+                        title="Cashback must be a number"
+                        defaultValue={this.state.couponInfo.referrer_cashback}
+                        onChange={this.handleQueryParamChange}
+                        required
+                      />
+                    </FieldWithElement>
+                  
+                    /* Referrer */}
+                  {this.state.queryParams.category == 'referral' &&
+                    <FieldWithElement name={"Referrer"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <input 
+                        type="text" 
+                        className="input-text" 
+                        placeholder="Enter Referrer ID" 
+                        name="referrer"
+                        pattern="[0-9]{1,10}"
+                        title="Referrer must be a User's ID"
+                        defaultValue={this.state.couponInfo.referrer}
+                        onChange={this.handleQueryParamChange}
+                        required
+                      />
+                    </FieldWithElement>
+                  }
 
                   {/* Mode */}
                   <FieldWithElement name={"Mode"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
