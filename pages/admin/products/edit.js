@@ -9,28 +9,22 @@ class EditProduct extends React.Component {
   
   constructor(props) {
     super(props);
+    console.log(props);
     this.state = {
       loading: false,
-      queryParams: {
-        name: props.product.name || "",
-        emi_min_base: props.product.emi_min_base || "",
-        emi_min_repeat: props.product.emi_min_repeat || "",
-        description: props.product.description || "",
-        mrp: props.product.mrp || 0,
-        list_price: props.product.list_price || 0,
-        display_slug: props.product.display_slug || "",
-        image_url: props.product.image_url || "",
-        listed: props.product.listed,
-        referral: false,
-        campaign: false,
-        is_offline: props.product.is_offline,
-        type:  props.product.type,
-        redirect_url:  props.product.redirect_url,
-        product_category_id: props.product.product_category_id
-      },
-      productInfo: props.product,
+      queryParams: props.product || {},
+      productInfo: props.product || {},
       errorMessage: ''
     };
+  }
+
+  componentWillMount() {
+    let queryParams = this.state.queryParams;
+    queryParams.referral = false;
+    queryParams.campaign = false;
+    this.setState({
+      queryParams
+    })
   }
 
   /**
@@ -91,7 +85,7 @@ class EditProduct extends React.Component {
           loading: true,
           errorMessage: ''
         });
-        controller.handleEditProduct(this.state.productInfo.id, this.state.queryParams).then((response) => {
+        controller.handleEditProduct(this.state.queryParams).then((response) => {
           if (response) {
             this.setState({
               loading: false,
@@ -128,9 +122,7 @@ class EditProduct extends React.Component {
                 </div>
                 {this.state.errorMessage.length != 0 && 
                     <div className={"red justify-content-center mt-1 pb-3"}>
-                      {this.state.errorMessage.split("\n").map((i,key) => {
-                          return <p key={key}>{i}</p>;
-                      })}
+                      {this.state.errorMessage}
                     </div>
                 }
                 <form id="editProductForm">

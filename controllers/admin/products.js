@@ -30,8 +30,18 @@ const handleGetProducts = (queryParams, pageInfo) => {
  * @return {Promise<string>} response – Returns if the request was
  *  successful or not
  */
-const handleEditProduct = (id,queryParams) => {
-  console.log(queryParams);
+const handleEditProduct = (queryParams) => {
+  const id = queryParams.id;
+  delete queryParams.id;
+  delete queryParams.created_at;
+  delete queryParams.updated_at;
+  delete queryParams.deleted_at;
+  delete queryParams.tax_id;
+  delete queryParams.updated_by;
+  delete queryParams.owner_user_id;
+  delete queryParams.extension_of;
+  delete queryParams.duration;
+  delete queryParams.product_extensions;
   Object.keys(queryParams).forEach((key) => {
     if (queryParams[key] == null) {
       queryParams[key] = "";
@@ -48,8 +58,10 @@ const handleEditProduct = (id,queryParams) => {
 
   let response = new Promise((resolve, reject) => {
     axios.patch(`/api/v2/admin/products/`+id, queryParams).then((r) => {
+      queryParams.id = id;
       resolve(r);
     }).catch((error) => {
+      queryParams.id = id;
       console.log(error);
       console.log(error.response.data);
       reject(ErrorHandler.handle(error));
