@@ -3,6 +3,7 @@ import React from "react";
 import Head from "../../components/head";
 import Layout from "../../components/layout";
 import axios from "axios";
+import moment from "moment";
 
 class PartialHistory extends React.Component {
   constructor(props) {
@@ -52,10 +53,14 @@ class PartialHistory extends React.Component {
     const partial = () => {
       if (this.state.courseInfo !== null) {
         return this.state.courseInfo.map(PartialPayment => {
+          const date = moment(PartialPayment.created_at).format(
+            "MMMM Do YYYY,h:mm:ss a"
+          );
           const mode = PartialPayment.transaction.payment_type;
           const center = PartialPayment.transaction[mode].center.name;
           return (
             <PartialPayments
+              date={date}
               Productname={this.state.name}
               userid={this.state.userid}
               fee={PartialPayment.fee / 100}
@@ -67,7 +72,6 @@ class PartialHistory extends React.Component {
               name={`${PartialPayment.user.firstname}  ${
                 PartialPayment.user.lastname
               }`}
-              date={PartialPayment.created_at}
               mode={mode}
               mrp={this.state.mrp / 100}
               center={center}

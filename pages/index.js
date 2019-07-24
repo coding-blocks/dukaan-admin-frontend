@@ -7,9 +7,11 @@ import AddUser from "../components/AddUser";
 import NewPayment from "../components/NewPayment";
 // import "semantic-ui-css/semantic.min.css";
 // import axios from '../config'
+import moment from "moment";
 import axios from "axios";
 import InCompleteOrder from "../components/InCompleteOrders";
 import PartialPayments from "../components/PartialPayments";
+import { resolve } from "url";
 
 class Home extends React.Component {
   constructor(props) {
@@ -54,58 +56,52 @@ class Home extends React.Component {
   };
 
   handleSearch = async () => {
-    this.setState({
-      email: "",
-      completeTab: true,
-      incompleteTab: false,
-      userFound: false,
-      userInfo: {},
-      courseInfo: null,
-      createUser: false,
-      newpayment: false
-    });
-    let userData = await axios.get(
-      `http://localhost:2929/api/v2/admin/users?email=${this.state.email}`,
-      {
-        withCredentials: true
-      }
-    );
-    this.setState({
-      userInfo: userData.data[0]
-    });
-
-    console.log(userData.data[0]);
-    if (this.state.userInfo) {
-      axios
-        .get(
-          `http://localhost:2929/api/v2/admin/purchases?user_id=${
-            this.state.userInfo.id
-          }`,
-          {
-            withCredentials: true
-          }
-        )
-        .then(res => {
-          console.log(res);
-          this.setState({
-            courseInfo: res.data
-          });
-        })
-        .catch(err => {
-          console.log(err);
-          this.setState({
-            courseInfo: null
-          });
-        });
-    }
-
-    if (userData) {
+    let userData;
+    try {
+      userData = await axios.get(
+        `http://localhost:2929/api/v2/admin/users?email=${this.state.email}`,
+        {
+          withCredentials: true
+        }
+      )
       this.setState({
-        userFound: true
+        userInfo: userData.data[0],
       });
-      console.log(userData.data[0]);
-    } else {
-      console.log("no user found");
+  
+      if (this.state.userInfo) {
+        axios
+          .get(
+            `http://localhost:2929/api/v2/admin/purchases?user_id=${
+              this.state.userInfo.id
+            }`,
+            {
+              withCredentials: true
+            }
+          )
+          .then(res => {
+            // console.log(res);
+            this.setState({
+              courseInfo: res.data
+            });
+          })
+          .catch(err => {
+            console.log(err);
+            this.setState({
+              courseInfo: null
+            });
+          });
+      }
+  
+      if (userData) {
+        this.setState({
+          userFound: true
+        });
+      }
+    }
+    catch(e){
+      this.setState({
+        userFound: false
+      })
     }
   };
 
@@ -128,15 +124,20 @@ class Home extends React.Component {
     ) {
       // console.log(this.state.courseInfo, "hi");
       orders = this.state.courseInfo.completePayments.map(coursePurchased => {
-        console.log(coursePurchased, "heloooooooo");
+        // console.log(coursePurchased, "heloooooooo");
+        const date = moment(coursePurchased.created_at).format(
+          "MMMM Do YYYY,h:mm:ss a"
+        );
+        // console.log(date);
         if (coursePurchased.cart !== null) {
           coursePurchased.cart.transactions.map(transaction => {
-            console.log(transaction, "hello");
+            // console.log(transaction, "hello");
           });
 
           return coursePurchased.cart.transactions.map(transaction => {
             return (
               <CompleteOrders
+                date={date}
                 txn_id={transaction.id}
                 key={coursePurchased.id}
                 image={coursePurchased.product.image_url}
@@ -149,7 +150,7 @@ class Home extends React.Component {
                 payment_type={transaction.payment_type}
               />
             );
-            console.log(coursePurchased.cart.transaction.payment_type);
+            // console.log(coursePurchased.cart.transaction.payment_type);
           });
         }
       });
@@ -159,8 +160,13 @@ class Home extends React.Component {
       if (this.state.courseInfo && this.state.courseInfo.partialPayments) {
         orders = this.state.courseInfo.partialPayments.map(partialPurchase => {
           console.log(partialPurchase, "Ppsds");
+          const date = moment(partialPurchase.created_at).format(
+            "MMMM Do YYYY,h:mm:ss a"
+          );
           return (
             <InCompleteOrder
+              amountLeft={partialPurchase.amountLeft}
+              date={date}
               key={partialPurchase.id}
               image={partialPurchase.product.image_url}
               product_name={partialPurchase.product.name}
@@ -294,6 +300,7 @@ class Home extends React.Component {
                   type="email"
                   className="input-text mb-2"
                   placeholder="Enter email"
+                  value = {this.state.email}
                   onChange={this.handleChange}
                 />
                 <button

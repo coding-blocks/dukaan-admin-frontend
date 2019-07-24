@@ -2,6 +2,8 @@ import React from "react";
 import FieldWithElement from "./FieldWithElement";
 import "../styles/pages/admin/coupons.scss";
 import axios from "axios";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 class PartialPayments extends React.Component {
   constructor(props) {
@@ -24,23 +26,72 @@ class PartialPayments extends React.Component {
 
   handleSubmit = async e => {
     e.preventDefault();
-    const data = this.state.formValues;
+    Swal.fire({
+      title: "Are you sure you want to make a new payment?",
+      type: "question",
+      confirmButtonColor: "#f66",
+      confirmButtonText: "Yes!",
+      cancelButtonText: "No!",
+      showCancelButton: true,
+      showConfirmButton: true,
+      showCloseButton: true
+    }).then(result => {
+      if (result.value) {
+        // Confirmation passed, delete coupon.
+        const data = this.state.formValues;
+        var formBody = [];
+        for (var property in data) {
+          var encodedKey = encodeURIComponent(property);
+          var encodedValue = encodeURIComponent(data[property]);
+          formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
 
-    var formBody = [];
-    for (var property in data) {
-      var encodedKey = encodeURIComponent(property);
-      var encodedValue = encodeURIComponent(data[property]);
-      formBody.push(encodedKey + "=" + encodedValue);
-    }
-    formBody = formBody.join("&");
-
-    const response = await axios.post(
-      "http://localhost:2929/api/v2/admin/refunds",
-      formBody,
-      { withCredentials: true }
-    );
-    console.log(response);
+        axios
+          .post("http://localhost:2929/api/v2/admin/refunds", formBody, {
+            withCredentials: true
+          })
+          .then(() => {
+            console.log("Im in then");
+            Swal.fire({
+              title: "payment made!",
+              type: "success",
+              timer: "3000",
+              showConfirmButton: true,
+              confirmButtonText: "Okay"
+            });
+          })
+          .catch(err => {
+            console.log(err);
+            Swal.fire({
+              title: "Error while making payment!",
+              type: "error",
+              showConfirmButton: true
+            });
+          });
+      }
+    });
   };
+
+  // handleSubmit = async e => {
+  //   e.preventDefault();
+  //   const data = this.state.formValues;
+
+  //   var formBody = [];
+  //   for (var property in data) {
+  //     var encodedKey = encodeURIComponent(property);
+  //     var encodedValue = encodeURIComponent(data[property]);
+  //     formBody.push(encodedKey + "=" + encodedValue);
+  //   }
+  //   formBody = formBody.join("&");
+
+  //   const response = await axios.post(
+  //     "http://localhost:2929/api/v2/admin/refunds",
+  //     formBody,
+  //     { withCredentials: true }
+  //   );
+  //   console.log(response);
+  // };
 
   render() {
     const paymentMethod = () => {

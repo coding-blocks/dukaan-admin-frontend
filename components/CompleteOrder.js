@@ -2,6 +2,8 @@ import React from "react";
 import Modal from "./Modal";
 import FieldWithElement from "./FieldWithElement";
 import axios from "axios";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 class CompleteOrder extends React.Component {
   constructor(props) {
@@ -28,25 +30,54 @@ class CompleteOrder extends React.Component {
 
   handleSubmit = async e => {
     e.preventDefault();
-    const data = this.state.formValues;
+    this.setState({
+      showModal: false
+    });
+    Swal.fire({
+      title: "Are you sure you want to make a new payment?",
+      type: "question",
+      confirmButtonColor: "#f66",
+      confirmButtonText: "Yes!",
+      cancelButtonText: "No!",
+      showCancelButton: true,
+      showConfirmButton: true,
+      showCloseButton: true
+    }).then(result => {
+      if (result.value) {
+        // Confirmation passed, delete coupon.
+        const data = this.state.formValues;
+        var formBody = [];
+        for (var property in data) {
+          var encodedKey = encodeURIComponent(property);
+          var encodedValue = encodeURIComponent(data[property]);
+          formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
 
-    var formBody = [];
-    for (var property in data) {
-      var encodedKey = encodeURIComponent(property);
-      var encodedValue = encodeURIComponent(data[property]);
-      formBody.push(encodedKey + "=" + encodedValue);
-    }
-    formBody = formBody.join("&");
-
-    const response = await axios.post(
-      "http://localhost:2929/api/v2/admin/refunds",
-      formBody,
-      { withCredentials: true }
-    );
-    console.log(response);
-    // this.setState({
-    //   formValues: {}
-    // });
+        axios
+          .post("http://localhost:2929/api/v2/admin/refunds", formBody, {
+            withCredentials: true
+          })
+          .then(() => {
+            console.log("Im in then");
+            Swal.fire({
+              title: "payment made!",
+              type: "success",
+              timer: "3000",
+              showConfirmButton: true,
+              confirmButtonText: "Okay"
+            });
+          })
+          .catch(err => {
+            console.log(err);
+            Swal.fire({
+              title: "Error while making payment!",
+              type: "error",
+              showConfirmButton: true
+            });
+          });
+      }
+    });
   };
 
   openModalHandler = () => {
@@ -222,7 +253,9 @@ class CompleteOrder extends React.Component {
                   <div>Order Total</div>
                   <div className="font-md">₹ {this.props.amount}</div>
                 </div>
-                <div className="font-sm grey">Purchased on Wed Jun 12 2019</div>
+                <div className="font-sm grey">
+                  Purchased on {this.props.date}
+                </div>
               </div>
             </div>
             <div className="d-flex justify-content-between">

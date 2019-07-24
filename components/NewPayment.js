@@ -14,6 +14,7 @@ class NewPayment extends React.Component {
       products: [],
       product_category: "1",
       amount: "",
+      min_emi: "",
       formValues: {
         coupon: "",
         comment: "",
@@ -118,6 +119,17 @@ class NewPayment extends React.Component {
     });
   };
 
+  onChangeHandler = e => {
+    let newFormValues = this.state.formValues;
+    newFormValues[e.target.name] = e.target.value;
+    let min_emi = e.target.selectedOptions[0].dataset.emi / 100;
+    console.log(min_emi);
+    this.setState({
+      min_emi: min_emi,
+      formValues: newFormValues
+    });
+  };
+
   toggleCheck = e => {
     let newFormValues = this.state.formValues;
     newFormValues[e.target.name] = e.target.checked;
@@ -131,7 +143,6 @@ class NewPayment extends React.Component {
     e.preventDefault();
     Swal.fire({
       title: "Are you sure you want to make a new payment?",
-      html: `Center Opted for course: ${this.state.formValues.stateId}`,
       type: "question",
       confirmButtonColor: "#f66",
       confirmButtonText: "Yes!",
@@ -350,6 +361,7 @@ class NewPayment extends React.Component {
               name="product_category"
               onChange={this.handleProductCategory}
             >
+              <option selected>Select Category</option>
               {this.state.product_categories.map(category => (
                 <option value={category.id} key={category.id}>
                   {category.name}
@@ -364,11 +376,20 @@ class NewPayment extends React.Component {
             elementCols={9}
             elementClassName={"pl-4"}
           >
-            <select id="course" name="productId" onChange={this.onChangeValue}>
+            <select
+              id="course"
+              name="productId"
+              onChange={this.onChangeHandler}
+            >
+              <option selected>Select Course</option>
               {this.state.products.map(product => {
                 return (
-                  <option value={product.id} key={product.id} selected>
-                    {product.name} at Rs. {product.mrp}
+                  <option
+                    data-emi={product.emi_min_base}
+                    value={product.id}
+                    key={product.id}
+                  >
+                    {product.name} at Rs. {product.mrp / 100}
                   </option>
                 );
               })}
@@ -518,7 +539,7 @@ class NewPayment extends React.Component {
                 value={this.state.formValues.partialAmount}
               />
               <span className="red">
-                Partial amount cannot be less than Rs. 20
+                Partial amount cannot be less than Rs. {this.state.min_emi}
               </span>
             </FieldWithElement>
           ) : (

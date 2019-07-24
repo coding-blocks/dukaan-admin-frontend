@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 class InCompleteOrders extends React.Component {
   render() {
@@ -27,15 +28,16 @@ class InCompleteOrders extends React.Component {
                 <div>Order Total</div>
                 <div class="font-md">₹ {this.props.amount}</div>
               </div>
-              <div class="font-sm grey">
-                Purchased on {this.props.created_at.toString()}
-              </div>
+              <div class="font-sm grey">Purchased on {this.props.date}</div>
             </div>
           </div>
 
           <div class="extra-bold mt-4">
             <span class="font-mds red">Remaining Balance</span>
-            <span class="font-md ml-4 red"> ₹ {this.props.amount}</span>
+            <span class="font-md ml-4 red">
+              {" "}
+              ₹ {this.props.amountLeft / 100}
+            </span>
           </div>
 
           <div class="divider-h mt-4 mb-4" />

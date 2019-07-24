@@ -28,9 +28,17 @@ function ContinuePayment(props) {
   }, [props.cart_id, props.oneauthId]);
 
   const onChangeValue = e => {
-    let newFormValues = formValues;
-    newFormValues[e.target.name] = e.target.value;
-    setFormValues(newFormValues);
+    // let newFormValues = { [e.target.name]: e.target.value };
+    const name = e.target.name;
+    console.log(name, "mc");
+    const val = e.target.value;
+    console.log(formValues);
+    setFormValues(formValues => {
+      return {
+        ...formValues,
+        [name]: val
+      };
+    });
   };
 
   const handleSubmit = async e => {
@@ -86,6 +94,7 @@ function ContinuePayment(props) {
   };
 
   const PaymentMethod = () => {
+    console.log(formValues.paymentMode, "tttttttt");
     if (formValues.paymentMode === "cheque") {
       return (
         <div>
