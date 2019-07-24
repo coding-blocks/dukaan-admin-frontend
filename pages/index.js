@@ -5,8 +5,9 @@ import Layout from "../components/layout";
 import CompleteOrders from "../components/CompleteOrder";
 import AddUser from "../components/AddUser";
 import NewPayment from "../components/NewPayment";
+import CheckLogin from "../components/CheckLogin";
 // import "semantic-ui-css/semantic.min.css";
-// import axios from '../config'
+import "../controllers/config";
 import moment from "moment";
 import axios from "axios";
 import InCompleteOrder from "../components/InCompleteOrders";
@@ -59,10 +60,7 @@ class Home extends React.Component {
     let userData;
     try {
       userData = await axios.get(
-        `http://localhost:2929/api/v2/admin/users?email=${this.state.email}`,
-        {
-          withCredentials: true
-        }
+        `http://localhost:2929/api/v2/admin/users?email=${this.state.email}`
       )
       this.setState({
         userInfo: userData.data[0],
@@ -73,10 +71,7 @@ class Home extends React.Component {
           .get(
             `http://localhost:2929/api/v2/admin/purchases?user_id=${
               this.state.userInfo.id
-            }`,
-            {
-              withCredentials: true
-            }
+            }`
           )
           .then(res => {
             // console.log(res);
@@ -284,42 +279,42 @@ class Home extends React.Component {
     };
 
     return (
-      <div>
-        <Head title="Coding Blocks | Dukaan" />
-        <Layout />
-
-        {/* Search User */}
-        <div className="container mt-4">
-          <div className="row">
-            <div className="col-md-12 col-12">
-              <div style={{ display: "flex" }}>
-                <input
-                  name="email"
-                  required
-                  id="email"
-                  type="email"
-                  className="input-text mb-2"
-                  placeholder="Enter email"
-                  value = {this.state.email}
-                  onChange={this.handleChange}
-                />
-                <button
-                  id="search"
-                  className="button-solid ml-4 mb-1"
-                  style={{ fontSize: "1.3rem" }}
-                  onClick={this.handleSearch}
-                >
-                  Search
-                </button>
+      <CheckLogin>
+        <div>
+          <Head title="Coding Blocks | Dukaan" />
+          <Layout />
+          {/* Search User */}
+          <div className="container mt-4">
+            <div className="row">
+              <div className="col-md-12 col-12">
+                <div style={{ display: "flex" }}>
+                  <input
+                    name="email"
+                    required
+                    id="email"
+                    type="email"
+                    className="input-text mb-2"
+                    placeholder="Enter email"
+                    value = {this.state.email}
+                    onChange={this.handleChange}
+                  />
+                  <button
+                    id="search"
+                    className="button-solid ml-4 mb-1"
+                    style={{ fontSize: "1.3rem" }}
+                    onClick={this.handleSearch}
+                  >
+                    Search
+                  </button>
+                </div>
               </div>
+              {/* Form 2  */}
+              <Usercard />
+              {/* Order history card */}
             </div>
           </div>
-          {/* Form 2  */}
-          <Usercard />
-
-          {/* Order history card */}
         </div>
-      </div>
+      </CheckLogin>
     );
   }
 }

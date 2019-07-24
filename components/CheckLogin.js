@@ -1,0 +1,70 @@
+import React from 'react';
+import cookies from 'js-cookies';
+import jwt from 'jsonwebtoken';
+import Head from "./head";
+import Layout from "./layout";
+import Loader from './loader';
+import "../styles/components/CheckLogin.scss";
+
+class CheckLogin extends React.Component {
+  
+  constructor(props) {
+    super(props);
+    this.state = {
+      loggedIn: false,
+      loading: true
+    }
+  }
+
+  componentDidMount() {
+    const dukaanToken = cookies.getItem('dukaan-token');
+    if (dukaanToken) {
+      const userInfo = jwt.decode(dukaanToken);
+      if (userInfo && userInfo.data.oneauth_id) {
+        this.setState({
+          loggedIn: true,
+          loading: false
+        })
+      } else {
+        this.setState({
+          loggedIn: false,
+          loading: false
+        })
+      }
+    } else {
+      this.setState({
+        loggedIn: false,
+        loading: false
+      })
+    }
+  }
+  
+  render() {
+    if (this.state.loading) {
+      return (
+        <div>
+          <Head title={"Dukaan | Coding Blocks"} />
+          <Layout />
+          <Loader />
+        </div>
+      );
+    }
+    if (!this.state.loggedIn && !this.state.loading) {
+      return (
+        <div>
+          <Head title={"Dukaan | Coding Blocks"} />
+          <Layout />
+          <div className={"not-logged-in"}>
+            <h2>Welcome to Dukaan!</h2>
+            <h3>The page you are trying to view requires you to be logged in.</h3>
+            <h3><a href="/login" className={"red"}>Click here to login</a></h3>
+          </div>
+        </div>
+      );
+    } else {
+      return this.props.children;
+    }
+  } 
+}
+
+export default CheckLogin;

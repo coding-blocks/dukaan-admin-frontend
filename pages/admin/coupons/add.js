@@ -7,6 +7,7 @@ import FieldWithElement from '../../../components/FieldWithElement';
 import controller from '../../../controllers/admin/coupons';
 import "../../../styles/pages/admin/coupons.scss";
 import Swal from 'sweetalert2';
+import ProductsChooser from "../../../components/ProductsChooser";
 
 class AddCoupon extends React.Component {
 
@@ -15,14 +16,19 @@ class AddCoupon extends React.Component {
     this.state = {
       loading: false,
       queryParams: {
+        authority_doc: "Coding Blocks",
         code: "",
-        category: 'referral',
-        cashback: "",
-        mode: 'Flat',
-        amount: "",
-        left: "",
-        products: 'CB',
-        active: 'true'
+        products: [],
+        referrer_cashback: "",
+        allProducts: "false",
+        type: "online",
+        mode: "flat",
+        percentage: "",
+        amount: 0,
+        left: 0,
+        category: "referral",
+        active: "true",
+        referrer: ""
       },
     };
   }
@@ -48,6 +54,20 @@ class AddCoupon extends React.Component {
   };
 
   /**
+   * Callback function for ProductsChooser component that updates
+   * them in the state when ProductsChooser returns an array of 
+   * products added
+   * @param {array} products – Array of with the names of products
+   */
+  handleProductsChange = (products) => {
+    let queryParams = this.state.queryParams;
+    queryParams['products'] = products;
+    this.setState({
+      queryParams
+    })
+  }
+
+  /**
    * Method to handle saving of coupon
    */
   handleAddCoupon = (event) => {
@@ -60,20 +80,21 @@ class AddCoupon extends React.Component {
         loading: true
       });
       controller.handleAddCoupon(this.state.queryParams).then((response) => {
-        if (response == true) {
-          this.setState({
-            loading: false
-          });
-          Swal.fire({
-            title: "Coupon " + this.state.queryParams.code + " added!",
-            type: "success",
-            showConfirmButton: true
-          });
-        }
+        this.setState({
+          loading: false
+        });
+        Swal.fire({
+          title: "Coupon " + this.state.queryParams.code + " added!",
+          type: "success",
+          showConfirmButton: true
+        });
       }).catch((error) => {
+        this.setState({
+          loading: false
+        });
         Swal.fire({
           title: "Error adding coupon!",
-          text: "Error: " + error,
+          text: error,
           type: "error",
           showConfirmButton: true
         });
@@ -92,7 +113,7 @@ class AddCoupon extends React.Component {
               <Loader />
             }
             {!this.state.loading &&
-              <form id="addCouponForm">
+              <form id="addCouponForm" onSubmit={(e) => e.preventDefault()}>
                 <div className={"add-coupon-card"}>
 
                   {/* Title */}
@@ -107,6 +128,7 @@ class AddCoupon extends React.Component {
                       className="input-text"
                       placeholder="Enter Code"
                       name="code"
+                      defaultValue={this.state.queryParams.code}
                       onChange={this.handleQueryParamChange}
                       required
                     />
@@ -118,6 +140,7 @@ class AddCoupon extends React.Component {
                       id="category"
                       name="category"
                       onChange={this.handleQueryParamChange}
+                      defaultValue={this.state.queryParams.category}
                       required
                     >
                       <option value="referral">Referral</option>
@@ -127,15 +150,42 @@ class AddCoupon extends React.Component {
                     </select>
                   </FieldWithElement>
 
-                  {/* Cashback */}
-                  <FieldWithElement name={"Cashback"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                    <input
-                      type="text"
-                      className="input-text"
-                      placeholder="Enter Referrer Cashback"
-                      name="cashback"
-                      onChange={this.handleQueryParamChange}
-                      required
+                  {this.state.queryParams.category == "referral" &&
+                    <div>
+                      {/* Referrer ID */}
+                      <FieldWithElement name={"Referrer ID"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                        <input
+                          type="text"
+                          className="input-text"
+                          placeholder="Enter Referrer ID"
+                          name="referrer"
+                          onChange={this.handleQueryParamChange}
+                          required
+                        />
+                      </FieldWithElement>
+
+                      {/* Referrer Cashback */}
+                      <FieldWithElement name={"Cashback"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                        <input
+                          type="text"
+                          className="input-text"
+                          placeholder="Enter Referrer Cashback"
+                          name="referrer_cashback"
+                          onChange={this.handleQueryParamChange}
+                          defaultValue={this.state.queryParams.referrer_cashback}
+                          pattern="[0-9]{1,10}"
+                          title="Cashback must be a number"
+                          required
+                        />
+                      </FieldWithElement>
+                    </div>
+                  }
+
+                  {/* Products */}
+                  <FieldWithElement name={"Products"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    <ProductsChooser 
+                      productsCallback={this.handleProductsChange}
+                      multiple={true}
                     />
                   </FieldWithElement>
 
@@ -145,6 +195,7 @@ class AddCoupon extends React.Component {
                       id="mode"
                       name="mode"
                       onChange={this.handleQueryParamChange}
+                      defaultValue={this.state.queryParams.mode}
                       required
                     >
                       <option value="flat">Flat</option>
@@ -152,17 +203,41 @@ class AddCoupon extends React.Component {
                     </select>
                   </FieldWithElement>
 
-                  {/* Amount */}
-                  <FieldWithElement name={"Amount"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                    <input
-                      type="text"
-                      className={"input-text"}
-                      placeholder="Enter Amount"
-                      name="amount"
-                      onChange={this.handleQueryParamChange}
-                      required
-                    />
-                  </FieldWithElement>
+                  {this.state.queryParams.mode == "flat" && 
+                    /* Amount */
+                    <FieldWithElement 
+                      name={"Amount"} 
+                      nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <input
+                        type="text"
+                        className={"input-text"}
+                        placeholder="Enter Amount"
+                        name="amount"
+                        onChange={this.handleQueryParamChange}
+                        defaultValue={this.state.queryParams.amount}
+                        pattern="[0-9]{3,10}"
+                        title="Amount can only have 3 to 10 digit numbers"
+                        required
+                      />
+                    </FieldWithElement>
+                  }
+
+                  {this.state.queryParams.mode == "percentage" && 
+                    /* Percentage */
+                    <FieldWithElement 
+                      name={"Percentage"} 
+                      nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <input
+                        type="text"
+                        className={"input-text"}
+                        placeholder="Enter Percentage"
+                        name="percentage"
+                        defaultValue={this.state.queryParams.percentage}
+                        onChange={this.handleQueryParamChange}
+                        required
+                      />
+                    </FieldWithElement>
+                  }
 
                   {/* Left */}
                   <FieldWithElement name={"Left"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
@@ -172,20 +247,23 @@ class AddCoupon extends React.Component {
                       placeholder="Enter Left"
                       name="left"
                       onChange={this.handleQueryParamChange}
+                      defaultValue={this.state.queryParams.left}
+                      pattern="[0-9]{1,10}"
+                      title="Left can only have numbers"
                       required
                     />
                   </FieldWithElement>
 
-                  {/* Products */}
-                  <FieldWithElement name={"Products"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                    <input
-                      type="text"
-                      className={"input-text"}
-                      placeholder="Enter Products"
-                      name="products"
+                  {/* All Listed Products? */}
+                  <FieldWithElement name={"All Listed Products?"} nameCols={5} elementCols={7} elementClassName={"pl-4"}>
+                    <select
+                      name="allProducts"
                       onChange={this.handleQueryParamChange}
-                      required
-                    />
+                      defaultValue={this.state.queryParams.allProducts}
+                    >
+                      <option value={"false"}>No</option>
+                      <option value={"true"}>Yes</option>
+                    </select>
                   </FieldWithElement>
 
                   {/* Active */}
@@ -194,6 +272,7 @@ class AddCoupon extends React.Component {
                       id="active"
                       name="active"
                       onChange={this.handleQueryParamChange}
+                      defaultValue={this.state.queryParams.active}
                       required
                     >
                       <option value="true">True</option>

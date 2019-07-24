@@ -9,27 +9,23 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import EditCoupon from "./coupons/edit";
 import Pagination from "../../components/Pagination";
+import CheckLogin from "../../components/CheckLogin";
+import { randomBytes } from 'crypto';
+import ProductsChooser from '../../components/ProductsChooser';
 
 class Coupons extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      queryParams: {
-        code: "",
-        category: "referral",
-        product: "",
-        mode: "flat",
-        amount: "",
-        active: "true",
-        listed: "no",
-        resultsperpage: 10
-      },
+      queryParams: {},
       results: [],
-      results_meta: {
-        offset: 0,
-        count: 0
+      products: [],
+      pageInfoQuery: {
+        page: 1,
+        limit: 5
       },
+      pagesInfo: {},
       loading: false
     };
     this.ReactSwal = withReactContent(Swal);
@@ -59,11 +55,11 @@ class Coupons extends React.Component {
    * Callback for page change
    * @param {int} offset
    */
-  handleChangePage = (offset) => {
-    let results_meta = this.state.results_meta;
-    results_meta.offset = offset;
+  handleChangePage = (page) => {
+    let pageInfoQuery = this.state.pageInfoQuery;
+    pageInfoQuery['page'] = page;
     this.setState({
-      results_meta: results_meta
+      pageInfoQuery
     });
     this.handleCouponSearch();
   }
@@ -74,14 +70,20 @@ class Coupons extends React.Component {
   handleCouponSearch = () => {
     this.setState({
       loading: true
-    });
-    controller.handleGetCoupons(this.state.queryParams, this.state.results_meta).then((response) => {
+    })
+    controller.handleGetCoupons(this.state.queryParams, this.state.pageInfoQuery).then((response) => {
       this.setState({
         loading: false,
         results: response.results,
-        results_meta: response.meta
+        products: response.products,
+        pagesInfo: response.pagesInfo
       });
-    }).catch(() => {
+    }).catch((error) => {
+      Swal.fire({
+        type: 'error',
+        title: 'Error while fetching coupons!',
+        text: error
+      });
       this.setState({
         loading: false
       });
@@ -122,7 +124,6 @@ class Coupons extends React.Component {
             confirmButtonText: "Okay"
           });
         }).catch((error) => {
-          console.log("PROMISE REJECT");
           Swal.fire({
             title: "Error while deleting coupon!",
             html: "Error: " + error,
@@ -145,6 +146,15 @@ class Coupons extends React.Component {
               coupon={coupon}
               callback={(newCoupon) => {
                 this.ReactSwal.close();
+                Swal.mixin({
+                  toast: true,
+                  position: "center",
+                  showConfirmButton: false,
+                  timer: 3000
+                }).fire({
+                  type: 'success',
+                  title: 'Coupon Edited Successfully'
+                })
                 let coupons = this.state.results;
                 let couponIndex = this.state.results.indexOf(coupon);
                 coupons[couponIndex] = newCoupon;
@@ -158,248 +168,293 @@ class Coupons extends React.Component {
     });
   }
 
+  /**
+   * Callback function for ProductsChooser component that updates
+   * them in the state when ProductsChooser returns an array of 
+   * products added
+   * @param {int} productID – ID of the product
+   */
+  handleProductsChange = (productID) => {
+    let queryParams = this.state.queryParams;
+    queryParams['product'] = productID.toString();
+    this.setState({
+      queryParams
+    })
+  }
+
   render() {
     return (
-      <div>
-        <Head title="Coding Blocks | Dukaan | Coupons" />
-        <Layout />
-        <div className={"d-flex mr-5 pr-5"}>
-          <div className={"d-flex align-items-center col-md-4 mt-2 ml-5"}>
-            <div className={"border-card coupon-card mt-2"}>
-              {/* Title */}
-              <div className={"d-flex justify-content-center mt-1 pb-3"}>
-                <h2 className={"title"}>
-                    Search Coupons
-                </h2>
-              </div>
-
-              {/* Code */}
-              <FieldWithElement
-
-                nameCols={3}
-                elementCols={9}
-                name={"Code"}>
-
-              <input
-                  type="text"
-                  className={"input-text"}
-                  placeholder="Enter Code"
-                  name={"code"}
-                  onChange={this.handleQueryParamChange}
-                />
-              </FieldWithElement>
-
-
-              {/* Categories */}
-              <FieldWithElement
-                name={"Category"}
-                nameCols={3}
-                elementCols={9}
-                elementClassName={"pl-4"}
-              >
-                <select
-                  id="category"
-                  name="category"
-                  onChange={this.handleQueryParamChange}
-                >
-                  <option value="">All Categories</option>
-                  <option value="referral">Referral</option>
-                  <option value="campus_ambassador">Campus Ambassador</option>
-                  <option value="campaign">Campaign</option>
-                  <option value="special_discount">Special Discount</option>
-                </select>
-              </FieldWithElement>
-
-
-              {/* Products */}
-              <FieldWithElement
-                name={"Products"}
-                nameCols={3}
-                elementCols={9}
-                elementClassName={"pl-4"}
-              >
-                <select
-                  id="product"
-                  name="product"
-                  onChange={this.handleQueryParamChange}
-                >
-                  <option value="">All Products</option>
-                </select>
-              </FieldWithElement>
-
-
-              {/* Mode */}
-              <FieldWithElement
-                name={"Mode"}
-                nameCols={3}
-                elementCols={9}
-                elementClassName={"pl-4"}
-              >
-                <select
-                  id="mode"
-                  name="mode"
-                  onChange={this.handleQueryParamChange}
-                >
-                  <option value="">All Modes</option>
-                  <option value="flat">Flat</option>
-                  <option value="percentage">Percentage</option>
-                </select>
-              </FieldWithElement>
-
-
-              {/* Amount */}
-              <FieldWithElement
-                name={"Amount"}
-                nameCols={3}
-                elementCols={9}
-                elementClassName={"pl-4"}
-              >
-                <input
-                  type="text"
-                  className={"input-text"}
-                  placeholder="Enter Amount"
-                  name="amount"
-                  onChange={this.handleQueryParamChange}
-                />
-              </FieldWithElement>
-
-              {/* Active */}
-              <FieldWithElement
-                name={"Active"}
-                nameCols={3}
-                elementCols={9}
-                elementClassName={"pl-4"}
-              >
-                <select
-                  id="active"
-                  name="active"
-                  onChange={this.handleQueryParamChange}
-                >
-                  <option value="true">True</option>
-                  <option value="false">False</option>
-                </select>
-              </FieldWithElement>
-
-
-              {/* Show only listed products? */}
-              <FieldWithElement
-                name={"Show only listed products?"}
-                nameCols={7}
-                elementCols={5}
-                elementClassName={"pl-4"}
-              >
-                <select
-                  id="listed"
-                  name="listed"
-                  onChange={this.handleQueryParamChange}
-                >
-                  <option value="no">No</option>
-                  <option value="yes">Yes</option>
-                </select>
-              </FieldWithElement>
-
-
-              {/* Results per page */}
-              <FieldWithElement
-                name={"Results per page"}
-                nameCols={5}
-                elementCols={7}
-                elementClassName={"pl-4"}
-              >
-                <input
-                  type="text"
-                  className={"input-text"}
-                  placeholder="Enter Results Per Page..."
-                  name="resultsperpage"
-                  defaultValue={10}
-                  onChange={this.handleQueryParamChange}
-                />
-              </FieldWithElement>
-
-              <div className={"d-flex justify-content-center"}>
-                <button
-                  id="search"
-                  className={"button-solid ml-4 mb-2 mt-4 pl-5 pr-5"}
-                  onClick={this.handleCouponSearch}
-                >
-                  Search
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {!this.state.loading && this.state.results.length > 0 &&
-            <div className={"d-flex ml-4 mt-3 col-md-8"}>
-              <div className={"border-card"}>
+      <CheckLogin>
+        <div>
+          <Head title="Coding Blocks | Dukaan | Coupons" />
+          <Layout />
+          <div className={"d-flex align-items-center mr-5 pr-5"}>
+            <div className={"d-flex col-4 mt-2 ml-5"}>
+              <div className={"border-card coupon-card"}>
                 {/* Title */}
-                <div className={"d-flex justify-content-center mt-1"}>
-                  <h2 className={"title"}>Coupon Results</h2>
+                <div className={"d-flex justify-content-center mt-1 pb-3"}>
+                  <h2 className={"title"}>
+                      Search Coupons
+                  </h2>
                 </div>
-                {/* Results Table */}
-                <div className={"c-overview-leaderboard coupons-results"}>
-                  <table className={"table table-responsive coupons-results-table"}>
-                    <thead>
-                      <tr>
-                        <th>Code</th>
-                        <th>Category</th>
-                        <th>Referrer Cashback</th>
-                        <th>Mode</th>
-                        <th>Amount</th>
-                        <th>Left</th>
-                        <th>Products</th>
-                        <th>Active</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {this.state.results.map(coupon => (
-                          <tr>
-                            <td>{coupon.code}</td>
-                            <td>{coupon.category}</td>
-                            <td>{coupon.cashback}</td>
-                            <td>{coupon.mode}</td>
-                            <td>{coupon.amount}</td>
-                            <td>{coupon.left}</td>
-                            <td>{coupon.products}</td>
-                            <td>{coupon.active}</td>
-                            <td>
-                              <button
-                                className={"button-solid btn btn-default"}
-                                onClick={() => {this.handleEditCoupon(coupon)}}>
-                                Edit
-                              </button>
-                            </td>
-                            <td>
-                              <button
-                                className={"button-solid btn btn-default"}
-                                onClick={() => {this.handleDeleteCoupon(coupon)}}>
-                                Delete
-                              </button>
-                            </td>
-                          </tr>
-                        )
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-                <div class={"col-md-12 pt-4"}>
-                  <Pagination 
-                    count={this.state.results_meta.count}
-                    limit={this.state.queryParams.resultsperpage}
-                    changePageCallback={this.handleChangePage}
+
+                {/* Code */}
+                <FieldWithElement
+                  nameCols={3}
+                  elementCols={9}
+                  name={"Code"}>
+
+                  <input
+                    type="text"
+                    className={"input-text"}
+                    placeholder="Enter Code"
+                    name={"code"}
+                    onChange={this.handleQueryParamChange}
                   />
+                </FieldWithElement>
+
+
+                {/* Categories */}
+                <FieldWithElement
+                  name={"Category"}
+                  nameCols={3}
+                  elementCols={9}
+                  elementClassName={"pl-4"}
+                >
+                  <select
+                    id="category"
+                    name="category"
+                    onChange={this.handleQueryParamChange}
+                  >
+                    <option value="">All Categories</option>
+                    <option value="referral">Referral</option>
+                    <option value="campus_ambassador">Campus Ambassador</option>
+                    <option value="campaign">Campaign</option>
+                    <option value="special_discount">Special Discount</option>
+                  </select>
+                </FieldWithElement>
+
+
+                {/* Products */}
+                <FieldWithElement
+                  name={"Products"}
+                  nameCols={3}
+                  elementCols={9}
+                  elementClassName={"pl-4"}
+                >
+                  <ProductsChooser
+                    productsCallback={this.handleProductsChange}
+                    all={true}
+                    multiple={false}
+                  />
+                </FieldWithElement>
+
+
+                {/* Mode */}
+                <FieldWithElement
+                  name={"Mode"}
+                  nameCols={3}
+                  elementCols={9}
+                  elementClassName={"pl-4"}
+                >
+                  <select
+                    id="mode"
+                    name="mode"
+                    onChange={this.handleQueryParamChange}
+                  >
+                    <option value="">All Modes</option>
+                    <option value="flat">Flat</option>
+                    <option value="percentage">Percentage</option>
+                  </select>
+                </FieldWithElement>
+
+
+                {/* Amount */}
+                <FieldWithElement
+                  name={"Amount"}
+                  nameCols={3}
+                  elementCols={9}
+                  elementClassName={"pl-4"}
+                >
+                  <input
+                    type="text"
+                    className={"input-text"}
+                    placeholder="Enter Amount"
+                    name="amount"
+                    onChange={this.handleQueryParamChange}
+                  />
+                </FieldWithElement>
+
+                {/* Active */}
+                <FieldWithElement
+                  name={"Active"}
+                  nameCols={3}
+                  elementCols={9}
+                  elementClassName={"pl-4"}
+                >
+                  <select
+                    id="active"
+                    name="active"
+                    onChange={this.handleQueryParamChange}
+                  >
+                    <option value="true">True</option>
+                    <option value="false">False</option>
+                  </select>
+                </FieldWithElement>
+
+
+                {/* Show only listed products? */}
+                <FieldWithElement
+                  name={"Show only listed products?"}
+                  nameCols={7}
+                  elementCols={5}
+                  elementClassName={"pl-4"}
+                >
+                  <select
+                    id="listed"
+                    name="listed"
+                  >
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                  </select>
+                </FieldWithElement>
+
+
+                {/* Results per page */}
+                <FieldWithElement
+                  name={"Results per page"}
+                  nameCols={5}
+                  elementCols={7}
+                  elementClassName={"pl-4"}
+                >
+                  <input
+                    type="text"
+                    className={"input-text"}
+                    placeholder="Enter Results Per Page..."
+                    name="limit"
+                    defaultValue={5}
+                    onChange={(event) => { 
+                      let pageInfoQuery = this.state.pageInfoQuery;
+                      pageInfoQuery['limit'] = event.target.value;
+                      this.setState({
+                        pageInfoQuery
+                      });
+                    }}
+                  />
+                </FieldWithElement>
+
+                <div className={"d-flex justify-content-center"}>
+                  <button
+                    id="search"
+                    className={"button-solid ml-4 mb-2 mt-4 pl-5 pr-5"}
+                    onClick={this.handleCouponSearch}
+                  >
+                    Search
+                  </button>
                 </div>
               </div>
             </div>
-          }
-          {this.state.loading &&
-            <div className={"border-card mt-3"}>
-              <Loader />
-            </div>
-          }
+
+            {!this.state.loading && this.state.results.length > 0 &&
+              <div className={"d-flex ml-3 mt-3 col-md-8"}>
+                <div className={"border-card"}>
+                  {/* Title */}
+                  <div className={"d-flex justify-content-center mt-1"}>
+                    <h2 className={"title"}>Coupon Results</h2>
+                  </div>
+                  {/* Results Table */}
+                  <div className={"c-overview-leaderboard coupons-results"}>
+                    <table className={"table table-responsive coupons-results-table"}>
+                      <thead>
+                        <tr className={"red"}>
+                          <th>Code</th>
+                          <th>Category</th>
+                          <th>Referrer Cashback</th>
+                          <th>Mode</th>
+                          <th>Amount</th>
+                          <th>Left</th>
+                          <th>Products</th>
+                          <th>Active</th>
+                          <th>Edit</th>
+                          <th>Delete</th>
+                        </tr>
+                      </thead>
+                      <tbody className={`t-align-c`}>
+                        {this.state.results.map(coupon => (
+                            <tr key={coupon.id}>
+                              <td>{coupon.code}</td>
+                              <td>
+                              {coupon.category == "referral" && 
+                                "Referral"
+                              }
+                              {coupon.category == "campus_ambassador" && 
+                                "Campus Ambassador"
+                              }
+                              {coupon.category == "campaign" && 
+                                "Campaign"
+                              }
+                              {coupon.category == "special_discount" && 
+                                "Special Discount"
+                              }
+                              </td>
+                              <td>{coupon.referrer_cashback}</td>
+                              <td>
+                                {coupon.mode == "flat" &&
+                                  "Flat"
+                                }
+                                {coupon.mode == "percentage" &&
+                                  "Percentage"
+                                }
+                              </td>
+                              {(coupon.mode == "flat") && 
+                                <td>{coupon.amount}</td>
+                              }
+                              {coupon.mode == "percentage" && 
+                                <td>{coupon.percentage}%</td>
+                              }
+                              <td>{coupon.left}</td>
+                              <td>{coupon.products.length}</td>
+                              <td>
+                                {coupon.active && "True"}
+                                {!coupon.active && "False"}
+                              </td>
+                              <td>
+                                <button
+                                  className={"button-solid btn btn-default"}
+                                  onClick={() => {this.handleEditCoupon(coupon)}}>
+                                  Edit
+                                </button>
+                              </td>
+                              <td>
+                                <button
+                                  className={"button-solid btn btn-default"}
+                                  onClick={() => {this.handleDeleteCoupon(coupon)}}>
+                                  Delete
+                                </button>
+                              </td>
+                            </tr>
+                          )
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className={"col-md-12 pt-4"}>
+                    <Pagination 
+                      pagesInfo={this.state.pagesInfo}
+                      changePageCallback={this.handleChangePage}
+                    />
+                  </div>
+                </div>
+              </div>
+            }
+            {this.state.loading &&
+              <div className={"border-card mt-3 loading-container"}>
+                <Loader />
+              </div>
+            }
+          </div>
         </div>
-      </div>
+      </CheckLogin>
     );
   }
 }
