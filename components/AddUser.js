@@ -2,6 +2,9 @@ import React from "react";
 import FieldWithElement from "./FieldWithElement";
 import "../styles/pages/admin/coupons.scss";
 import axios from "axios";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
 
 class AddUser extends React.Component {
   constructor(props) {
@@ -14,7 +17,7 @@ class AddUser extends React.Component {
       formValues: {
         username: "",
         firstname: "",
-        lastname: "male",
+        lastname: "",
         gender: "",
         dial_code: "+91",
         collegeId: "",
@@ -61,39 +64,67 @@ class AddUser extends React.Component {
     });
   };
 
-  handleSubmit = e => {
+  handleSubmit = async e => {
     e.preventDefault();
-    const data = this.state.formValues;
+    Swal.fire({
+      title: "Are you sure you want to add a user?",
+      type: "question",
+      html:`Username: ${this.state.formValues.username}<br/>Name : ${this.state.formValues.firstname} ${this.state.formValues.lastname}<br/> Phone: ${this.state.formValues.mobile_number}<br/>Email Id: ${this.state.formValues.email}<br/>`,
+      confirmButtonColor: "#f66",
+      confirmButtonText: "Yes!",
+      cancelButtonText: "No!",
+      showCancelButton: true,
+      showConfirmButton: true,
+      showCloseButton: true
+    }).then(result => {
+      if (result.value) {
+        // Confirmation passed
+        const data = this.state.formValues;
+        var formBody = [];
+        for (var property in data) {
+          var encodedKey = encodeURIComponent(property);
+          var encodedValue = encodeURIComponent(data[property]);
+          formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
 
-    var formBody = [];
-    for (var property in data) {
-      var encodedKey = encodeURIComponent(property);
-      var encodedValue = encodeURIComponent(data[property]);
-      formBody.push(encodedKey + "=" + encodedValue);
-    }
-    formBody = formBody.join("&");
-
-    axios
-      .post("http://localhost:2929/api/v2/admin/users", formBody, {
-        withCredentials:true
-      })
-      .then(() => {
-        this.setState({
-          formValues: {
-            username: "",
-            firstname: "",
-            lastname: "",
-            gender: "",
-            dial_code: "",
-            collegeId: "",
-            branchId: "",
-            mobile_number: "",
-            email: ""
-          }
-        });
-      });
-    // console.log(response);
+        axios
+          .post("http://localhost:2929/api/v2/admin/users", formBody, {
+            withCredentials: true
+          })
+          .then(() => {
+            Swal.fire({
+              title: "User added!",
+              type: "success",
+              timer: "3000",
+              showConfirmButton: true,
+              confirmButtonText: "Okay"
+            });
+            this.setState({
+              formValues: {
+                username: "",
+                firstname: "",
+                lastname: "",
+                gender: "",
+                dial_code: "",
+                collegeId: "",
+                branchId: "",
+                mobile_number: "",
+                email: ""
+              }
+            });
+          })
+          .catch(err => {
+            Swal.fire({
+              title: "Error while adding user!",
+              type: "error",
+              showConfirmButton: true
+            });
+          });
+      }
+    });
   };
+
 
   render() {
     return (
