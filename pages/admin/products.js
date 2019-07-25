@@ -9,6 +9,7 @@ import controller from "../../controllers/admin/products.js";
 import Loader from '../../components/loader';
 import Pagination from "../../components/Pagination";
 import EditProduct from "./products/edit";
+import Formatter from '../../helpers/formatter';
 
 class Products extends React.Component {
 
@@ -215,8 +216,8 @@ class Products extends React.Component {
                               <span className={"name"}>{p.name}</span>
                             </td>
                             <td className={"product-description"}>{p.description}</td>
-                            <td>{p.mrp}</td>
-                            <td>{p.list_price}</td>
+                            <td>{Formatter.formatCurrency(p.mrp)}</td>
+                            <td>{Formatter.formatCurrency(p.list_price)}</td>
                             <td>{p.display_slug}</td>
                             <td>{p.listed && "Yes"}{!p.listed && "No"}</td>
                             <td>
