@@ -5,11 +5,16 @@ import Loader from "../components/loader";
 import config from "../config";
 import axios from 'axios';
 import cookies from 'js-cookies';
+import ErrorHandler from "../helpers/ErrorHandler";
 
 class Auth extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      loading: true,
+      errorMessage: ''
+    }
   }
 
   componentDidMount() {
@@ -20,7 +25,10 @@ class Auth extends React.Component {
         window.location = '/';
       }
     }).catch((error) => {
-      console.log(error);
+      this.setState({
+        loading: false,
+        errorMessage: ErrorHandler.handle(error)
+      });
     });
   }
 
@@ -29,7 +37,17 @@ class Auth extends React.Component {
       <div>
         <Head title={"Authenticating... | Dukaan | Coding Blocks"} />
         <Layout />
-        <Loader />
+        {this.state.loading &&
+          <Loader />
+        }
+        {!this.state.loading && this.state.errorMessage.length > 0 &&
+          <div className={"mt-5"}>
+            <h3 align={"center"}>
+              {this.state.errorMessage}<br />
+              Please try logging in here by <a href="/login" className={"red"}>clicking here</a>, or contact the dev team for assistance.
+            </h3>
+          </div>
+        }
       </div>
     )
   }
