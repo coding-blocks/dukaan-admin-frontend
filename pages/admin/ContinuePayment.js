@@ -1,7 +1,6 @@
 import React from "react";
 import Head from "../../components/head";
 import Layout from "../../components/layout";
-import axios from "axios";
 import ContinuePayment from "../../components/ContinuePayment";
 
 class continuePayment extends React.Component {

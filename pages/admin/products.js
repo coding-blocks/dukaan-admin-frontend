@@ -5,7 +5,7 @@ import "../../styles/pages/admin/products.scss";
 import FieldWithElement from '../../components/FieldWithElement';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import controller from "../../controllers/admin/products.js";
+import controller from "../../controllers/products.js";
 import Loader from '../../components/loader';
 import Pagination from "../../components/Pagination";
 import EditProduct from "./products/edit";

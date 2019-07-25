@@ -4,13 +4,12 @@ import Layout from "../../components/layout";
 import "../../styles/pages/admin/coupons.scss";
 import FieldWithElement from '../../components/FieldWithElement';
 import Loader from '../../components/loader';
-import controller from "../../controllers/admin/coupons.js";
+import controller from "../../controllers/coupons";
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import EditCoupon from "./coupons/edit";
 import Pagination from "../../components/Pagination";
 import CheckLogin from "../../components/CheckLogin";
-import { randomBytes } from 'crypto';
 import ProductsChooser from '../../components/ProductsChooser';
 import Formatter from '../../helpers/formatter';
 
