@@ -12,6 +12,7 @@ import Pagination from "../../components/Pagination";
 import CheckLogin from "../../components/CheckLogin";
 import { randomBytes } from 'crypto';
 import ProductsChooser from '../../components/ProductsChooser';
+import Formatter from '../../helpers/formatter';
 
 class Coupons extends React.Component {
 
@@ -397,7 +398,7 @@ class Coupons extends React.Component {
                                 "Special Discount"
                               }
                               </td>
-                              <td>{coupon.referrer_cashback}</td>
+                              <td>{Formatter.formatCurrency(coupon.referrer_cashback)}</td>
                               <td>
                                 {coupon.mode == "flat" &&
                                   "Flat"
@@ -407,13 +408,13 @@ class Coupons extends React.Component {
                                 }
                               </td>
                               {(coupon.mode == "flat") && 
-                                <td>{coupon.amount}</td>
+                                <td>{Formatter.formatCurrency(coupon.amount)}</td>
                               }
                               {coupon.mode == "percentage" && 
                                 <td>{coupon.percentage}%</td>
                               }
-                              <td>{coupon.left}</td>
-                              <td>{coupon.products.length}</td>
+                              <td>{Formatter.format(coupon.left)}</td>
+                              <td>{Formatter.format(coupon.products.length)}</td>
                               <td>
                                 {coupon.active && "True"}
                                 {!coupon.active && "False"}
