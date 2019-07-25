@@ -29,10 +29,7 @@ class PartialHistory extends React.Component {
 
     axios
       .get(
-        `http://localhost:2929/api/v2/admin/purchases/partial?userId=${userid}&cartId=${cart_id}`,
-        {
-          withCredentials: true
-        }
+        `http://localhost:2929/api/v2/admin/purchases/partial?userId=${userid}&cartId=${cart_id}`
       )
       .then(res => {
         console.log(res.data.PartialPayments);

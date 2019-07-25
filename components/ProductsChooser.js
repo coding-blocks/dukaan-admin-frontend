@@ -42,7 +42,7 @@ class ProductsChooser extends React.Component {
     }
 
     // Fetch all products
-    axios.get('/api/products?limit=100').then((results) => {
+    axios.get('/api/v2/admin/products?limit=100').then((results) => {
       this.setState({
         productsList: results.data.products
       });
