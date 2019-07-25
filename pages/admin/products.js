@@ -125,64 +125,65 @@ class Products extends React.Component {
         <Layout />
         <div className={"mr-5 pr-5"}>
           {/* Product Search */}
-          <div className={"mt-5 ml-5 col-12"}>
-            <div className={"border-card"}>
-              
-              {/* Title */}
-              <div className={"d-flex justify-content-center mt-1 pb-3"}>
-                <h2 className={"title"}>
-                    Search Products
-                </h2>
-              </div>
+          <div className={"d-flex justify-content-center"}>
+            <div className={"mt-5 ml-5 col-4"}>
+              <div className={"border-card"}>
+                
+                {/* Title */}
+                <div className={"d-flex justify-content-center mt-1 pb-3"}>
+                  <h2 className={"title"}>
+                      Search Products
+                  </h2>
+                </div>
 
-              {/* Name */}
-              <FieldWithElement
-                nameCols={3}
-                elementCols={9}
-                name={"Name"}
-              >
-                <input
-                  type="text"
-                  className={"input-text"}
-                  placeholder="Enter Product Name"
-                  name={"name"}
-                  onChange={this.handleQueryParamChange}
-                />
-              </FieldWithElement>
-
-              {/* Results per page */}
-              <FieldWithElement
-                name={"Results per page"}
-                nameCols={5}
-                elementCols={7}
-                elementClassName={"pl-4"}
-              >
-                <input
-                  type="text"
-                  className={"input-text"}
-                  placeholder="Enter Results Per Page..."
-                  name="limit"
-                  defaultValue={5}
-                  onChange={(event) => { 
-                    let pageInfoQuery = this.state.pageInfoQuery;
-                    pageInfoQuery['limit'] = event.target.value;
-                    this.setState({
-                      pageInfoQuery
-                    });
-                  }}
-                />
-              </FieldWithElement>
-              
-              <div className={"d-flex justify-content-center"}>
-                <button
-                  id="search"
-                  className={"button-solid ml-4 mb-2 mt-4 pl-5 pr-5"}
-                  onClick={this.handleProductSearch}
+                {/* Name */}
+                <FieldWithElement
+                  nameCols={3}
+                  elementCols={9}
+                  name={"Name"}
                 >
-                  Search
-                </button>
-              </div>
+                  <input
+                    type="text"
+                    className={"input-text"}
+                    placeholder="Enter Product Name"
+                    name={"name"}
+                    onChange={this.handleQueryParamChange}
+                  />
+                </FieldWithElement>
 
+                {/* Results per page */}
+                <FieldWithElement
+                  name={"Results per page"}
+                  nameCols={5}
+                  elementCols={7}
+                  elementClassName={"pl-4"}
+                >
+                  <input
+                    type="text"
+                    className={"input-text"}
+                    placeholder="Enter Results Per Page..."
+                    name="limit"
+                    defaultValue={5}
+                    onChange={(event) => { 
+                      let pageInfoQuery = this.state.pageInfoQuery;
+                      pageInfoQuery['limit'] = event.target.value;
+                      this.setState({
+                        pageInfoQuery
+                      });
+                    }}
+                  />
+                </FieldWithElement>
+                
+                <div className={"d-flex justify-content-center"}>
+                  <button
+                    id="search"
+                    className={"button-solid ml-4 mb-2 mt-4 pl-5 pr-5"}
+                    onClick={this.handleProductSearch}
+                  >
+                    Search
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           {/* Product Results */}
