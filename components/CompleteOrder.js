@@ -229,13 +229,10 @@ class CompleteOrder extends React.Component {
     return (
       <div>
         {this.state.showModal ? this.ModalForm() : ""}
-        <div
-          className="row justify-content-center p-4"
-          id="complete_orders_section"
-        >
+        <div className="row justify-content-center p-4">
           <div className="border-card pt-4 mb-4">
             <div className="row justify-content-between align-items-center">
-              <div className="img-desc col-md-7 col-12 mb-4 mb-md-0">
+              <div className="img-desc col-md-8 col-12 mb-4 mb-md-0">
                 <div className="col-md-3 col-4">
                   <img className="round" src={this.props.image} alt="" />
                 </div>

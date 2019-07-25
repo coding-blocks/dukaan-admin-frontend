@@ -4,6 +4,7 @@ import cookies from 'js-cookies';
 import jwt from 'jsonwebtoken';
 import config from '../config';
 import "../styles/components/layout.scss";
+import Router from 'next/router';
 
 class Layout extends React.Component {
 
@@ -37,7 +38,7 @@ class Layout extends React.Component {
             <i className="hamburger fas fa-bars" />
           </span>
           <span className="logo-parent">
-            <Link href="/">
+            <Link href="/" onClick={() => Router.push('/')}>
               <a className="logo-link">
                 <img src="/static/img/dukaan.png" className="nav-logo pointer" />
               </a>

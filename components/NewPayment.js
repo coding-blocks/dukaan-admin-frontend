@@ -2,6 +2,7 @@ import React from "react";
 import FieldWithElement from "./FieldWithElement";
 import "../styles/pages/admin/coupons.scss";
 import axios from "axios";
+import "../controllers/config";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -75,16 +76,12 @@ class NewPayment extends React.Component {
     }
     formBody = formBody.join("&");
 
-    axios
-      .post("http://localhost:2929/api/v2/admin/products/calculate", formBody, {
-        withCredentials: true
-      })
-      .then(res => {
-        console.log(res.data.amount);
-        this.setState({
-          amount: res.data.amount
-        });
+    axios.post("/api/v2/admin/products/calculate", formBody).then(res => {
+      console.log(res.data.amount);
+      this.setState({
+        amount: res.data.amount
       });
+    });
   };
 
   handleProductCategory = e => {
@@ -94,10 +91,7 @@ class NewPayment extends React.Component {
     let productCategory = e.target.value;
     axios
       .get(
-        `http://localhost:2929/api/products?page=1&limit=10&offset=20&product_category_id=${productCategory}`,
-        {
-          withCredentials: true
-        }
+        `/api/products?page=1&limit=10&offset=20&product_category_id=${productCategory}`
       )
       .then(res => {
         console.log(res.data);
@@ -163,9 +157,7 @@ class NewPayment extends React.Component {
         formBody = formBody.join("&");
 
         axios
-          .post("http://localhost:2929/api/v2/admin/purchases", formBody, {
-            withCredentials: true
-          })
+          .post("/api/v2/admin/purchases", formBody)
           .then(() => {
             console.log("Im in then");
             Swal.fire({

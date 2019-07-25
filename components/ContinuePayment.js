@@ -4,6 +4,7 @@ import "../styles/pages/admin/coupons.scss";
 import axios from "axios";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import '../controllers/config'
 
 function ContinuePayment(props) {
   console.log(props);
@@ -69,11 +70,8 @@ function ContinuePayment(props) {
 
     try {
       await axios.post(
-        "http://localhost:2929/api/v2/admin/purchases",
+        "/api/v2/admin/purchases",
         formBody,
-        {
-          withCredentials: true
-        }
       );
       console.log("Im in then");
       Swal.fire({

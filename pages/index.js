@@ -13,6 +13,7 @@ import axios from "axios";
 import InCompleteOrder from "../components/InCompleteOrders";
 import PartialPayments from "../components/PartialPayments";
 import { resolve } from "url";
+import '../controllers/config'
 
 class Home extends React.Component {
   constructor(props) {
@@ -60,16 +61,16 @@ class Home extends React.Component {
     let userData;
     try {
       userData = await axios.get(
-        `http://localhost:2929/api/v2/admin/users?email=${this.state.email}`
-      )
+        `/api/v2/admin/users?email=${this.state.email}`
+      );
       this.setState({
-        userInfo: userData.data[0],
+        userInfo: userData.data[0]
       });
-  
+
       if (this.state.userInfo) {
         axios
           .get(
-            `http://localhost:2929/api/v2/admin/purchases?user_id=${
+            `/api/v2/admin/purchases?user_id=${
               this.state.userInfo.id
             }`
           )
@@ -86,17 +87,16 @@ class Home extends React.Component {
             });
           });
       }
-  
+
       if (userData) {
         this.setState({
           userFound: true
         });
       }
-    }
-    catch(e){
+    } catch (e) {
       this.setState({
         userFound: false
-      })
+      });
     }
   };
 
@@ -168,6 +168,7 @@ class Home extends React.Component {
               amount={partialPurchase.amount / 100}
               created_at={partialPurchase.created_at}
               userid={this.state.userInfo.id}
+              oneauthid={this.state.userInfo.oneauth_id}
               cart_id={partialPurchase.cart_id}
             />
           );
@@ -180,80 +181,75 @@ class Home extends React.Component {
     const Usercard = () => {
       if (this.state.userFound && this.state.userInfo) {
         return (
-          <div className=" mt-4">
-            <div className="row w-100">
-              <div className="col-md-4 col-12">
-                <div className="border-card br-20 bg-light-grey mb-5">
-                  <h5>User Details</h5>
-                  <div
-                    style={{
-                      alignItems: "center"
-                    }}
-                  >
-                    <p className="red">
-                      Username : {this.state.userInfo.username}
-                    </p>
+          <div className="row w-100 mx-0 mt-4">
+            <div className="col-md-4 col-12">
+              <div className="border-card br-20 bg-light-grey mb-5 w-100">
+                <h5>User Details</h5>
+                <div
+                  style={{
+                    alignItems: "center"
+                  }}
+                >
+                  <p className="red">
+                    Username : {this.state.userInfo.username}
+                  </p>
 
-                    <p>
-                      Name : {this.state.userInfo.firstname}{" "}
-                      {this.state.userInfo.lastname}
-                    </p>
+                  <p>
+                    Name : {this.state.userInfo.firstname}{" "}
+                    {this.state.userInfo.lastname}
+                  </p>
 
-                    <p>Email : {this.state.userInfo.email}</p>
+                  <p>Email : {this.state.userInfo.email}</p>
 
-                    <p>Mobile : {this.state.userInfo.mobile_number}</p>
+                  <p>Mobile : {this.state.userInfo.mobile_number}</p>
 
-                    <p>
-                      Wallet Amount : ₹{" "}
-                      {this.state.userInfo.wallet_amount / 100}
-                    </p>
+                  <p>
+                    Wallet Amount : ₹ {this.state.userInfo.wallet_amount / 100}
+                  </p>
 
-                    <div>
-                      <button
-                        className="button-solid"
-                        onClick={this.handleNewPayment}
-                      >
-                        Make New Payment
-                      </button>
-                    </div>
+                  <div>
+                    <button
+                      className="button-solid"
+                      onClick={this.handleNewPayment}
+                    >
+                      Make New Payment
+                    </button>
                   </div>
                 </div>
               </div>
-              {!this.state.newpayment ? (
-                <div className="col-md-8 col-12">
-                  <div className="border-card br-20 bg-light-grey mb-5">
-                    <div className="tab-nav-underline mb-5">
-                      <div
-                        className={
-                          this.state.completeTab ? "tab active" : "tab"
-                        }
-                        onClick={this.toggleCompleteTab}
-                      >
-                        Complete Orders
-                      </div>
-                      <div
-                        className={
-                          this.state.incompleteTab ? "tab active" : "tab"
-                        }
-                        onClick={this.toggleIncompleteTab}
-                      >
-                        Incomplete Orders
-                      </div>
-                    </div>
-                    {orders}
-                  </div>
-                </div>
-              ) : (
-                <NewPayment userid={this.state.userInfo.id} />
-              )}
             </div>
+            {!this.state.newpayment ? (
+              <div className="col-md-8 col-12">
+                <div className="border-card br-20 bg-light-grey mb-5 w-100">
+                  <div className="tab-nav-underline mb-5">
+                    <div
+                      className={this.state.completeTab ? "tab active" : "tab"}
+                      onClick={this.toggleCompleteTab}
+                    >
+                      Complete Orders
+                    </div>
+                    <div
+                      className={
+                        this.state.incompleteTab ? "tab active" : "tab"
+                      }
+                      onClick={this.toggleIncompleteTab}
+                    >
+                      Incomplete Orders
+                    </div>
+                  </div>
+                  {orders}
+                </div>
+              </div>
+            ) : (
+              <NewPayment userid={this.state.userInfo.oneauth_id} />
+            )}
           </div>
         );
       } else {
         return (
-          <div className=" mt-4">
-            <div className="row w-100">
-              <div className="col-md-4 col-12">
+          <div className=" mt-4 ml-3">
+            <div className="row w-300">
+              <div className="col-12">
                 <div className="border-card br-20 bg-light-grey mb-5">
                   <h5 style={{ textAlign: "center" }}>
                     No user Found, Search Existing?{" "}
@@ -295,7 +291,7 @@ class Home extends React.Component {
                     type="email"
                     className="input-text mb-2"
                     placeholder="Enter email"
-                    value = {this.state.email}
+                    value={this.state.email}
                     onChange={this.handleChange}
                   />
                   <button

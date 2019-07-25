@@ -52,10 +52,13 @@ class InCompleteOrders extends React.Component {
             >
               View all Transactions
             </a>
-
-            <a
-              href={`/admin/ContinuePayment?id=${this.props.cart_id}&userid=${
+            <Link href = {`/admin/ContinuePayment?id=${this.props.cart_id}&userid=${
                 this.props.userid
+              }`}
+              >
+            <a
+              href={`/admin/ContinuePayment?id=${this.props.cart_id}&oneauthid=${
+                this.props.oneauthid
               }`}
               target="blank"
               class="button-solid"
@@ -63,6 +66,7 @@ class InCompleteOrders extends React.Component {
             >
               Continue
             </a>
+            </Link>
           </div>
         </div>
       </div>

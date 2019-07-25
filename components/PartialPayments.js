@@ -27,7 +27,7 @@ class PartialPayments extends React.Component {
   handleSubmit = async e => {
     e.preventDefault();
     Swal.fire({
-      title: "Are you sure you want to make a new payment?",
+      title: "Are you sure you want to make a refund?",
       type: "question",
       confirmButtonColor: "#f66",
       confirmButtonText: "Yes!",
@@ -54,7 +54,7 @@ class PartialPayments extends React.Component {
           .then(() => {
             console.log("Im in then");
             Swal.fire({
-              title: "payment made!",
+              title: "Refund made!",
               type: "success",
               timer: "3000",
               showConfirmButton: true,
@@ -64,7 +64,7 @@ class PartialPayments extends React.Component {
           .catch(err => {
             console.log(err);
             Swal.fire({
-              title: "Error while making payment!",
+              title: "Error while making refund!",
               type: "error",
               showConfirmButton: true
             });
@@ -73,95 +73,142 @@ class PartialPayments extends React.Component {
     });
   };
 
-  // handleSubmit = async e => {
-  //   e.preventDefault();
-  //   const data = this.state.formValues;
+  paymentMethod = () => {
+    if (this.state.formValues.payment_type === "cheque") {
+      return (
+        <div>
+          <FieldWithElement nameCols={3} elementCols={9} name={"Location"}>
+            <input
+              type="text"
+              className={"input-text"}
+              placeholder="Enter Your Location"
+              name={"cheque_location"}
+              onChange={this.onChangeValue}
+              value={this.state.formValues.chequeLocation}
+            />
+          </FieldWithElement>
 
-  //   var formBody = [];
-  //   for (var property in data) {
-  //     var encodedKey = encodeURIComponent(property);
-  //     var encodedValue = encodeURIComponent(data[property]);
-  //     formBody.push(encodedKey + "=" + encodedValue);
-  //   }
-  //   formBody = formBody.join("&");
+          <FieldWithElement nameCols={3} elementCols={9} name={"Serial Number"}>
+            <input
+              type="text"
+              className={"input-text"}
+              placeholder="Enter Serial Number"
+              name={"serial_number"}
+              onChange={this.onChangeValue}
+              value={this.state.formValues.serialNumber}
+            />
+          </FieldWithElement>
 
-  //   const response = await axios.post(
-  //     "http://localhost:2929/api/v2/admin/refunds",
-  //     formBody,
-  //     { withCredentials: true }
-  //   );
-  //   console.log(response);
-  // };
+          <FieldWithElement nameCols={3} elementCols={9} name={"Bank Name"}>
+            <input
+              type="text"
+              className={"input-text"}
+              placeholder="Enter Your Bank Name"
+              name={"bank_name"}
+              onChange={this.onChangeValue}
+              value={this.state.formValues.bank}
+            />
+          </FieldWithElement>
+
+          <FieldWithElement nameCols={3} elementCols={9} name={"Branch Name"}>
+            <input
+              type="text"
+              className={"input-text"}
+              placeholder="Enter Your Branch Name"
+              name={"branch_name"}
+              onChange={this.onChangeValue}
+              value={this.state.formValues.branch}
+            />
+          </FieldWithElement>
+
+          <FieldWithElement nameCols={3} elementCols={9} name={"Issue Date"}>
+            <input
+              type="date"
+              className={"input-text"}
+              placeholder="Select Date"
+              name={"cheque_date"}
+              onChange={this.onChangeValue}
+              value={this.state.formValues.issueDate}
+            />
+          </FieldWithElement>
+          <div className="divider-h mb-5 mt-5" />
+        </div>
+      );
+    } else {
+    }
+  };
+
+  formDisplay = () => {
+    return (
+      <div>
+        <FieldWithElement
+          name={"Payment Method"}
+          nameCols={3}
+          elementCols={9}
+          elementClassName={"pl-4"}
+        >
+          <select name="payment_type" onChange={this.onChangeValue}>
+            <option selected value="undisclosed">
+              Select Payment Method
+            </option>
+            {this.props.mode === "razorpay" ? (
+              <option value="razorpay">Razorpay</option>
+            ) : (
+              ""
+            )}
+            <option value="credits">Credits</option>
+            <option value="cheque">Cheque</option>
+          </select>
+        </FieldWithElement>
+        {this.paymentMethod()}
+        <FieldWithElement
+          name={"Payment Center"}
+          nameCols={3}
+          elementCols={9}
+          elementClassName={"pl-4"}
+        >
+          <select name="center_id" onChange={this.onChangeValue}>
+            <option value="1">Pitampura</option>
+            <option value="2">Noida</option>
+            <option value="undisclosed" selected>
+              Select Payment Center
+            </option>
+          </select>
+        </FieldWithElement>
+
+        <FieldWithElement nameCols={3} elementCols={9} name={"Comment"}>
+          <input
+            type="text"
+            className={"input-text"}
+            placeholder="Enter Comment"
+            name={"comment"}
+            onChange={this.onChangeValue}
+          />
+        </FieldWithElement>
+
+        <FieldWithElement nameCols={3} elementCols={9} name={"Amount"}>
+          <input
+            type="text"
+            className={"input-text"}
+            placeholder="Enter Amount"
+            name={"amount"}
+            onChange={this.onChangeValue}
+          />
+        </FieldWithElement>
+
+        <button
+          id="view-invoice"
+          className="button-solid ml-4 mb-2 mt-4 pl-5 pr-5"
+          type="submit"
+          onClick={this.handleSubmit}
+        >
+          Refund
+        </button>
+      </div>
+    );
+  };
 
   render() {
-    const paymentMethod = () => {
-      if (this.state.formValues.payment_type === "cheque") {
-        return (
-          <div>
-            <FieldWithElement nameCols={3} elementCols={9} name={"Location"}>
-              <input
-                type="text"
-                className={"input-text"}
-                placeholder="Enter Your Location"
-                name={"cheque_location"}
-                onChange={this.onChangeValue}
-                value={this.state.formValues.chequeLocation}
-              />
-            </FieldWithElement>
-
-            <FieldWithElement
-              nameCols={3}
-              elementCols={9}
-              name={"Serial Number"}
-            >
-              <input
-                type="text"
-                className={"input-text"}
-                placeholder="Enter Serial Number"
-                name={"serial_number"}
-                onChange={this.onChangeValue}
-                value={this.state.formValues.serialNumber}
-              />
-            </FieldWithElement>
-
-            <FieldWithElement nameCols={3} elementCols={9} name={"Bank Name"}>
-              <input
-                type="text"
-                className={"input-text"}
-                placeholder="Enter Your Bank Name"
-                name={"bank_name"}
-                onChange={this.onChangeValue}
-                value={this.state.formValues.bank}
-              />
-            </FieldWithElement>
-
-            <FieldWithElement nameCols={3} elementCols={9} name={"Branch Name"}>
-              <input
-                type="text"
-                className={"input-text"}
-                placeholder="Enter Your Branch Name"
-                name={"branch_name"}
-                onChange={this.onChangeValue}
-                value={this.state.formValues.branch}
-              />
-            </FieldWithElement>
-
-            <FieldWithElement nameCols={3} elementCols={9} name={"Issue Date"}>
-              <input
-                type="date"
-                className={"input-text"}
-                placeholder="Select Date"
-                name={"cheque_date"}
-                onChange={this.onChangeValue}
-                value={this.state.formValues.issueDate}
-              />
-            </FieldWithElement>
-            <div className="divider-h mb-5 mt-5" />
-          </div>
-        );
-      } else {
-      }
-    };
     return (
       <div className="col-md-4 col-12">
         <h3 className="mb-2">Payment Details</h3>
@@ -180,71 +227,8 @@ class PartialPayments extends React.Component {
           <p>Paid On: {this.props.date}</p>
           <p>Payment Collected By: {this.props.name}</p>
           <p>Payment Center: {this.props.center}</p>
-
           <p>Payment Status: {this.props.status}</p>
-          <FieldWithElement
-            name={"Payment Method"}
-            nameCols={3}
-            elementCols={9}
-            elementClassName={"pl-4"}
-          >
-            <select name="payment_type" onChange={this.onChangeValue}>
-              <option selected value="undisclosed">
-                Select Payment Method
-              </option>
-              {this.props.mode === "razorpay" ? (
-                <option value="razorpay">Razorpay</option>
-              ) : (
-                ""
-              )}
-              <option value="credits">Credits</option>
-              <option value="cheque">Cheque</option>
-            </select>
-          </FieldWithElement>
-          {paymentMethod()}
-          <FieldWithElement
-            name={"Payment Center"}
-            nameCols={3}
-            elementCols={9}
-            elementClassName={"pl-4"}
-          >
-            <select name="center_id" onChange={this.onChangeValue}>
-              <option value="1">Pitampura</option>
-              <option value="2">Noida</option>
-              <option value="undisclosed" selected>
-                Select Payment Center
-              </option>
-            </select>
-          </FieldWithElement>
-
-          <FieldWithElement nameCols={3} elementCols={9} name={"Comment"}>
-            <input
-              type="text"
-              className={"input-text"}
-              placeholder="Enter Comment"
-              name={"comment"}
-              onChange={this.onChangeValue}
-            />
-          </FieldWithElement>
-
-          <FieldWithElement nameCols={3} elementCols={9} name={"Amount"}>
-            <input
-              type="text"
-              className={"input-text"}
-              placeholder="Enter Amount"
-              name={"amount"}
-              onChange={this.onChangeValue}
-            />
-          </FieldWithElement>
-
-          <button
-            id="view-invoice"
-            className="button-solid ml-4 mb-2 mt-4 pl-5 pr-5"
-            type="submit"
-            onClick={this.handleSubmit}
-          >
-            Refund
-          </button>
+          {this.props.status === "paid" ? this.formDisplay() : ""}
           <a href={this.props.partial_invoice_link} target="blank">
             <button
               id="view-invoice"

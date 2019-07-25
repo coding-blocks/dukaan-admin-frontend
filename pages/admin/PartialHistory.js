@@ -4,8 +4,16 @@ import Head from "../../components/head";
 import Layout from "../../components/layout";
 import axios from "axios";
 import moment from "moment";
+import "../../controllers/config";
+import {withRouter} from 'next/router'
 
 class PartialHistory extends React.Component {
+
+  static async getInitialProps({query}) {
+      console.log(query,'dsjhdjhs')
+      return {userid:query.userid,cart_id:query.cart_id}
+  }
+  
   constructor(props) {
     super(props);
     this.state = {
@@ -13,26 +21,19 @@ class PartialHistory extends React.Component {
       courseInfo: null
     };
   }
+  
 
   componentDidMount() {
-    const userid = window.location
-      .toString()
-      .split("=")[1]
-      .substring(0, 1);
-    const cart_id = window.location.toString().split("=")[2];
-    console.log(cart_id, "CART");
-    console.log(userid, "USERID");
+    const userid = this.props.userid
+    const cart_id = this.props.cart_id
     this.setState({
-      cart_id: cart_id,
-      userid
-    });
-
+      userid,
+      cart_id
+    })
     axios
-      .get(
-        `http://localhost:2929/api/v2/admin/purchases/partial?userId=${userid}&cartId=${cart_id}`
-      )
+      .get(`/api/v2/admin/purchases/partial?userId=${userid}&cartId=${cart_id}`)
       .then(res => {
-        console.log(res.data.PartialPayments);
+        console.log(res, "dhbudjsvjhaskasb");
         this.setState({
           courseInfo: res.data.PartialPayments,
           mrp: res.data.product.mrp,
