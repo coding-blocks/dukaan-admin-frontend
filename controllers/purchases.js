@@ -8,8 +8,17 @@ const querystring = require('querystring');
  * @param {int} userId - User ID
  * @return {Promise<Array>} response – Promise with the response
  */
-const handleGetPurchases = () => {
-
+const handleGetPurchases = (userId) => {
+  let response = new Promise((resolve, reject) => {
+    axios.get(
+      `/api/v2/admin/purchases?user_id=${userId}`
+    ).then((res) => {
+      resolve(res);
+    }).catch((err) => {
+      reject(ErrorHandler.handle(err));
+    });
+  });
+  return response;
 }
 
 /**

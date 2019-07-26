@@ -14,6 +14,9 @@ import InCompleteOrder from "../components/ActiveOrders";
 // import PartialPayments from "../components/PartialPayments";
 import RefundedOrders from "../components/RefundedOrders";
 import { resolve } from "url";
+import userController from "../controllers/users";
+import purchasesController from "../controllers/purchases";
+import swal from 'sweetalert2';
 import "../controllers/config";
 
 class Home extends React.Component {
@@ -74,40 +77,43 @@ class Home extends React.Component {
     if (!document.getElementById("email-search-form").checkValidity()) {
       document.getElementById("email-search-form").reportValidity();
     } else {
-      let userData;
-      try {
-        userData = await axios.get(
-        `/api/v2/admin/users?email=${this.state.email}`
-        );
-        this.setState({
-          userInfo: userData.data[0]
-        });
-        if (this.state.userInfo) {
-          axios
-          .get(`/api/v2/admin/purchases?user_id=${this.state.userInfo.id}`)
-          .then(res => {
-            // console.log(res);
-            this.setState({
-              courseInfo: res.data
-            });
-          })
-          .catch(err => {
-            console.log(err);
-            this.setState({
-              courseInfo: null
-            });
-          });
-        }
-        if (userData) {
+      userController.handleGetUserByEmail(this.state.email).then((res) => {
+        if (res.data.length == 1) {
           this.setState({
+            userInfo: res.data[0],
             userFound: true
           });
+          if (this.state.userInfo) {
+            purchasesController.handleGetPurchases(this.state.userInfo.id).then((res) => {
+              if (res.data.length == 1) {
+                this.setState({
+                  courseInfo: res.data
+                });
+              } else {
+                this.setState({
+                  courseInfo: null
+                });
+              }
+            }).catch((error) => {
+              swal.fire({
+                'title': "Error searching for user's purchases!",
+                'html': error,
+                'type': 'error'
+              });
+            });
+          }
+        } else {
+          this.setState({
+            userFound: false
+          });
         }
-      } catch (e) {
-        this.setState({
-          userFound: false
+      }).catch((error) => {
+        swal.fire({
+          'title': 'Error searching for user!',
+          'html': error,
+          'type': 'error'
         });
-      }
+      })
     }
   };
 
