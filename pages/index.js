@@ -69,18 +69,21 @@ class Home extends React.Component {
     });
   };
 
-  handleSearch = async () => {
-    let userData;
-    try {
-      userData = await axios.get(
+  handleSearch = async (e) => {
+    e.preventDefault();
+    if (!document.getElementById("email-search-form").checkValidity()) {
+      document.getElementById("email-search-form").reportValidity();
+    } else {
+      let userData;
+      try {
+        userData = await axios.get(
         `/api/v2/admin/users?email=${this.state.email}`
-      );
-      this.setState({
-        userInfo: userData.data[0]
-      });
-
-      if (this.state.userInfo) {
-        axios
+        );
+        this.setState({
+          userInfo: userData.data[0]
+        });
+        if (this.state.userInfo) {
+          axios
           .get(`/api/v2/admin/purchases?user_id=${this.state.userInfo.id}`)
           .then(res => {
             // console.log(res);
@@ -94,17 +97,17 @@ class Home extends React.Component {
               courseInfo: null
             });
           });
-      }
-
-      if (userData) {
+        }
+        if (userData) {
+          this.setState({
+            userFound: true
+          });
+        }
+      } catch (e) {
         this.setState({
-          userFound: true
+          userFound: false
         });
       }
-    } catch (e) {
-      this.setState({
-        userFound: false
-      });
     }
   };
 
@@ -328,25 +331,27 @@ class Home extends React.Component {
           <div className="container mt-4">
             <div className="row">
               <div className="col-md-12 col-12">
-                <div style={{ display: "flex" }}>
-                  <input
-                    name="email"
-                    required
-                    id="email"
-                    type="email"
-                    className="input-text mb-2"
-                    placeholder="Enter email"
-                    value={this.state.email}
-                    onChange={this.handleChange}
-                  />
-                  <button
-                    id="search"
-                    className="button-solid ml-4 mb-1"
-                    style={{ fontSize: "1.3rem" }}
-                    onClick={this.handleSearch}
-                  >
-                    Search
-                  </button>
+                <div className={"d-flex"}>
+                  <form id={"email-search-form"} className={"d-flex col-md-12"}>
+                    <input
+                      name="email"
+                      required
+                      id="email"
+                      type="email"
+                      className="input-text mb-2"
+                      placeholder="Enter email"
+                      value={this.state.email}
+                      onChange={this.handleChange}
+                    />
+                    <button
+                      id="search"
+                      className="button-solid ml-4 mb-1"
+                      style={{ fontSize: "1.3rem" }}
+                      onClick={this.handleSearch}
+                    >
+                      Search
+                    </button>
+                  </form>
                 </div>
               </div>
               {/* Form 2  */}
