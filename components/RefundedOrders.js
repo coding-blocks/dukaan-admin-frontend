@@ -5,7 +5,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
-class CompleteOrder extends React.Component {
+class RefundedOrders extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -244,12 +244,21 @@ class CompleteOrder extends React.Component {
                 </div>
               </div>
               <div>Payment status: {this.props.status}</div>
+              <div className="col-md-5">
+                <div className="row no-gutters justify-content-between font-mds red extra-bold">
+                  <div>Amount Refunded = </div>
+                  <div className="font-md">
+                    ₹ {"" + this.props.amount_refunded / 100}
+                  </div>
+                </div>
+              </div>
 
               <div className="col-md-4">
                 <div className="row no-gutters justify-content-between font-mds red extra-bold">
                   <div>Order Total = </div>
                   <div className="font-md">₹ {this.props.amount}</div>
                 </div>
+
                 <div className="font-sm grey">
                   Purchased on {this.props.date}
                 </div>
@@ -257,16 +266,24 @@ class CompleteOrder extends React.Component {
             </div>
             <div class="divider-h mt-4 mb-4" />
             <div className="d-flex justify-content-between">
-              <a href={this.props.invoice_url} target="blank">
-                <button className="button-solid lg">View Invoice</button>
-              </a>
-              {this.props.status === "captured" ? (
-                <button
-                  className="button-solid lg"
-                  onClick={this.openModalHandler}
+              {!this.props.partial_payment ? (
+                <a href={this.props.invoice_url} target="blank">
+                  <button className="button-solid lg">View Invoice</button>
+                </a>
+              ) : (
+                ""
+              )}
+
+              {this.props.partial_payment ? (
+                <a
+                  href={`/admin/PartialHistory?userid=${
+                    this.props.userid
+                  }&cart_id=${this.props.cart_id}`}
+                  class="button-solid lg"
+                  target="blank"
                 >
-                  Refund
-                </button>
+                  View all Transactions
+                </a>
               ) : (
                 ""
               )}
@@ -282,4 +299,4 @@ class CompleteOrder extends React.Component {
   }
 }
 
-export default CompleteOrder;
+export default RefundedOrders;

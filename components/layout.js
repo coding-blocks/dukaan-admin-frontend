@@ -1,29 +1,28 @@
 import React from "react";
 import Link from "next/link";
-import cookies from 'js-cookies';
-import jwt from 'jsonwebtoken';
-import config from '../config';
+import cookies from "js-cookies";
+import jwt from "jsonwebtoken";
+import config from "../config";
 import "../styles/components/layout.scss";
-import Router from 'next/router';
+import Router from "next/router";
 
 class Layout extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      'name': 'Guest',
-      'pic': 'https://placehold.it/48x48',
-      'loggedIn': false
+      name: "Guest",
+      pic: "https://placehold.it/48x48",
+      loggedIn: false
     };
   }
 
   componentDidMount() {
-    const dukaanToken = cookies.getItem('dukaan-token');
+    const dukaanToken = cookies.getItem("dukaan-token");
     if (dukaanToken) {
       const userInfo = jwt.decode(dukaanToken);
       this.setState({
-        'name': userInfo.data.firstname + " " + userInfo.data.lastname,
-        'pic': userInfo.data.photo,
+        name: userInfo.data.firstname + " " + userInfo.data.lastname,
+        pic: userInfo.data.photo,
         loggedIn: true
       });
     }
@@ -32,24 +31,26 @@ class Layout extends React.Component {
   render() {
     return (
       <nav className="main-nav">
-
         <div className="nav-left">
           <span className="hamburger-parent">
             <i className="hamburger fas fa-bars" />
           </span>
           <span className="logo-parent">
-            <Link href="/" onClick={() => Router.push('/')}>
+            <Link href="/" onClick={() => Router.push("/")}>
               <a className="logo-link">
-                <img src="/static/img/dukaan.png" className="nav-logo pointer" />
+                <img
+                  src="/static/img/dukaan.png"
+                  className="nav-logo pointer"
+                />
               </a>
             </Link>
           </span>
         </div>
-        
+
         <div className="dsp-none-sm justify-content-center">
           <div className="nav-right">
             <ul className="nav-list">
-              {this.state.loggedIn &&
+              {this.state.loggedIn && (
                 <div>
                   <li className="dropdown">
                     <button className="dropbtn dropdown-toggle">
@@ -73,33 +74,13 @@ class Layout extends React.Component {
 
                   <li className="dropdown">
                     <button className="dropbtn dropdown-toggle">
-                      Payments
-                      <i className="fa fa-caret-down pl-2" />
-                    </button>
-                    <div className="dropdown-content">
-                      <div className="flex-row justify-content-center">
-                        <Link href="/admin/payments">
-                          <a>All</a>
-                        </Link>
-                      </div>
-                      <div className="divider-h" />
-                      <div className="flex-row justify-content-center">
-                        <Link href="/admin/payments/add">
-                          <a>Add New</a>
-                        </Link>
-                      </div>
-                    </div>
-                  </li>
-        
-                  <li className="dropdown">
-                    <button className="dropbtn dropdown-toggle">
                       Products
                       <i className="fa fa-caret-down pl-2" />
                     </button>
                     <div className="dropdown-content">
                       <div className="flex-row justify-content-center">
                         <Link href="/admin/products">
-                        <a>All</a>
+                          <a>All</a>
                         </Link>
                       </div>
                       <div className="divider-h" />
@@ -110,41 +91,21 @@ class Layout extends React.Component {
                       </div>
                     </div>
                   </li>
-        
-                  <li className="dropdown">
-                    <button className="dropbtn dropdown-toggle">
-                      Users
-                      <i className="fa fa-caret-down pl-2" />
-                    </button>
-                    <div className="dropdown-content">
-                      <div className="flex-row justify-content-center">
-                        <Link href="/admin/users">
-                        <a>All</a>
-                        </Link>
-                      </div>
-                      <div className="divider-h" />
-                      <div className="flex-row justify-content-center">
-                        <Link href="/admin/users/add">
-                        <a>Add New</a>
-                        </Link>
-                      </div>
-                    </div>
-                  </li>
                 </div>
-              }
+              )}
               <li className="nav-items pointer capitalize">
-                <img 
-                  src={this.state.pic} 
+                <img
+                  src={this.state.pic}
                   className={"pic"}
-                  width={48} 
-                  height={48} 
-                  align={"absmiddle"} 
+                  width={48}
+                  height={48}
+                  align={"absmiddle"}
                 />
                 <Link href="https://account.codingblocks.com">
                   <a className="active name">Hi, {this.state.name}</a>
                 </Link>
               </li>
-              {this.state.loggedIn &&
+              {this.state.loggedIn && (
                 <li className="nav-items pointer">
                   <a href={config.oneauth.logout_url}>
                     <div className="button-solid lg">
@@ -154,8 +115,8 @@ class Layout extends React.Component {
                     </div>
                   </a>
                 </li>
-              }
-              {!this.state.loggedIn &&
+              )}
+              {!this.state.loggedIn && (
                 <li className="nav-items pointer">
                   <a href="/login">
                     <div className="button-solid lg">
@@ -165,15 +126,13 @@ class Layout extends React.Component {
                     </div>
                   </a>
                 </li>
-              }
+              )}
             </ul>
           </div>
         </div>
-
       </nav>
-      )
-    }
+    );
   }
-  
+}
+
 export default Layout;
-  

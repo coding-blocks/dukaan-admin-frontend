@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 
-class InCompleteOrders extends React.Component {
+class ActiveOrders extends React.Component {
   render() {
     return (
       <div
@@ -18,14 +18,14 @@ class InCompleteOrders extends React.Component {
                 <div class="description justify-content-center">
                   <div>
                     <h4>{this.props.product_name}</h4>
-                    <div class="grey font-sm">Some Description</div>
+                    <div class="grey font-sm">{this.props.description}</div>
                   </div>
                 </div>
               </div>
             </div>
             <div class="col-md-4">
               <div class="row no-gutters justify-content-between font-mds red extra-bold">
-                <div>Order Total</div>
+                <div>Order Total = </div>
                 <div class="font-md">₹ {this.props.amount}</div>
               </div>
               <div class="font-sm grey">Purchased on {this.props.date}</div>
@@ -52,20 +52,21 @@ class InCompleteOrders extends React.Component {
             >
               View all Transactions
             </a>
-            <Link href = {`/admin/ContinuePayment?id=${this.props.cart_id}&userid=${
+            <Link
+              href={`/admin/ContinuePayment?id=${this.props.cart_id}&userid=${
                 this.props.userid
               }`}
-              >
-            <a
-              href={`/admin/ContinuePayment?id=${this.props.cart_id}&oneauthid=${
-                this.props.oneauthid
-              }`}
-              target="blank"
-              class="button-solid"
-              style={{ marginLeft: "10vh" }}
             >
-              Continue
-            </a>
+              <a
+                href={`/admin/ContinuePayment?id=${
+                  this.props.cart_id
+                }&oneauthid=${this.props.oneauthid}`}
+                target="blank"
+                class="button-solid"
+                style={{ marginLeft: "10vh" }}
+              >
+                Continue
+              </a>
             </Link>
           </div>
         </div>
@@ -74,4 +75,4 @@ class InCompleteOrders extends React.Component {
   }
 }
 
-export default InCompleteOrders;
+export default ActiveOrders;

@@ -10,10 +10,11 @@ import CheckLogin from "../components/CheckLogin";
 import "../controllers/config";
 import moment from "moment";
 import axios from "axios";
-import InCompleteOrder from "../components/InCompleteOrders";
-import PartialPayments from "../components/PartialPayments";
+import InCompleteOrder from "../components/ActiveOrders";
+// import PartialPayments from "../components/PartialPayments";
+import RefundedOrders from "../components/RefundedOrders";
 import { resolve } from "url";
-import '../controllers/config'
+import "../controllers/config";
 
 class Home extends React.Component {
   constructor(props) {
@@ -21,7 +22,8 @@ class Home extends React.Component {
     this.state = {
       email: "",
       completeTab: true,
-      incompleteTab: false,
+      activeTab: false,
+      refundedTab: false,
       userFound: false,
       userInfo: null,
       courseInfo: null,
@@ -40,14 +42,24 @@ class Home extends React.Component {
   toggleCompleteTab = () => {
     this.setState(prevstate => ({
       completeTab: true,
-      incompleteTab: false
+      activeTab: false,
+      refundedTab: false
     }));
   };
 
-  toggleIncompleteTab = () => {
+  toggleActiveTab = () => {
     this.setState(prevstate => ({
       completeTab: false,
-      incompleteTab: true
+      activeTab: true,
+      refundedTab: false
+    }));
+  };
+
+  toggleRefundTab = () => {
+    this.setState(prevstate => ({
+      completeTab: false,
+      activeTab: false,
+      refundedTab: true
     }));
   };
 
@@ -69,11 +81,7 @@ class Home extends React.Component {
 
       if (this.state.userInfo) {
         axios
-          .get(
-            `/api/v2/admin/purchases?user_id=${
-              this.state.userInfo.id
-            }`
-          )
+          .get(`/api/v2/admin/purchases?user_id=${this.state.userInfo.id}`)
           .then(res => {
             // console.log(res);
             this.setState({
@@ -110,6 +118,40 @@ class Home extends React.Component {
   render() {
     let orders;
     const completeTab = this.state.completeTab;
+    if (this.state.refundedTab) {
+      if (this.state.courseInfo.refundedPayments.length > 0) {
+        // console.log("refunded", this.state.courseInfo.refundedPayments);
+        orders = this.state.courseInfo.refundedPayments.map(refundedOrder => {
+          console.log(refundedOrder, "order");
+          const date = moment(refundedOrder.created_at).format(
+            "MMMM Do YYYY,h:mm:ss a"
+          );
+          return (
+            <RefundedOrders
+              status={refundedOrder.status}
+              description={refundedOrder.product.description}
+              invoice_url={refundedOrder.invoice_link}
+              amountLeft={refundedOrder.amountLeft}
+              partial_payment={refundedOrder.partial_payment}
+              date={date}
+              key={refundedOrder.id}
+              image={refundedOrder.product.image_url}
+              product_name={refundedOrder.product.name}
+              amount={refundedOrder.amount / 100}
+              created_at={refundedOrder.created_at}
+              userid={this.state.userInfo.id}
+              oneauthid={this.state.userInfo.oneauth_id}
+              cart_id={refundedOrder.cart_id}
+              partial_payment={refundedOrder.partial_payment}
+              amount_refunded={refundedOrder.cart.transactions[0].amount_paid}
+            />
+          );
+        });
+      } else {
+        console.log("refunded", "fdjhvhjsdgvjhsj");
+        orders = <div>No Refunded Orders</div>;
+      }
+    }
 
     if (
       completeTab &&
@@ -118,63 +160,61 @@ class Home extends React.Component {
       !this.state.newpayment
     ) {
       // console.log(this.state.courseInfo, "hi");
-      orders = this.state.courseInfo.completePayments.map(coursePurchased => {
-        // console.log(coursePurchased, "heloooooooo");
-        const date = moment(coursePurchased.created_at).format(
-          "MMMM Do YYYY,h:mm:ss a"
-        );
-        // console.log(date);
-        if (coursePurchased.cart !== null) {
-          coursePurchased.cart.transactions.map(transaction => {
-            // console.log(transaction, "hello");
-          });
+      // if (this.state.courseInfo.completePayments !== null) {
+      orders = this.state.courseInfo.completedPayments.map(order => {
+        const date = moment(order.created_at).format("MMMM Do YYYY,h:mm:ss a");
 
-          return coursePurchased.cart.transactions.map(transaction => {
-            return (
-              <CompleteOrders
-                date={date}
-                txn_id={transaction.id}
-                key={coursePurchased.id}
-                image={coursePurchased.product.image_url}
-                product_name={coursePurchased.product.name}
-                status={transaction.status}
-                amount={coursePurchased.amount / 100}
-                invoice_url={coursePurchased.invoice_link}
-                refunded={transaction.status}
-                userid={this.state.userInfo.id}
-                payment_type={transaction.payment_type}
-              />
-            );
-            // console.log(coursePurchased.cart.transaction.payment_type);
-          });
-        }
+        console.log(order);
+        return (
+          <CompleteOrders
+            date={date}
+            txn_id={order.cart.transactions[0].id}
+            key={order.id}
+            image={order.product.image_url}
+            product_name={order.product.name}
+            status={order.status}
+            amount={order.amount / 100}
+            invoice_url={order.invoice_link}
+            refunded={order.cart.transactions[0].status}
+            userid={this.state.userInfo.id}
+            payment_type={order.cart.transactions[0].payment_type}
+            description={order.product.description}
+          />
+        );
       });
+      // }
     } else if (completeTab) {
       orders = <div>No Complete Orders Found.</div>;
-    } else if (InCompleteOrder) {
-      if (this.state.courseInfo && this.state.courseInfo.partialPayments) {
-        orders = this.state.courseInfo.partialPayments.map(partialPurchase => {
-          console.log(partialPurchase, "Ppsds");
-          const date = moment(partialPurchase.created_at).format(
+    } else if (this.state.activeTab) {
+      if (
+        this.state.courseInfo &&
+        this.state.courseInfo.activePayments.length > 0
+      ) {
+        orders = this.state.courseInfo.activePayments.map(activeOrder => {
+          console.log(activeOrder, "Ppsds");
+          const date = moment(activeOrder.created_at).format(
             "MMMM Do YYYY,h:mm:ss a"
           );
           return (
             <InCompleteOrder
-              amountLeft={partialPurchase.amountLeft}
+              amountLeft={activeOrder.amountLeft}
+              partial_payment={activeOrder.partial_payment}
               date={date}
-              key={partialPurchase.id}
-              image={partialPurchase.product.image_url}
-              product_name={partialPurchase.product.name}
-              amount={partialPurchase.amount / 100}
-              created_at={partialPurchase.created_at}
+              status={activeOrder.status}
+              key={activeOrder.id}
+              image={activeOrder.product.image_url}
+              product_name={activeOrder.product.name}
+              amount={activeOrder.amount / 100}
+              created_at={activeOrder.created_at}
               userid={this.state.userInfo.id}
               oneauthid={this.state.userInfo.oneauth_id}
-              cart_id={partialPurchase.cart_id}
+              cart_id={activeOrder.cart_id}
+              description={activeOrder.product.description}
             />
           );
         });
       } else {
-        orders = <div>No Incomplete Orders Found.</div>;
+        orders = <div>No Active Orders Found.</div>;
       }
     }
 
@@ -223,18 +263,23 @@ class Home extends React.Component {
                 <div className="border-card br-20 bg-light-grey mb-5 w-100">
                   <div className="tab-nav-underline mb-5">
                     <div
+                      className={this.state.activeTab ? "tab active" : "tab"}
+                      onClick={this.toggleActiveTab}
+                    >
+                      Active Orders
+                    </div>
+                    <div
                       className={this.state.completeTab ? "tab active" : "tab"}
                       onClick={this.toggleCompleteTab}
                     >
-                      Complete Orders
+                      Completed Orders
                     </div>
+
                     <div
-                      className={
-                        this.state.incompleteTab ? "tab active" : "tab"
-                      }
-                      onClick={this.toggleIncompleteTab}
+                      className={this.state.refundedTab ? "tab active" : "tab"}
+                      onClick={this.toggleRefundTab}
                     >
-                      Incomplete Orders
+                      Refunded Orders
                     </div>
                   </div>
                   {orders}
@@ -247,9 +292,9 @@ class Home extends React.Component {
         );
       } else {
         return (
-          <div className=" mt-4 ml-3">
-            <div className="row w-300">
-              <div className="col-12">
+          <div className=" mt-4 ml-3 w-100">
+            <div className="row">
+              <div className="col-12 col-md-4">
                 <div className="border-card br-20 bg-light-grey mb-5">
                   <h5 style={{ textAlign: "center" }}>
                     No user Found, Search Existing?{" "}
