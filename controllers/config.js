@@ -1,4 +1,12 @@
 import axios from 'axios';
+import {init, captureMessage} from "@sentry/browser";
+import env from "../config";
 
-axios.defaults.baseURL = 'http://localhost:2929';
+// Configure axios
+axios.defaults.baseURL = env.backend.domain;
 axios.defaults.withCredentials = true;
+
+// Configure sentry
+init({
+    dsn: env.sentry_dsn
+})

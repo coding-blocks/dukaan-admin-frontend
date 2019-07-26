@@ -1,3 +1,5 @@
+import {captureMessage, captureException, captureEvent, withScope} from "@sentry/browser";
+
 /**
  * This method returns the ids of the fields 
  * that have an issue
@@ -6,6 +8,20 @@
  */
 const getFields = (error) => {
   
+}
+
+/**
+ * Report to Sentry
+ * @param {*} title – Error title
+ * @param {*} errorRequest – Error request object
+ * @param {*} errorResponse – Error response object
+ */
+const reportToSentry = (title, errorRequest, errorResponse) => {
+  withScope((scope) => {
+    scope.setExtra("error_request", errorRequest);
+    scope.setExtra("error_response", errorResponse);
+    captureException(title);
+  });
 }
 
 /**
@@ -18,6 +34,11 @@ const handle = (error) => {
     // TODO: Add Sentry to error handler
     // Check if the error is in the response or request
     if (error.response) {
+      reportToSentry(
+        error.response.status + " on " + error.response.config.url, 
+        error.request,
+        error.response
+      );
       // If the error is in the server's response
       if (error.response.status == 401) {
         // If the status is 401, we are unauthorized
@@ -34,9 +55,15 @@ const handle = (error) => {
         }
       } else if (error.response.status >= 500) {
         // If it's a server issue
+        captureException({
+          errorCode: error.response.status,
+          data: error.response.data,
+          errorObject: error
+        })
         return `Dukaan server issue! Please follow up with the dev team at Coding Blocks.`;
       }
     } else if (error.request) {
+      reportToSentry("Request sending error", error.request, error.response);
       // If there was an error sending the HTTP request
       return `Unable to connect to Dukaan's servers! Please check your internet connection or contact the dev team for assistance.`;
     }

@@ -26,6 +26,7 @@
     "frontend"
   ],
   "dependencies": {
+    "@sentry/browser": "^5.5.0",
     "@zeit/next-sass": "^1.0.1",
     "axios": "^0.19.0",
     "cookie-parser": "^1.4.4",
