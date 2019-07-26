@@ -2,10 +2,8 @@ import PartialPayments from "../../components/PartialPayments";
 import React from "react";
 import Head from "../../components/head";
 import Layout from "../../components/layout";
-import axios from "axios";
 import moment from "moment";
-import "../../controllers/config";
-import {withRouter} from 'next/router'
+import controller from "../../controllers/purchases";
 
 class PartialHistory extends React.Component {
 
@@ -21,7 +19,6 @@ class PartialHistory extends React.Component {
       courseInfo: null
     };
   }
-  
 
   componentDidMount() {
     const userid = this.props.userid
@@ -29,23 +26,34 @@ class PartialHistory extends React.Component {
     this.setState({
       userid,
       cart_id
-    })
-    axios
-      .get(`/api/v2/admin/purchases/partial?userId=${userid}&cartId=${cart_id}`)
-      .then(res => {
-        console.log(res, "dhbudjsvjhaskasb");
-        this.setState({
-          courseInfo: res.data.PartialPayments,
-          mrp: res.data.product.mrp,
-          name: res.data.product.name
-        });
-      })
-      .catch(err => {
-        console.log(err);
-        this.setState({
-          courseInfo: null
-        });
+    });
+    controller.handleGetPartialPurchases(userid, cart_id).then((res) => {
+      this.setState({
+        courseInfo: res.data.PartialPayments,
+        mrp: res.data.productmrp,
+        name: res.data.product.name
       });
+    }).catch((err) => {
+      this.setState({
+        courseInfo: null
+      });
+    });
+    // axios
+    //   .get(`/api/v2/admin/purchases/partial?userId=${userid}&cartId=${cart_id}`)
+    //   .then(res => {
+    //     console.log(res, "dhbudjsvjhaskasb");
+    //     this.setState({
+    //       courseInfo: res.data.PartialPayments,
+    //       mrp: res.data.product.mrp,
+    //       name: res.data.product.name
+    //     });
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //     this.setState({
+    //       courseInfo: null
+    //     });
+    //   });
   }
   render() {
     const partial = () => {
