@@ -1,6 +1,6 @@
 import axios from 'axios';
-import "../config";
-import ErrorHandler from "../../helpers/ErrorHandler";
+import "./config";
+import ErrorHandler from "../helpers/ErrorHandler";
 const querystring = require('querystring');
 
 /**

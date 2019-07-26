@@ -1,6 +1,6 @@
 import React from 'react';
 import FieldWithElement from '../../../components/FieldWithElement';
-import controller from '../../../controllers/admin/products';
+import controller from '../../../controllers/products';
 import Swal from 'sweetalert2';
 import Head from '../../../components/head';
 import Layout from "../../../components/layout";
