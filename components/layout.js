@@ -12,7 +12,8 @@ class Layout extends React.Component {
     this.state = {
       name: "Guest",
       pic: "https://placehold.it/48x48",
-      loggedIn: false
+      loggedIn: false,
+      admin: false
     };
   }
 
@@ -23,7 +24,8 @@ class Layout extends React.Component {
       this.setState({
         name: userInfo.data.firstname + " " + userInfo.data.lastname,
         pic: userInfo.data.photo,
-        loggedIn: true
+        loggedIn: true,
+        admin: (userInfo.data.role == "admin")
       });
     }
   }
@@ -50,7 +52,7 @@ class Layout extends React.Component {
         <div className="dsp-none-sm justify-content-center">
           <div className="nav-right">
             <ul className="nav-list">
-              {this.state.loggedIn && (
+              {this.state.loggedIn && this.state.admin && (
                 <div>
                   <li className="dropdown">
                     <button className="dropbtn dropdown-toggle">

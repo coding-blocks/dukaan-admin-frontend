@@ -12,7 +12,8 @@ class CheckLogin extends React.Component {
     super(props);
     this.state = {
       loggedIn: false,
-      loading: true
+      loading: true,
+      admin: false
     }
   }
 
@@ -21,10 +22,19 @@ class CheckLogin extends React.Component {
     if (dukaanToken) {
       const userInfo = jwt.decode(dukaanToken);
       if (userInfo && userInfo.data.oneauth_id) {
-        this.setState({
-          loggedIn: true,
-          loading: false
-        })
+        if (userInfo.data.role == "admin") {
+          this.setState({
+            loggedIn: true,
+            loading: false,
+            admin: true
+          });
+        } else {
+          this.setState({
+            loggedIn: true,
+            loading: false,
+            admin: false
+          })
+        }
       } else {
         this.setState({
           loggedIn: false,
@@ -61,6 +71,17 @@ class CheckLogin extends React.Component {
           </div>
         </div>
       );
+    } else if (this.state.loggedIn && !this.state.loading && !this.state.admin) {
+      return (
+        <div>
+          <Head title={"Dukaan | Coding Blocks"} />
+          <Layout />
+          <div className={"not-logged-in"}>
+            <h2>Welcome to Dukaan!</h2>
+            <h3>You need to be an admin to view this page.</h3>
+          </div>
+        </div>
+      )
     } else {
       return this.props.children;
     }
