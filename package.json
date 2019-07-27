@@ -36,8 +36,11 @@
     "moment": "^2.24.0",
     "next": "^8.1.0",
     "react": "^16.8.6",
+    "react-animated-modal": "^1.1.1",
     "react-dom": "^16.8.6",
+    "react-modal": "^3.9.1",
     "react-select": "^3.0.4",
+    "rodal": "^1.6.3",
     "sweetalert2": "^8.13.0",
     "sweetalert2-react-content": "^1.1.0"
   },
