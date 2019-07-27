@@ -127,7 +127,6 @@ class Home extends React.Component {
   };
 
   handleCreateUser = () => {
-    console.log("clicked");
     this.setState({
       createUser: true
     });
@@ -167,7 +166,6 @@ class Home extends React.Component {
           );
         });
       } else {
-        console.log("refunded", "fdjhvhjsdgvjhsj");
         orders = <div>No Refunded Orders</div>;
       }
     }
@@ -178,14 +176,10 @@ class Home extends React.Component {
       this.state.courseInfo !== null &&
       !this.state.newpayment
     ) {
-      // console.log(this.state.courseInfo, "hi");
-      // if (this.state.courseInfo.completePayments !== null) {
       orders = this.state.courseInfo.completedPayments.map(completeOrder => {
         const date = moment(completeOrder.created_at).format(
           "MMMM Do YYYY,h:mm:ss a"
         );
-
-        console.log(completeOrder);
         return (
           <CompleteOrders
             date={date}

@@ -9,10 +9,17 @@ const querystring = require("querystring");
  * @return {Promise<Array>} response – Promise with the response
  */
 const handleGetPurchases = userId => {
-  console.log(userId, "dsdsdsdfhbjadjuwvsuja");
-  return axios.get(`/api/v2/admin/purchases?user_id=${userId}`).catch(err => {
-    ErrorHandler.handle(err);
+  let response = new Promise((resolve, reject) => {
+    axios
+      .get(`/api/v2/admin/purchases?user_id=${userId}`)
+      .then(res => {
+        resolve(res)
+      })
+      .catch(err => {
+        reject(ErrorHandler.handle(err))
+      });
   });
+  return response;
 };
 
 /**
