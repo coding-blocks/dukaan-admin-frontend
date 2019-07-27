@@ -1,25 +1,19 @@
-import axios from 'axios';
+import axios from "axios";
 import "./config";
 import ErrorHandler from "../helpers/ErrorHandler";
-const querystring = require('querystring');
+const querystring = require("querystring");
 
 /**
  * Fetch the purchases of a user by user id
  * @param {int} userId - User ID
  * @return {Promise<Array>} response – Promise with the response
  */
-const handleGetPurchases = (userId) => {
-  let response = new Promise((resolve, reject) => {
-    axios.get(
-      `/api/v2/admin/purchases?user_id=${userId}`
-    ).then((res) => {
-      resolve(res);
-    }).catch((err) => {
-      reject(ErrorHandler.handle(err));
-    });
+const handleGetPurchases = userId => {
+  console.log(userId, "dsdsdsdfhbjadjuwvsuja");
+  return axios.get(`/api/v2/admin/purchases?user_id=${userId}`).catch(err => {
+    ErrorHandler.handle(err);
   });
-  return response;
-}
+};
 
 /**
  * Fetch the partial purchases of a user based
@@ -30,28 +24,25 @@ const handleGetPurchases = (userId) => {
  */
 const handleGetPartialPurchases = (userId, cartId) => {
   let response = new Promise((resolve, reject) => {
-    axios.get(
-      `/api/v2/admin/purchases/partial?userId=${userId}&cartId=${cardId}`
-    ).then((res) => {
-      resolve(res);
-    }).catch((err) => {
-      reject(ErrorHandler.handle(err));
-    });
+    axios
+      .get(`/api/v2/admin/purchases/partial?userId=${userId}&cartId=${cartId}`)
+      .then(res => {
+        resolve(res);
+      })
+      .catch(err => {
+        reject(ErrorHandler.handle(err));
+      });
   });
   return response;
-}
+};
 
-const handleCreateNewPurchase = () => {
+const handleCreateNewPurchase = () => {};
 
-}
-
-const handleCreatePartialPurchase = () => {
-  
-}
+const handleCreatePartialPurchase = () => {};
 
 module.exports = {
   handleGetPurchases,
   handleGetPartialPurchases,
   handleCreateNewPurchase,
   handleCreatePartialPurchase
-}
+};

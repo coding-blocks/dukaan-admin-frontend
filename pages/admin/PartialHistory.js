@@ -6,12 +6,11 @@ import moment from "moment";
 import controller from "../../controllers/purchases";
 
 class PartialHistory extends React.Component {
-
-  static async getInitialProps({query}) {
-      console.log(query,'dsjhdjhs')
-      return {userid:query.userid,cart_id:query.cart_id}
+  static async getInitialProps({ query }) {
+    console.log(query, "dsjhdjhs");
+    return { userid: query.userid, cart_id: query.cart_id };
   }
-  
+
   constructor(props) {
     super(props);
     this.state = {
@@ -21,39 +20,27 @@ class PartialHistory extends React.Component {
   }
 
   componentDidMount() {
-    const userid = this.props.userid
-    const cart_id = this.props.cart_id
+    const userid = this.props.userid;
+    const cart_id = this.props.cart_id;
     this.setState({
       userid,
       cart_id
     });
-    controller.handleGetPartialPurchases(userid, cart_id).then((res) => {
-      this.setState({
-        courseInfo: res.data.PartialPayments,
-        mrp: res.data.productmrp,
-        name: res.data.product.name
+    controller
+      .handleGetPartialPurchases(userid, cart_id)
+      .then(res => {
+        console.log(res.data, "ppppp");
+        this.setState({
+          courseInfo: res.data.PartialPayments,
+          mrp: res.data.amount,
+          name: res.data.product.name
+        });
+      })
+      .catch(err => {
+        this.setState({
+          courseInfo: null
+        });
       });
-    }).catch((err) => {
-      this.setState({
-        courseInfo: null
-      });
-    });
-    // axios
-    //   .get(`/api/v2/admin/purchases/partial?userId=${userid}&cartId=${cart_id}`)
-    //   .then(res => {
-    //     console.log(res, "dhbudjsvjhaskasb");
-    //     this.setState({
-    //       courseInfo: res.data.PartialPayments,
-    //       mrp: res.data.product.mrp,
-    //       name: res.data.product.name
-    //     });
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //     this.setState({
-    //       courseInfo: null
-    //     });
-    //   });
   }
   render() {
     const partial = () => {

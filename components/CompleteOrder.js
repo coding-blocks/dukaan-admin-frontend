@@ -260,6 +260,19 @@ class CompleteOrder extends React.Component {
               <a href={this.props.invoice_url} target="blank">
                 <button className="button-solid lg">View Invoice</button>
               </a>
+              {this.props.partial_payment ? (
+                <a
+                  href={`/admin/PartialHistory?userid=${
+                    this.props.userid
+                  }&cart_id=${this.props.cart_id}`}
+                  class="button-solid lg"
+                  target="blank"
+                >
+                  View all Transactions
+                </a>
+              ) : (
+                ""
+              )}
               {this.props.status === "captured" ? (
                 <button
                   className="button-solid lg"

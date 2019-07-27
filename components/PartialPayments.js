@@ -4,6 +4,7 @@ import "../styles/pages/admin/coupons.scss";
 import axios from "axios";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import "../controllers/config";
 
 class PartialPayments extends React.Component {
   constructor(props) {
@@ -48,9 +49,7 @@ class PartialPayments extends React.Component {
         formBody = formBody.join("&");
 
         axios
-          .post("http://localhost:2929/api/v2/admin/refunds", formBody, {
-            withCredentials: true
-          })
+          .post("/api/v2/admin/refunds", formBody)
           .then(() => {
             console.log("Im in then");
             Swal.fire({

@@ -10,14 +10,14 @@ import CheckLogin from "../components/CheckLogin";
 import "../controllers/config";
 import moment from "moment";
 import axios from "axios";
-import InCompleteOrder from "../components/ActiveOrders";
 // import PartialPayments from "../components/PartialPayments";
 import RefundedOrders from "../components/RefundedOrders";
 import { resolve } from "url";
 import userController from "../controllers/users";
 import purchasesController from "../controllers/purchases";
-import swal from 'sweetalert2';
+import swal from "sweetalert2";
 import "../controllers/config";
+import ActiveOrders from "../components/ActiveOrders";
 
 class Home extends React.Component {
   constructor(props) {
@@ -72,48 +72,57 @@ class Home extends React.Component {
     });
   };
 
-  handleSearch = async (e) => {
+  handleSearch = async e => {
     e.preventDefault();
     if (!document.getElementById("email-search-form").checkValidity()) {
       document.getElementById("email-search-form").reportValidity();
     } else {
-      userController.handleGetUserByEmail(this.state.email).then((res) => {
-        if (res.data.length == 1) {
-          this.setState({
-            userInfo: res.data[0],
-            userFound: true
-          });
-          if (this.state.userInfo) {
-            purchasesController.handleGetPurchases(this.state.userInfo.id).then((res) => {
-              if (res.data.length == 1) {
-                this.setState({
-                  courseInfo: res.data
+      userController
+        .handleGetUserByEmail(this.state.email)
+        .then(res => {
+          console.log(res.data, "dataaa");
+          if (res.data.length == 1) {
+            this.setState({
+              userInfo: res.data[0],
+              userFound: true
+            });
+            if (this.state.userInfo) {
+              purchasesController
+                .handleGetPurchases(this.state.userInfo.id)
+                .then(res => {
+                  console.log(res.data);
+                  if (res.data) {
+                    console.log(this.state);
+                    this.setState({
+                      courseInfo: res.data
+                    });
+                  } else {
+                    this.setState({
+                      courseInfo: null
+                    });
+                  }
+                })
+                .catch(error => {
+                  swal.fire({
+                    title: "Error searching for user's purchases!",
+                    html: error,
+                    type: "error"
+                  });
                 });
-              } else {
-                this.setState({
-                  courseInfo: null
-                });
-              }
-            }).catch((error) => {
-              swal.fire({
-                'title': "Error searching for user's purchases!",
-                'html': error,
-                'type': 'error'
-              });
+            }
+          } else {
+            this.setState({
+              userFound: false
             });
           }
-        } else {
-          this.setState({
-            userFound: false
+        })
+        .catch(error => {
+          swal.fire({
+            title: "Error searching for user!",
+            html: error,
+            type: "error"
           });
-        }
-      }).catch((error) => {
-        swal.fire({
-          'title': 'Error searching for user!',
-          'html': error,
-          'type': 'error'
         });
-      })
     }
   };
 
@@ -128,10 +137,11 @@ class Home extends React.Component {
     let orders;
     const completeTab = this.state.completeTab;
     if (this.state.refundedTab) {
+      console.log(this.state.courseInfo.refundedPayments, "refundorder");
       if (this.state.courseInfo.refundedPayments.length > 0) {
         // console.log("refunded", this.state.courseInfo.refundedPayments);
         orders = this.state.courseInfo.refundedPayments.map(refundedOrder => {
-          console.log(refundedOrder, "order");
+          console.log(refundedOrder, "refundorder");
           const date = moment(refundedOrder.created_at).format(
             "MMMM Do YYYY,h:mm:ss a"
           );
@@ -170,24 +180,28 @@ class Home extends React.Component {
     ) {
       // console.log(this.state.courseInfo, "hi");
       // if (this.state.courseInfo.completePayments !== null) {
-      orders = this.state.courseInfo.completedPayments.map(order => {
-        const date = moment(order.created_at).format("MMMM Do YYYY,h:mm:ss a");
+      orders = this.state.courseInfo.completedPayments.map(completeOrder => {
+        const date = moment(completeOrder.created_at).format(
+          "MMMM Do YYYY,h:mm:ss a"
+        );
 
-        console.log(order);
+        console.log(completeOrder);
         return (
           <CompleteOrders
             date={date}
-            txn_id={order.cart.transactions[0].id}
-            key={order.id}
-            image={order.product.image_url}
-            product_name={order.product.name}
-            status={order.status}
-            amount={order.amount / 100}
-            invoice_url={order.invoice_link}
-            refunded={order.cart.transactions[0].status}
+            txn_id={completeOrder.cart.transactions[0].id}
+            key={completeOrder.id}
+            image={completeOrder.product.image_url}
+            product_name={completeOrder.product.name}
+            status={completeOrder.status}
+            amount={completeOrder.amount / 100}
+            invoice_url={completeOrder.invoice_link}
+            refunded={completeOrder.cart.transactions[0].status}
             userid={this.state.userInfo.id}
-            payment_type={order.cart.transactions[0].payment_type}
-            description={order.product.description}
+            payment_type={completeOrder.cart.transactions[0].payment_type}
+            description={completeOrder.product.description}
+            partial_payment={completeOrder.partial_payment}
+            cart_id={completeOrder.cart.id}
           />
         );
       });
@@ -199,13 +213,13 @@ class Home extends React.Component {
         this.state.courseInfo &&
         this.state.courseInfo.activePayments.length > 0
       ) {
+        // console.log(activeOrder, "Ppsds");
         orders = this.state.courseInfo.activePayments.map(activeOrder => {
-          console.log(activeOrder, "Ppsds");
           const date = moment(activeOrder.created_at).format(
             "MMMM Do YYYY,h:mm:ss a"
           );
           return (
-            <InCompleteOrder
+            <ActiveOrders
               amountLeft={activeOrder.amountLeft}
               partial_payment={activeOrder.partial_payment}
               date={date}

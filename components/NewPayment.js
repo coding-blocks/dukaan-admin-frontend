@@ -344,7 +344,7 @@ class NewPayment extends React.Component {
 
           {/* username */}
           <FieldWithElement
-            name={"Select Center For Course"}
+            name={"Select Category For Course"}
             nameCols={3}
             elementCols={9}
             elementClassName={"pl-4"}
@@ -426,7 +426,7 @@ class NewPayment extends React.Component {
               type="text"
               className={"input-text"}
               placeholder="Coupon Code"
-              name={"coupon_code"}
+              name={"coupon"}
               onChange={this.onChangeValue}
               value={this.state.formValues.mobile_number}
             />
