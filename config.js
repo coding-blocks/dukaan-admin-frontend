@@ -18,5 +18,6 @@ development.oneauth.logout_url = development.oneauth.domain + `/logout?redirect=
 development.backend = {};
 development.backend.domain = "http://localhost:2929";
 development.backend.token_url = development.backend.domain + "/auth/token";
+development.sentry_dsn = "https://38a08e1b6b3b451f92a744f5566414c8@sentry.codingblocks.com/35";
 
 module.exports = development;
