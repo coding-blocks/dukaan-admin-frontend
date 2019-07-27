@@ -49,25 +49,21 @@ class ActiveOrders extends React.Component {
                 this.props.userid
               }&cart_id=${this.props.cart_id}`}
               class="button-solid view-partial-payment"
+              target="blank"
             >
               View all Transactions
             </a>
-            <Link
-              href={`/admin/ContinuePayment?id=${this.props.cart_id}&userid=${
-                this.props.userid
-              }`}
+
+            <a
+              href={`/admin/ContinuePayment?id=${
+                this.props.cart_id
+              }&oneauthid=${this.props.oneauthid}`}
+              target="blank"
+              class="button-solid"
+              style={{ marginLeft: "10vh" }}
             >
-              <a
-                href={`/admin/ContinuePayment?id=${
-                  this.props.cart_id
-                }&oneauthid=${this.props.oneauthid}`}
-                target="blank"
-                class="button-solid"
-                style={{ marginLeft: "10vh" }}
-              >
-                Continue
-              </a>
-            </Link>
+              Continue
+            </a>
           </div>
         </div>
       </div>
