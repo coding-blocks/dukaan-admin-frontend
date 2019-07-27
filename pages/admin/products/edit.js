@@ -191,15 +191,30 @@ class EditProduct extends React.Component {
                     />
                   </FieldWithElement>
                   <FieldWithElement name={"Image URL"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                    <input
-                      type={"text"}
-                      className={"input-text"}
-                      placeholder="Enter Image URL" 
-                      name="image_url"
-                      multiline={true}
-                      defaultValue={this.state.queryParams.image_url}
-                      onChange={this.handleQueryParamChange}
-                      required
+                    <img
+                      src={this.state.queryParams.image_url}
+                      width={100}
+                      height={100}
+                    />
+                    <div className={`pb-3`}>
+                      <input
+                        type={"text"}
+                        className={"input-text"}
+                        placeholder="Enter Image URL" 
+                        name="image_url"
+                        defaultValue={this.state.queryParams.image_url}
+                        onChange={this.handleQueryParamChange}
+                        required
+                      />
+                    </div>
+                    <ImageChooser 
+                      callback={(image_url) => {
+                        let queryParams = this.state.queryParams;
+                        queryParams.image_url = image_url;
+                        this.setState({
+                          queryParams
+                        });
+                      }}
                     />
                   </FieldWithElement>
                   <FieldWithElement name={"Redirect URL"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>

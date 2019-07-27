@@ -10,6 +10,7 @@ import Loader from '../../components/loader';
 import Pagination from "../../components/Pagination";
 import EditProduct from "./products/edit";
 import Formatter from '../../helpers/formatter';
+import Modal from 'react-modal';
 
 class Products extends React.Component {
 
@@ -23,7 +24,9 @@ class Products extends React.Component {
         limit: 5
       },
       pagesInfo: {},
-      loading: false
+      loading: false,
+      showEditProductModal: false,
+      editProductData: {}
     };
     this.ReactSwal = withReactContent(Swal);
   }
@@ -87,35 +90,50 @@ class Products extends React.Component {
   }
 
   /**
+   * Edit Product close modal
+   */
+  closeEditProductModal = () => {
+    this.setState({
+      showEditProductModal: false,
+      editProductData: {}
+    })
+  }
+
+  /**
    * Edit Product action handler.
-   * @param {object} coupon
+   * @param {object} product
    */
   handleEditProduct = (product) => {
-    this.ReactSwal.fire({
-      html: <EditProduct
-              product={product}
-              callback={(newProduct) => {
-                this.ReactSwal.close();
-                Swal.mixin({
-                  toast: true,
-                  position: "center",
-                  showConfirmButton: false,
-                  timer: 3000
-                }).fire({
-                  type: 'success',
-                  title: 'Product Edited Successfully'
-                })
-                let products = this.state.results;
-                let productIndex = this.state.results.indexOf(product);
-                products[productIndex] = newProduct;
-                this.setState({
-                  results: products
-                });
-              }}
-            />,
-      customClass: "col-md-6",
-      showConfirmButton: false
-    });
+    console.log("Lol")
+    this.setState({
+      showEditProductModal: true,
+      editProductData: product
+    })
+    // this.ReactSwal.fire({
+    //   html: <EditProduct
+    //           product={product}
+    //           callback={(newProduct) => {
+    //             this.ReactSwal.close();
+    //             Swal.mixin({
+    //               toast: true,
+    //               position: "center",
+    //               showConfirmButton: false,
+    //               timer: 3000
+    //             }).fire({
+    //               type: 'success',
+    //               title: 'Product Edited Successfully'
+    //             })
+    //             let products = this.state.results;
+    //             let productIndex = this.state.results.indexOf(product);
+    //             products[productIndex] = newProduct;
+    //             this.setState({
+    //               results: products
+    //             });
+    //           }}
+    //         />,
+    //   customClass: "col-md-6",
+    //   showConfirmButton: false
+    // });
   }
 
   render() {
@@ -123,6 +141,32 @@ class Products extends React.Component {
       <div>
         <Head title="Coding Blocks | Dukaan | Products" />
         <Layout />
+        <Modal
+          isOpen={this.state.showEditProductModal}
+          onRequestClose={this.closeEditProductModal}
+        >
+          <EditProduct
+            product={this.state.editProductData}
+            callback={(newProduct) => {
+              this.closeEditProductModal();
+              Swal.mixin({
+                toast: true,
+                position: "center",
+                showConfirmButton: false,
+                timer: 3000
+              }).fire({
+                type: 'success',
+                title: 'Product Edited Successfully'
+              })
+              let products = this.state.results;
+              let productIndex = this.state.results.indexOf(product);
+              products[productIndex] = newProduct;
+              this.setState({
+                results: products
+              });
+            }}
+          />
+        </Modal>
         <div className={"mr-5 pr-5"}>
           {/* Product Search */}
           <div className={"d-flex justify-content-center"}>
