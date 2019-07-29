@@ -72,6 +72,12 @@ class Home extends React.Component {
     });
   };
 
+  showOrders = () => {
+    this.setState({
+      newpayment: false
+    })
+  };
+
   handleSearch = async e => {
     e.preventDefault();
     if (!document.getElementById("email-search-form").checkValidity()) {
@@ -264,9 +270,15 @@ class Home extends React.Component {
                     Wallet Amount : ₹ {this.state.userInfo.wallet_amount / 100}
                   </p>
 
-                  <div>
+                  <div className={"mt-4"}>
                     <button
-                      className="button-solid"
+                      className={"button-solid"}
+                      onClick={this.showOrders}
+                    >
+                      Show Orders
+                    </button>
+                    <button
+                      className={"button-solid ml-4"}
                       onClick={this.handleNewPayment}
                     >
                       Make New Payment
