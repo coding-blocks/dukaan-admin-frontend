@@ -88,6 +88,7 @@ class Home extends React.Component {
         .then(res => {
           console.log(res.data, "dataaa");
           if (res.data.length == 1) {
+            console.log("yes");
             this.setState({
               userInfo: res.data[0],
               userFound: true

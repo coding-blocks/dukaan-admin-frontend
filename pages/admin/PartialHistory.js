@@ -42,6 +42,7 @@ class PartialHistory extends React.Component {
         });
       });
   }
+
   render() {
     const partial = () => {
       if (this.state.courseInfo !== null) {
@@ -79,6 +80,13 @@ class PartialHistory extends React.Component {
         <Head />
         <Layout />
         <div className="container">
+          <div>
+            <h3 className="mb-2">Payment Details</h3>
+            <div className="font-sm no-gutters">
+              <div>{this.state.name}</div>
+              <div>Order Total ₹ {this.state.mrp / 100}</div>
+            </div>
+          </div>
           <div className="item-heading row">{partial()}</div>
         </div>
       </div>

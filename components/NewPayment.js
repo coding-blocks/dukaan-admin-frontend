@@ -16,6 +16,7 @@ class NewPayment extends React.Component {
       product_category: "1",
       amount: "",
       min_emi: "",
+      centers: [],
       formValues: {
         coupon: "",
         comment: "",
@@ -43,17 +44,22 @@ class NewPayment extends React.Component {
         {
           withCredentials: true
         }
-      )
-    ]).then(([res1, res2, res3]) => {
+      ),
+      axios.get("http://localhost:2929/api/v2/admin/resources/centers", {
+        withCredentials: true
+      })
+    ]).then(([res1, res2, res3, res4]) => {
       console.log(res1.data);
       console.log(res2.data);
       console.log(res3.data.products);
+      console.log(res4.data);
       let fetchedProducts = [];
       res3.data.products.map(product => {
         fetchedProducts.push(product);
       });
       console.log(this.props);
       this.setState({
+        centers: res4.data,
         states: res1.data,
         products: fetchedProducts,
         product_categories: res2.data
@@ -167,6 +173,19 @@ class NewPayment extends React.Component {
               showConfirmButton: true,
               confirmButtonText: "Okay"
             });
+            // this.setState({
+            //   formValues: {
+            //     coupon: "",
+            //     comment: "",
+            //     paymentMode: "cash",
+            //     quantity: "1",
+            //     stateId: "AP",
+            //     oneauthId: "" + this.props.userid
+            //   }
+            // });
+            setTimeout(() => {
+              window.location.reload("/");
+            }, 3000);
           })
           .catch(err => {
             console.log(err);
@@ -413,11 +432,17 @@ class NewPayment extends React.Component {
             elementClassName={"pl-4"}
           >
             <select name="paymentCenterId" onChange={this.onChangeValue}>
-              <option value="1">Pitampura</option>
-              <option value="2">Noida</option>
               <option value="undisclosed" selected>
                 Select Payment Center
               </option>
+
+              {this.state.centers.map(center => {
+                return (
+                  <option value={center.id} key={center.id}>
+                    {center.name}
+                  </option>
+                );
+              })}
             </select>
           </FieldWithElement>
 

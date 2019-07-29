@@ -55,12 +55,13 @@ class ActiveOrders extends React.Component {
             </a>
 
             <a
-              href={`/admin/ContinuePayment?id=${
+              href={`/admin/ContinuePayment?cartid=${
                 this.props.cart_id
-              }&oneauthid=${this.props.oneauthid}`}
-              target="blank"
+              }&oneauthid=${this.props.oneauthid}&amountLeft=${this.props
+                .amountLeft / 100}`}
               class="button-solid"
               style={{ marginLeft: "10vh" }}
+              target="blank"
             >
               Continue
             </a>

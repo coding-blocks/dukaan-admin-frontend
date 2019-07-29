@@ -1,10 +1,21 @@
 import React from "react";
-import Modal from "./Modal";
+// import Modal from "./Modal";
 import FieldWithElement from "./FieldWithElement";
 import axios from "axios";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import Router from "next/router";
+import Modal from "react-modal";
 
+const customStyles = {
+  content: {
+    top: "45%",
+    left: "50%",
+    marginRight: "-50%",
+    height: "auto",
+    transform: "translate(-50%, -50%)"
+  }
+};
 class CompleteOrder extends React.Component {
   constructor(props) {
     super(props);
@@ -68,6 +79,11 @@ class CompleteOrder extends React.Component {
               confirmButtonText: "Okay"
             });
           })
+          // .then(() => {
+          //   setTimeout(() => {
+          //     window.location.reload();
+          //   }, 3000);
+          // })
           .catch(err => {
             console.log(err);
             Swal.fire({
@@ -99,63 +115,89 @@ class CompleteOrder extends React.Component {
   };
   ModalForm = () => (
     <Modal
-      className="modal"
-      show={this.state.isShowing}
-      close={this.closeModalHandler}
+      isOpen={this.state.showModal}
+      onRequestClose={this.closeModalHandler}
       handleSubmit={this.handleSubmit}
+      amount={this.props.amount}
+      name={this.props.product_name}
+      style={customStyles}
     >
-      <FieldWithElement
-        name={"Payment Method"}
-        nameCols={3}
-        elementCols={9}
-        elementClassName={"pl-4"}
-      >
-        <select name="payment_type" onChange={this.onChangeValue}>
-          <option value="credits">CREDITS</option>
-          <option value="cheque">CHEQUE</option>
-          {this.razorpayOption()}
-          <option value="undisclosed" selected>
-            Select Payment Mode
-          </option>
-        </select>
-      </FieldWithElement>
+      <div className=" col-md-12">
+        <div>
+          <div className="modal-header">
+            <h3>Refund Payment</h3>
+            <h3>
+              Course Purchased{" "}
+              <span className="red">{this.props.product_name}</span>
+            </h3>
+            <h3>
+              Order Total <span className="red">₹ {this.props.amount}</span>
+            </h3>
+          </div>
+          <div className="modal-body">
+            <FieldWithElement
+              name={"Payment Method"}
+              nameCols={3}
+              elementCols={9}
+              elementClassName={"pl-4"}
+            >
+              <select name="payment_type" onChange={this.onChangeValue}>
+                <option value="credits">CREDITS</option>
+                <option value="cheque">CHEQUE</option>
+                {this.razorpayOption()}
+                <option value="undisclosed" selected>
+                  Select Payment Mode
+                </option>
+              </select>
+            </FieldWithElement>
 
-      {this.paymentMethod()}
+            {this.paymentMethod()}
 
-      <FieldWithElement
-        name={"Center"}
-        nameCols={3}
-        elementCols={9}
-        elementClassName={"pl-4"}
-      >
-        <select name="center_id" onChange={this.onChangeValue}>
-          <option value="1">Pitampura</option>
-          <option value="2">Noida</option>
-          <option value="undisclosed" selected>
-            Select Center
-          </option>
-        </select>
-      </FieldWithElement>
+            <FieldWithElement
+              name={"Center"}
+              nameCols={3}
+              elementCols={9}
+              elementClassName={"pl-4"}
+            >
+              <select name="center_id" onChange={this.onChangeValue}>
+                <option value="1">Pitampura</option>
+                <option value="2">Noida</option>
+                <option value="undisclosed" selected>
+                  Select Center
+                </option>
+              </select>
+            </FieldWithElement>
 
-      <FieldWithElement nameCols={3} elementCols={9} name={"Comment"}>
-        <input
-          type="text"
-          className={"input-text"}
-          placeholder="Enter Your Comment"
-          name={"comment"}
-          onChange={this.onChangeValue}
-        />
-      </FieldWithElement>
+            <FieldWithElement nameCols={3} elementCols={9} name={"Comment"}>
+              <input
+                type="text"
+                className={"input-text"}
+                placeholder="Enter Your Comment"
+                name={"comment"}
+                onChange={this.onChangeValue}
+              />
+            </FieldWithElement>
 
-      <FieldWithElement nameCols={3} elementCols={9} name={"Amount"}>
-        <input
-          type="text"
-          className={"input-text"}
-          placeholder="Enter amount"
-          name={"amount"}
-          onChange={this.onChangeValue}
-        />
-      </FieldWithElement>
+            <FieldWithElement nameCols={3} elementCols={9} name={"Amount"}>
+              <input
+                type="text"
+                className={"input-text"}
+                placeholder="Enter amount"
+                name={"amount"}
+                onChange={this.onChangeValue}
+              />
+            </FieldWithElement>
+          </div>
+          <div className="modal-footer">
+            <button className="button-solid lg mr-4" onClick={this.props.close}>
+              CLOSE
+            </button>
+            <button className="button-solid lg" onClick={this.handleSubmit}>
+              REFUND
+            </button>
+          </div>
+        </div>
+      </div>
     </Modal>
   );
 
@@ -247,7 +289,7 @@ class CompleteOrder extends React.Component {
 
               <div className="col-md-4">
                 <div className="row no-gutters justify-content-between font-mds red extra-bold">
-                  <div>Order Total = </div>
+                  <div>Order Total </div>
                   <div className="font-md">₹ {this.props.amount}</div>
                 </div>
                 <div className="font-sm grey">
