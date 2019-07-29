@@ -362,6 +362,7 @@ class Home extends React.Component {
                     <input
                       name="email"
                       required
+                      autoFocus
                       id="email"
                       type="email"
                       className="input-text mb-2"
