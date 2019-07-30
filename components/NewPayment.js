@@ -19,6 +19,7 @@ class NewPayment extends React.Component {
       product_category: "1",
       amount: "",
       min_emi: "",
+      centers: [],
       formValues: {
         coupon: "",
         comment: "",
@@ -46,17 +47,22 @@ class NewPayment extends React.Component {
         {
           withCredentials: true
         }
-      )
-    ]).then(([res1, res2, res3]) => {
+      ),
+      axios.get("http://localhost:2929/api/v2/admin/resources/centers", {
+        withCredentials: true
+      })
+    ]).then(([res1, res2, res3, res4]) => {
       console.log(res1.data);
       console.log(res2.data);
       console.log(res3.data.products);
+      console.log(res4.data);
       let fetchedProducts = [];
       res3.data.products.map(product => {
         fetchedProducts.push(product);
       });
       console.log(this.props);
       this.setState({
+        centers: res4.data,
         states: res1.data,
         products: fetchedProducts,
         product_categories: res2.data

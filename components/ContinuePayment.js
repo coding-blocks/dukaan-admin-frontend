@@ -4,7 +4,7 @@ import "../styles/pages/admin/coupons.scss";
 import axios from "axios";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import '../controllers/config'
+import "../controllers/config";
 
 function ContinuePayment(props) {
   console.log(props);
@@ -69,10 +69,7 @@ function ContinuePayment(props) {
     formBody = formBody.join("&");
 
     try {
-      await axios.post(
-        "/api/v2/admin/purchases",
-        formBody,
-      );
+      await axios.post("/api/v2/admin/purchases", formBody);
       console.log("Im in then");
       Swal.fire({
         title: "payment made!",
@@ -81,6 +78,10 @@ function ContinuePayment(props) {
         showConfirmButton: true,
         confirmButtonText: "Okay"
       });
+
+      setTimeout(() => {
+        window.location.reload("/");
+      }, 3000);
     } catch (err) {
       console.log(err);
       Swal.fire({
@@ -248,9 +249,14 @@ function ContinuePayment(props) {
         {/* Title */}
         <div className={"d-flex justify-content-center mt-1 pb-3"}>
           <h2 className={"title red"}>
-            Continue Payment {formValues.cartId}
+            Continue Payment
             {console.log(formValues)}
           </h2>
+        </div>
+        <div className={"d-flex justify-content-center mt-1 pb-3"}>
+          <h3>
+            Amount Left <span className="red">₹ {props.amountLeft}</span>
+          </h3>
         </div>
 
         {/* username */}

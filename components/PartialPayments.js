@@ -55,10 +55,15 @@ class PartialPayments extends React.Component {
             Swal.fire({
               title: "Refund made!",
               type: "success",
-              timer: "3000",
+              timer: "30000",
               showConfirmButton: true,
               confirmButtonText: "Okay"
             });
+          })
+          .then(() => {
+            setTimeout(() => {
+              window.location.reload();
+            }, 3000);
           })
           .catch(err => {
             console.log(err);
@@ -210,11 +215,6 @@ class PartialPayments extends React.Component {
   render() {
     return (
       <div className="col-md-4 col-12">
-        <h3 className="mb-2">Payment Details</h3>
-        <div className="font-sm no-gutters">
-          <div>{this.props.Productname}</div>
-          <div>Order Total ₹ {this.props.mrp}</div>
-        </div>
         <br />
         <div className="border-card">
           <div className="font-mds mb-3 red">Payment ID: #{this.props.id}</div>
@@ -227,7 +227,17 @@ class PartialPayments extends React.Component {
           <p>Payment Collected By: {this.props.name}</p>
           <p>Payment Center: {this.props.center}</p>
           <p>Payment Status: {this.props.status}</p>
-          {this.props.status === "paid" ? this.formDisplay() : ""}
+          {this.props.status === "paid" ? (
+            this.formDisplay()
+          ) : (
+            <button
+              id="view-invoice"
+              className="button-solid ml-4 mb-2 mt-4 pl-5 pr-5"
+              type="submit"
+            >
+              Refund Details
+            </button>
+          )}
           <a href={this.props.partial_invoice_link} target="blank">
             <button
               id="view-invoice"

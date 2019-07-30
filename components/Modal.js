@@ -17,6 +17,8 @@ class Modal extends React.Component {
         <div>
           <div className="modal-header">
             <h3>Refund Payment</h3>
+            <h3>Course Purchased  <span className = 'red'>{this.props.name}</span></h3>
+            <h3>Order Total <span className='red'>₹ {this.props.amount}</span></h3>
           </div>
           <div className="modal-body">
             <p>{this.props.children}</p>

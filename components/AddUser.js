@@ -5,7 +5,6 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
-
 class AddUser extends React.Component {
   constructor(props) {
     super(props);
@@ -32,10 +31,10 @@ class AddUser extends React.Component {
   componentDidMount() {
     Promise.all([
       axios.get("http://localhost:2929/api/v2/admin/resources/demographics", {
-        withCredentials:true
+        withCredentials: true
       }),
       axios.get("http://localhost:2929/api/v2/admin/resources/countries", {
-        withCredentials:true
+        withCredentials: true
       })
     ]).then(([res1, res2]) => {
       console.log(res1.data);
@@ -69,7 +68,11 @@ class AddUser extends React.Component {
     Swal.fire({
       title: "Are you sure you want to add a user?",
       type: "question",
-      html:`Username: ${this.state.formValues.username}<br/>Name : ${this.state.formValues.firstname} ${this.state.formValues.lastname}<br/> Phone: ${this.state.formValues.mobile_number}<br/>Email Id: ${this.state.formValues.email}<br/>`,
+      html: `Username: ${this.state.formValues.username}<br/>Name : ${
+        this.state.formValues.firstname
+      } ${this.state.formValues.lastname}<br/> Phone: ${
+        this.state.formValues.mobile_number
+      }<br/>Email Id: ${this.state.formValues.email}<br/>`,
       confirmButtonColor: "#f66",
       confirmButtonText: "Yes!",
       cancelButtonText: "No!",
@@ -113,6 +116,9 @@ class AddUser extends React.Component {
                 email: ""
               }
             });
+            setTimeout(() => {
+              window.location.reload("/");
+            }, 3000);
           })
           .catch(err => {
             Swal.fire({
@@ -124,7 +130,6 @@ class AddUser extends React.Component {
       }
     });
   };
-
 
   render() {
     return (
