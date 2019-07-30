@@ -177,37 +177,39 @@ class Home extends React.Component {
     }
 
     if (
-      completeTab &&
-      this.state.userFound &&
-      this.state.courseInfo !== null &&
-      !this.state.newpayment
+      completeTab
     ) {
-      orders = this.state.courseInfo.completedPayments.map(completeOrder => {
-        const date = moment(completeOrder.created_at).format(
-          "MMMM Do YYYY,h:mm:ss a"
-        );
-        return (
-          <CompleteOrders
-            date={date}
-            txn_id={completeOrder.cart.transactions[0].id}
-            key={completeOrder.id}
-            image={completeOrder.product.image_url}
-            product_name={completeOrder.product.name}
-            status={completeOrder.status}
-            amount={completeOrder.amount / 100}
-            invoice_url={completeOrder.invoice_link}
-            refunded={completeOrder.cart.transactions[0].status}
-            userid={this.state.userInfo.id}
-            payment_type={completeOrder.cart.transactions[0].payment_type}
-            description={completeOrder.product.description}
-            partial_payment={completeOrder.partial_payment}
-            cart_id={completeOrder.cart.id}
-          />
-        );
-      });
-      // }
-    } else if (completeTab) {
-      orders = <div>No Complete Orders Found.</div>;
+      if (
+        this.state.userFound && 
+        this.state.courseInfo !== null &&
+        !this.state.newpayment &&
+        this.state.courseInfo.completedPayments.length > 0) {
+          orders = this.state.courseInfo.completedPayments.map(completeOrder => {
+            const date = moment(completeOrder.created_at).format(
+              "MMMM Do YYYY,h:mm:ss a"
+            );
+            return (
+              <CompleteOrders
+                date={date}
+                txn_id={completeOrder.cart.transactions[0].id}
+                key={completeOrder.id}
+                image={completeOrder.product.image_url}
+                product_name={completeOrder.product.name}
+                status={completeOrder.status}
+                amount={completeOrder.amount / 100}
+                invoice_url={completeOrder.invoice_link}
+                refunded={completeOrder.cart.transactions[0].status}
+                userid={this.state.userInfo.id}
+                payment_type={completeOrder.cart.transactions[0].payment_type}
+                description={completeOrder.product.description}
+                partial_payment={completeOrder.partial_payment}
+                cart_id={completeOrder.cart.id}
+              />
+            );
+        });
+      } else {
+        orders = <div>No Completed Orders found</div>
+      }
     } else if (this.state.activeTab) {
       if (
         this.state.courseInfo &&

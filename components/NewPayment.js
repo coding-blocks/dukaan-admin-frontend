@@ -198,26 +198,6 @@ class NewPayment extends React.Component {
               showConfirmButton: true
             });
           });
-
-          // axios
-          //   .post("/api/v2/admin/purchases", formBody)
-          //   .then(() => {
-          //     Swal.fire({
-          //       title: "Payment has been recorded successfully!",
-          //       type: "success",
-          //       timer: "3000",
-          //       showConfirmButton: true,
-          //       confirmButtonText: "Okay"
-          //     });
-          //   })
-          //   .catch(err => {
-          //     console.log(err);
-          //     Swal.fire({
-          //       title: "Error while making payment!",
-          //       type: "error",
-          //       showConfirmButton: true
-          //     });
-          //   });
         }
       });
     }
