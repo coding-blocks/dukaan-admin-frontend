@@ -276,7 +276,7 @@ class CompleteOrder extends React.Component {
           <div className="border-card pt-4 mb-4">
             <div className="row justify-content-between align-items-center">
               <div className="img-desc col-md-8 col-12 mb-4 mb-md-0">
-                <div className="col-md-3 col-4">
+                <div className="col-md-3 col-4 mt-1 mr-5">
                   <img className="round" src={this.props.image} alt="" />
                 </div>
                 <div className="description justify-content-center">
@@ -298,10 +298,12 @@ class CompleteOrder extends React.Component {
               </div>
             </div>
             <div class="divider-h mt-4 mb-4" />
-            <div className="d-flex justify-content-between">
-              <a href={this.props.invoice_url} target="blank">
-                <button className="button-solid lg">View Invoice</button>
-              </a>
+            <div className="d-flex justify-content-center mr-5">
+              <div className={"mr-4"}>
+                <a href={this.props.invoice_url} target="blank">
+                  <button className="button-solid lg">View Invoice</button>
+                </a>
+              </div>
               {this.props.partial_payment ? (
                 <a
                   href={`/admin/PartialHistory?userid=${
