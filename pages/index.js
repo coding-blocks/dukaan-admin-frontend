@@ -358,7 +358,7 @@ class Home extends React.Component {
             <div className="row">
               <div className="col-md-12 col-12">
                 <div className={"d-flex"}>
-                  <form id={"email-search-form"} className={"d-flex col-md-12"}>
+                  <form id={"email-search-form"} className={"d-flex col-md-12 px-0"}>
                     <input
                       name="email"
                       required

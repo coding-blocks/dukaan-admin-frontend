@@ -1,6 +1,7 @@
 import axios from "axios";
 import "./config";
 import ErrorHandler from "../helpers/ErrorHandler";
+import Swal from "sweetalert2";
 const querystring = require("querystring");
 
 /**
@@ -43,7 +44,21 @@ const handleGetPartialPurchases = (userId, cartId) => {
   return response;
 };
 
-const handleCreateNewPurchase = () => {};
+/**
+ * Add a new purchase
+ * @param {string} formBody 
+ * @return {Promise<string>} response – Promise with the response
+ */
+const handleCreateNewPurchase = (formBody) => {
+  let response = new Promise((resolve, reject) => {
+    axios.post(`/api/v2/admin/purchases`, formBody).then((response) => {
+      resolve(response);
+    }).catch((error) => {
+      reject(ErrorHandler.handle(error))
+    })
+  });
+  return response;
+};
 
 const handleCreatePartialPurchase = () => {};
 

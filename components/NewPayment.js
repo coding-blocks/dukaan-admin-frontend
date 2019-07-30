@@ -5,6 +5,9 @@ import axios from "axios";
 import "../controllers/config";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import Price from "../components/Price";
+import formatter from "../helpers/formatter";
+import purchasesController from "../controllers/purchases";
 
 class NewPayment extends React.Component {
   constructor(props) {
@@ -61,7 +64,8 @@ class NewPayment extends React.Component {
     });
   }
 
-  calculateAmount = () => {
+  calculateAmount = (e) => {
+    e.preventDefault();
     const data = {
       coupon: this.state.formValues.coupon,
       oneauthId: this.props.userid,
@@ -133,51 +137,90 @@ class NewPayment extends React.Component {
     });
   };
 
+  /**
+   * Custom Validations for the new payment form
+   * @return {boolean} isValid – Returns a bool that tells
+   *  if the form passed validation
+   */
+  customValidations = () => {
+    if (!document.getElementById("new_payment_form").checkValidity()) {
+      document.getElementById("new_payment_form").reportValidity();
+      return false;
+    }
+    if (this.state.min_emi > this.state.formValues.partialAmount) {
+      Swal.fire({
+        title: "Error adding new payment!",
+        text: `Partial payment cannot be less than ${this.state.min_emi}`,
+        type: 'error'
+      });
+      return false;
+    }
+    return true;
+  };
+
   handleSubmit = async e => {
     e.preventDefault();
-    Swal.fire({
-      title: "Are you sure you want to make a new payment?",
-      type: "question",
-      confirmButtonColor: "#f66",
-      confirmButtonText: "Yes!",
-      cancelButtonText: "No!",
-      showCancelButton: true,
-      showConfirmButton: true,
-      showCloseButton: true
-    }).then(result => {
-      if (result.value) {
-        // Confirmation passed, delete coupon.
-        const data = this.state.formValues;
-        var formBody = [];
-        for (var property in data) {
-          var encodedKey = encodeURIComponent(property);
-          var encodedValue = encodeURIComponent(data[property]);
-          formBody.push(encodedKey + "=" + encodedValue);
-        }
-        formBody = formBody.join("&");
+    if (this.customValidations()) {
+      Swal.fire({
+        title: "Are you sure you want to make a new payment?",
+        type: "question",
+        confirmButtonColor: "#f66",
+        confirmButtonText: "Yes!",
+        cancelButtonText: "No!",
+        showCancelButton: true,
+        showConfirmButton: true,
+        showCloseButton: true
+      }).then(result => {
+        if (result.value) {
+          // Confirmation passed, delete coupon.
+          const data = this.state.formValues;
+          var formBody = [];
+          for (var property in data) {
+            var encodedKey = encodeURIComponent(property);
+            var encodedValue = encodeURIComponent(data[property]);
+            formBody.push(encodedKey + "=" + encodedValue);
+          }
+          formBody = formBody.join("&");
 
-        axios
-          .post("/api/v2/admin/purchases", formBody)
-          .then(() => {
-            console.log("Im in then");
+          purchasesController.handleCreateNewPurchase(formBody).then(() => {
             Swal.fire({
-              title: "payment made!",
+              title: "Payment has been recorded successfully!",
               type: "success",
               timer: "3000",
               showConfirmButton: true,
               confirmButtonText: "Okay"
             });
-          })
-          .catch(err => {
-            console.log(err);
+          }).catch((error) => {
             Swal.fire({
               title: "Error while making payment!",
+              text: error,
               type: "error",
               showConfirmButton: true
             });
           });
-      }
-    });
+
+          // axios
+          //   .post("/api/v2/admin/purchases", formBody)
+          //   .then(() => {
+          //     Swal.fire({
+          //       title: "Payment has been recorded successfully!",
+          //       type: "success",
+          //       timer: "3000",
+          //       showConfirmButton: true,
+          //       confirmButtonText: "Okay"
+          //     });
+          //   })
+          //   .catch(err => {
+          //     console.log(err);
+          //     Swal.fire({
+          //       title: "Error while making payment!",
+          //       type: "error",
+          //       showConfirmButton: true
+          //     });
+          //   });
+        }
+      });
+    }
   };
 
   render() {
@@ -336,218 +379,221 @@ class NewPayment extends React.Component {
     };
     return (
       <div className={"d-flex align-items-center col-md-8"}>
-        <div className={"border-card coupon-card "}>
-          {/* Title */}
-          <div className={"d-flex justify-content-center mt-1 pb-3"}>
-            <h2 className={"title red"}>Make New Payment</h2>
-          </div>
-
-          {/* username */}
-          <FieldWithElement
-            name={"Select Category For Course"}
-            nameCols={3}
-            elementCols={9}
-            elementClassName={"pl-4"}
-          >
-            <select
-              name="product_category"
-              onChange={this.handleProductCategory}
-            >
-              <option selected>Select Category</option>
-              {this.state.product_categories.map(category => (
-                <option value={category.id} key={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </FieldWithElement>
-
-          <FieldWithElement
-            name={"Select Course"}
-            nameCols={3}
-            elementCols={9}
-            elementClassName={"pl-4"}
-          >
-            <select
-              id="course"
-              name="productId"
-              onChange={this.onChangeHandler}
-            >
-              <option selected>Select Course</option>
-              {this.state.products.map(product => {
-                return (
-                  <option
-                    data-emi={product.emi_min_base}
-                    value={product.id}
-                    key={product.id}
-                  >
-                    {product.name} at Rs. {product.mrp / 100}
-                  </option>
-                );
-              })}
-            </select>
-          </FieldWithElement>
-
-          <FieldWithElement
-            name={"Selling State"}
-            nameCols={3}
-            elementCols={9}
-            elementClassName={"pl-4"}
-          >
-            <select name="stateId" onChange={this.onChangeValue}>
-              {this.state.states.map(state => {
-                return (
-                  <option value={state.state_code} key={state.id}>
-                    {state.name}
-                  </option>
-                );
-              })}
-            </select>
-          </FieldWithElement>
-          <div className="divider-h mb-5 mt-5" />
-          {/* gender */}
-          <FieldWithElement
-            name={"Payment Center"}
-            nameCols={3}
-            elementCols={9}
-            elementClassName={"pl-4"}
-          >
-            <select name="paymentCenterId" onChange={this.onChangeValue}>
-              <option value="1">Pitampura</option>
-              <option value="2">Noida</option>
-              <option value="undisclosed" selected>
-                Select Payment Center
-              </option>
-            </select>
-          </FieldWithElement>
-
-          <FieldWithElement nameCols={3} elementCols={4} name={"Coupon Code"}>
-            <input
-              type="text"
-              className={"input-text"}
-              placeholder="Coupon Code"
-              name={"coupon"}
-              onChange={this.onChangeValue}
-              value={this.state.formValues.mobile_number}
-            />
-          </FieldWithElement>
-
-          <FieldWithElement nameCols={3} elementCols={9} name={"Comment"}>
-            <input
-              type="text"
-              className={"input-text"}
-              placeholder="Write Your Comment Here"
-              name={"comment"}
-              onChange={this.onChangeValue}
-              value={this.state.formValues.mobile_number}
-            />
-          </FieldWithElement>
-
-          <FieldWithElement
-            className="red"
-            nameCols={3}
-            elementCols={9}
-            name={"Total Amount (Rs.) = (Price - Discount - Credits) + Tax :"}
-          >
-            <input
-              type="text"
-              className={"input-text"}
-              name={"amount"}
-              onChange={this.onChangeValue}
-              value={this.state.amount}
-              readOnly
-            />
-          </FieldWithElement>
-
-          <div className={"d-flex"}>
-            <button
-              id="search"
-              className={"button-solid mb-2 mt-4 pl-5 pr-5"}
-              onClick={this.calculateAmount}
-            >
-              Calculate Amount
-            </button>
-          </div>
-          <div className="divider-h mb-5 mt-5" />
-
-          {/* code */}
-
-          {/* Colleges */}
-          <FieldWithElement
-            name={"Choose Payment Method"}
-            nameCols={3}
-            elementCols={9}
-            elementClassName={"pl-4"}
-          >
-            <select name="paymentMode" onChange={this.onChangeValue}>
-              <option selected value="cash">
-                CASH
-              </option>
-              <option value="neft">NEFT</option>
-              <option value="cheque">CHEQUE</option>
-              <option value="swipe">SWIPE</option>
-            </select>
-          </FieldWithElement>
-          <div className="divider-h mb-5 mt-5" />
-          {PaymentMethod()}
-
-          <FieldWithElement
-            name={"Partial Payment"}
-            nameCols={3}
-            elementCols={9}
-            elementClassName={"pl-4"}
-          >
-            <div className="mt-2">
-              <label
-                className="input-checkbox checkbox-tick font-sm"
-                for="tick"
-                value={this.state.partial_checked}
-              >
-                <input
-                  type="checkbox"
-                  id="tick"
-                  defaultValue={this.state.formValues.partialPayment}
-                  name="partialPayment"
-                  onChange={this.toggleCheck}
-                />{" "}
-                Click For Partial Payment
-                <span />
-              </label>
+        <form id={"new_payment_form"}>
+          <div className={"border-card coupon-card "}>
+            {/* Title */}
+            <div className={"d-flex justify-content-center mt-1 pb-3"}>
+              <h2 className={"title red"}>Make New Payment</h2>
             </div>
-          </FieldWithElement>
 
-          {this.state.formValues.partialPayment ? (
+            {/* username */}
             <FieldWithElement
-              className="red"
+              name={"Select Category For Course"}
               nameCols={3}
               elementCols={9}
-              name={"Partial Amount (Rs.)"}
+              elementClassName={"pl-4"}
             >
+              <select
+                name="product_category"
+                onChange={this.handleProductCategory}
+              >
+                <option selected>Select Category</option>
+                {this.state.product_categories.map(category => (
+                  <option value={category.id} key={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </FieldWithElement>
+
+            <FieldWithElement
+              name={"Select Course"}
+              nameCols={3}
+              elementCols={9}
+              elementClassName={"pl-4"}
+            >
+              <select
+                id="course"
+                name="productId"
+                onChange={this.onChangeHandler}
+              >
+                <option selected>Select Course</option>
+                {this.state.products.map(product => {
+                  return (
+                    <option
+                      data-emi={product.emi_min_base}
+                      value={product.id}
+                      key={product.id}
+                    >
+                      {product.name} at {formatter.formatCurrency(product.mrp / 100)}
+                    </option>
+                  );
+                })}
+              </select>
+            </FieldWithElement>
+
+            <FieldWithElement
+              name={"Selling State"}
+              nameCols={3}
+              elementCols={9}
+              elementClassName={"pl-4"}
+            >
+              <select name="stateId" onChange={this.onChangeValue}>
+                {this.state.states.map(state => {
+                  return (
+                    <option value={state.state_code} key={state.id}>
+                      {state.name}
+                    </option>
+                  );
+                })}
+              </select>
+            </FieldWithElement>
+            <div className="divider-h mb-5 mt-5" />
+            {/* gender */}
+            <FieldWithElement
+              name={"Payment Center"}
+              nameCols={3}
+              elementCols={9}
+              elementClassName={"pl-4"}
+            >
+              <select name="paymentCenterId" onChange={this.onChangeValue}>
+                <option value="1">Pitampura</option>
+                <option value="2">Noida</option>
+                <option value="undisclosed" selected>
+                  Select Payment Center
+                </option>
+              </select>
+            </FieldWithElement>
+
+            <FieldWithElement nameCols={3} elementCols={4} name={"Coupon Code"}>
               <input
                 type="text"
                 className={"input-text"}
-                name={"partialAmount"}
+                placeholder="Coupon Code"
+                name={"coupon"}
                 onChange={this.onChangeValue}
-                value={this.state.formValues.partialAmount}
+                value={this.state.formValues.mobile_number}
               />
-              <span className="red">
-                Partial amount cannot be less than Rs. {this.state.min_emi}
-              </span>
             </FieldWithElement>
-          ) : (
-            ""
-          )}
 
-          <div className={"d-flex justify-content-center"}>
-            <button
-              id="search"
-              className={"button-solid ml-4 mb-2 mt-4 pl-5 pr-5"}
-              onClick={this.handleSubmit}
+            <FieldWithElement nameCols={3} elementCols={9} name={"Comment"}>
+              <input
+                type="text"
+                className={"input-text"}
+                placeholder="Write Your Comment Here"
+                name={"comment"}
+                onChange={this.onChangeValue}
+                value={this.state.formValues.mobile_number}
+              />
+            </FieldWithElement>
+
+            <FieldWithElement
+              className="red"
+              nameCols={3}
+              elementCols={4}
+              name={"Total Amount (Rs.) = (Price - Discount - Credits) + Tax :"}
             >
-              Record Payment
-            </button>
+              {/* <input
+                type="text"
+                className={"input-text"}
+                name={"amount"}
+                onChange={this.onChangeValue}
+                value={this.state.amount}
+                readOnly
+              /> */}
+              <Price amount={this.state.amount} />
+            </FieldWithElement>
+
+            <div className={"d-flex"}>
+              <button
+                id="search"
+                className={"button-solid mb-2 mt-4 pl-5 pr-5"}
+                onClick={this.calculateAmount}
+              >
+                Calculate Amount
+              </button>
+            </div>
+            <div className="divider-h mb-5 mt-5" />
+
+            {/* code */}
+
+            {/* Colleges */}
+            <FieldWithElement
+              name={"Choose Payment Method"}
+              nameCols={3}
+              elementCols={9}
+              elementClassName={"pl-4"}
+            >
+              <select name="paymentMode" onChange={this.onChangeValue}>
+                <option selected value="cash">
+                  CASH
+                </option>
+                <option value="neft">NEFT</option>
+                <option value="cheque">CHEQUE</option>
+                <option value="swipe">SWIPE</option>
+              </select>
+            </FieldWithElement>
+            <div className="divider-h mb-5 mt-5" />
+            {PaymentMethod()}
+
+            <FieldWithElement
+              name={"Partial Payment"}
+              nameCols={3}
+              elementCols={9}
+              elementClassName={"pl-4"}
+            >
+              <div className="mt-2">
+                <label
+                  className="input-checkbox checkbox-tick font-sm"
+                  for="tick"
+                  value={this.state.partial_checked}
+                >
+                  <input
+                    type="checkbox"
+                    id="tick"
+                    defaultValue={this.state.formValues.partialPayment}
+                    name="partialPayment"
+                    onChange={this.toggleCheck}
+                  />{" "}
+                  Click For Partial Payment
+                  <span />
+                </label>
+              </div>
+            </FieldWithElement>
+
+            {this.state.formValues.partialPayment ? (
+              <FieldWithElement
+                className="red"
+                nameCols={3}
+                elementCols={9}
+                name={"Partial Amount (Rs.)"}
+              >
+                <input
+                  type="text"
+                  className={"input-text"}
+                  name={"partialAmount"}
+                  onChange={this.onChangeValue}
+                  value={this.state.formValues.partialAmount}
+                />
+                <span className="red">
+                  Partial amount cannot be less than Rs. {this.state.min_emi}
+                </span>
+              </FieldWithElement>
+            ) : (
+              ""
+            )}
+
+            <div className={"d-flex justify-content-center"}>
+              <button
+                id="search"
+                className={"button-solid ml-4 mb-2 mt-4 pl-5 pr-5"}
+                onClick={this.handleSubmit}
+              >
+                Record Payment
+              </button>
+            </div>
           </div>
-        </div>
+        </form>
       </div>
     );
   }

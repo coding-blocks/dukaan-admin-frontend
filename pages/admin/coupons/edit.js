@@ -64,7 +64,6 @@ class EditCoupon extends React.Component {
    * @return {boolean} isValid – Returns a bool that tells
    *  if the form passed validation
    */
-
   customValidations = () => {
     // No Duplicate Products in ProductChooser
     let products = this.state.queryParams.products;
