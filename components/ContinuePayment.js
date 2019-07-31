@@ -17,6 +17,19 @@ function ContinuePayment(props) {
     partialPayment: true
   });
 
+  const [centers , setCenters] = useState([])
+
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:2929/api/v2/admin/resources/centers", {
+        withCredentials: true
+      })
+      .then(res => {
+        setCenters(res.data);
+      });
+  }, [])
+
   useEffect(() => {
     setFormValues({
       comment: "",
@@ -269,13 +282,20 @@ function ContinuePayment(props) {
           elementCols={9}
           elementClassName={"pl-4"}
         >
+          
           <select name="paymentCenterId" onChange={onChangeValue}>
-            <option value="1">Pitampura</option>
-            <option value="2">Noida</option>
-            <option value="undisclosed" selected>
-              Select Payment Center
-            </option>
-          </select>
+                  <option value="undisclosed" selected>
+                    Select Payment Center
+                  </option>
+                  {centers.map(center => {
+                    return (
+                      <option value={center.id} key={center.id}>
+                        {center.name}
+                      </option>
+                    );
+                  })}
+                </select>
+          
         </FieldWithElement>
 
         <FieldWithElement nameCols={3} elementCols={9} name={"Comment"}>

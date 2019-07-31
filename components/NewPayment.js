@@ -196,7 +196,22 @@ class NewPayment extends React.Component {
               showConfirmButton: true,
               confirmButtonText: "Okay"
             });
-          }).catch((error) => {
+            // this.setState({
+            //   formValues: {
+            //     coupon: "",
+            //     comment: "",
+            //     paymentMode: "cash",
+            //     quantity: "1",
+            //     stateId: "AP",
+            //     oneauthId: "" + this.props.userid
+            //   }
+            // });
+          //   setTimeout(() => {
+          //     window.location.reload("/");
+          //   }, 3000);
+          })
+          .catch(err => {
+            console.log(err);
             Swal.fire({
               title: "Error while making payment!",
               text: error,
@@ -443,11 +458,16 @@ class NewPayment extends React.Component {
               elementClassName={"pl-4"}
             >
               <select name="paymentCenterId" onChange={this.onChangeValue}>
-                <option value="1">Pitampura</option>
-                <option value="2">Noida</option>
-                <option value="undisclosed" selected>
+              <option value="undisclosed" selected>
                   Select Payment Center
                 </option>
+                {this.state.centers.map(center => {
+                  return (
+                    <option value={center.id} key={center.id}>
+                      {center.name}
+                    </option>
+                  );
+                })}
               </select>
             </FieldWithElement>
 

@@ -75,7 +75,7 @@ class Home extends React.Component {
   showOrders = () => {
     this.setState({
       newpayment: false
-    })
+    });
   };
 
   handleSearch = async e => {
@@ -143,16 +143,19 @@ class Home extends React.Component {
     let orders;
     const completeTab = this.state.completeTab;
     if (this.state.refundedTab) {
-      console.log(this.state.courseInfo.refundedPayments, "refundorder");
       if (this.state.courseInfo.refundedPayments.length > 0) {
-        // console.log("refunded", this.state.courseInfo.refundedPayments);
         orders = this.state.courseInfo.refundedPayments.map(refundedOrder => {
-          console.log(refundedOrder, "refundorder");
           const date = moment(refundedOrder.created_at).format(
             "MMMM Do YYYY,h:mm:ss a"
           );
+          const txn_obj = refundedOrder.cart.transactions.filter(
+            transaction => transaction.status === "captured"
+          );
+          const txn_id = txn_obj[0].id;
+
           return (
             <RefundedOrders
+              txn_id={txn_id}
               status={refundedOrder.status}
               description={refundedOrder.product.description}
               invoice_url={refundedOrder.invoice_link}
@@ -177,39 +180,38 @@ class Home extends React.Component {
       }
     }
 
-    if (
-      completeTab
-    ) {
+    if (completeTab) {
       if (
-        this.state.userFound && 
+        this.state.userFound &&
         this.state.courseInfo !== null &&
         !this.state.newpayment &&
-        this.state.courseInfo.completedPayments.length > 0) {
-          orders = this.state.courseInfo.completedPayments.map(completeOrder => {
-            const date = moment(completeOrder.created_at).format(
-              "MMMM Do YYYY,h:mm:ss a"
-            );
-            return (
-              <CompleteOrders
-                date={date}
-                txn_id={completeOrder.cart.transactions[0].id}
-                key={completeOrder.id}
-                image={completeOrder.product.image_url}
-                product_name={completeOrder.product.name}
-                status={completeOrder.status}
-                amount={completeOrder.amount / 100}
-                invoice_url={completeOrder.invoice_link}
-                refunded={completeOrder.cart.transactions[0].status}
-                userid={this.state.userInfo.id}
-                payment_type={completeOrder.cart.transactions[0].payment_type}
-                description={completeOrder.product.description}
-                partial_payment={completeOrder.partial_payment}
-                cart_id={completeOrder.cart.id}
-              />
-            );
+        this.state.courseInfo.completedPayments.length > 0
+      ) {
+        orders = this.state.courseInfo.completedPayments.map(completeOrder => {
+          const date = moment(completeOrder.created_at).format(
+            "MMMM Do YYYY,h:mm:ss a"
+          );
+          return (
+            <CompleteOrders
+              date={date}
+              txn_id={completeOrder.cart.transactions[0].id}
+              key={completeOrder.id}
+              image={completeOrder.product.image_url}
+              product_name={completeOrder.product.name}
+              status={completeOrder.status}
+              amount={completeOrder.amount / 100}
+              invoice_url={completeOrder.invoice_link}
+              refunded={completeOrder.cart.transactions[0].status}
+              userid={this.state.userInfo.id}
+              payment_type={completeOrder.cart.transactions[0].payment_type}
+              description={completeOrder.product.description}
+              partial_payment={completeOrder.partial_payment}
+              cart_id={completeOrder.cart.id}
+            />
+          );
         });
       } else {
-        orders = <div>No Completed Orders found</div>
+        orders = <div>No Completed Orders found</div>;
       }
     } else if (this.state.activeTab) {
       if (
@@ -361,7 +363,10 @@ class Home extends React.Component {
             <div className="row">
               <div className="col-md-12 col-12">
                 <div className={"d-flex"}>
-                  <form id={"email-search-form"} className={"d-flex col-md-12 px-0"}>
+                  <form
+                    id={"email-search-form"}
+                    className={"d-flex col-md-12 px-0"}
+                  >
                     <input
                       name="email"
                       required

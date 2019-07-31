@@ -47,11 +47,12 @@ class PartialHistory extends React.Component {
     const partial = () => {
       if (this.state.courseInfo !== null) {
         return this.state.courseInfo.map(PartialPayment => {
+          console.log(PartialPayment,'pp')
           const date = moment(PartialPayment.created_at).format(
             "MMMM Do YYYY,h:mm:ss a"
           );
-          const mode = PartialPayment.transaction.payment_type;
-          const center = PartialPayment.transaction[mode].center.name;
+          const mode = PartialPayment.transactions[0].payment_type;
+          const center = PartialPayment.transactions[0][mode].center.name;
           return (
             <PartialPayments
               date={date}
@@ -69,7 +70,7 @@ class PartialHistory extends React.Component {
               mode={mode}
               mrp={this.state.mrp / 100}
               center={center}
-              txn_id={PartialPayment.transaction.id}
+              txn_id={PartialPayment.transactions[0].id}
             />
           );
         });

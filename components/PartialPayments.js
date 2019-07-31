@@ -5,16 +5,44 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import "../controllers/config";
+import Modal from "react-modal";
+import moment from "moment";
 
+const customStyles = {
+  content: {
+    padding: "10vh",
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    borderRadius: "2vh",
+    ariaHideApp: "false"
+  }
+};
 class PartialPayments extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      showRefundDetailModal: false,
+      centers: [],
+      refundDetail: {},
       formValues: {
         txn_id: props.txn_id,
         user_id: props.userid
       }
     };
+  }
+
+  componentDidMount() {
+    axios
+      .get("http://localhost:2929/api/v2/admin/resources/centers", {
+        withCredentials: true
+      })
+      .then(res => {
+        this.setState({ centers: res.data });
+      });
   }
 
   onChangeValue = e => {
@@ -23,6 +51,25 @@ class PartialPayments extends React.Component {
     this.setState({
       formValues: newFormValues
     });
+  };
+
+  closeRefundDetailModal = () => {
+    this.setState({
+      showRefundDetailModal: false
+    });
+  };
+
+  handleRefundDetails = () => {
+    axios
+      .get(`/api/v2/admin/refunds?txn_id=${this.props.txn_id}`, {
+        withCredentials: true
+      })
+      .then(res => {
+        this.setState({
+          refundDetail: res.data,
+          showRefundDetailModal: true
+        });
+      });
   };
 
   handleSubmit = async e => {
@@ -38,7 +85,6 @@ class PartialPayments extends React.Component {
       showCloseButton: true
     }).then(result => {
       if (result.value) {
-        // Confirmation passed, delete coupon.
         const data = this.state.formValues;
         var formBody = [];
         for (var property in data) {
@@ -172,11 +218,16 @@ class PartialPayments extends React.Component {
           elementClassName={"pl-4"}
         >
           <select name="center_id" onChange={this.onChangeValue}>
-            <option value="1">Pitampura</option>
-            <option value="2">Noida</option>
             <option value="undisclosed" selected>
               Select Payment Center
             </option>
+            {this.state.centers.map(center => {
+              return (
+                <option value={center.id} key={center.id}>
+                  {center.name}
+                </option>
+              );
+            })}
           </select>
         </FieldWithElement>
 
@@ -215,6 +266,37 @@ class PartialPayments extends React.Component {
   render() {
     return (
       <div className="col-md-4 col-12">
+        <Modal
+          isOpen={this.state.showRefundDetailModal}
+          onRequestClose={this.closeRefundDetailModal}
+          style={customStyles}
+        >
+          <h3 className="red">Refund Details</h3>
+          <div className="divider-h mb-4 mt-4" />
+          <div>
+            <div className="font-mds">
+              <h2>Amount Refunded: </h2>{" "}
+              {this.state.refundDetail.amount_paid / 100}
+            </div>
+            <div className="divider-h mb-4 mt-4" />
+            <div className="font-mds">
+              <h2>Payment Status:</h2> {this.state.refundDetail.status}
+            </div>
+            <div className="divider-h mb-4 mt-4" />
+            <div className="font-mds">
+              <h2>Payment Mode:</h2> {this.state.refundDetail.type}
+            </div>
+            <div>
+              <div className="divider-h mb-4 mt-4" />
+              <div className="font-mds">
+                <h2>Refund Date: </h2>{" "}
+                {moment(this.state.refundDetail.created_at).format(
+                  "MMMM Do YYYY,h:mm:ss a"
+                )}
+              </div>
+            </div>
+          </div>
+        </Modal>
         <br />
         <div className="border-card">
           <div className="font-mds mb-3 red">Payment ID: #{this.props.id}</div>
@@ -234,6 +316,7 @@ class PartialPayments extends React.Component {
               id="view-invoice"
               className="button-solid ml-4 mb-2 mt-4 pl-5 pr-5"
               type="submit"
+              onClick={this.handleRefundDetails}
             >
               Refund Details
             </button>
