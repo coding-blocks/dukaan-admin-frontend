@@ -355,7 +355,7 @@ class Home extends React.Component {
                           Refunded Orders
                         </div>
                       </div>
-                      {orders}
+                      <div style={{ marginBottom: "1.8vh" }}>{orders}</div>
                     </div>
                   </div>
                 ) : (
