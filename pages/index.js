@@ -189,6 +189,7 @@ class Home extends React.Component {
         this.state.userFound &&
         this.state.courseInfo !== null &&
         !this.state.newpayment &&
+        this.state.courseInfo.completedPayments &&
         this.state.courseInfo.completedPayments.length > 0
       ) {
         orders = this.state.courseInfo.completedPayments.map(completeOrder => {
