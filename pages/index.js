@@ -9,7 +9,6 @@ import CheckLogin from "../components/CheckLogin";
 // import "semantic-ui-css/semantic.min.css";
 import "../controllers/config";
 import moment from "moment";
-import axios from "axios";
 // import PartialPayments from "../components/PartialPayments";
 import RefundedOrders from "../components/RefundedOrders";
 import { resolve } from "url";
@@ -18,6 +17,7 @@ import purchasesController from "../controllers/purchases";
 import swal from "sweetalert2";
 import "../controllers/config";
 import ActiveOrders from "../components/ActiveOrders";
+import UserCard from "../components/UserCard";
 
 class Home extends React.Component {
   constructor(props) {
@@ -28,11 +28,12 @@ class Home extends React.Component {
       activeTab: false,
       refundedTab: false,
       userFound: false,
-      userInfo: null,
+      userInfo: [],
       courseInfo: null,
       createUser: false,
       newpayment: false,
-      refund: false
+      refund: false,
+      selectedUser: {}
     };
   }
 
@@ -66,14 +67,40 @@ class Home extends React.Component {
     }));
   };
 
-  handleNewPayment = () => {
+  handleGetPaymentForUser = user => {
+    purchasesController
+      .handleGetPurchases(user.id)
+      .then(res => {
+        if (res.data) {
+          this.setState({
+            courseInfo: res.data
+          });
+        } else {
+          this.setState({
+            courseInfo: null
+          });
+        }
+      })
+      .catch(error => {
+        swal.fire({
+          title: "Error searching for user's purchases!",
+          html: error,
+          type: "error"
+        });
+      });
+  };
+
+  handleNewPayment = user => {
     this.setState({
+      selectedUser: user,
       newpayment: true
     });
   };
 
-  showOrders = () => {
+  showOrders = user => {
+    this.handleGetPaymentForUser(user);
     this.setState({
+      selectedUser: user,
       newpayment: false
     });
   };
@@ -86,37 +113,11 @@ class Home extends React.Component {
       userController
         .handleGetUserByEmail(this.state.email)
         .then(res => {
-          console.log(res.data, "dataaa");
-          if (res.data.length == 1) {
-            console.log("yes");
+          if (res.data.length >= 1) {
             this.setState({
-              userInfo: res.data[0],
+              userInfo: res.data,
               userFound: true
             });
-            if (this.state.userInfo) {
-              purchasesController
-                .handleGetPurchases(this.state.userInfo.id)
-                .then(res => {
-                  console.log(res.data);
-                  if (res.data) {
-                    console.log(this.state);
-                    this.setState({
-                      courseInfo: res.data
-                    });
-                  } else {
-                    this.setState({
-                      courseInfo: null
-                    });
-                  }
-                })
-                .catch(error => {
-                  swal.fire({
-                    title: "Error searching for user's purchases!",
-                    html: error,
-                    type: "error"
-                  });
-                });
-            }
           } else {
             this.setState({
               userFound: false
@@ -246,113 +247,6 @@ class Home extends React.Component {
       }
     }
 
-    const Usercard = () => {
-      if (this.state.userFound && this.state.userInfo) {
-        return (
-          <div className="row w-100 mx-0 mt-4">
-            <div className="col-md-4 col-12">
-              <div className="border-card br-20 bg-light-grey mb-5 w-100">
-                <h5>User Details</h5>
-                <div
-                  style={{
-                    alignItems: "center"
-                  }}
-                >
-                  <p className="red">
-                    Username : {this.state.userInfo.username}
-                  </p>
-
-                  <p>
-                    Name : {this.state.userInfo.firstname}{" "}
-                    {this.state.userInfo.lastname}
-                  </p>
-
-                  <p>Email : {this.state.userInfo.email}</p>
-
-                  <p>Mobile : {this.state.userInfo.mobile_number}</p>
-
-                  <p>
-                    Wallet Amount : ₹ {this.state.userInfo.wallet_amount / 100}
-                  </p>
-
-                  <div className={"mt-4"}>
-                    <button
-                      className={"button-solid"}
-                      onClick={this.showOrders}
-                    >
-                      Show Orders
-                    </button>
-                    <button
-                      className={"button-solid ml-4"}
-                      onClick={this.handleNewPayment}
-                    >
-                      Make New Payment
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {!this.state.newpayment ? (
-              <div className="col-md-8 col-12">
-                <div className="border-card br-20 bg-light-grey mb-5 w-100">
-                  <div className="tab-nav-underline mb-5">
-                    <div
-                      className={this.state.activeTab ? "tab active" : "tab"}
-                      onClick={this.toggleActiveTab}
-                    >
-                      Active Orders
-                    </div>
-                    <div
-                      className={this.state.completeTab ? "tab active" : "tab"}
-                      onClick={this.toggleCompleteTab}
-                    >
-                      Completed Orders
-                    </div>
-
-                    <div
-                      className={this.state.refundedTab ? "tab active" : "tab"}
-                      onClick={this.toggleRefundTab}
-                    >
-                      Refunded Orders
-                    </div>
-                  </div>
-                  {orders}
-                </div>
-              </div>
-            ) : (
-              <NewPayment userid={this.state.userInfo.oneauth_id} />
-            )}
-          </div>
-        );
-      } else {
-        return (
-          <div className=" mt-4 ml-3 w-100">
-            <div className="row">
-              <div className="col-12 col-md-4">
-                <div className="border-card br-20 bg-light-grey mb-5">
-                  <h5 style={{ textAlign: "center" }}>
-                    No user Found, Search Existing?{" "}
-                  </h5>
-                  <h5 className="mt-4" style={{ textAlign: "center" }}>
-                    OR
-                  </h5>
-                  <div style={{ textAlign: "center" }}>
-                    <button
-                      className="button-solid p-3 mt-4"
-                      onClick={this.handleCreateUser}
-                    >
-                      Create New User
-                    </button>
-                  </div>
-                </div>
-              </div>
-              {this.state.createUser ? <AddUser /> : ""}
-            </div>
-          </div>
-        );
-      }
-    };
-
     return (
       <CheckLogin>
         <div>
@@ -390,7 +284,80 @@ class Home extends React.Component {
                 </div>
               </div>
               {/* Form 2  */}
-              <Usercard />
+              <div className="row mx-0 w-100 mt-4">
+                {this.state.userInfo.length >= 1 && (
+                  <div className={"col-md-4"}>
+                    {this.state.userInfo.map(user => (
+                      <div>
+                        <UserCard
+                          key={user.id}
+                          userInfo={user}
+                          showOrders={this.showOrders}
+                          handleNewPayment={this.handleNewPayment}
+                          newPaymentState={this.state.handleNewPayment}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {this.state.userInfo.length == 0 && (
+                  <div className="col-12 col-md-4">
+                    <div className="border-card br-20 bg-light-grey mb-5">
+                      <h5 style={{ textAlign: "center" }}>
+                        No user Found, Search Existing?{" "}
+                      </h5>
+                      <h5 className="mt-4" style={{ textAlign: "center" }}>
+                        OR
+                      </h5>
+                      <div style={{ textAlign: "center" }}>
+                        <button
+                          className="button-solid p-3 mt-4"
+                          onClick={this.handleCreateUser}
+                        >
+                          Create New User
+                        </button>
+                      </div>
+                    </div>
+                    {this.state.createUser ? <AddUser /> : ""}
+                  </div>
+                )}
+                {!this.state.newpayment ? (
+                  <div className="col-md-8 col-12">
+                    <div className="border-card br-20 bg-light-grey mb-5 w-100">
+                      <div className="tab-nav-underline mb-5">
+                        <div
+                          className={
+                            this.state.activeTab ? "tab active" : "tab"
+                          }
+                          onClick={this.toggleActiveTab}
+                        >
+                          Active Orders
+                        </div>
+                        <div
+                          className={
+                            this.state.completeTab ? "tab active" : "tab"
+                          }
+                          onClick={this.toggleCompleteTab}
+                        >
+                          Completed Orders
+                        </div>
+
+                        <div
+                          className={
+                            this.state.refundedTab ? "tab active" : "tab"
+                          }
+                          onClick={this.toggleRefundTab}
+                        >
+                          Refunded Orders
+                        </div>
+                      </div>
+                      {orders}
+                    </div>
+                  </div>
+                ) : (
+                  <NewPayment userid={this.state.selectedUser.oneauth_id} />
+                )}
+              </div>
               {/* Order history card */}
             </div>
           </div>

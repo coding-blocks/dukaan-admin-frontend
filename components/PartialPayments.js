@@ -1,12 +1,14 @@
 import React from "react";
 import FieldWithElement from "./FieldWithElement";
 import "../styles/pages/admin/coupons.scss";
-import axios from "axios";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+
 import "../controllers/config";
 import Modal from "react-modal";
 import moment from "moment";
+
+import controller from "../controllers/purchases";
 
 const customStyles = {
   content: {
@@ -94,10 +96,9 @@ class PartialPayments extends React.Component {
         }
         formBody = formBody.join("&");
 
-        axios
-          .post("/api/v2/admin/refunds", formBody)
-          .then(() => {
-            console.log("Im in then");
+        controller
+          .handleCreateRefund(formBody)
+          .then(response => {
             Swal.fire({
               title: "Refund made!",
               type: "success",
@@ -105,16 +106,14 @@ class PartialPayments extends React.Component {
               showConfirmButton: true,
               confirmButtonText: "Okay"
             });
-          })
-          .then(() => {
             setTimeout(() => {
               window.location.reload();
             }, 3000);
           })
-          .catch(err => {
-            console.log(err);
+          .catch(error => {
             Swal.fire({
               title: "Error while making refund!",
+              text: error,
               type: "error",
               showConfirmButton: true
             });
