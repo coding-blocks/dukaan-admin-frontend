@@ -116,11 +116,13 @@ class Home extends React.Component {
           if (res.data.length >= 1) {
             this.setState({
               userInfo: res.data,
-              userFound: true
+              userFound: true,
+              createUser: false
             });
           } else {
             this.setState({
-              userFound: false
+              userFound: false,
+              createUser: false
             });
           }
         })
@@ -321,7 +323,6 @@ class Home extends React.Component {
                         </button>
                       </div>
                     </div>
-                    {this.state.createUser ? <AddUser /> : ""}
                   </div>
                 )}
                 {!this.state.newpayment ? (
@@ -361,6 +362,7 @@ class Home extends React.Component {
                   <NewPayment userid={this.state.selectedUser.oneauth_id} />
                 )}
               </div>
+              {this.state.createUser ? <AddUser /> : ""}
               {/* Order history card */}
             </div>
           </div>

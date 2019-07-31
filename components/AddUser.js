@@ -133,7 +133,7 @@ class AddUser extends React.Component {
 
   render() {
     return (
-      <div className={"d-flex align-items-center col-md-8"}>
+      <div className={"d-flex align-items-center col-12"}>
         <div className={"border-card coupon-card "}>
           {/* Title */}
           <div className={"d-flex justify-content-center mt-1 pb-3"}>
