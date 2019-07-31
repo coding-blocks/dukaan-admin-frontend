@@ -8,7 +8,8 @@ import withReactContent from "sweetalert2-react-content";
 import Price from "../components/Price";
 import formatter from "../helpers/formatter";
 import purchasesController from "../controllers/purchases";
-
+import resourcesController from "../controllers/resources";
+import productsController from "../controllers/products";
 class NewPayment extends React.Component {
   constructor(props) {
     super(props);
@@ -34,30 +35,24 @@ class NewPayment extends React.Component {
 
   componentDidMount() {
     Promise.all([
-      axios.get("http://localhost:2929/api/v2/admin/resources/states", {
-        withCredentials: true
-      }),
+      resourcesController.handleGetStates(),
       axios.get("http://localhost:2929/api/productcategories", {
         withCredentials: true
       }),
-      axios.get(
-        `http://localhost:2929/api/products?page=1&limit=10&offset=20&product_category_id=${
-          this.state.product_category
-        }`,
-        {
-          withCredentials: true
-        }
-      ),
-      axios.get("http://localhost:2929/api/v2/admin/resources/centers", {
-        withCredentials: true
-      })
+      productsController.handleGetProducts({
+        'product_category_id': this.state.product_category
+      }, {
+        page: 1,
+        limit: 100
+      }),
+      resourcesController.handleGetCenters()
     ]).then(([res1, res2, res3, res4]) => {
       console.log(res1.data);
       console.log(res2.data);
-      console.log(res3.data.products);
+      console.log(res3.results);
       console.log(res4.data);
       let fetchedProducts = [];
-      res3.data.products.map(product => {
+      res3.results.map(product => {
         fetchedProducts.push(product);
       });
       console.log(this.props);

@@ -38,7 +38,7 @@ class Layout extends React.Component {
             <i className="hamburger fas fa-bars" />
           </span>
           <span className="logo-parent">
-            <Link href="/" onClick={() => Router.push("/")}>
+            <Link href="/">
               <a className="logo-link">
                 <img
                   src="/static/img/dukaan.png"

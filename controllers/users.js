@@ -15,8 +15,12 @@ const handleGetUserByEmail = (email) => {
   const response = new Promise((resolve, reject) => {
     axios.get(`/api/v2/admin/users?email=`+email).then((r) => {
       resolve(r);
-    }).catch((err) => {
-      reject(ErrorHandler.handle(err));
+    }).catch((error) => {
+      if (error.response.status == 404) {
+        reject("User not found");
+      } else {
+        reject(ErrorHandler.handle(error));
+      }
     });
   });
   return response;
