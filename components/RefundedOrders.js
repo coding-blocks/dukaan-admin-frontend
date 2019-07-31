@@ -65,7 +65,7 @@ class RefundedOrders extends React.Component {
           <div>
             <div className="font-mds">
               <h2>Amount Refunded: </h2>{" "}
-              {this.state.refundDetail.amount_paid / 100}
+              <Price amount={this.state.refundDetail.amount_paid / 100} />
             </div>
             <div className="divider-h mb-4 mt-4" />
             <div className="font-mds">

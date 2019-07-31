@@ -3,12 +3,13 @@ import FieldWithElement from "./FieldWithElement";
 import "../styles/pages/admin/coupons.scss";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-
 import "../controllers/config";
 import Modal from "react-modal";
 import moment from "moment";
-
 import controller from "../controllers/purchases";
+import Price from "./Price";
+import axios from "axios";
+import "../controllers/config";
 
 const customStyles = {
   content: {
@@ -39,7 +40,7 @@ class PartialPayments extends React.Component {
 
   componentDidMount() {
     axios
-      .get("http://localhost:2929/api/v2/admin/resources/centers", {
+      .get("/api/v2/admin/resources/centers", {
         withCredentials: true
       })
       .then(res => {
@@ -275,7 +276,7 @@ class PartialPayments extends React.Component {
           <div>
             <div className="font-mds">
               <h2>Amount Refunded: </h2>{" "}
-              {this.state.refundDetail.amount_paid / 100}
+              <Price amount={this.state.refundDetail.amount_paid / 100} />
             </div>
             <div className="divider-h mb-4 mt-4" />
             <div className="font-mds">
