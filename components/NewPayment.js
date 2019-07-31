@@ -10,6 +10,7 @@ import formatter from "../helpers/formatter";
 import purchasesController from "../controllers/purchases";
 import resourcesController from "../controllers/resources";
 import productsController from "../controllers/products";
+import productCategoriesController from "../controllers/productcategories";
 class NewPayment extends React.Component {
   constructor(props) {
     super(props);
@@ -36,9 +37,7 @@ class NewPayment extends React.Component {
   componentDidMount() {
     Promise.all([
       resourcesController.handleGetStates(),
-      axios.get("http://localhost:2929/api/productcategories", {
-        withCredentials: true
-      }),
+      productCategoriesController.handleGetAllProductCategories(),
       productsController.handleGetProducts({
         'product_category_id': this.state.product_category
       }, {
@@ -375,7 +374,7 @@ class NewPayment extends React.Component {
     };
     return (
       <div className={"d-flex align-items-center col-md-8"}>
-        <form id={"new_payment_form"}>
+        <form id="new_payment_form">
           <div className={"border-card coupon-card "}>
             {/* Title */}
             <div className={"d-flex justify-content-center mt-1 pb-3"}>
@@ -392,8 +391,9 @@ class NewPayment extends React.Component {
               <select
                 name="product_category"
                 onChange={this.handleProductCategory}
+                required
               >
-                <option selected>Select Category</option>
+                <option value="" selected>Select Category</option>
                 {this.state.product_categories.map(category => (
                   <option value={category.id} key={category.id}>
                     {category.name}
@@ -411,9 +411,10 @@ class NewPayment extends React.Component {
               <select
                 id="course"
                 name="productId"
+                required
                 onChange={this.onChangeHandler}
               >
-                <option selected>Select Course</option>
+                <option value="" selected>Select Course</option>
                 {this.state.products.map(product => {
                   return (
                     <option
@@ -451,9 +452,10 @@ class NewPayment extends React.Component {
               nameCols={3}
               elementCols={9}
               elementClassName={"pl-4"}
+              
             >
-              <select name="paymentCenterId" onChange={this.onChangeValue}>
-              <option value="undisclosed" selected>
+              <select name="paymentCenterId" required onChange={this.onChangeValue}>
+              <option value="" selected>
                   Select Payment Center
                 </option>
                 {this.state.centers.map(center => {
@@ -575,6 +577,9 @@ class NewPayment extends React.Component {
                   name={"partialAmount"}
                   onChange={this.onChangeValue}
                   value={this.state.formValues.partialAmount}
+                  pattern={"[0-9]{1,10}"}
+                  required={this.state.formValues.partialPayment}
+                  title={"Partial amount can only be in numbers"}
                 />
                 <span className="red">
                   Partial amount cannot be less than Rs. {this.state.min_emi}

@@ -2,6 +2,7 @@
  * Controller for Refund
  */
 import axios from "axios";
+import "../config";
 import ErrorHandler from "../helpers/ErrorHandler";
 
 /**
