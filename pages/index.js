@@ -29,7 +29,7 @@ class Home extends React.Component {
       refundedTab: false,
       userFound: false,
       userInfo: [],
-      courseInfo: null,
+      courseInfo: [],
       createUser: false,
       newpayment: false,
       refund: false,
@@ -144,7 +144,10 @@ class Home extends React.Component {
     let orders;
     const completeTab = this.state.completeTab;
     if (this.state.refundedTab) {
-      if (this.state.courseInfo.refundedPayments.length > 0) {
+      if (
+        this.state.courseInfo.refundedPayments &&
+        this.state.courseInfo.refundedPayments.length > 0
+      ) {
         orders = this.state.courseInfo.refundedPayments.map(refundedOrder => {
           const date = moment(refundedOrder.created_at).format(
             "MMMM Do YYYY,h:mm:ss a"
@@ -177,7 +180,7 @@ class Home extends React.Component {
           );
         });
       } else {
-        orders = <div>No Refunded Orders</div>;
+        orders = <div>No Refunded Orders Found.</div>;
       }
     }
 
@@ -212,11 +215,11 @@ class Home extends React.Component {
           );
         });
       } else {
-        orders = <div>No Completed Orders found</div>;
+        orders = <div>No Completed Orders Found.</div>;
       }
     } else if (this.state.activeTab) {
       if (
-        this.state.courseInfo &&
+        this.state.courseInfo.activePayments &&
         this.state.courseInfo.activePayments.length > 0
       ) {
         orders = this.state.courseInfo.activePayments.map(activeOrder => {
