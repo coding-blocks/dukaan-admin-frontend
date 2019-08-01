@@ -78,7 +78,6 @@ const handleEditProduct = (queryParams) => {
  *  successful or not
  */
 const handleAddProduct = (queryParams) => {
-  console.log(queryParams);
   Object.keys(queryParams).forEach((key) => {
     if (queryParams[key] == null) {
       queryParams[key] = "";
@@ -102,9 +101,28 @@ const handleAddProduct = (queryParams) => {
   return response;
 }
 
+/**
+ * Calculate price of products on the server
+ * @param {object} formBody – params required for calculating
+ *  the price of the server
+ * @return {Promise<object>} response
+ */
+const handleCalculatePrice = (formBody) => {
+  let queryString = querystring.stringify(formBody);
+  let response = new Promise((resolve, reject) => {
+    axios.post("/api/v2/admin/products/calculate", queryString).then((res) => {
+      resolve(res);
+    }).catch((error) => {
+      reject(ErrorHandler.handle(error));
+    });
+  });
+  return response;
+}
+
 
 module.exports = {
   handleGetProducts,
   handleAddProduct,
-  handleEditProduct
+  handleEditProduct,
+  handleCalculatePrice
 }

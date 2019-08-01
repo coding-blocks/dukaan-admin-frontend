@@ -1,7 +1,6 @@
 import React from "react";
 import FieldWithElement from "./FieldWithElement";
 import "../styles/pages/admin/coupons.scss";
-import axios from "axios";
 import "../controllers/config";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -72,18 +71,18 @@ class NewPayment extends React.Component {
       productId: this.state.formValues.productId,
       quantity: this.state.formValues.quantity
     };
-    var formBody = [];
-    for (var property in data) {
-      var encodedKey = encodeURIComponent(property);
-      var encodedValue = encodeURIComponent(data[property]);
-      formBody.push(encodedKey + "=" + encodedValue);
-    }
-    formBody = formBody.join("&");
 
-    axios.post("/api/v2/admin/products/calculate", formBody).then(res => {
-      console.log(res.data.amount);
-      this.setState({
-        amount: res.data.amount
+    productsController.handleCalculatePrice(data).then((res) => {
+      if (res.data.amount) {
+        this.setState({
+          amount: res.data.amount
+        });
+      }
+    }).catch((error) => {
+      Swal.fire({
+        type: 'error',
+        text: error,
+        title: 'Error calculating price!'
       });
     });
   };
@@ -93,20 +92,22 @@ class NewPayment extends React.Component {
       [e.target.name]: e.target.value
     });
     let productCategory = e.target.value;
-    axios
-      .get(
-        `/api/products?page=1&limit=10&offset=20&product_category_id=${productCategory}`
-      )
-      .then(res => {
-        console.log(res.data);
-        let fetchedProducts = [];
-        res.data.products.map(product => {
-          fetchedProducts.push(product);
-        });
-        this.setState({
-          products: fetchedProducts
-        });
+    productsController.handleGetProducts({
+      product_category_id:  productCategory
+    }, {
+      page: 1,
+      limit: 100
+    }).then((res) => {
+      this.setState({
+        products: res.results
+      })
+    }).catch((error) => {
+      Swal.fire({
+        type: 'error',
+        text: error,
+        title: 'Error grabbing products by categories!'
       });
+    });
   };
 
   onChangeValue = e => {
