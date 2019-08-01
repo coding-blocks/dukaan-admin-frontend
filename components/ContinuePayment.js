@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
 import FieldWithElement from "./FieldWithElement";
 import "../styles/pages/admin/coupons.scss";
-import axios from "axios";
 import Swal from "sweetalert2";
 import resourcesController from "../controllers/resources";
 import purchasesController from "../controllers/purchases";
-import withReactContent from "sweetalert2-react-content";
-import "../controllers/config";
 
 function ContinuePayment(props) {
   console.log(props);
@@ -108,7 +105,7 @@ function ContinuePayment(props) {
           showConfirmButton: true
         });
       });
-      
+
     }
   };
 
