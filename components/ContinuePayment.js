@@ -3,6 +3,7 @@ import FieldWithElement from "./FieldWithElement";
 import "../styles/pages/admin/coupons.scss";
 import axios from "axios";
 import Swal from "sweetalert2";
+import resourcesController from "../controllers/resources";
 import withReactContent from "sweetalert2-react-content";
 import "../controllers/config";
 
@@ -17,17 +18,19 @@ function ContinuePayment(props) {
     partialPayment: true
   });
 
-  const [centers , setCenters] = useState([])
+  const [centers, setCenters] = useState([])
 
 
   useEffect(() => {
-    axios
-      .get("http://localhost:2929/api/v2/admin/resources/centers", {
-        withCredentials: true
+    resourcesController.handleGetCenters().then((res) => {
+      setCenters(res.data);
+    }).catch((error) => {
+      Swal.fire({
+        type: 'error',
+        title: 'Error while getting centers!',
+        text: error
       })
-      .then(res => {
-        setCenters(res.data);
-      });
+    });
   }, [])
 
   useEffect(() => {
@@ -40,6 +43,20 @@ function ContinuePayment(props) {
       partialPayment: true
     });
   }, [props.cart_id, props.oneauthId]);
+
+  /**
+   * Custom Validations for the continue payment form
+   * @return {boolean} isValid – Returns a bool that tells
+   *  if the form passed validation
+   */
+  const customValidations = () => {
+    if (!document.getElementById("continue_payment_form").checkValidity()) {
+      document.getElementById("continue_payment_form").reportValidity();
+      return false;
+    } else {
+      return true;
+    }
+  }
 
   const onChangeValue = e => {
     // let newFormValues = { [e.target.name]: e.target.value };
@@ -57,51 +74,54 @@ function ContinuePayment(props) {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    const result = await Swal.fire({
-      title: "Are you sure you want to make a new payment?",
-      type: "question",
-      confirmButtonColor: "#f66",
-      confirmButtonText: "Yes!",
-      cancelButtonText: "No!",
-      showCancelButton: true,
-      showConfirmButton: true,
-      showCloseButton: true
-    });
+    if (customValidations()) {
 
-    if (!result.value) return;
-
-    // Confirmation passed, delete coupon.
-    const data = formValues;
-    console.log(data);
-    var formBody = [];
-    for (var property in data) {
-      var encodedKey = encodeURIComponent(property);
-      var encodedValue = encodeURIComponent(data[property]);
-      formBody.push(encodedKey + "=" + encodedValue);
-    }
-    formBody = formBody.join("&");
-
-    try {
-      await axios.post("/api/v2/admin/purchases", formBody);
-      console.log("Im in then");
-      Swal.fire({
-        title: "payment made!",
-        type: "success",
-        timer: "3000",
+      const result = await Swal.fire({
+        title: "Are you sure you want to make a new payment?",
+        type: "question",
+        confirmButtonColor: "#f66",
+        confirmButtonText: "Yes!",
+        cancelButtonText: "No!",
+        showCancelButton: true,
         showConfirmButton: true,
-        confirmButtonText: "Okay"
+        showCloseButton: true
       });
 
-      setTimeout(() => {
-        window.location.reload("/");
-      }, 3000);
-    } catch (err) {
-      console.log(err);
-      Swal.fire({
-        title: "Error while making payment!",
-        type: "error",
-        showConfirmButton: true
-      });
+      if (!result.value) return;
+
+      // Confirmation passed, delete coupon.
+      const data = formValues;
+      console.log(data);
+      var formBody = [];
+      for (var property in data) {
+        var encodedKey = encodeURIComponent(property);
+        var encodedValue = encodeURIComponent(data[property]);
+        formBody.push(encodedKey + "=" + encodedValue);
+      }
+      formBody = formBody.join("&");
+
+      try {
+        await axios.post("/api/v2/admin/purchases", formBody);
+        console.log("Im in then");
+        Swal.fire({
+          title: "payment made!",
+          type: "success",
+          timer: "3000",
+          showConfirmButton: true,
+          confirmButtonText: "Okay"
+        });
+
+        setTimeout(() => {
+          window.location.reload("/");
+        }, 3000);
+      } catch (err) {
+        console.log(err);
+        Swal.fire({
+          title: "Error while making payment!",
+          type: "error",
+          showConfirmButton: true
+        });
+      }
     }
   };
 
@@ -263,7 +283,6 @@ function ContinuePayment(props) {
         <div className={"d-flex justify-content-center mt-1 pb-3"}>
           <h2 className={"title red"}>
             Continue Payment
-            {console.log(formValues)}
           </h2>
         </div>
         <div className={"d-flex justify-content-center mt-1 pb-3"}>
@@ -272,89 +291,91 @@ function ContinuePayment(props) {
           </h3>
         </div>
 
-        {/* username */}
+        <div className="divider-h mb-2 mt-2" />
 
-        <div className="divider-h mb-5 mt-5" />
-        {/* gender */}
-        <FieldWithElement
-          name={"Payment Center"}
-          nameCols={3}
-          elementCols={9}
-          elementClassName={"pl-4"}
-        >
-          
-          <select name="paymentCenterId" onChange={onChangeValue}>
-                  <option value="undisclosed" selected>
-                    Select Payment Center
-                  </option>
-                  {centers.map(center => {
-                    return (
-                      <option value={center.id} key={center.id}>
-                        {center.name}
-                      </option>
-                    );
-                  })}
-                </select>
-          
-        </FieldWithElement>
-
-        <FieldWithElement nameCols={3} elementCols={9} name={"Comment"}>
-          <input
-            type="text"
-            className={"input-text"}
-            placeholder="Write Your Comment Here"
-            name={"comment"}
-            onChange={onChangeValue}
-            value={formValues.mobile_number}
-          />
-        </FieldWithElement>
-
-        {/* code */}
-
-        {/* Colleges */}
-        <FieldWithElement
-          name={"Choose Payment Method"}
-          nameCols={3}
-          elementCols={9}
-          elementClassName={"pl-4"}
-        >
-          <select name="paymentMode" onChange={onChangeValue}>
-            <option selected value="cash">
-              CASH
-            </option>
-            <option value="neft">NEFT</option>
-            <option value="cheque">CHEQUE</option>
-            <option value="swipe">SWIPE</option>
-          </select>
-        </FieldWithElement>
-        <div className="divider-h mb-5 mt-5" />
-        {PaymentMethod()}
-
-        <FieldWithElement
-          className="red"
-          nameCols={3}
-          elementCols={9}
-          name={"Partial Amount (Rs.)"}
-        >
-          <input
-            type="text"
-            className={"input-text"}
-            name={"partialAmount"}
-            onChange={onChangeValue}
-            value={formValues.partialAmount}
-          />
-          <span className="red">Partial amount cannot be less than Rs. 20</span>
-        </FieldWithElement>
-
-        <div className={"d-flex justify-content-center"}>
-          <button
-            id="search"
-            className={"button-solid ml-4 mb-2 mt-4 pl-5 pr-5"}
-            onClick={handleSubmit}
+        <form id="continue_payment_form">
+          <FieldWithElement
+            name={"Payment Center"}
+            nameCols={3}
+            elementCols={9}
+            elementClassName={"pl-4"}
           >
-            Record Payment
+            <select
+              name="paymentCenterId"
+              onChange={onChangeValue}
+              required
+            >
+              <option value="" selected>
+                Select Payment Center
+                  </option>
+              {centers.map(center => {
+                return (
+                  <option value={center.id} key={center.id}>
+                    {center.name}
+                  </option>
+                );
+              })}
+            </select>
+          </FieldWithElement>
+
+          <FieldWithElement nameCols={3} elementCols={9} name={"Comment"}>
+            <input
+              type="text"
+              className={"input-text"}
+              placeholder="Write Your Comment Here"
+              name={"comment"}
+              onChange={onChangeValue}
+              value={formValues.mobile_number}
+            />
+          </FieldWithElement>
+
+          <FieldWithElement
+            name={"Choose Payment Method"}
+            nameCols={3}
+            elementCols={9}
+            elementClassName={"pl-4"}
+          >
+            <select name="paymentMode" onChange={onChangeValue}>
+              <option selected value="cash">
+                CASH
+            </option>
+              <option value="neft">NEFT</option>
+              <option value="cheque">CHEQUE</option>
+              <option value="swipe">SWIPE</option>
+            </select>
+          </FieldWithElement>
+          <div className="divider-h mb-5 mt-5" />
+          {PaymentMethod()}
+
+          <FieldWithElement
+            className="red"
+            nameCols={3}
+            elementCols={9}
+            name={"Partial Amount (Rs.)"}
+          >
+            <input
+              type="text"
+              className={"input-text"}
+              name={"partialAmount"}
+              onChange={onChangeValue}
+              value={formValues.partialAmount}
+              pattern={"[0-9]{1,10}"}
+              title={"Partial amount can only be numbers"}
+              required
+            />
+            <span className="red">Partial amount cannot be less than Rs. 20</span>
+          </FieldWithElement>
+
+          <div className={"d-flex justify-content-center"}>
+            <button
+              id="search"
+              className={"button-solid ml-4 mb-2 mt-4 pl-5 pr-5"}
+              onClick={handleSubmit}
+            >
+              Record Payment
           </button>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   );

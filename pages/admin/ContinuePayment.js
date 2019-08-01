@@ -42,11 +42,13 @@ class continuePayment extends React.Component {
       <div>
         <Head />
         <Layout />
-        <ContinuePayment
-          oneauthId={this.state.userid}
-          cart_id={this.state.cart_id}
-          amountLeft={this.state.amountLeft}
-        />
+        <div className={"d-flex justify-content-center mt-5"}>
+          <ContinuePayment
+            oneauthId={this.state.userid}
+            cart_id={this.state.cart_id}
+            amountLeft={this.state.amountLeft}
+          />
+        </div>
       </div>
     );
   }

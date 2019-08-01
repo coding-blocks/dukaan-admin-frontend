@@ -26,13 +26,17 @@ class ActiveOrders extends React.Component {
             </div>
             <div className="extra-bold mt-4 col-md-5">
               <span className="font-mds red">Order Total</span>
-              <Price amount={this.props.amount} />
+              <div className={"mt-2"}>
+                <Price amount={this.props.amount} />
+              </div>
             </div>
           </div>
 
           <div className="extra-bold mt-4 col-md-5">
             <span className="font-mds red">Remaining Balance</span>{" "}
-            <Price amount={this.props.amountLeft / 100} />
+            <div className={"mt-2"}>
+              <Price amount={this.props.amountLeft / 100} />
+            </div>
           </div>
           <div className="font-sm grey mt-4">
             Purchased on {this.props.date}
