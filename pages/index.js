@@ -271,7 +271,7 @@ class Home extends React.Component {
                       required
                       autoFocus
                       id="email"
-                      type="email"
+                      type="text"
                       className="input-text mb-2"
                       placeholder="Enter email"
                       value={this.state.email}
