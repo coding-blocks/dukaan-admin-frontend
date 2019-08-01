@@ -176,15 +176,7 @@ class NewPayment extends React.Component {
         if (result.value) {
           // Confirmation passed, delete coupon.
           const data = this.state.formValues;
-          var formBody = [];
-          for (var property in data) {
-            var encodedKey = encodeURIComponent(property);
-            var encodedValue = encodeURIComponent(data[property]);
-            formBody.push(encodedKey + "=" + encodedValue);
-          }
-          formBody = formBody.join("&");
-
-          purchasesController.handleCreateNewPurchase(formBody).then(() => {
+          purchasesController.handleCreateNewPurchase(data).then(() => {
             Swal.fire({
               title: "Payment has been recorded successfully!",
               type: "success",
@@ -192,19 +184,6 @@ class NewPayment extends React.Component {
               showConfirmButton: true,
               confirmButtonText: "Okay"
             });
-            // this.setState({
-            //   formValues: {
-            //     coupon: "",
-            //     comment: "",
-            //     paymentMode: "cash",
-            //     quantity: "1",
-            //     stateId: "AP",
-            //     oneauthId: "" + this.props.userid
-            //   }
-            // });
-          //   setTimeout(() => {
-          //     window.location.reload("/");
-          //   }, 3000);
           })
           .catch(err => {
             console.log(err);

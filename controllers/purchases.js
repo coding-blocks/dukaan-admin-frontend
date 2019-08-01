@@ -46,10 +46,11 @@ const handleGetPartialPurchases = (userId, cartId) => {
 
 /**
  * Add a new purchase
- * @param {string} formBody 
+ * @param {object} data 
  * @return {Promise<string>} response – Promise with the response
  */
-const handleCreateNewPurchase = (formBody) => {
+const handleCreateNewPurchase = (data) => {
+  let formBody = querystring.stringify(data);
   let response = new Promise((resolve, reject) => {
     axios.post(`/api/v2/admin/purchases`, formBody).then((response) => {
       resolve(response);

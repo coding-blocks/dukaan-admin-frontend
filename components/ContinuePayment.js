@@ -4,6 +4,7 @@ import "../styles/pages/admin/coupons.scss";
 import axios from "axios";
 import Swal from "sweetalert2";
 import resourcesController from "../controllers/resources";
+import purchasesController from "../controllers/purchases";
 import withReactContent from "sweetalert2-react-content";
 import "../controllers/config";
 
@@ -89,39 +90,25 @@ function ContinuePayment(props) {
 
       if (!result.value) return;
 
-      // Confirmation passed, delete coupon.
-      const data = formValues;
-      console.log(data);
-      var formBody = [];
-      for (var property in data) {
-        var encodedKey = encodeURIComponent(property);
-        var encodedValue = encodeURIComponent(data[property]);
-        formBody.push(encodedKey + "=" + encodedValue);
-      }
-      formBody = formBody.join("&");
 
-      try {
-        await axios.post("/api/v2/admin/purchases", formBody);
-        console.log("Im in then");
+      const data = formValues;
+      purchasesController.handleCreateNewPurchase(data).then((res) => {
         Swal.fire({
-          title: "payment made!",
+          title: "Payment successful!",
           type: "success",
-          timer: "3000",
+          timer: 3000,
           showConfirmButton: true,
           confirmButtonText: "Okay"
         });
-
-        setTimeout(() => {
-          window.location.reload("/");
-        }, 3000);
-      } catch (err) {
-        console.log(err);
+      }).catch((error) => {
         Swal.fire({
           title: "Error while making payment!",
           type: "error",
+          text: error,
           showConfirmButton: true
         });
-      }
+      });
+      
     }
   };
 
