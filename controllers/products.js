@@ -92,7 +92,7 @@ const handleAddProduct = (queryParams) => {
     }
   });
   let response = new Promise((resolve, reject) => {
-    axios.post(`/api/products`, queryParams).then((r) => {
+    axios.post(`/api/v2/admin/products/`, queryParams).then((r) => {
       resolve(r);
     }).catch((error) => {
       reject(ErrorHandler.handle(error));

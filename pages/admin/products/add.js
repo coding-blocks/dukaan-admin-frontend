@@ -7,7 +7,6 @@ import Layout from "../../../components/layout";
 import Loader from '../../../components/loader';
 import "../../../styles/pages/admin/products.scss";
 import ImageChooser from '../../../components/ImageChooser';
-import ErrorHandler from '../../../controllers/ErrorHandler';
 
 class AddProduct extends React.Component {
 

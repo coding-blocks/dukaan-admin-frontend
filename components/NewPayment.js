@@ -424,7 +424,7 @@ class NewPayment extends React.Component {
                       value={product.id}
                       key={product.id}
                     >
-                      {product.name} at {formatter.formatCurrency(product.mrp / 100)}
+                      {product.name} at {formatter.formatCurrency(product.mrp)}
                     </option>
                   );
                 })}

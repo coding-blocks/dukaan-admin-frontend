@@ -3,7 +3,6 @@ import FieldWithElement from '../../../components/FieldWithElement';
 import controller from '../../../controllers/products';
 import Loader from '../../../components/loader';
 import ImageChooser from '../../../components/ImageChooser';
-import Swal from 'sweetalert2';
 
 class EditProduct extends React.Component {
   
