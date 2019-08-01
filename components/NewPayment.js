@@ -45,21 +45,22 @@ class NewPayment extends React.Component {
       }),
       resourcesController.handleGetCenters()
     ]).then(([res1, res2, res3, res4]) => {
-      console.log(res1.data);
-      console.log(res2.data);
-      console.log(res3.results);
-      console.log(res4.data);
       let fetchedProducts = [];
       res3.results.map(product => {
         fetchedProducts.push(product);
       });
-      console.log(this.props);
       this.setState({
         centers: res4.data,
         states: res1.data,
         products: fetchedProducts,
         product_categories: res2.data
       });
+    }).catch((error) => {
+      Swal.fire({
+        type: "error",
+        title: "Error fetching data!",
+        text: error
+      })
     });
   }
 

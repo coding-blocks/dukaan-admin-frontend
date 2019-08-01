@@ -3,6 +3,8 @@ import FieldWithElement from "./FieldWithElement";
 import "../styles/pages/admin/coupons.scss";
 import axios from "axios";
 import Swal from "sweetalert2";
+import resourcesController from "../controllers/resources";
+import usersController from "../controllers/users";
 import withReactContent from "sweetalert2-react-content";
 
 class AddUser extends React.Component {
@@ -17,10 +19,10 @@ class AddUser extends React.Component {
         username: "",
         firstname: "",
         lastname: "",
-        gender: "",
+        gender: "male",
         dial_code: "+91",
-        collegeId: "",
-        branchId: "",
+        collegeId: "1",
+        branchId: "1",
         mobile_number: "",
         email: "",
         gradYear: "2026"
@@ -30,20 +32,20 @@ class AddUser extends React.Component {
 
   componentDidMount() {
     Promise.all([
-      axios.get("http://localhost:2929/api/v2/admin/resources/demographics", {
-        withCredentials: true
-      }),
-      axios.get("http://localhost:2929/api/v2/admin/resources/countries", {
-        withCredentials: true
-      })
+      resourcesController.handleGetColleges(),
+      resourcesController.handleGetCountries()
     ]).then(([res1, res2]) => {
-      console.log(res1.data);
-      console.log(res2.data);
       this.setState({
         colleges: res1.data.colleges,
         branches: res1.data.branches,
         countries: res2.data
       });
+    }).catch((error) => {
+      Swal.fire({
+        type: "error",
+        title: "Error fetching resources!",
+        text: error
+      })
     });
 
     let gradYear = [];
@@ -63,39 +65,41 @@ class AddUser extends React.Component {
     });
   };
 
+  /**
+   * Custom validations method for the add user form
+   * @return {boolean} – if the validation passed or not
+   */
+  customValidations = () => {
+    if (!document.getElementById("add_user_form").checkValidity()) {
+      document.getElementById("add_user_form").reportValidity();
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   handleSubmit = async e => {
     e.preventDefault();
-    Swal.fire({
-      title: "Are you sure you want to add a user?",
-      type: "question",
-      html: `Username: ${this.state.formValues.username}<br/>Name : ${
-        this.state.formValues.firstname
-      } ${this.state.formValues.lastname}<br/> Phone: ${
-        this.state.formValues.mobile_number
-      }<br/>Email Id: ${this.state.formValues.email}<br/>`,
-      confirmButtonColor: "#f66",
-      confirmButtonText: "Yes!",
-      cancelButtonText: "No!",
-      showCancelButton: true,
-      showConfirmButton: true,
-      showCloseButton: true
-    }).then(result => {
-      if (result.value) {
-        // Confirmation passed
-        const data = this.state.formValues;
-        var formBody = [];
-        for (var property in data) {
-          var encodedKey = encodeURIComponent(property);
-          var encodedValue = encodeURIComponent(data[property]);
-          formBody.push(encodedKey + "=" + encodedValue);
-        }
-        formBody = formBody.join("&");
-
-        axios
-          .post("http://localhost:2929/api/v2/admin/users", formBody, {
-            withCredentials: true
-          })
-          .then(() => {
+    if (this.customValidations()) {
+      Swal.fire({
+        title: "Are you sure you want to add a user?",
+        type: "question",
+        html: `Username: ${this.state.formValues.username}<br/>Name : ${
+          this.state.formValues.firstname
+          } ${this.state.formValues.lastname}<br/> Phone: ${
+          this.state.formValues.mobile_number
+          }<br/>Email Id: ${this.state.formValues.email}<br/>`,
+        confirmButtonColor: "#f66",
+        confirmButtonText: "Yes!",
+        cancelButtonText: "No!",
+        showCancelButton: true,
+        showConfirmButton: true,
+        showCloseButton: true
+      }).then(result => {
+        if (result.value) {
+          // Confirmation passed
+          const data = this.state.formValues;
+          usersController.handleAddUser(data).then((res) => {
             Swal.fire({
               title: "User added!",
               type: "success",
@@ -103,32 +107,32 @@ class AddUser extends React.Component {
               showConfirmButton: true,
               confirmButtonText: "Okay"
             });
-            this.setState({
-              formValues: {
-                username: "",
-                firstname: "",
-                lastname: "",
-                gender: "",
-                dial_code: "",
-                collegeId: "",
-                branchId: "",
-                mobile_number: "",
-                email: ""
-              }
+            // Reset the form
+            let formValues = this.state.formValues;
+            Object.keys(formValues).map((key) => {
+              formValues[key] = "";
             });
+            formValues.gender = "male";
+            formValues.dial_code = "+91";
+            formValues.gradYear = "2026";
+            formValues.collegeId = "1";
+            formValues.branchId = "1";
+            this.setState({
+              formValues
+            })
             setTimeout(() => {
               window.location.reload("/");
             }, 3000);
-          })
-          .catch(err => {
+          }).catch((error) => {
             Swal.fire({
               title: "Error while adding user!",
               type: "error",
-              showConfirmButton: true
-            });
-          });
-      }
-    });
+              text: error
+            })
+          })
+        }
+      });
+    }
   };
 
   render() {
@@ -139,186 +143,196 @@ class AddUser extends React.Component {
           <div className={"d-flex justify-content-center mt-1 pb-3"}>
             <h2 className={"title red"}>Create User</h2>
           </div>
+          <form id="add_user_form">
+            {/* username */}
+            <FieldWithElement nameCols={3} elementCols={9} name={"Username"}>
+              <input
+                type="text"
+                className={"input-text icon user-bg"}
+                placeholder="Username"
+                name={"username"}
+                onChange={this.onChangeValue}
+                value={this.state.formValues.username}
+                required
+              />
+            </FieldWithElement>
 
-          {/* username */}
-          <FieldWithElement nameCols={3} elementCols={9} name={"Username"}>
-            <input
-              type="text"
-              className={"input-text icon user-bg"}
-              placeholder="Username"
-              name={"username"}
-              onChange={this.onChangeValue}
-              value={this.state.formValues.username}
-            />
-          </FieldWithElement>
+            <FieldWithElement nameCols={3} elementCols={9} name={"Firstname"}>
+              <input
+                type="text"
+                className={"input-text icon lines-bg"}
+                placeholder="First Name"
+                name={"firstname"}
+                onChange={this.onChangeValue}
+                value={this.state.formValues.firstname}
+                required
+              />
+            </FieldWithElement>
 
-          <FieldWithElement nameCols={3} elementCols={9} name={"Firstname"}>
-            <input
-              type="text"
-              className={"input-text icon lines-bg"}
-              placeholder="First Name"
-              name={"firstname"}
-              onChange={this.onChangeValue}
-              value={this.state.formValues.firstname}
-            />
-          </FieldWithElement>
+            <FieldWithElement nameCols={3} elementCols={9} name={"Lastname"}>
+              <input
+                type="text"
+                className={"input-text icon lines-bg"}
+                placeholder="Last Name"
+                name={"lastname"}
+                onChange={this.onChangeValue}
+                value={this.state.formValues.lastname}
+                required
+              />
+            </FieldWithElement>
 
-          <FieldWithElement nameCols={3} elementCols={9} name={"Lastname"}>
-            <input
-              type="text"
-              className={"input-text icon lines-bg"}
-              placeholder="Last Name"
-              name={"lastname"}
-              onChange={this.onChangeValue}
-              value={this.state.formValues.lastname}
-            />
-          </FieldWithElement>
-
-          {/* gender */}
-          <FieldWithElement
-            name={"Gender"}
-            nameCols={3}
-            elementCols={9}
-            elementClassName={"pl-4"}
-          >
-            <select
-              id="gender"
-              name="gender"
-              onChange={this.onChangeValue}
-              value={this.state.formValues.gender}
+            {/* gender */}
+            <FieldWithElement
+              name={"Gender"}
+              nameCols={3}
+              elementCols={9}
+              elementClassName={"pl-4"}
             >
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="undisclosed" selected>
-                Undisclosed
+              <select
+                id="gender"
+                name="gender"
+                onChange={this.onChangeValue}
+                value={this.state.formValues.gender}
+                required
+              >
+                <option value="male" selected>Male</option>
+                <option value="female">Female</option>
+                <option value="undisclosed">
+                  Undisclosed
               </option>
-            </select>
-          </FieldWithElement>
+              </select>
+            </FieldWithElement>
 
-          {/* code */}
-          <FieldWithElement
-            name={"Dial Code"}
-            nameCols={3}
-            elementCols={9}
-            elementClassName={"pl-4 "}
-          >
-            <select
-              id="dial_code"
-              name="dial_code"
-              onChange={this.onChangeValue}
+            {/* code */}
+            <FieldWithElement
+              name={"Dial Code"}
+              nameCols={3}
+              elementCols={9}
+              elementClassName={"pl-4 "}
             >
-              {this.state.countries.map(country => {
-                if (country.dial_code === "+91") {
-                  return (
-                    <option value={country.dial_code} selected>
-                      {country.name} {`(${country.dial_code})`}
-                    </option>
-                  );
-                } else {
-                  return (
-                    <option value={country.dial_code}>
-                      {country.name} {`(${country.dial_code})`}
-                    </option>
-                  );
-                }
-              })}
-            </select>
-          </FieldWithElement>
+              <select
+                id="dial_code"
+                name="dial_code"
+                onChange={this.onChangeValue}
+                required
+              >
+                {this.state.countries.map(country => {
+                  if (country.dial_code === "+91") {
+                    return (
+                      <option value={country.dial_code} selected>
+                        {country.name} {`(${country.dial_code})`}
+                      </option>
+                    );
+                  } else {
+                    return (
+                      <option value={country.dial_code}>
+                        {country.name} {`(${country.dial_code})`}
+                      </option>
+                    );
+                  }
+                })}
+              </select>
+            </FieldWithElement>
 
-          <FieldWithElement nameCols={3} elementCols={9} name={"Mobile Number"}>
-            <input
-              type="text"
-              className={"input-text"}
-              placeholder="Mobile Number"
-              name={"mobile_number"}
-              onChange={this.onChangeValue}
-              style={{ backgroundColor: "#f6f6f6" }}
-              value={this.state.formValues.mobile_number}
-            />
-          </FieldWithElement>
+            <FieldWithElement nameCols={3} elementCols={9} name={"Mobile Number"}>
+              <input
+                type="text"
+                className={"input-text"}
+                placeholder="Mobile Number"
+                name={"mobile_number"}
+                onChange={this.onChangeValue}
+                style={{ backgroundColor: "#f6f6f6" }}
+                value={this.state.formValues.mobile_number}
+                pattern={"[0-9]{10}"}
+                title="Mobile number can only be 10 digits"
+                required
+              />
+            </FieldWithElement>
 
-          {/* Colleges */}
-          <FieldWithElement
-            name={"College"}
-            nameCols={3}
-            elementCols={9}
-            elementClassName={"pl-4"}
-          >
-            <select
-              id="college"
-              name="collegeId"
-              onChange={this.onChangeValue}
-              value={this.state.formValues.collegeId}
+            {/* Colleges */}
+            <FieldWithElement
+              name={"College"}
+              nameCols={3}
+              elementCols={9}
+              elementClassName={"pl-4"}
             >
-              {this.state.colleges.map(college => {
-                return <option value={college.id}>{college.name}</option>;
-              })}
-            </select>
-          </FieldWithElement>
+              <select
+                id="college"
+                name="collegeId"
+                onChange={this.onChangeValue}
+                value={this.state.formValues.collegeId}
+              >
+                {this.state.colleges.map(college => {
+                  return <option value={college.id}>{college.name}</option>;
+                })}
+              </select>
+            </FieldWithElement>
 
-          {/* {Courses} */}
-          <FieldWithElement
-            name={"Branch / Course"}
-            nameCols={3}
-            elementCols={9}
-            elementClassName={"pl-4"}
-          >
-            <select
-              id="branch_courses"
-              name="branchId"
-              onChange={this.onChangeValue}
-              value={this.state.formValues.branchId}
+            {/* {Courses} */}
+            <FieldWithElement
+              name={"Branch / Course"}
+              nameCols={3}
+              elementCols={9}
+              elementClassName={"pl-4"}
             >
-              {this.state.branches.map(branch => {
-                return <option value={branch.id}>{branch.name}</option>;
-              })}
-            </select>
-          </FieldWithElement>
+              <select
+                id="branch_courses"
+                name="branchId"
+                onChange={this.onChangeValue}
+                value={this.state.formValues.branchId}
+              >
+                {this.state.branches.map(branch => {
+                  return <option value={branch.id}>{branch.name}</option>;
+                })}
+              </select>
+            </FieldWithElement>
 
-          {/* graduation year */}
-          <FieldWithElement
-            name={"Graduation Year"}
-            nameCols={3}
-            elementCols={9}
-            elementClassName={"pl-4"}
-          >
-            <select
-              id="grad_year"
-              name="gradYear"
-              onChange={this.onChangeValue}
+            {/* graduation year */}
+            <FieldWithElement
+              name={"Graduation Year"}
+              nameCols={3}
+              elementCols={9}
+              elementClassName={"pl-4"}
             >
-              {this.state.gradYear.map(year => {
-                return <option value={year}>{year}</option>;
-              })}
-            </select>
-          </FieldWithElement>
+              <select
+                id="grad_year"
+                name="gradYear"
+                onChange={this.onChangeValue}
+              >
+                {this.state.gradYear.map(year => {
+                  return <option value={year}>{year}</option>;
+                })}
+              </select>
+            </FieldWithElement>
 
-          {/* email */}
-          <FieldWithElement
-            name={"Email"}
-            nameCols={3}
-            elementCols={9}
-            elementClassName={"pl-4"}
-          >
-            <input
-              type="text"
-              className={"input-text icon mail-bg"}
-              placeholder="Email Address"
-              name="email"
-              onChange={this.onChangeValue}
-              value={this.state.formValues.email}
-            />
-          </FieldWithElement>
-
-          <div className={"d-flex justify-content-center"}>
-            <button
-              id="search"
-              className={"button-solid ml-4 mb-2 mt-4 pl-5 pr-5"}
-              onClick={this.handleSubmit}
+            {/* email */}
+            <FieldWithElement
+              name={"Email"}
+              nameCols={3}
+              elementCols={9}
+              elementClassName={"pl-4"}
             >
-              Create User
+              <input
+                type="email"
+                className={"input-text icon mail-bg"}
+                placeholder="Email Address"
+                name="email"
+                onChange={this.onChangeValue}
+                value={this.state.formValues.email}
+                required
+              />
+            </FieldWithElement>
+
+            <div className={"d-flex justify-content-center"}>
+              <button
+                id="search"
+                className={"button-solid ml-4 mb-2 mt-4 pl-5 pr-5"}
+                onClick={this.handleSubmit}
+              >
+                Create User
             </button>
-          </div>
+            </div>
+          </form>
         </div>
       </div>
     );

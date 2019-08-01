@@ -5,6 +5,7 @@
 import axios from 'axios';
 import "./config";
 import ErrorHandler from "../helpers/ErrorHandler";
+const querystring = require("querystring");
 
 /**
  * Get user by email
@@ -26,6 +27,24 @@ const handleGetUserByEmail = (email) => {
   return response;
 }
 
+/**
+ * Add the user
+ * @param {object} data – Object with user data
+ * @return {Promise<object>} response
+ */
+const handleAddUser = (data) => {
+  const formBody = querystring.stringify(data);
+  const response = new Promise((resolve, reject) => {
+    axios.post(`/api/v2/admin/users`, formBody).then((r) => {
+      resolve(r);
+    }).catch((error) => {
+      reject(ErrorHandler.handle(error));
+    });
+  });
+  return response;
+};
+
 module.exports = {
-  handleGetUserByEmail
+  handleGetUserByEmail,
+  handleAddUser
 }
