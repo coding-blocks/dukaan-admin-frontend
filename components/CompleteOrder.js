@@ -1,12 +1,11 @@
 import React from "react";
-// import Modal from "./Modal";
 import FieldWithElement from "./FieldWithElement";
-import axios from "axios";
 import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
 import Router from "next/router";
 import Modal from "react-modal";
 import Price from "./Price";
+import resourcesController from '../controllers/resources';
+import refundController from '../controllers/refund';
 
 const customStyles = {
   content: {
@@ -33,13 +32,17 @@ class CompleteOrder extends React.Component {
     };
   }
   componentDidMount() {
-    axios
-      .get("http://localhost:2929/api/v2/admin/resources/centers", {
-        withCredentials: true
-      })
-      .then(res => {
-        this.setState({ centers: res.data });
+    resourcesController.handleGetCenters().then((res) => {
+      this.setState({
+        centers: res.data
       });
+    }).catch((error) => {
+      Swal.fire({
+        type: "error",
+        title: "Unable to fetch centers!",
+        text: error
+      })
+    });
   }
 
   onChangeValue = e => {
@@ -67,43 +70,22 @@ class CompleteOrder extends React.Component {
       showCloseButton: true
     }).then(result => {
       if (result.value) {
-        // Confirmation passed, delete coupon.
         const data = this.state.formValues;
-        var formBody = [];
-        for (var property in data) {
-          var encodedKey = encodeURIComponent(property);
-          var encodedValue = encodeURIComponent(data[property]);
-          formBody.push(encodedKey + "=" + encodedValue);
-        }
-        formBody = formBody.join("&");
-
-        axios
-          .post("http://localhost:2929/api/v2/admin/refunds", formBody, {
-            withCredentials: true
-          })
-          .then(() => {
-            console.log("Im in then");
-            Swal.fire({
-              title: "Refund made!",
-              type: "success",
-              timer: "3000",
-              showConfirmButton: true,
-              confirmButtonText: "Okay"
-            });
-          })
-          // .then(() => {
-          //   setTimeout(() => {
-          //     window.location.reload();
-          //   }, 3000);
-          // })
-          .catch(err => {
-            console.log(err);
-            Swal.fire({
-              title: "Error while making a refund!",
-              type: "error",
-              showConfirmButton: true
-            });
+        refundController.handleCreateRefund(data).then((res) => {
+          Swal.fire({
+            title: "Refund has been completed!",
+            type: "success",
+            timer: 3000,
+            showConfirmButton: true,
+            confirmButtonText: "Okay"
           });
+        }).catch((error) => {
+          Swal.fire({
+            title: "Error while making a refund!",
+            type: "error",
+            text: error
+          })
+        });
       }
     });
   };
@@ -328,15 +310,15 @@ class CompleteOrder extends React.Component {
                 <a
                   href={`/admin/PartialHistory?userid=${
                     this.props.userid
-                  }&cart_id=${this.props.cart_id}`}
+                    }&cart_id=${this.props.cart_id}`}
                   className="button-solid lg mr-4"
                   target="blank"
                 >
                   View all Transactions
                 </a>
               ) : (
-                ""
-              )}
+                  ""
+                )}
               {this.props.status === "captured" ? (
                 <button
                   className="button-solid lg"
@@ -345,8 +327,8 @@ class CompleteOrder extends React.Component {
                   Refund
                 </button>
               ) : (
-                ""
-              )}
+                  ""
+                )}
               <input id="orderIdInput" type="hidden" />
               <div className="row justify-content-center">
                 <a target="blank" id="anchorInvoiceUpdate" />
