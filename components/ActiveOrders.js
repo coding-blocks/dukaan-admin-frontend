@@ -51,7 +51,6 @@ class ActiveOrders extends React.Component {
                 this.props.userid
               }&cart_id=${this.props.cart_id}`}
               className="button-solid view-partial-payment lg"
-              target="blank"
             >
               View all Transactions
             </a>

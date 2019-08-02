@@ -37,18 +37,23 @@ class PartialPayments extends React.Component {
     };
   }
 
+  onInputUpdate = () => {};
+
   componentDidMount() {
-    resourcesController.handleGetCenters().then((res) => {
-      this.setState({
-        centers: res.data
-      });
-    }).catch((error) => {
-      Swal.fire({
-        type: "error",
-        title: "Unable to fetch centers!",
-        text: error
+    resourcesController
+      .handleGetCenters()
+      .then(res => {
+        this.setState({
+          centers: res.data
+        });
       })
-    });
+      .catch(error => {
+        Swal.fire({
+          type: "error",
+          title: "Unable to fetch centers!",
+          text: error
+        });
+      });
   }
 
   onChangeValue = e => {
@@ -66,18 +71,21 @@ class PartialPayments extends React.Component {
   };
 
   handleRefundDetails = () => {
-    refundController.handleGetRefundFromTxnId(this.props.txn_id).then((res) => {
-      this.setState({
-        refundDetail: res.data,
-        showRefundDetailModal: true
+    refundController
+      .handleGetRefundFromTxnId(this.props.txn_id)
+      .then(res => {
+        this.setState({
+          refundDetail: res.data,
+          showRefundDetailModal: true
+        });
+      })
+      .catch(error => {
+        Swal.fire({
+          type: "error",
+          title: "Error fetching refunds!",
+          text: error
+        });
       });
-    }).catch((error) => {
-      Swal.fire({
-        type: "error",
-        title: "Error fetching refunds!",
-        text: error
-      });
-    });
   };
 
   handleSubmit = async e => {
@@ -201,8 +209,8 @@ class PartialPayments extends React.Component {
             {this.props.mode === "razorpay" ? (
               <option value="razorpay">Razorpay</option>
             ) : (
-                ""
-              )}
+              ""
+            )}
             <option value="credits">Credits</option>
             <option value="cheque">Cheque</option>
           </select>
@@ -309,15 +317,15 @@ class PartialPayments extends React.Component {
           {this.props.status === "paid" ? (
             this.formDisplay()
           ) : (
-              <button
-                id="view-invoice"
-                className="button-solid ml-4 mb-2 mt-4 pl-5 pr-5"
-                type="submit"
-                onClick={this.handleRefundDetails}
-              >
-                Refund Details
+            <button
+              id="view-invoice"
+              className="button-solid ml-4 mb-2 mt-4 pl-5 pr-5"
+              type="submit"
+              onClick={this.handleRefundDetails}
+            >
+              Refund Details
             </button>
-            )}
+          )}
           <a href={this.props.partial_invoice_link} target="blank">
             <button
               id="view-invoice"

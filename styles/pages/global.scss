@@ -1,3 +1,6 @@
+@import "../../../node_modules/@syncfusion/ej2-base/styles/material.css";
+@import "../../../node_modules/@syncfusion/ej2-inputs/styles/material.css";
+@import "../../../node_modules/@syncfusion/ej2-dropdowns/styles/material.css";
 .title {
   font-weight: 100;
 }
@@ -21,14 +24,14 @@ select {
 
 .ReactModal__Overlay {
   opacity: 0;
-  transition: opacity 500ms cubic-bezier(1,.01,0,1);
+  transition: opacity 500ms cubic-bezier(1, 0.01, 0, 1);
 }
 
-.ReactModal__Overlay--after-open{
+.ReactModal__Overlay--after-open {
   opacity: 1;
 }
 
-.ReactModal__Overlay--before-close{
+.ReactModal__Overlay--before-close {
   opacity: 0;
 }
 
