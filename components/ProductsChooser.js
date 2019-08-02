@@ -1,8 +1,8 @@
 import React from 'react';
 import Select from 'react-select';
-import axios from 'axios';
-import "../controllers/config";
+import productsController from "../controllers/products";
 import "../styles/components/ProductsChooser.scss";
+import Swal from 'sweetalert2';
 
 class ProductsChooser extends React.Component {
 
@@ -42,11 +42,18 @@ class ProductsChooser extends React.Component {
     }
 
     // Fetch all products
-    axios.get('/api/v2/admin/products?limit=100').then((results) => {
+    productsController.handleGetProducts({}, {page: 1, limit: 100}).then((res) => {
       this.setState({
-        productsList: results.data.products
+        productsList: res.results
+      });
+    }).catch((error) => {
+      Swal.fire({
+        type: "error",
+        title: "Error fetching Products!",
+        text: error
       });
     });
+
   }
 
   /**
