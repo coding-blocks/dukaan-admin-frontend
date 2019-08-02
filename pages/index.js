@@ -26,12 +26,12 @@ import axios from "axios";
 const customStyles = {
   option: provided => ({
     ...provided,
-    height: "10vh",
+    height: "6vh",
     width: "100%"
   }),
   control: provided => ({
     ...provided,
-    height: "10vh",
+    height: "6vh",
     width: "100%",
     borderRadius: "2vh",
     backgroundColor: "#f6f6f6"
