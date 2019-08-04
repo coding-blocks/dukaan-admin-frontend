@@ -7,17 +7,21 @@ import AddUser from "../components/AddUser";
 import NewPayment from "../components/NewPayment";
 import CheckLogin from "../components/CheckLogin";
 // import "semantic-ui-css/semantic.min.css";
-import "../controllers/config";
+import "../DukaanAPI";
 import moment from "moment";
+// import axios from "axios";
+import InCompleteOrder from "../components/ActiveOrders";
 // import PartialPayments from "../components/PartialPayments";
 import RefundedOrders from "../components/RefundedOrders";
 import { resolve } from "url";
 import userController from "../controllers/users";
 import purchasesController from "../controllers/purchases";
 import swal from "sweetalert2";
-import "../controllers/config";
+import "../DukaanAPI";
 import ActiveOrders from "../components/ActiveOrders";
 import UserCard from "../components/UserCard";
+
+import {axios} from "../DukaanAPI";
 
 class Home extends React.Component {
   constructor(props) {
@@ -229,7 +233,9 @@ class Home extends React.Component {
           const date = moment(activeOrder.created_at).format(
             "MMMM Do YYYY,h:mm:ss a"
           );
+
           return (
+
             <ActiveOrders
               amountLeft={activeOrder.amountLeft}
               partial_payment={activeOrder.partial_payment}

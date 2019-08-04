@@ -3,7 +3,7 @@ import Modal from "react-modal";
 import Price from "./Price";
 import moment from "moment";
 import axios from "axios";
-import "../controllers/config";
+import "../DukaanAPI";
 
 const customStyles = {
   content: {

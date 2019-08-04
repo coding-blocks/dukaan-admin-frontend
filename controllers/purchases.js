@@ -1,5 +1,5 @@
 import axios from "axios";
-import "./config";
+import "../DukaanAPI";
 import ErrorHandler from "../helpers/ErrorHandler";
 import Swal from "sweetalert2";
 const querystring = require("querystring");

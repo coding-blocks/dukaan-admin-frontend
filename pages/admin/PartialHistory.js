@@ -8,13 +8,13 @@ import controller from "../../controllers/purchases";
 class PartialHistory extends React.Component {
   static async getInitialProps({ query }) {
     console.log(query, "dsjhdjhs");
-    return { userid: query.userid, cart_id: query.cart_id };
+    return { userid: query.userId, cart_id: query.cart_id };
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      userid: null,
+      userid: '',
       courseInfo: null
     };
   }

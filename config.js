@@ -2,22 +2,20 @@
  * Frontend Configuration for Dukaan
  */
 
-let development = {};
-let production = {};
+const config = {
+    domain: process.env.DOMAIN || "http://localhost:5959",
+    callback_url: process.env.CALLBACK_URL || "http://localhost:5959/auth",
+    client_id: process.env.CLIENT_ID || "5594502675",
+    sentry_dsn: process.env.SENTRY_DSN || "https://randomxyz@sentry.codingblocks.com/35",
+    oneauth: {
+        domain: process.env.ONEAUTH_URL || "http://localhost:3838",
+        login_url: process.env.ONEAUTH_LOGIN_URL || `http://localhost:3838/oauth/authorize?response_type=code&client_id=5594502675&redirect_uri=http://localhost:5959/auth`,
+        logout_url: process.env.ONEAUTH_LOGOUT_URL || `http://localhost:3838/logout?redirect=http://localhost:5959/logout`
+    },
+    dukaan_backend: {
+        domain: process.env.API_URL || "http://localhost:2929",
+        token_url: process.env.TOKEN_URL || "http://localhost:2929/auth/token"
+    },
+};
 
-development.domain = "http://localhost:5959";
-
-development.callback_url = development.domain + "/auth";
-development.client_id = "2106494837";
-
-development.oneauth = {};
-development.oneauth.domain = "https://account.codingblocks.com";
-development.oneauth.login_url = development.oneauth.domain + `/oauth/authorize?response_type=code&client_id=${development.client_id}&redirect_uri=${development.callback_url}`;
-development.oneauth.logout_url = development.oneauth.domain + `/logout?redirect=${development.domain}/logout`
-
-development.backend = {};
-development.backend.domain = "http://localhost:2929";
-development.backend.token_url = development.backend.domain + "/auth/token";
-development.sentry_dsn = "https://38a08e1b6b3b451f92a744f5566414c8@sentry.codingblocks.com/35";
-
-module.exports = development;
+module.exports = config;

@@ -47,7 +47,7 @@ class ActiveOrders extends React.Component {
 
           <div className="row">
             <a
-              href={`/admin/PartialHistory?userid=${
+              href={`/admin/PartialHistory?userId=${
                 this.props.userid
               }&cart_id=${this.props.cart_id}`}
               className="button-solid view-partial-payment lg"

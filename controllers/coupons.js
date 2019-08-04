@@ -1,5 +1,5 @@
 import axios from 'axios';
-import "./config";
+import "../DukaanAPI";
 import ErrorHandler from "../helpers/ErrorHandler";
 const querystring = require('querystring');
 
