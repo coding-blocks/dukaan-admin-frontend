@@ -9,6 +9,7 @@ module.exports = withSass({
       fs: 'empty'
     }
     config.plugins.push(new webpack.EnvironmentPlugin(localEnv))
+    console.log('Process ENV is', process.env)
     return config
   }
 })
