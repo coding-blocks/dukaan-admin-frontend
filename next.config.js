@@ -1,6 +1,6 @@
 const withSass = require('@zeit/next-sass')
 const webpack = require('webpack')
-const { parsed: localEnv } = require('dotenv').config()
+const localEnv = require('./config')
 
 module.exports = withSass({
   webpack: config => {
