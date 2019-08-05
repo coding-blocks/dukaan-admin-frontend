@@ -1,5 +1,4 @@
-import axios from "axios";
-import "../DukaanAPI";
+import {axios} from "../DukaanAPI";
 import ErrorHandler from "../helpers/ErrorHandler";
 import Swal from "sweetalert2";
 const querystring = require("querystring");

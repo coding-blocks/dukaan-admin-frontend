@@ -1,8 +1,8 @@
 /**
  * Resources api controller
  */
-import axios from 'axios';
 import "../config";
+import {axios} from "../DukaanAPI"
 import ErrorHandler from '../helpers/ErrorHandler';
 
 /**

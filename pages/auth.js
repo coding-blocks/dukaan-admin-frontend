@@ -3,7 +3,7 @@ import Head from "../components/head";
 import Layout from "../components/layout";
 import Loader from "../components/loader";
 import config from "../config";
-import axios from 'axios';
+import {axios} from '../DukaanAPI';
 import cookies from 'js-cookies';
 import Cookies from 'js-cookie'
 import ErrorHandler from "../helpers/ErrorHandler";

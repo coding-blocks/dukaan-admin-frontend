@@ -2,8 +2,7 @@
 * Controller for Product Categories
 */
 
-import axios from 'axios';
-import "../DukaanAPI";
+import {axios} from "../DukaanAPI";
 import ErrorHandler from "../helpers/ErrorHandler";
 
 /**
