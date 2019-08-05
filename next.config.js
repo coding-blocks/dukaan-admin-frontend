@@ -1,6 +1,6 @@
 const withSass = require('@zeit/next-sass')
 const webpack = require('webpack')
-const localEnv = require('./config')
+const { parsed: localEnv } = require('dotenv').config()
 
 module.exports = withSass({
   webpack: config => {
@@ -9,7 +9,8 @@ module.exports = withSass({
       fs: 'empty'
     }
     config.plugins.push(new webpack.EnvironmentPlugin(localEnv))
-    console.log('Process ENV is', process.env)
+    console.log('Local env is' , localEnv)
+    console.log('Process env is', process.env)
     return config
   }
 })
