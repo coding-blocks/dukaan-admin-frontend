@@ -7,7 +7,6 @@ import AddUser from "../components/AddUser";
 import NewPayment from "../components/NewPayment";
 import CheckLogin from "../components/CheckLogin";
 // import "semantic-ui-css/semantic.min.css";
-import "../DukaanAPI";
 import moment from "moment";
 // import axios from "axios";
 import InCompleteOrder from "../components/ActiveOrders";
@@ -17,7 +16,6 @@ import { resolve } from "url";
 import userController from "../controllers/users";
 import purchasesController from "../controllers/purchases";
 import swal from "sweetalert2";
-import "../DukaanAPI";
 import ActiveOrders from "../components/ActiveOrders";
 import UserCard from "../components/UserCard";
 import AsyncSelect from "react-select/async";
@@ -39,7 +37,7 @@ const customStyles = {
   })
 };
 
-import {axios} from "../DukaanAPI";
+import axios from 'axios'
 
 class Home extends React.Component {
   constructor(props) {
