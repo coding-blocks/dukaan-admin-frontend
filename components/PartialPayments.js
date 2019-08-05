@@ -6,10 +6,11 @@ import withReactContent from "sweetalert2-react-content";
 import "../DukaanAPI";
 import Modal from "react-modal";
 import moment from "moment";
-import controller from "../controllers/purchases";
+import refundController from "../controllers/refund";
+import resourcesController from "../controllers/resources";
 import Price from "./Price";
-import axios from "axios";
-import "../DukaanAPI";
+import {axios} from "../DukaanAPI";
+
 
 const customStyles = {
   content: {
@@ -38,13 +39,22 @@ class PartialPayments extends React.Component {
     };
   }
 
+  onInputUpdate = () => {};
+
   componentDidMount() {
-    axios
-      .get("/api/v2/admin/resources/centers", {
-        withCredentials: true
-      })
+    resourcesController
+      .handleGetCenters()
       .then(res => {
-        this.setState({ centers: res.data });
+        this.setState({
+          centers: res.data
+        });
+      })
+      .catch(error => {
+        Swal.fire({
+          type: "error",
+          title: "Unable to fetch centers!",
+          text: error
+        });
       });
   }
 
@@ -63,14 +73,19 @@ class PartialPayments extends React.Component {
   };
 
   handleRefundDetails = () => {
-    axios
-      .get(`/api/v2/admin/refunds?txn_id=${this.props.txn_id}`, {
-        withCredentials: true
-      })
+    refundController
+      .handleGetRefundFromTxnId(this.props.txn_id)
       .then(res => {
         this.setState({
           refundDetail: res.data,
           showRefundDetailModal: true
+        });
+      })
+      .catch(error => {
+        Swal.fire({
+          type: "error",
+          title: "Error fetching refunds!",
+          text: error
         });
       });
   };
@@ -89,16 +104,8 @@ class PartialPayments extends React.Component {
     }).then(result => {
       if (result.value) {
         const data = this.state.formValues;
-        var formBody = [];
-        for (var property in data) {
-          var encodedKey = encodeURIComponent(property);
-          var encodedValue = encodeURIComponent(data[property]);
-          formBody.push(encodedKey + "=" + encodedValue);
-        }
-        formBody = formBody.join("&");
-
-        controller
-          .handleCreateRefund(formBody)
+        refundController
+          .handleCreateRefund(data)
           .then(response => {
             Swal.fire({
               title: "Refund made!",

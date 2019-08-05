@@ -20,6 +20,24 @@ import swal from "sweetalert2";
 import "../DukaanAPI";
 import ActiveOrders from "../components/ActiveOrders";
 import UserCard from "../components/UserCard";
+import AsyncSelect from "react-select/async";
+import _ from "lodash";
+
+
+const customStyles = {
+  option: provided => ({
+    ...provided,
+    height: "6vh",
+    width: "100%"
+  }),
+  control: provided => ({
+    ...provided,
+    height: "6vh",
+    width: "100%",
+    borderRadius: "2vh",
+    backgroundColor: "#f6f6f6"
+  })
+};
 
 import {axios} from "../DukaanAPI";
 
@@ -27,6 +45,7 @@ class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      suggestions: [],
       email: "",
       completeTab: true,
       activeTab: false,
@@ -39,7 +58,36 @@ class Home extends React.Component {
       refund: false,
       selectedUser: {}
     };
+    this.loadOptions = _.debounce(this.loadOptions.bind(this), 500);
+    this.handleChange = this.handleChange.bind(this);
   }
+
+  mapOptionsToValues = options => {
+    return options.map(option => ({
+      value: option.email,
+      label: option.email
+    }));
+  };
+
+  loadOptions = (inputValue, callback) => {
+    if (!inputValue) {
+      return callback([]);
+    }
+
+    axios
+      .get(`/api/v2/admin/users?email=${inputValue}`, {
+        withCredentials: true
+      })
+      .then(res => {
+        callback(this.mapOptionsToValues(res.data));
+      });
+  };
+
+  handleEmailChange = selectedOption => {
+    this.setState({
+      email: selectedOption.value
+    });
+  };
 
   handleChange = event => {
     this.setState({
@@ -272,20 +320,20 @@ class Home extends React.Component {
                     id={"email-search-form"}
                     className={"d-flex col-md-12 px-0"}
                   >
-                    <input
-                      name="email"
-                      required
-                      autoFocus
-                      id="email"
-                      type="text"
-                      className="input-text mb-2"
-                      placeholder="Enter email"
-                      value={this.state.email}
-                      onChange={this.handleChange}
-                    />
+                    <div className="col-md-12 col-12">
+                      <AsyncSelect
+                        cacheOptions
+                        defaultOptions
+                        placeholder="Enter Email.."
+                        loadOptions={this.loadOptions}
+                        onChange={this.handleEmailChange}
+                        styles={customStyles}
+                      />
+                    </div>
+
                     <button
                       id="search"
-                      className="button-solid ml-4 mb-1"
+                      className="button-solid mb-1"
                       style={{ fontSize: "1.3rem" }}
                       onClick={this.handleSearch}
                     >
@@ -314,9 +362,7 @@ class Home extends React.Component {
                 {this.state.userInfo.length == 0 && (
                   <div className="col-12 col-md-4">
                     <div className="border-card br-20 bg-light-grey mb-5">
-                      <h5 style={{ textAlign: "center" }}>
-                        No user Found, Search Existing?{" "}
-                      </h5>
+                      <h5 style={{ textAlign: "center" }}>Search a user ? </h5>
                       <h5 className="mt-4" style={{ textAlign: "center" }}>
                         OR
                       </h5>

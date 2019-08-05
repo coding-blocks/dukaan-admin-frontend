@@ -2,8 +2,10 @@ import React from "react";
 import Modal from "react-modal";
 import Price from "./Price";
 import moment from "moment";
-import axios from "axios";
-import "../DukaanAPI";
+import {axios} from "../DukaanAPI";
+import refundController from "../controllers/refund";
+import Swal from "sweetalert2";
+
 
 const customStyles = {
   content: {
@@ -34,16 +36,18 @@ class RefundedOrders extends React.Component {
   }
 
   handleRefundDetails = () => {
-    axios
-      .get(`/api/v2/admin/refunds?txn_id=${this.props.txn_id}`, {
-        withCredentials: true
-      })
-      .then(res => {
-        this.setState({
-          refundDetail: res.data,
-          showRefundDetailModal: true
-        });
+    refundController.handleGetRefundFromTxnId(this.props.txn_id).then((res) => {
+      this.setState({
+        refundDetail: res.data,
+        showRefundDetailModal: true
       });
+    }).catch((error) => {
+      Swal.fire({
+        type: "error",
+        title: "Error fetching refunds",
+        text: error
+      })
+    });
   };
 
   closeRefundDetailModal = () => {
@@ -129,22 +133,22 @@ class RefundedOrders extends React.Component {
                   </button>
                 </div>
               ) : (
-                ""
-              )}
+                  ""
+                )}
 
               {this.props.partial_payment ? (
                 <a
-                  href={`/admin/PartialHistory?userid=${
+                  href={`/admin/PartialHistory?userId=${
                     this.props.userid
-                  }&cart_id=${this.props.cart_id}`}
+                    }&cart_id=${this.props.cart_id}`}
                   className="button-solid lg"
                   target="blank"
                 >
                   View all Transactions
                 </a>
               ) : (
-                ""
-              )}
+                  ""
+                )}
               <input id="orderIdInput" type="hidden" />
               <div className="row justify-content-center">
                 <a target="blank" id="anchorInvoiceUpdate" />
