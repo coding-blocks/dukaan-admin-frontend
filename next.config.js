@@ -8,7 +8,7 @@ module.exports = withSass({
     config.node = {
       fs: 'empty'
     }
-    config.plugins.push(new webpack.EnvironmentPlugin(localEnv))
+    config.plugins.push(new webpack.EnvironmentPlugin(process.env))
     console.log('Local env is' , localEnv)
     console.log('Process env is', process.env)
     return config
