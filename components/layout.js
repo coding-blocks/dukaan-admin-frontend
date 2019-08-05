@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import cookies from "js-cookies";
+import Cookies from 'js-cookie'
 import jwt from "jsonwebtoken";
 import config from "../config";
 import "../styles/components/layout.scss";
@@ -18,7 +19,7 @@ class Layout extends React.Component {
   }
 
   componentDidMount() {
-    const dukaanToken = cookies.getItem("dukaan-token");
+    const dukaanToken = Cookies.get("dukaan-token");
     if (dukaanToken) {
       const userInfo = jwt.decode(dukaanToken);
       this.setState({
