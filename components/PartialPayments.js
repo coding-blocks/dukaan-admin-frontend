@@ -3,12 +3,14 @@ import FieldWithElement from "./FieldWithElement";
 import "../styles/pages/admin/coupons.scss";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import "../controllers/config";
+import "../DukaanAPI";
 import Modal from "react-modal";
 import moment from "moment";
 import refundController from "../controllers/refund";
 import resourcesController from "../controllers/resources";
 import Price from "./Price";
+import {axios} from "../DukaanAPI";
+
 
 const customStyles = {
   content: {

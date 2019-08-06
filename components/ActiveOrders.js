@@ -46,11 +46,13 @@ class ActiveOrders extends React.Component {
           {/* <input type="hidden" id="CartId" name="cartId" value={{payment.cart_id}}> */}
 
           <div className="row">
+
             <a
-              href={`/admin/PartialHistory?userid=${
+              href={`/admin/PartialHistory?userId=${
                 this.props.userid
               }&cart_id=${this.props.cart_id}`}
               className="button-solid view-partial-payment lg"
+              target='blank'
             >
               View all Transactions
             </a>

@@ -2,8 +2,10 @@ import React from "react";
 import Modal from "react-modal";
 import Price from "./Price";
 import moment from "moment";
+import {axios} from "../DukaanAPI";
 import refundController from "../controllers/refund";
 import Swal from "sweetalert2";
+
 
 const customStyles = {
   content: {
@@ -136,7 +138,7 @@ class RefundedOrders extends React.Component {
 
               {this.props.partial_payment ? (
                 <a
-                  href={`/admin/PartialHistory?userid=${
+                  href={`/admin/PartialHistory?userId=${
                     this.props.userid
                     }&cart_id=${this.props.cart_id}`}
                   className="button-solid lg"

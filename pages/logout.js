@@ -3,6 +3,7 @@ import Head from '../components/head';
 import Layout from '../components/layout';
 import config from "../config";
 import cookies from 'js-cookies';
+import Cookies from 'js-cookie';
 import Loader from '../components/loader';
 
 class Logout extends React.Component {
@@ -12,8 +13,8 @@ class Logout extends React.Component {
   }
 
   componentDidMount() {
-    cookies.removeItem('dukaan-token');
-    cookies.removeItem('oneauth');
+    Cookies.remove('dukaan-token');
+    Cookies.remove('oneauth');
     window.location = config.domain;
   }
   

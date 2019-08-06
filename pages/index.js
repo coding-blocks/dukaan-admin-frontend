@@ -6,20 +6,17 @@ import CompleteOrders from "../components/CompleteOrder";
 import AddUser from "../components/AddUser";
 import NewPayment from "../components/NewPayment";
 import CheckLogin from "../components/CheckLogin";
-import "../controllers/config";
 import moment from "moment";
+import InCompleteOrder from "../components/ActiveOrders";
 import RefundedOrders from "../components/RefundedOrders";
 import { resolve } from "url";
 import userController from "../controllers/users";
 import purchasesController from "../controllers/purchases";
 import swal from "sweetalert2";
-import "../controllers/config";
 import ActiveOrders from "../components/ActiveOrders";
 import UserCard from "../components/UserCard";
 import AsyncSelect from "react-select/async";
 import _ from "lodash";
-import axios from "axios";
-import Swal from "sweetalert2";
 
 const customStyles = {
   option: provided => ({
@@ -79,20 +76,8 @@ class Home extends React.Component {
         callback(this.mapOptionsToValues(res.data));
       }).catch((error) => {
         callback([]);
-        // Swal.fire({
-        //   type: 'error',
-        //   title: "Error searching for user",
-        //   text: error
-        // });
       })
     }
-    // axios
-    //   .get(`/api/v2/admin/users?email=${inputValue}`, {
-    //     withCredentials: true
-    //   })
-    //   .then(res => {
-    //     callback(this.mapOptionsToValues(res.data));
-    //   });
   };
 
   handleEmailChange = selectedOption => {
@@ -305,7 +290,9 @@ class Home extends React.Component {
           const date = moment(activeOrder.created_at).format(
             "MMMM Do YYYY,h:mm:ss a"
           );
+
           return (
+
             <ActiveOrders
               amountLeft={activeOrder.amountLeft}
               partial_payment={activeOrder.partial_payment}

@@ -1,5 +1,6 @@
 import React from 'react';
 import cookies from 'js-cookies';
+import Cookies from 'js-cookie'
 import jwt from 'jsonwebtoken';
 import Head from "./head";
 import Layout from "./layout";
@@ -18,7 +19,7 @@ class CheckLogin extends React.Component {
   }
 
   componentDidMount() {
-    const dukaanToken = cookies.getItem('dukaan-token');
+    const dukaanToken = Cookies.get('dukaan-token');
     if (dukaanToken) {
       const userInfo = jwt.decode(dukaanToken);
       if (userInfo && userInfo.data.oneauth_id) {

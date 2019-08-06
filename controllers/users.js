@@ -2,8 +2,7 @@
  * Controller for users
  */
 
-import axios from 'axios';
-import "./config";
+import {axios} from "../DukaanAPI";
 import ErrorHandler from "../helpers/ErrorHandler";
 const querystring = require("querystring");
 
