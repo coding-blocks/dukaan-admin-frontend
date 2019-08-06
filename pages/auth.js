@@ -23,7 +23,7 @@ class Auth extends React.Component {
         axios.post(config.dukaan_backend.token_url, {code: authCode}).then((response) => {
             if (response.data && response.data.jwtToken) {
                 // cookies.setItem('dukaan-token', response.data.jwtToken);
-                Cookies.set('dukaan-token', response.data.jwtToken, {expires: 7, path: '/', domain: '.codingblocks.xyz'});
+                Cookies.set('dukaan-token', response.data.jwtToken, {expires: 7, path: '/', });
                 Cookies.set('hello', response.data.jwtToken, {path: '/myy'});
 
                 window.location = '/';

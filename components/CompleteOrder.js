@@ -299,7 +299,7 @@ class CompleteOrder extends React.Component {
                 </div>
               </div>
             </div>
-            <div class="divider-h mt-4 mb-4" />
+            <div className="divider-h mt-4 mb-4" />
             <div className="d-flex justify-content-center mr-5">
               <div className={"mr-4"}>
                 <a href={this.props.invoice_url} target="blank">
