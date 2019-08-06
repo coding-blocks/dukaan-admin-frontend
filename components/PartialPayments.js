@@ -25,6 +25,20 @@ const customStyles = {
     ariaHideApp: "false"
   }
 };
+
+const customFormStyles = {
+  content: {
+    padding: "3vh",
+    top: "52%",
+    left: "50%",
+    right: "40%",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    borderRadius: "2vh",
+    ariaHideApp: "false"
+  }
+};
 class PartialPayments extends React.Component {
   constructor(props) {
     super(props);
@@ -335,8 +349,9 @@ class PartialPayments extends React.Component {
         <Modal
           isOpen={this.state.showRefundFormModal}
           onRequestClose={this.closeRefundFormModal}
-          style={customStyles}
+          style={customFormStyles}
         >
+          <h3 className="red">Refund</h3>
           {this.formDisplay()}
         </Modal>
         <br />
