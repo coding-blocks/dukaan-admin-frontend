@@ -9,12 +9,11 @@ import moment from "moment";
 import refundController from "../controllers/refund";
 import resourcesController from "../controllers/resources";
 import Price from "./Price";
-import {axios} from "../DukaanAPI";
-
+import { axios } from "../DukaanAPI";
 
 const customStyles = {
   content: {
-    padding: "10vh",
+    padding: "8vh",
     top: "50%",
     left: "50%",
     right: "auto",
@@ -30,6 +29,7 @@ class PartialPayments extends React.Component {
     super(props);
     this.state = {
       showRefundDetailModal: false,
+      showRefundFormModal: false,
       centers: [],
       refundDetail: {},
       formValues: {
@@ -69,6 +69,18 @@ class PartialPayments extends React.Component {
   closeRefundDetailModal = () => {
     this.setState({
       showRefundDetailModal: false
+    });
+  };
+
+  closeRefundFormModal = () => {
+    this.setState({
+      showRefundFormModal: false
+    });
+  };
+
+  openRefundFormModal = () => {
+    this.setState({
+      showRefundFormModal: true
     });
   };
 
@@ -257,15 +269,25 @@ class PartialPayments extends React.Component {
             onChange={this.onChangeValue}
           />
         </FieldWithElement>
+        <div>
+          <button
+            id="view-invoice"
+            className="button-solid ml-4 mb-2 mt-4 pl-5 pr-5"
+            type="submit"
+            onClick={this.handleSubmit}
+          >
+            Refund
+          </button>
 
-        <button
-          id="view-invoice"
-          className="button-solid ml-4 mb-2 mt-4 pl-5 pr-5"
-          type="submit"
-          onClick={this.handleSubmit}
-        >
-          Refund
-        </button>
+          <button
+            id="view-invoice"
+            className="button-solid ml-4 mb-2 mt-4 pl-5 pr-5"
+            type="submit"
+            onClick={this.closeRefundFormModal}
+          >
+            Close
+          </button>
+        </div>
       </div>
     );
   };
@@ -304,6 +326,14 @@ class PartialPayments extends React.Component {
             </div>
           </div>
         </Modal>
+
+        <Modal
+          isOpen={this.state.showRefundFormModal}
+          onRequestClose={this.closeRefundFormModal}
+          style={customStyles}
+        >
+          {this.formDisplay()}
+        </Modal>
         <br />
         <div className="border-card">
           <div className="font-mds mb-3 red">Payment ID: #{this.props.id}</div>
@@ -317,7 +347,14 @@ class PartialPayments extends React.Component {
           <p>Payment Center: {this.props.center}</p>
           <p>Payment Status: {this.props.status}</p>
           {this.props.status === "paid" ? (
-            this.formDisplay()
+            <button
+              id="view-invoice"
+              className="button-solid ml-4 mb-2 mt-4 pl-5 pr-5"
+              type="submit"
+              onClick={this.openRefundFormModal}
+            >
+              Refund
+            </button>
           ) : (
             <button
               id="view-invoice"

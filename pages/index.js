@@ -211,7 +211,7 @@ class Home extends React.Component {
 
           return (
             <RefundedOrders
-                key={refundedOrder.id}
+              key={refundedOrder.id}
               txn_id={txn_id}
               status={refundedOrder.status}
               description={refundedOrder.product.description}
@@ -224,8 +224,8 @@ class Home extends React.Component {
               product_name={refundedOrder.product.name}
               amount={refundedOrder.amount / 100}
               created_at={refundedOrder.created_at}
-              userid={this.state.userInfo[0].id}
-              oneauthid={this.state.userInfo[0].oneauth_id}
+              userid={this.state.selectedUser.id}
+              oneauthid={this.state.selectedUser.oneauth_id}
               cart_id={refundedOrder.cart_id}
               partial_payment={refundedOrder.partial_payment}
               amount_refunded={refundedOrder.cart.transactions[0].amount_paid}
@@ -260,7 +260,7 @@ class Home extends React.Component {
               amount={completeOrder.amount / 100}
               invoice_url={completeOrder.invoice_link}
               refunded={completeOrder.cart.transactions[0].status}
-              userid={this.state.userInfo[0].id}
+              userid={this.state.selectedUser.id}
               payment_type={completeOrder.cart.transactions[0].payment_type}
               description={completeOrder.product.description}
               partial_payment={completeOrder.partial_payment}
@@ -293,8 +293,8 @@ class Home extends React.Component {
               product_name={activeOrder.product.name}
               amount={activeOrder.amount / 100}
               created_at={activeOrder.created_at}
-              userid={this.state.userInfo[0].id}
-              oneauthid={this.state.userInfo[0].oneauth_id}
+              userid={this.state.selectedUser.id}
+              oneauthid={this.state.selectedUser.oneauth_id}
               cart_id={activeOrder.cart_id}
               description={activeOrder.product.description}
             />
