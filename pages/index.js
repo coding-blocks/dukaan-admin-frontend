@@ -6,10 +6,8 @@ import CompleteOrders from "../components/CompleteOrder";
 import AddUser from "../components/AddUser";
 import NewPayment from "../components/NewPayment";
 import CheckLogin from "../components/CheckLogin";
-// import "semantic-ui-css/semantic.min.css";
 import "../controllers/config";
 import moment from "moment";
-// import PartialPayments from "../components/PartialPayments";
 import RefundedOrders from "../components/RefundedOrders";
 import { resolve } from "url";
 import userController from "../controllers/users";
@@ -20,8 +18,8 @@ import ActiveOrders from "../components/ActiveOrders";
 import UserCard from "../components/UserCard";
 import AsyncSelect from "react-select/async";
 import _ from "lodash";
-
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const customStyles = {
   option: provided => ({
@@ -55,7 +53,7 @@ class Home extends React.Component {
       refund: false,
       selectedUser: {}
     };
-    this.loadOptions = _.debounce(this.loadOptions.bind(this), 500);
+    // this.loadOptions = _.debounce(this.loadOptions.bind(this), 500);
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -70,14 +68,31 @@ class Home extends React.Component {
     if (!inputValue) {
       return callback([]);
     }
-
-    axios
-      .get(`/api/v2/admin/users?email=${inputValue}`, {
-        withCredentials: true
+    if (inputValue == "") {
+      Swal.fire({
+        type: "error",
+        title: "Error searching for user!",
+        text: "Email cannot be empty"
       })
-      .then(res => {
+    } else {
+      userController.handleGetUserByEmail(inputValue).then((res) => {
         callback(this.mapOptionsToValues(res.data));
-      });
+      }).catch((error) => {
+        callback([]);
+        // Swal.fire({
+        //   type: 'error',
+        //   title: "Error searching for user",
+        //   text: error
+        // });
+      })
+    }
+    // axios
+    //   .get(`/api/v2/admin/users?email=${inputValue}`, {
+    //     withCredentials: true
+    //   })
+    //   .then(res => {
+    //     callback(this.mapOptionsToValues(res.data));
+    //   });
   };
 
   handleEmailChange = selectedOption => {
@@ -85,6 +100,12 @@ class Home extends React.Component {
       email: selectedOption.value
     });
   };
+
+  handleEmailTextboxChange = (email) => {
+    this.setState({
+      email
+    })
+  }
 
   handleChange = event => {
     this.setState({
@@ -145,6 +166,12 @@ class Home extends React.Component {
       newpayment: true
     });
   };
+
+  closeCreateUserForm = () => {
+    this.setState({
+      createUser: false
+    });
+  }
 
   showOrders = user => {
     this.handleGetPaymentForUser(user);
@@ -302,10 +329,10 @@ class Home extends React.Component {
     }
 
     return (
-      <CheckLogin>
-        <div>
-          <Head title="Coding Blocks | Dukaan" />
-          <Layout />
+      <div>
+        <Head title="Coding Blocks | Dukaan" />
+        <Layout />
+        <CheckLogin>
           {/* Search User */}
           <div className="container mt-4">
             <div className="row">
@@ -322,6 +349,8 @@ class Home extends React.Component {
                         placeholder="Enter Email.."
                         loadOptions={this.loadOptions}
                         onChange={this.handleEmailChange}
+                        onInputChange={this.handleEmailTextboxChange}
+                        autoFocus
                         styles={customStyles}
                       />
                     </div>
@@ -406,15 +435,15 @@ class Home extends React.Component {
                     </div>
                   </div>
                 ) : (
-                  <NewPayment userid={this.state.selectedUser.oneauth_id} />
-                )}
+                    <NewPayment userid={this.state.selectedUser.oneauth_id} />
+                  )}
               </div>
-              {this.state.createUser ? <AddUser /> : ""}
+              {this.state.createUser ? <AddUser closeButtonCallback={this.closeCreateUserForm} /> : ""}
               {/* Order history card */}
             </div>
           </div>
-        </div>
-      </CheckLogin>
+        </CheckLogin>
+      </div>
     );
   }
 }
