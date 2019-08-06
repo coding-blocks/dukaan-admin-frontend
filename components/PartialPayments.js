@@ -8,6 +8,7 @@ import Modal from "react-modal";
 import moment from "moment";
 import refundController from "../controllers/refund";
 import resourcesController from "../controllers/resources";
+import userController from "../controllers/users";
 import Price from "./Price";
 import { axios } from "../DukaanAPI";
 
@@ -88,9 +89,13 @@ class PartialPayments extends React.Component {
     refundController
       .handleGetRefundFromTxnId(this.props.txn_id)
       .then(res => {
-        this.setState({
-          refundDetail: res.data,
-          showRefundDetailModal: true
+        userController.handleGetUserById(res.data.user_id).then(res2 => {
+          this.setState({
+            firstname: res2.data.firstname,
+            lastname: res2.data.lastname,
+            refundDetail: res.data,
+            showRefundDetailModal: true
+          });
         });
       })
       .catch(error => {
@@ -309,7 +314,7 @@ class PartialPayments extends React.Component {
             </div>
             <div className="divider-h mb-4 mt-4" />
             <div className="font-mds">
-              <h2>Payment Status:</h2> {this.state.refundDetail.status}
+              <h2>Paid By: </h2> {this.state.firstname} {this.state.lastname}
             </div>
             <div className="divider-h mb-4 mt-4" />
             <div className="font-mds">

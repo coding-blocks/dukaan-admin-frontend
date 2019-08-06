@@ -2,10 +2,10 @@ import React from "react";
 import Modal from "react-modal";
 import Price from "./Price";
 import moment from "moment";
-import {axios} from "../DukaanAPI";
+import { axios } from "../DukaanAPI";
 import refundController from "../controllers/refund";
+import userController from "../controllers/users";
 import Swal from "sweetalert2";
-
 
 const customStyles = {
   content: {
@@ -36,18 +36,25 @@ class RefundedOrders extends React.Component {
   }
 
   handleRefundDetails = () => {
-    refundController.handleGetRefundFromTxnId(this.props.txn_id).then((res) => {
-      this.setState({
-        refundDetail: res.data,
-        showRefundDetailModal: true
-      });
-    }).catch((error) => {
-      Swal.fire({
-        type: "error",
-        title: "Error fetching refunds",
-        text: error
+    refundController
+      .handleGetRefundFromTxnId(this.props.txn_id)
+      .then(res => {
+        userController.handleGetUserById(res.data.user_id).then(res2 => {
+          this.setState({
+            firstname: res2.data.firstname,
+            lastname: res2.data.lastname,
+            refundDetail: res.data,
+            showRefundDetailModal: true
+          });
+        });
       })
-    });
+      .catch(error => {
+        Swal.fire({
+          type: "error",
+          title: "Error fetching refunds",
+          text: error
+        });
+      });
   };
 
   closeRefundDetailModal = () => {
@@ -73,7 +80,7 @@ class RefundedOrders extends React.Component {
             </div>
             <div className="divider-h mb-4 mt-4" />
             <div className="font-mds">
-              <h2>Payment Status:</h2> {this.state.refundDetail.status}
+              <h2>Paid By: </h2> {this.state.firstname} {this.state.lastname}
             </div>
             <div className="divider-h mb-4 mt-4" />
             <div className="font-mds">
@@ -133,22 +140,22 @@ class RefundedOrders extends React.Component {
                   </button>
                 </div>
               ) : (
-                  ""
-                )}
+                ""
+              )}
 
               {this.props.partial_payment ? (
                 <a
                   href={`/admin/PartialHistory?userId=${
                     this.props.userid
-                    }&cart_id=${this.props.cart_id}`}
+                  }&cart_id=${this.props.cart_id}`}
                   className="button-solid lg"
                   target="blank"
                 >
                   View all Transactions
                 </a>
               ) : (
-                  ""
-                )}
+                ""
+              )}
               <input id="orderIdInput" type="hidden" />
               <div className="row justify-content-center">
                 <a target="blank" id="anchorInvoiceUpdate" />
