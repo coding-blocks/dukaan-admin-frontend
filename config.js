@@ -21,7 +21,7 @@ const config = {
     oneauth: {
         domain: settings.oneauth.domain,
         login_url: process.env.ONEAUTH_LOGIN_URL || `${settings.oneauth.domain}/oauth/authorize?response_type=code&client_id=${settings.client_id}&redirect_uri=${settings.domain}/auth`,
-        logout_url: process.env.ONEAUTH_LOGOUT_URL || `${settings.dukaan_backend.domain}/logout?redirect=${settings.domain}/logout`
+        logout_url: process.env.ONEAUTH_LOGOUT_URL || `${settings.oneauth.domain}/logout?redirect=${settings.domain}/logout`
     },
     dukaan_backend: {
         domain: settings.dukaan_backend.domain,

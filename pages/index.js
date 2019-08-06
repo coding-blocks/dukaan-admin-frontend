@@ -1,5 +1,4 @@
 import React from "react";
-import Link from "next/link";
 import Head from "../components/head";
 import Layout from "../components/layout";
 import CompleteOrders from "../components/CompleteOrder";
@@ -9,7 +8,6 @@ import CheckLogin from "../components/CheckLogin";
 import moment from "moment";
 import InCompleteOrder from "../components/ActiveOrders";
 import RefundedOrders from "../components/RefundedOrders";
-import { resolve } from "url";
 import userController from "../controllers/users";
 import purchasesController from "../controllers/purchases";
 import swal from "sweetalert2";
@@ -50,7 +48,6 @@ class Home extends React.Component {
       refund: false,
       selectedUser: {}
     };
-    // this.loadOptions = _.debounce(this.loadOptions.bind(this), 500);
     this.handleChange = this.handleChange.bind(this);
   }
 
