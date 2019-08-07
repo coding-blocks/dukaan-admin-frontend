@@ -299,7 +299,7 @@ class CompleteOrder extends React.Component {
                 </div>
               </div>
             </div>
-            <div class="divider-h mt-4 mb-4" />
+            <div className="divider-h mt-4 mb-4" />
             <div className="d-flex justify-content-center mr-5">
               <div className={"mr-4"}>
                 <a href={this.props.invoice_url} target="blank">
@@ -308,7 +308,7 @@ class CompleteOrder extends React.Component {
               </div>
               {this.props.partial_payment ? (
                 <a
-                  href={`/admin/PartialHistory?userid=${
+                  href={`/admin/PartialHistory?userId=${
                     this.props.userid
                     }&cart_id=${this.props.cart_id}`}
                   className="button-solid lg mr-4"

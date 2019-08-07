@@ -9,13 +9,13 @@ import ErrorHandler from "../helpers/ErrorHandler";
 
 class Auth extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      loading: true,
-      errorMessage: ''
+    constructor(props) {
+        super(props);
+        this.state = {
+            loading: true,
+            errorMessage: ''
+        }
     }
-  }
 
   componentDidMount() {
     let authCode = window.location.search.split('=')[1];
@@ -51,7 +51,7 @@ class Auth extends React.Component {
               {this.state.errorMessage}<br />
               Please try logging in here by <a href="/login" className={"red"}>clicking here</a>, or contact
               the dev team for assistance.
-                    </h3>
+            </h3>
           </div>
         }
       </div>

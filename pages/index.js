@@ -313,6 +313,7 @@ class Home extends React.Component {
 
           return (
             <RefundedOrders
+                key={refundedOrder.id}
               txn_id={txn_id}
               status={refundedOrder.status}
               description={refundedOrder.product.description}
@@ -475,6 +476,7 @@ class Home extends React.Component {
           );
 
           return (
+
             <ActiveOrders
               amountLeft={activeOrder.amountLeft}
               partial_payment={activeOrder.partial_payment}
@@ -540,9 +542,8 @@ class Home extends React.Component {
                 {this.state.userInfo.length >= 1 && (
                   <div className={"col-md-4"}>
                     {this.state.userInfo.map(user => (
-                      <div>
+                      <div  key={user.id}>
                         <UserCard
-                          key={user.id}
                           userInfo={user}
                           showOrders={this.showOrders}
                           handleNewPayment={this.handleNewPayment}
