@@ -46,6 +46,7 @@ class Home extends React.Component {
       courseInfo: [],
       createUser: false,
       newpayment: false,
+      showOrders: false,
       refund: false,
       selectedUser: {}
     };
@@ -217,7 +218,8 @@ class Home extends React.Component {
   handleNewPayment = user => {
     this.setState({
       selectedUser: user,
-      newpayment: true
+      newpayment: true,
+      showOrders: false
     });
   };
 
@@ -239,7 +241,8 @@ class Home extends React.Component {
     this.handleGetPaymentForUser(user);
     this.setState({
       selectedUser: user,
-      newpayment: false
+      newpayment: false,
+      showOrders: true
     });
   };
 
@@ -567,7 +570,7 @@ class Home extends React.Component {
                     </div>
                   </div>
                 )}
-                {!this.state.newpayment ? (
+                {!this.state.newpayment && this.state.showOrders &&
                   <div className="col-md-8 col-12">
                     <div className="border-card br-20 bg-light-grey mb-5 w-100">
                       <div className="tab-nav-underline mb-5">
@@ -608,9 +611,10 @@ class Home extends React.Component {
                       <div style={{ marginBottom: "1.8vh" }}>{orders}</div>
                     </div>
                   </div>
-                ) : (
-                    <NewPayment userid={this.state.selectedUser.oneauth_id} />
-                  )}
+                }
+                {this.state.newpayment && !this.state.showOrders &&
+                  <NewPayment userid={this.state.selectedUser.oneauth_id} />
+                }
               </div>
               {this.state.createUser ? <AddUser closeButtonCallback={this.closeCreateUserForm} /> : ""}
               {/* Order history card */}
