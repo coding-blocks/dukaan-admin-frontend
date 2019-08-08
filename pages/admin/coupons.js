@@ -313,9 +313,10 @@ class Coupons extends React.Component {
                   <select
                     id="listed"
                     name="listed"
+                    onChange={this.handleQueryParamChange}
                   >
-                    <option value="no">No</option>
-                    <option value="yes">Yes</option>
+                    <option value={false}>No</option>
+                    <option value={true}>Yes</option>
                   </select>
                 </FieldWithElement>
 
