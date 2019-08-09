@@ -26,6 +26,8 @@ const UserCard = ({userInfo, showOrders, handleNewPayment}) => {
                 Wallet Amount : ₹ {userInfo.wallet_amount / 100}
               </p>
 
+              <p>OneauthId: {userInfo.oneauth_id}</p>
+
               <div className={"mt-4"}>
                 <button
                   className={"button-solid"}
