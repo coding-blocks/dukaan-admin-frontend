@@ -138,6 +138,7 @@ class PartialPayments extends React.Component {
         refundController
           .handleCreateRefund(data)
           .then(response => {
+            this.closeRefundFormModal();
             Swal.fire({
               title: "Refund made!",
               type: "success",

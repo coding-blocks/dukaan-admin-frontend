@@ -80,7 +80,8 @@ class RefundedOrders extends React.Component {
             </div>
             <div className="divider-h mb-4 mt-4" />
             <div className="font-mds">
-              <h2>Paid By: </h2> {this.state.firstname} {this.state.lastname}
+              <h2>Refunded By: </h2> {this.state.firstname}{" "}
+              {this.state.lastname}
             </div>
             <div className="divider-h mb-4 mt-4" />
             <div className="font-mds">
