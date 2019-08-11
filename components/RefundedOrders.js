@@ -101,7 +101,10 @@ class RefundedOrders extends React.Component {
         </Modal>
 
         <div className="row justify-content-center p-4">
-          <div className="border-card pt-4 mb-4">
+          <div
+            className="border-card pt-4 mb-4"
+            style={{ borderColor: "darkred", borderWidth: ".4vh" }}
+          >
             <div className="row justify-content-between align-items-center">
               <div className="img-desc col-md-8 col-12 mb-4 mb-md-0">
                 <div className="col-md-3 col-4">
@@ -114,7 +117,14 @@ class RefundedOrders extends React.Component {
                   </div>
                 </div>
               </div>
-              <div>Payment status: {this.props.status}</div>
+              <div style={{ color: "darkred", fontSize: "1.5rem" }}>
+                <strong>
+                  {this.props.status === "partially_refunded"
+                    ? "Partially Refunded"
+                    : "Refunded"}
+                </strong>
+                <i className="fa fa-check ml-2" aria-hidden="true" />{" "}
+              </div>
 
               <div className="col-md-12">
                 <div className="col-md-5 px-0 pt-4 mr-3 mb-4">

@@ -4,8 +4,8 @@ import Swal from "sweetalert2";
 import Router from "next/router";
 import Modal from "react-modal";
 import Price from "./Price";
-import resourcesController from '../controllers/resources';
-import refundController from '../controllers/refund';
+import resourcesController from "../controllers/resources";
+import refundController from "../controllers/refund";
 
 const customStyles = {
   content: {
@@ -32,17 +32,20 @@ class CompleteOrder extends React.Component {
     };
   }
   componentDidMount() {
-    resourcesController.handleGetCenters().then((res) => {
-      this.setState({
-        centers: res.data
-      });
-    }).catch((error) => {
-      Swal.fire({
-        type: "error",
-        title: "Unable to fetch centers!",
-        text: error
+    resourcesController
+      .handleGetCenters()
+      .then(res => {
+        this.setState({
+          centers: res.data
+        });
       })
-    });
+      .catch(error => {
+        Swal.fire({
+          type: "error",
+          title: "Unable to fetch centers!",
+          text: error
+        });
+      });
   }
 
   onChangeValue = e => {
@@ -71,21 +74,24 @@ class CompleteOrder extends React.Component {
     }).then(result => {
       if (result.value) {
         const data = this.state.formValues;
-        refundController.handleCreateRefund(data).then((res) => {
-          Swal.fire({
-            title: "Refund has been completed!",
-            type: "success",
-            timer: 3000,
-            showConfirmButton: true,
-            confirmButtonText: "Okay"
-          });
-        }).catch((error) => {
-          Swal.fire({
-            title: "Error while making a refund!",
-            type: "error",
-            text: error
+        refundController
+          .handleCreateRefund(data)
+          .then(res => {
+            Swal.fire({
+              title: "Refund has been completed!",
+              type: "success",
+              timer: 3000,
+              showConfirmButton: true,
+              confirmButtonText: "Okay"
+            });
           })
-        });
+          .catch(error => {
+            Swal.fire({
+              title: "Error while making a refund!",
+              type: "error",
+              text: error
+            });
+          });
       }
     });
   };
@@ -275,7 +281,10 @@ class CompleteOrder extends React.Component {
       <div>
         {this.state.showModal ? this.ModalForm() : ""}
         <div className="row justify-content-center p-4">
-          <div className="border-card pt-4 mb-4">
+          <div
+            className="border-card pt-4 mb-4"
+            style={{ borderColor: "green", borderWidth: ".4vh" }}
+          >
             <div className="row justify-content-between align-items-center">
               <div className="img-desc col-md-8 col-12 mb-4 mb-md-0">
                 <div className="col-md-3 col-4 mt-1 mr-5">
@@ -288,7 +297,17 @@ class CompleteOrder extends React.Component {
                   </div>
                 </div>
               </div>
-              <div>Payment status: {this.props.status}</div>
+              <div>
+                {/* Payment status:{" "} */}
+                {this.props.status === "captured" ? (
+                  <div style={{ color: "green", fontSize: "1.5rem" }}>
+                    <strong>Paid</strong>
+                    <i className="fa fa-check ml-2" aria-hidden="true" />
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
 
               <div className="col-md-12">
                 <div className="col-md-5 px-0 pt-4 mr-3 mb-4">
@@ -310,15 +329,15 @@ class CompleteOrder extends React.Component {
                 <a
                   href={`/admin/PartialHistory?userId=${
                     this.props.userid
-                    }&cart_id=${this.props.cart_id}`}
+                  }&cart_id=${this.props.cart_id}`}
                   className="button-solid lg mr-4"
                   target="blank"
                 >
                   View all Transactions
                 </a>
               ) : (
-                  ""
-                )}
+                ""
+              )}
               {this.props.status === "captured" ? (
                 <button
                   className="button-solid lg"
@@ -327,8 +346,8 @@ class CompleteOrder extends React.Component {
                   Refund
                 </button>
               ) : (
-                  ""
-                )}
+                ""
+              )}
               <input id="orderIdInput" type="hidden" />
               <div className="row justify-content-center">
                 <a target="blank" id="anchorInvoiceUpdate" />
