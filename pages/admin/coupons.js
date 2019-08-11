@@ -106,7 +106,7 @@ class Coupons extends React.Component {
       showCloseButton: true
     }).then((result) => {
       if (result.value) {
-         // Confirmation passed, delete coupon.
+        // Confirmation passed, delete coupon.
         controller.handleDeleteCoupon(coupon.id).then((response) => {
           // Remove the coupon from the table.
           let coupons = this.state.results;
@@ -143,26 +143,26 @@ class Coupons extends React.Component {
   handleEditCoupon = (coupon) => {
     this.ReactSwal.fire({
       html: <EditCoupon
-              coupon={coupon}
-              callback={(newCoupon) => {
-                this.ReactSwal.close();
-                Swal.mixin({
-                  toast: true,
-                  position: "center",
-                  showConfirmButton: false,
-                  timer: 3000
-                }).fire({
-                  type: 'success',
-                  title: 'Coupon Edited Successfully'
-                })
-                let coupons = this.state.results;
-                let couponIndex = this.state.results.indexOf(coupon);
-                coupons[couponIndex] = newCoupon;
-                this.setState({
-                  results: coupons
-                });
-              }} 
-            />,
+        coupon={coupon}
+        callback={(newCoupon) => {
+          this.ReactSwal.close();
+          Swal.mixin({
+            toast: true,
+            position: "center",
+            showConfirmButton: false,
+            timer: 3000
+          }).fire({
+            type: 'success',
+            title: 'Coupon Edited Successfully'
+          })
+          let coupons = this.state.results;
+          let couponIndex = this.state.results.indexOf(coupon);
+          coupons[couponIndex] = newCoupon;
+          this.setState({
+            results: coupons
+          });
+        }}
+      />,
       customClass: "col-md-6",
       showConfirmButton: false
     });
@@ -184,17 +184,18 @@ class Coupons extends React.Component {
 
   render() {
     return (
-      <CheckLogin>
-        <div>
-          <Head title="Coding Blocks | Dukaan | Coupons" />
-          <Layout />
+      <div>
+        <Head title="Coding Blocks | Dukaan | Coupons" />
+        <Layout />
+        <CheckLogin>
+
           <div className={"d-flex align-items-center mr-5 pr-5"}>
             <div className={"d-flex col-4 mt-2 ml-5"}>
               <div className={"border-card coupon-card"}>
                 {/* Title */}
                 <div className={"d-flex justify-content-center mt-1 pb-3"}>
                   <h2 className={"title"}>
-                      Search Coupons
+                    Search Coupons
                   </h2>
                 </div>
 
@@ -334,7 +335,7 @@ class Coupons extends React.Component {
                     placeholder="Enter Results Per Page..."
                     name="limit"
                     defaultValue={5}
-                    onChange={(event) => { 
+                    onChange={(event) => {
                       let pageInfoQuery = this.state.pageInfoQuery;
                       pageInfoQuery['limit'] = event.target.value;
                       this.setState({
@@ -382,65 +383,65 @@ class Coupons extends React.Component {
                       </thead>
                       <tbody className={`t-align-c`}>
                         {this.state.results.map(coupon => (
-                            <tr key={coupon.id}>
-                              <td>{coupon.code}</td>
-                              <td>
-                              {coupon.category == "referral" && 
+                          <tr key={coupon.id}>
+                            <td>{coupon.code}</td>
+                            <td>
+                              {coupon.category == "referral" &&
                                 "Referral"
                               }
-                              {coupon.category == "campus_ambassador" && 
+                              {coupon.category == "campus_ambassador" &&
                                 "Campus Ambassador"
                               }
-                              {coupon.category == "campaign" && 
+                              {coupon.category == "campaign" &&
                                 "Campaign"
                               }
-                              {coupon.category == "special_discount" && 
+                              {coupon.category == "special_discount" &&
                                 "Special Discount"
                               }
-                              </td>
-                              <td>{Formatter.formatCurrency(coupon.referrer_cashback)}</td>
-                              <td>
-                                {coupon.mode == "flat" &&
-                                  "Flat"
-                                }
-                                {coupon.mode == "percentage" &&
-                                  "Percentage"
-                                }
-                              </td>
-                              {(coupon.mode == "flat") && 
-                                <td>{Formatter.formatCurrency(coupon.amount)}</td>
+                            </td>
+                            <td>{Formatter.formatCurrency(coupon.referrer_cashback)}</td>
+                            <td>
+                              {coupon.mode == "flat" &&
+                                "Flat"
                               }
-                              {coupon.mode == "percentage" && 
-                                <td>{coupon.percentage}%</td>
+                              {coupon.mode == "percentage" &&
+                                "Percentage"
                               }
-                              <td>{Formatter.format(coupon.left)}</td>
-                              <td>{Formatter.format(coupon.products.length)}</td>
-                              <td>
-                                {coupon.active && "True"}
-                                {!coupon.active && "False"}
-                              </td>
-                              <td>
-                                <button
-                                  className={"button-solid btn btn-default"}
-                                  onClick={() => {this.handleEditCoupon(coupon)}}>
-                                  Edit
+                            </td>
+                            {(coupon.mode == "flat") &&
+                              <td>{Formatter.formatCurrency(coupon.amount)}</td>
+                            }
+                            {coupon.mode == "percentage" &&
+                              <td>{coupon.percentage}%</td>
+                            }
+                            <td>{Formatter.format(coupon.left)}</td>
+                            <td>{Formatter.format(coupon.products.length)}</td>
+                            <td>
+                              {coupon.active && "True"}
+                              {!coupon.active && "False"}
+                            </td>
+                            <td>
+                              <button
+                                className={"button-solid btn btn-default"}
+                                onClick={() => { this.handleEditCoupon(coupon) }}>
+                                Edit
                                 </button>
-                              </td>
-                              <td>
-                                <button
-                                  className={"button-solid btn btn-default"}
-                                  onClick={() => {this.handleDeleteCoupon(coupon)}}>
-                                  Delete
+                            </td>
+                            <td>
+                              <button
+                                className={"button-solid btn btn-default"}
+                                onClick={() => { this.handleDeleteCoupon(coupon) }}>
+                                Delete
                                 </button>
-                              </td>
-                            </tr>
-                          )
+                            </td>
+                          </tr>
+                        )
                         )}
                       </tbody>
                     </table>
                   </div>
                   <div className={"col-md-12 pt-4"}>
-                    <Pagination 
+                    <Pagination
                       pagesInfo={this.state.pagesInfo}
                       changePageCallback={this.handleChangePage}
                     />
@@ -454,8 +455,8 @@ class Coupons extends React.Component {
               </div>
             }
           </div>
-        </div>
-      </CheckLogin>
+        </CheckLogin>
+      </div>
     );
   }
 }
