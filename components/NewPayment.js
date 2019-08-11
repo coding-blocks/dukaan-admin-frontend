@@ -15,6 +15,7 @@ class NewPayment extends React.Component {
     super(props);
     console.log(props, "dsdsddsaahsuiakaj");
     this.state = {
+      selectedUser: {},
       states: [],
       product_categories: [],
       products: [],
@@ -55,6 +56,7 @@ class NewPayment extends React.Component {
           fetchedProducts.push(product);
         });
         this.setState({
+          selectedUser: this.props.selectedUser,
           centers: res4.data,
           states: res1.data,
           products: fetchedProducts,
@@ -201,6 +203,7 @@ class NewPayment extends React.Component {
                 showConfirmButton: true,
                 confirmButtonText: "Okay"
               });
+              this.props.showOrders(this.state.selectedUser);
             })
             .catch(err => {
               console.log(err);

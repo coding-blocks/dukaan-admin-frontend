@@ -300,7 +300,11 @@ class Home extends React.Component {
                       </div>
                     </div>
                   ) : (
-                    <NewPayment userid={this.state.selectedUser.oneauth_id} />
+                    <NewPayment
+                      userid={this.state.selectedUser.oneauth_id}
+                      selectedUser={this.state.selectedUser}
+                      showOrders={this.showOrders}
+                    />
                   )}
                 </div>
               </div>
