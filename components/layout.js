@@ -1,6 +1,5 @@
 import React from "react";
 import Link from "next/link";
-import cookies from "js-cookies";
 import Cookies from 'js-cookie'
 import jwt from "jsonwebtoken";
 import config from "../config";

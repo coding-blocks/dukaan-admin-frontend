@@ -4,7 +4,7 @@ import {captureMessage, captureException, captureEvent, withScope} from "@sentry
  * This method returns the ids of the fields 
  * that have an issue
  * @param {object} error – Axios Error Object
- * @return {string} errorString – The error message to display
+ * @return {array} - Array with all fields ids that have an error
  */
 const getFields = (error) => {
   
@@ -13,8 +13,8 @@ const getFields = (error) => {
 /**
  * Report to Sentry
  * @param {*} title – Error title
- * @param {*} errorRequest – Error request object
- * @param {*} errorResponse – Error response object
+ * @param {*} errorRequest – Axios Error request object
+ * @param {*} errorResponse – Axios Error response object
  */
 const reportToSentry = (title, errorRequest, errorResponse) => {
   withScope((scope) => {
@@ -31,7 +31,6 @@ const reportToSentry = (title, errorRequest, errorResponse) => {
  */
 const handle = (error) => {
   try {
-    // TODO: Add Sentry to error handler
     // Check if the error is in the response or request
     if (error.response) {
       reportToSentry(

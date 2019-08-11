@@ -9,13 +9,13 @@ import ErrorHandler from "../helpers/ErrorHandler";
 
 class Auth extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            loading: true,
-            errorMessage: ''
-        }
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: true,
+      errorMessage: ''
     }
+  }
 
   componentDidMount() {
     let authCode = window.location.search.split('=')[1];

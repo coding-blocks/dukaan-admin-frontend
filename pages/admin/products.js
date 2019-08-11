@@ -3,12 +3,10 @@ import Head from "../../components/head";
 import Layout from "../../components/layout";
 import "../../styles/pages/admin/products.scss";
 import FieldWithElement from '../../components/FieldWithElement';
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
 import controller from "../../controllers/products.js";
 import Loader from '../../components/loader';
 import Pagination from "../../components/Pagination";
-import EditProduct from "./products/edit";
+import EditProduct from "../../components/EditProduct";
 import Formatter from '../../helpers/formatter';
 import Modal from 'react-modal';
 import CheckLogin from "../../components/CheckLogin";
@@ -29,7 +27,6 @@ class Products extends React.Component {
       showEditProductModal: false,
       editProductData: {}
     };
-    this.ReactSwal = withReactContent(Swal);
   }
 
   /**
@@ -105,36 +102,10 @@ class Products extends React.Component {
    * @param {object} product
    */
   handleEditProduct = (product) => {
-    console.log("Lol")
     this.setState({
       showEditProductModal: true,
       editProductData: product
     })
-    // this.ReactSwal.fire({
-    //   html: <EditProduct
-    //           product={product}
-    //           callback={(newProduct) => {
-    //             this.ReactSwal.close();
-    //             Swal.mixin({
-    //               toast: true,
-    //               position: "center",
-    //               showConfirmButton: false,
-    //               timer: 3000
-    //             }).fire({
-    //               type: 'success',
-    //               title: 'Product Edited Successfully'
-    //             })
-    //             let products = this.state.results;
-    //             let productIndex = this.state.results.indexOf(product);
-    //             products[productIndex] = newProduct;
-    //             this.setState({
-    //               results: products
-    //             });
-    //           }}
-    //         />,
-    //   customClass: "col-md-6",
-    //   showConfirmButton: false
-    // });
   }
 
   render() {
@@ -190,6 +161,7 @@ class Products extends React.Component {
                   >
                     <input
                       type="text"
+                      autoFocus
                       className={"input-text"}
                       placeholder="Enter Product Name"
                       name={"name"}

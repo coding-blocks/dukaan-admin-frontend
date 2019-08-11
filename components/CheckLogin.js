@@ -1,5 +1,4 @@
 import React from 'react';
-import cookies from 'js-cookies';
 import Cookies from 'js-cookie'
 import jwt from 'jsonwebtoken';
 import Head from "./head";
