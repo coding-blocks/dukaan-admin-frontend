@@ -46,28 +46,29 @@ class ActiveOrders extends React.Component {
           {/* <input type="hidden" id="CartId" name="cartId" value={{payment.cart_id}}> */}
 
           <div className="row">
-
-            <a
+            <Link
               href={`/admin/PartialHistory?userId=${
                 this.props.userid
               }&cart_id=${this.props.cart_id}`}
-              className="button-solid view-partial-payment lg"
-              target='blank'
             >
-              View all Transactions
-            </a>
+              <button className="button-solid view-partial-payment lg">
+                View all Transactions
+              </button>
+            </Link>
 
-            <a
+            <Link
               href={`/admin/ContinuePayment?cartid=${
                 this.props.cart_id
               }&oneauthid=${this.props.oneauthid}&amountLeft=${this.props
                 .amountLeft / 100}`}
-              className="button-solid lg"
-              style={{ marginLeft: "10vh" }}
-              target="blank"
             >
-              Continue
-            </a>
+              <button
+                className="button-solid lg"
+                style={{ marginLeft: "10vh" }}
+              >
+                Continue
+              </button>
+            </Link>
           </div>
         </div>
       </div>

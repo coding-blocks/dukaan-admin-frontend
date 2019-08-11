@@ -6,6 +6,7 @@ import { axios } from "../DukaanAPI";
 import refundController from "../controllers/refund";
 import userController from "../controllers/users";
 import Swal from "sweetalert2";
+import Link from "next/link";
 
 const customStyles = {
   content: {
@@ -145,15 +146,15 @@ class RefundedOrders extends React.Component {
               )}
 
               {this.props.partial_payment ? (
-                <a
+                <Link
                   href={`/admin/PartialHistory?userId=${
                     this.props.userid
                   }&cart_id=${this.props.cart_id}`}
-                  className="button-solid lg"
-                  target="blank"
                 >
-                  View all Transactions
-                </a>
+                  <button className="button-solid lg">
+                    View all Transactions
+                  </button>
+                </Link>
               ) : (
                 ""
               )}

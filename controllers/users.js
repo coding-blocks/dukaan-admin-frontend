@@ -19,7 +19,7 @@ const handleGetUserByEmail = email => {
         resolve(r);
       })
       .catch(error => {
-        if (error.response.status == 404) {
+        if (error.response.status === 404) {
           reject("User not found");
         } else {
           reject(ErrorHandler.handle(error));

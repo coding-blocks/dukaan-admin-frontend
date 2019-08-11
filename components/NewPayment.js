@@ -13,6 +13,7 @@ import productCategoriesController from "../controllers/productcategories";
 class NewPayment extends React.Component {
   constructor(props) {
     super(props);
+    console.log(props, "dsdsddsaahsuiakaj");
     this.state = {
       states: [],
       product_categories: [],
@@ -37,34 +38,39 @@ class NewPayment extends React.Component {
     Promise.all([
       resourcesController.handleGetStates(),
       productCategoriesController.handleGetAllProductCategories(),
-      productsController.handleGetProducts({
-        'product_category_id': this.state.product_category
-      }, {
-        page: 1,
-        limit: 100
-      }),
+      productsController.handleGetProducts(
+        {
+          product_category_id: this.state.product_category
+        },
+        {
+          page: 1,
+          limit: 100
+        }
+      ),
       resourcesController.handleGetCenters()
-    ]).then(([res1, res2, res3, res4]) => {
-      let fetchedProducts = [];
-      res3.results.map(product => {
-        fetchedProducts.push(product);
-      });
-      this.setState({
-        centers: res4.data,
-        states: res1.data,
-        products: fetchedProducts,
-        product_categories: res2.data
-      });
-    }).catch((error) => {
-      Swal.fire({
-        type: "error",
-        title: "Error fetching data!",
-        text: error
+    ])
+      .then(([res1, res2, res3, res4]) => {
+        let fetchedProducts = [];
+        res3.results.map(product => {
+          fetchedProducts.push(product);
+        });
+        this.setState({
+          centers: res4.data,
+          states: res1.data,
+          products: fetchedProducts,
+          product_categories: res2.data
+        });
       })
-    });
+      .catch(error => {
+        Swal.fire({
+          type: "error",
+          title: "Error fetching data!",
+          text: error
+        });
+      });
   }
 
-  calculateAmount = (e) => {
+  calculateAmount = e => {
     e.preventDefault();
     const data = {
       coupon: this.state.formValues.coupon,
@@ -73,19 +79,22 @@ class NewPayment extends React.Component {
       quantity: this.state.formValues.quantity
     };
 
-    productsController.handleCalculatePrice(data).then((res) => {
-      if (res.data.amount) {
-        this.setState({
-          amount: res.data.amount
+    productsController
+      .handleCalculatePrice(data)
+      .then(res => {
+        if (res.data.amount) {
+          this.setState({
+            amount: res.data.amount
+          });
+        }
+      })
+      .catch(error => {
+        Swal.fire({
+          type: "error",
+          text: error,
+          title: "Error calculating price!"
         });
-      }
-    }).catch((error) => {
-      Swal.fire({
-        type: 'error',
-        text: error,
-        title: 'Error calculating price!'
       });
-    });
   };
 
   handleProductCategory = e => {
@@ -93,22 +102,28 @@ class NewPayment extends React.Component {
       [e.target.name]: e.target.value
     });
     let productCategory = e.target.value;
-    productsController.handleGetProducts({
-      product_category_id:  productCategory
-    }, {
-      page: 1,
-      limit: 100
-    }).then((res) => {
-      this.setState({
-        products: res.results
+    productsController
+      .handleGetProducts(
+        {
+          product_category_id: productCategory
+        },
+        {
+          page: 1,
+          limit: 100
+        }
+      )
+      .then(res => {
+        this.setState({
+          products: res.results
+        });
       })
-    }).catch((error) => {
-      Swal.fire({
-        type: 'error',
-        text: error,
-        title: 'Error grabbing products by categories!'
+      .catch(error => {
+        Swal.fire({
+          type: "error",
+          text: error,
+          title: "Error grabbing products by categories!"
+        });
       });
-    });
   };
 
   onChangeValue = e => {
@@ -153,7 +168,7 @@ class NewPayment extends React.Component {
       Swal.fire({
         title: "Error adding new payment!",
         text: `Partial payment cannot be less than ${this.state.min_emi}`,
-        type: 'error'
+        type: "error"
       });
       return false;
     }
@@ -176,24 +191,26 @@ class NewPayment extends React.Component {
         if (result.value) {
           // Confirmation passed, delete coupon.
           const data = this.state.formValues;
-          purchasesController.handleCreateNewPurchase(data).then(() => {
-            Swal.fire({
-              title: "Payment has been recorded successfully!",
-              type: "success",
-              timer: "3000",
-              showConfirmButton: true,
-              confirmButtonText: "Okay"
+          purchasesController
+            .handleCreateNewPurchase(data)
+            .then(() => {
+              Swal.fire({
+                title: "Payment has been recorded successfully!",
+                type: "success",
+                timer: "3000",
+                showConfirmButton: true,
+                confirmButtonText: "Okay"
+              });
+            })
+            .catch(err => {
+              console.log(err);
+              Swal.fire({
+                title: "Error while making payment!",
+                text: error,
+                type: "error",
+                showConfirmButton: true
+              });
             });
-          })
-          .catch(err => {
-            console.log(err);
-            Swal.fire({
-              title: "Error while making payment!",
-              text: error,
-              type: "error",
-              showConfirmButton: true
-            });
-          });
         }
       });
     }
@@ -374,7 +391,9 @@ class NewPayment extends React.Component {
                 onChange={this.handleProductCategory}
                 required
               >
-                <option value="" selected>Select Category</option>
+                <option value="" selected>
+                  Select Category
+                </option>
                 {this.state.product_categories.map(category => (
                   <option value={category.id} key={category.id}>
                     {category.name}
@@ -395,7 +414,9 @@ class NewPayment extends React.Component {
                 required
                 onChange={this.onChangeHandler}
               >
-                <option value="" selected>Select Course</option>
+                <option value="" selected>
+                  Select Course
+                </option>
                 {this.state.products.map(product => {
                   return (
                     <option
@@ -433,10 +454,13 @@ class NewPayment extends React.Component {
               nameCols={3}
               elementCols={9}
               elementClassName={"pl-4"}
-              
             >
-              <select name="paymentCenterId" required onChange={this.onChangeValue}>
-              <option value="" selected>
+              <select
+                name="paymentCenterId"
+                required
+                onChange={this.onChangeValue}
+              >
+                <option value="" selected>
                   Select Payment Center
                 </option>
                 {this.state.centers.map(center => {
