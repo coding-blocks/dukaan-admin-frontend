@@ -107,8 +107,9 @@ class Home extends React.Component {
   };
 
   showOrders = user => {
+    // console.log(user, "user2323");
     // this.handleGetPaymentForUser(user);
-    console.log(this.state.selectedUser.oneauth_id, "iddd");
+    // console.log(this.state.selectedUser.id, "iddd");
     this.setState({
       newpayment: false
     });
@@ -279,7 +280,10 @@ class Home extends React.Component {
                       </div>
                     </div>
                   ) : (
-                    <NewPayment userid={this.state.selectedUser.oneauth_id} />
+                    <NewPayment
+                      userid={this.state.selectedUser.oneauth_id}
+                      id={this.state.selectedUser.id}
+                    />
                   )}
                 </div>
               </div>

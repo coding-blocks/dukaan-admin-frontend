@@ -9,12 +9,14 @@ class continuePayment extends React.Component {
     return {
       oneauthid: query.oneauthid,
       cart_id: query.cartid,
-      amountLeft: query.amountLeft
+      amountLeft: query.amountLeft,
+      id: query.userid
     };
   }
   constructor(props) {
     super(props);
     this.state = {
+      id: "",
       cart_id: "",
       userid: "",
       courseInfo: null,
@@ -26,12 +28,15 @@ class continuePayment extends React.Component {
     const cart_id = this.props.cart_id;
     const userid = this.props.oneauthid;
     const amountLeft = this.props.amountLeft;
+    const id = this.props.id;
     console.log(cart_id, "CART");
     console.log(userid, "USERID");
+    console.log(id, "id");
     this.setState({
       cart_id,
       userid,
-      amountLeft
+      amountLeft,
+      id
     });
 
     console.log(this.state);
@@ -44,6 +49,7 @@ class continuePayment extends React.Component {
         <Layout />
         <div className={"d-flex justify-content-center mt-5"}>
           <ContinuePayment
+            id={this.state.id}
             oneauthId={this.state.userid}
             cart_id={this.state.cart_id}
             amountLeft={this.state.amountLeft}

@@ -63,7 +63,7 @@ class ActiveOrders extends React.Component {
               href={`/admin/ContinuePayment?cartid=${
                 this.props.cart_id
               }&oneauthid=${this.props.oneauthid}&amountLeft=${this.props
-                .amountLeft / 100}`}
+                .amountLeft / 100}&userid=${this.props.userid}`}
             >
               <button
                 className="button-solid lg"

@@ -10,6 +10,7 @@ import purchasesController from "../controllers/purchases";
 import resourcesController from "../controllers/resources";
 import productsController from "../controllers/products";
 import productCategoriesController from "../controllers/productcategories";
+import Router from "next/router";
 class NewPayment extends React.Component {
   constructor(props) {
     super(props);
@@ -23,6 +24,7 @@ class NewPayment extends React.Component {
       amount: "",
       min_emi: "",
       centers: [],
+      id: props.id,
       formValues: {
         coupon: "",
         comment: "",
@@ -203,13 +205,15 @@ class NewPayment extends React.Component {
                 showConfirmButton: true,
                 confirmButtonText: "Okay"
               });
-              this.props.showOrders(this.state.selectedUser);
+              Router.push(`/admin/orders?id=${this.state.id}`);
+
+              // this.props.showOrders(this.state.selectedUser);
             })
             .catch(err => {
               console.log(err);
               Swal.fire({
                 title: "Error while making payment!",
-                text: error,
+                text: err,
                 type: "error",
                 showConfirmButton: true
               });
