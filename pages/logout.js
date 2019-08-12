@@ -2,7 +2,6 @@ import React from 'react';
 import Head from '../components/head';
 import Layout from '../components/layout';
 import config from "../config";
-import cookies from 'js-cookies';
 import Cookies from 'js-cookie';
 import Loader from '../components/loader';
 

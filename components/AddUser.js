@@ -144,8 +144,14 @@ class AddUser extends React.Component {
       <div className={"d-flex col-8 mt-4 ml-3"}>
         <div className={"border-card coupon-card "}>
           {/* Title */}
-          <div className={"d-flex justify-content-center mt-1 pb-3"}>
-            <h2 className={"title red"}>Create User</h2>
+          <div class="d-flex justify-content-between">
+            <div></div>
+            <div className={"d-flex justify-content-center mt-1 pb-3"}>
+              <h2 className={"title red"}>Create User</h2>
+            </div>
+            <div className={"align-items-right"}>
+              <i className={"fa fa-times-circle fa-2x mt-2 red jusify-content-right"} onClick={this.props.closeButtonCallback} />
+            </div>
           </div>
           <form id="add_user_form">
             {/* username */}

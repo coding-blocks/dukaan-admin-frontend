@@ -3,7 +3,7 @@ import {init, captureMessage} from "@sentry/browser";
 import env from "./config";
 
 // Configure axios
-axios.defaults.baseURL = process.env.API_URL;
+axios.defaults.baseURL = env.dukaan_backend.domain;
 axios.defaults.withCredentials = true;
 
 // Configure sentry

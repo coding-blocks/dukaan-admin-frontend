@@ -1,5 +1,4 @@
 import React from "react";
-import Link from "next/link";
 import Head from "../components/head";
 import Layout from "../components/layout";
 import AddUser from "../components/AddUser";
@@ -32,7 +31,8 @@ class Home extends React.Component {
       id: "",
       suggestions: [],
       email: "",
-      completeTab: true,
+      allTab: true,
+      completeTab: false,
       activeTab: false,
       refundedTab: false,
       userFound: false,
@@ -48,8 +48,15 @@ class Home extends React.Component {
     this.setState({
       createUser: true
     });
+
   }
 
+  /**
+   * Creates the object that is used by react-select
+   * to display options.
+   * @param {object} options - Object to generate options for
+   * @return {object}
+   */
   mapOptionsToValues = options => {
     return options.map(option => ({
       value: option.email,
@@ -59,20 +66,73 @@ class Home extends React.Component {
     }));
   };
 
+  /**
+   * Used for fetching suggestions. Called by AsyncSelect
+   * everytime the input field changes to load suggestions.
+   * @param {string} inputValue - Value of the search box
+   *  (in this case it is the email field)
+   * @param {function} callback - Callback function with options
+   *  that will be populated in the suggestions
+   */
   loadOptions = (inputValue, callback) => {
     if (!inputValue) {
       return callback([]);
     }
-
-    axios
-      .get(`/api/v2/admin/users?email=${inputValue}`, {
-        withCredentials: true
+    if (inputValue == "") {
+      Swal.fire({
+        type: "error",
+        title: "Error searching for user!",
+        text: "Email cannot be empty"
       })
-      .then(res => {
+    } else {
+      userController.handleGetUserByEmail(inputValue).then((res) => {
         callback(this.mapOptionsToValues(res.data));
-      });
+      }).catch((error) => {
+        callback([]);
+      })
+    }
   };
 
+  /**
+   * Handles and sorts all orders based off different categories
+   * (active, completed, refunded) to display them correctly in
+   * the all orders tab.
+   * @param {array} orders
+   */
+  handleAllOrders = (orders) => {
+    orders.activePayments = orders.activePayments.map((p) => {
+      p.type = "active";
+      return p;
+    });
+    orders.completedPayments = orders.completedPayments.map((p) => {
+      p.type = "completed";
+      return p;
+    });
+    orders.refundedPayments = orders.refundedPayments.map((p) => {
+      p.type = "refunded";
+      return p;
+    });
+    let allOrders = [...orders.activePayments, ...orders.completedPayments, ...orders.refundedPayments];
+    allOrders.sort((first, second) => {
+      if (first.updated_at > second.updated_at) return -1;
+      if (first.updated_at < second.updated_at) return 1;
+    });
+    let courseInfo = [];
+    courseInfo.allOrders = allOrders;
+    courseInfo.activePayments = orders.activePayments;
+    courseInfo.completedPayments = orders.completedPayments;
+    courseInfo.refundedPayments = orders.refundedPayments;
+    this.setState({
+      courseInfo
+    });
+  }
+
+  /**
+   * Handles the value that is of the selected option.
+   * Not to be confused with the handleEmailTextboxChange
+   * method below.
+   * @param {object} selectedOption - The selected option
+   */
   handleEmailChange = selectedOption => {
     console.log(selectedOption.label.split("-")[3]);
     this.setState({
@@ -80,11 +140,20 @@ class Home extends React.Component {
     });
   };
 
+  /**
+   * Handles the search when the email search form is submitted.
+   * @param {SyntheticEvent} e – Form submission event
+   */
   handleSearch = async e => {
     // e.preventDefault();
     if (!document.getElementById("email-search-form").checkValidity()) {
       document.getElementById("email-search-form").reportValidity();
     } else {
+      if (this.state.email == "") {
+        this.setState({
+          email: this.state.emailValue
+        })
+      }
       userController
         .handleGetUserById(this.state.id)
         .then(res => {
@@ -111,6 +180,9 @@ class Home extends React.Component {
     }
   };
 
+  /**
+   * Shows the create user form
+   */
   handleCreateUser = () => {
     this.setState({
       createUser: true
@@ -156,35 +228,13 @@ class Home extends React.Component {
                     </form>
                   </div>
                 </div>
-                {/* Form 2  */}
-                {/* <div className="row ml-3 w-100 mt-4">
-                  <div
-                    className="col-12 col-md-4"
-                    style={{ alignItems: "center" }}
-                  >
-                    <div className="border-card br-20 bg-light-grey mb-5">
-                      <h5 style={{ textAlign: "center" }}>Search a user ? </h5>
-                      <h5 className="mt-4" style={{ textAlign: "center" }}>
-                        OR
-                      </h5>
-                      <div style={{ textAlign: "center" }}>
-                        <button
-                          className="button-solid p-3 mt-4"
-                          onClick={this.handleCreateUser}
-                        >
-                          Create New User
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                </div> */}
                 {this.state.createUser ? <AddUser /> : ""}
               </div>
             </div>
           </Layout>
         </div>
       </CheckLogin>
+
     );
   }
 }

@@ -42,7 +42,7 @@ class ProductsChooser extends React.Component {
     }
 
     // Fetch all products
-    productsController.handleGetProducts({}, { page: 1, limit: 100 }).then((res) => {
+    productsController.handleGetProducts({}, { page: 1, limit: 300 }).then((res) => {
       this.setState({
         productsList: res.results
       });
