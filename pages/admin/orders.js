@@ -1,25 +1,16 @@
 import React from "react";
-import Link from "next/link";
 import Head from "../../components/head";
 import Layout from "../../components/layout";
 import CompleteOrders from "../../components/CompleteOrder";
-import AddUser from "../../components/AddUser";
 import NewPayment from "../../components/NewPayment";
 import CheckLogin from "../../components/CheckLogin";
-// import "semantic-ui-css/semantic.min.css";
 import moment from "moment";
-// import axios from "axios";
-// import PartialPayments from "../components/PartialPayments";
 import RefundedOrders from "../../components/RefundedOrders";
-import { resolve } from "url";
 import userController from "../../controllers/users";
 import purchasesController from "../../controllers/purchases";
 import swal from "sweetalert2";
 import ActiveOrders from "../../components/ActiveOrders";
 import SingleUserDetail from "../../components/SingleUserDetail";
-import AsyncSelect from "react-select/async";
-
-import axios from "axios";
 
 class Home extends React.Component {
   static async getInitialProps({ query }) {
@@ -42,8 +33,9 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
+    const userid = window.location.search.split("=")[1];
     purchasesController
-      .handleGetPurchases(this.props.userid)
+      .handleGetPurchases(userid)
       .then(res => {
         console.log(res.data);
         if (res.data) {
