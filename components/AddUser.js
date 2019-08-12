@@ -33,19 +33,21 @@ class AddUser extends React.Component {
     Promise.all([
       resourcesController.handleGetColleges(),
       resourcesController.handleGetCountries()
-    ]).then(([res1, res2]) => {
-      this.setState({
-        colleges: res1.data.colleges,
-        branches: res1.data.branches,
-        countries: res2.data
-      });
-    }).catch((error) => {
-      Swal.fire({
-        type: "error",
-        title: "Error fetching resources!",
-        text: error
+    ])
+      .then(([res1, res2]) => {
+        this.setState({
+          colleges: res1.data.colleges,
+          branches: res1.data.branches,
+          countries: res2.data
+        });
       })
-    });
+      .catch(error => {
+        Swal.fire({
+          type: "error",
+          title: "Error fetching resources!",
+          text: error
+        });
+      });
 
     let gradYear = [];
     for (let i = 2026; i >= 2000; i--) {
@@ -75,7 +77,7 @@ class AddUser extends React.Component {
     } else {
       return true;
     }
-  }
+  };
 
   handleSubmit = async e => {
     e.preventDefault();
@@ -85,9 +87,9 @@ class AddUser extends React.Component {
         type: "question",
         html: `Username: ${this.state.formValues.username}<br/>Name : ${
           this.state.formValues.firstname
-          } ${this.state.formValues.lastname}<br/> Phone: ${
+        } ${this.state.formValues.lastname}<br/> Phone: ${
           this.state.formValues.mobile_number
-          }<br/>Email Id: ${this.state.formValues.email}<br/>`,
+        }<br/>Email Id: ${this.state.formValues.email}<br/>`,
         confirmButtonColor: "#f66",
         confirmButtonText: "Yes!",
         cancelButtonText: "No!",
@@ -98,37 +100,40 @@ class AddUser extends React.Component {
         if (result.value) {
           // Confirmation passed
           const data = this.state.formValues;
-          usersController.handleAddUser(data).then((res) => {
-            Swal.fire({
-              title: "User added!",
-              type: "success",
-              timer: "3000",
-              showConfirmButton: true,
-              confirmButtonText: "Okay"
-            });
-            // Reset the form
-            let formValues = this.state.formValues;
-            Object.keys(formValues).map((key) => {
-              formValues[key] = "";
-            });
-            formValues.gender = "male";
-            formValues.dial_code = "+91";
-            formValues.gradYear = "2026";
-            formValues.collegeId = "1";
-            formValues.branchId = "1";
-            this.setState({
-              formValues
+          usersController
+            .handleAddUser(data)
+            .then(res => {
+              Swal.fire({
+                title: "User added!",
+                type: "success",
+                timer: "3000",
+                showConfirmButton: true,
+                confirmButtonText: "Okay"
+              });
+              // Reset the form
+              let formValues = this.state.formValues;
+              Object.keys(formValues).map(key => {
+                formValues[key] = "";
+              });
+              formValues.gender = "male";
+              formValues.dial_code = "+91";
+              formValues.gradYear = "2026";
+              formValues.collegeId = "1";
+              formValues.branchId = "1";
+              this.setState({
+                formValues
+              });
+              setTimeout(() => {
+                window.location.reload("/");
+              }, 3000);
             })
-            setTimeout(() => {
-              window.location.reload("/");
-            }, 3000);
-          }).catch((error) => {
-            Swal.fire({
-              title: "Error while adding user!",
-              type: "error",
-              text: error
-            })
-          })
+            .catch(error => {
+              Swal.fire({
+                title: "Error while adding user!",
+                type: "error",
+                text: error
+              });
+            });
         }
       });
     }
@@ -136,7 +141,7 @@ class AddUser extends React.Component {
 
   render() {
     return (
-      <div className={"d-flex align-items-center col-12"}>
+      <div className={"d-flex col-8 mt-4 ml-3"}>
         <div className={"border-card coupon-card "}>
           {/* Title */}
           <div class="d-flex justify-content-between">
@@ -200,11 +205,11 @@ class AddUser extends React.Component {
                 value={this.state.formValues.gender}
                 required
               >
-                <option value="male" selected>Male</option>
+                <option value="male" selected>
+                  Male
+                </option>
                 <option value="female">Female</option>
-                <option value="undisclosed">
-                  Undisclosed
-              </option>
+                <option value="undisclosed">Undisclosed</option>
               </select>
             </FieldWithElement>
 
@@ -239,7 +244,11 @@ class AddUser extends React.Component {
               </select>
             </FieldWithElement>
 
-            <FieldWithElement nameCols={3} elementCols={9} name={"Mobile Number"}>
+            <FieldWithElement
+              nameCols={3}
+              elementCols={9}
+              name={"Mobile Number"}
+            >
               <input
                 type="text"
                 className={"input-text"}
@@ -335,7 +344,7 @@ class AddUser extends React.Component {
                 onClick={this.handleSubmit}
               >
                 Create User
-            </button>
+              </button>
             </div>
           </form>
         </div>

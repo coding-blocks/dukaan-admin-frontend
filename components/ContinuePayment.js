@@ -4,9 +4,10 @@ import "../styles/pages/admin/coupons.scss";
 import Swal from "sweetalert2";
 import resourcesController from "../controllers/resources";
 import purchasesController from "../controllers/purchases";
+import Router from "next/router";
 
 function ContinuePayment(props) {
-  console.log(props);
+  console.log(props, "ppppppp");
   const [formValues, setFormValues] = useState({
     comment: "",
     paymentMode: "cash",
@@ -16,20 +17,28 @@ function ContinuePayment(props) {
     partialPayment: true
   });
 
-  const [centers, setCenters] = useState([])
+  const [centers, setCenters] = useState([]);
 
+  const [id, setId] = useState([]);
 
   useEffect(() => {
-    resourcesController.handleGetCenters().then((res) => {
-      setCenters(res.data);
-    }).catch((error) => {
-      Swal.fire({
-        type: 'error',
-        title: 'Error while getting centers!',
-        text: error
+    setId(props.id);
+  });
+
+  useEffect(() => {
+    resourcesController
+      .handleGetCenters()
+      .then(res => {
+        setCenters(res.data);
       })
-    });
-  }, [])
+      .catch(error => {
+        Swal.fire({
+          type: "error",
+          title: "Error while getting centers!",
+          text: error
+        });
+      });
+  }, []);
 
   useEffect(() => {
     setFormValues({
@@ -54,7 +63,7 @@ function ContinuePayment(props) {
     } else {
       return true;
     }
-  }
+  };
 
   const onChangeValue = e => {
     // let newFormValues = { [e.target.name]: e.target.value };
@@ -73,7 +82,6 @@ function ContinuePayment(props) {
   const handleSubmit = async e => {
     e.preventDefault();
     if (customValidations()) {
-
       const result = await Swal.fire({
         title: "Are you sure you want to make a new payment?",
         type: "question",
@@ -87,25 +95,28 @@ function ContinuePayment(props) {
 
       if (!result.value) return;
 
-
       const data = formValues;
-      purchasesController.handleCreateNewPurchase(data).then((res) => {
-        Swal.fire({
-          title: "Payment successful!",
-          type: "success",
-          timer: 3000,
-          showConfirmButton: true,
-          confirmButtonText: "Okay"
-        });
-      }).catch((error) => {
-        Swal.fire({
-          title: "Error while making payment!",
-          type: "error",
-          text: error,
-          showConfirmButton: true
-        });
-      });
+      purchasesController
+        .handleCreateNewPurchase(data)
+        .then(res => {
+          Swal.fire({
+            title: "Payment successful!",
+            type: "success",
+            timer: 3000,
+            showConfirmButton: true,
+            confirmButtonText: "Okay"
+          });
 
+          Router.push(`/admin/orders?id=${id}`);
+        })
+        .catch(error => {
+          Swal.fire({
+            title: "Error while making payment!",
+            type: "error",
+            text: error,
+            showConfirmButton: true
+          });
+        });
     }
   };
 
@@ -265,9 +276,7 @@ function ContinuePayment(props) {
       <div className={"border-card coupon-card "}>
         {/* Title */}
         <div className={"d-flex justify-content-center mt-1 pb-3"}>
-          <h2 className={"title red"}>
-            Continue Payment
-          </h2>
+          <h2 className={"title red"}>Continue Payment</h2>
         </div>
         <div className={"d-flex justify-content-center mt-1 pb-3"}>
           <h3>
@@ -284,14 +293,10 @@ function ContinuePayment(props) {
             elementCols={9}
             elementClassName={"pl-4"}
           >
-            <select
-              name="paymentCenterId"
-              onChange={onChangeValue}
-              required
-            >
+            <select name="paymentCenterId" onChange={onChangeValue} required>
               <option value="" selected>
                 Select Payment Center
-                  </option>
+              </option>
               {centers.map(center => {
                 return (
                   <option value={center.id} key={center.id}>
@@ -322,7 +327,7 @@ function ContinuePayment(props) {
             <select name="paymentMode" onChange={onChangeValue}>
               <option selected value="cash">
                 CASH
-            </option>
+              </option>
               <option value="neft">NEFT</option>
               <option value="cheque">CHEQUE</option>
               <option value="swipe">SWIPE</option>
@@ -347,7 +352,9 @@ function ContinuePayment(props) {
               title={"Partial amount can only be numbers"}
               required
             />
-            <span className="red">Partial amount cannot be less than Rs. 20</span>
+            <span className="red">
+              Partial amount cannot be less than Rs. 20
+            </span>
           </FieldWithElement>
 
           <div className={"d-flex justify-content-center"}>
@@ -357,7 +364,7 @@ function ContinuePayment(props) {
               onClick={handleSubmit}
             >
               Record Payment
-          </button>
+            </button>
           </div>
         </form>
       </div>

@@ -2,10 +2,11 @@ import React from "react";
 import Modal from "react-modal";
 import Price from "./Price";
 import moment from "moment";
-import {axios} from "../DukaanAPI";
+import { axios } from "../DukaanAPI";
 import refundController from "../controllers/refund";
+import userController from "../controllers/users";
 import Swal from "sweetalert2";
-
+import Link from "next/link";
 
 const customStyles = {
   content: {
@@ -36,18 +37,25 @@ class RefundedOrders extends React.Component {
   }
 
   handleRefundDetails = () => {
-    refundController.handleGetRefundFromTxnId(this.props.txn_id).then((res) => {
-      this.setState({
-        refundDetail: res.data,
-        showRefundDetailModal: true
-      });
-    }).catch((error) => {
-      Swal.fire({
-        type: "error",
-        title: "Error fetching refunds",
-        text: error
+    refundController
+      .handleGetRefundFromTxnId(this.props.txn_id)
+      .then(res => {
+        userController.handleGetUserById(res.data.user_id).then(res2 => {
+          this.setState({
+            firstname: res2.data.firstname,
+            lastname: res2.data.lastname,
+            refundDetail: res.data,
+            showRefundDetailModal: true
+          });
+        });
       })
-    });
+      .catch(error => {
+        Swal.fire({
+          type: "error",
+          title: "Error fetching refunds",
+          text: error
+        });
+      });
   };
 
   closeRefundDetailModal = () => {
@@ -73,7 +81,8 @@ class RefundedOrders extends React.Component {
             </div>
             <div className="divider-h mb-4 mt-4" />
             <div className="font-mds">
-              <h2>Payment Status:</h2> {this.state.refundDetail.status}
+              <h2>Refunded By: </h2> {this.state.firstname}{" "}
+              {this.state.lastname}
             </div>
             <div className="divider-h mb-4 mt-4" />
             <div className="font-mds">
@@ -92,7 +101,10 @@ class RefundedOrders extends React.Component {
         </Modal>
 
         <div className="row justify-content-center p-4">
-          <div className="border-card pt-4 mb-4">
+          <div
+            className="border-card pt-4 mb-4"
+            style={{ borderColor: "darkred", borderWidth: ".4vh" }}
+          >
             <div className="row justify-content-between align-items-center">
               <div className="img-desc col-md-8 col-12 mb-4 mb-md-0">
                 <div className="col-md-3 col-4">
@@ -105,7 +117,14 @@ class RefundedOrders extends React.Component {
                   </div>
                 </div>
               </div>
-              <div>Payment status: {this.props.status}</div>
+              <div style={{ color: "darkred", fontSize: "1.5rem" }}>
+                <strong>
+                  {this.props.status === "partially_refunded"
+                    ? "Partially Refunded"
+                    : "Refunded"}
+                </strong>
+                <i className="fa fa-check ml-2" aria-hidden="true" />{" "}
+              </div>
 
               <div className="col-md-12">
                 <div className="col-md-5 px-0 pt-4 mr-3 mb-4">
@@ -133,22 +152,22 @@ class RefundedOrders extends React.Component {
                   </button>
                 </div>
               ) : (
-                  ""
-                )}
+                ""
+              )}
 
               {this.props.partial_payment ? (
-                <a
+                <Link
                   href={`/admin/PartialHistory?userId=${
                     this.props.userid
-                    }&cart_id=${this.props.cart_id}`}
-                  className="button-solid lg"
-                  target="blank"
+                  }&cart_id=${this.props.cart_id}`}
                 >
-                  View all Transactions
-                </a>
+                  <button className="button-solid lg">
+                    View all Transactions
+                  </button>
+                </Link>
               ) : (
-                  ""
-                )}
+                ""
+              )}
               <input id="orderIdInput" type="hidden" />
               <div className="row justify-content-center">
                 <a target="blank" id="anchorInvoiceUpdate" />
