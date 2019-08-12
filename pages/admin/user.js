@@ -22,10 +22,10 @@ import AsyncSelect from "react-select/async";
 import axios from "axios";
 
 class Home extends React.Component {
-  static async getInitialProps({ query }) {
-    console.log(query, "gggggg");
-    return { userid: query.id };
-  }
+  // static async getInitialProps({ query }) {
+  //   console.log(query, "gggggg");
+  //   return { userid: query.id };
+  // }
   constructor(props) {
     super(props);
     this.state = {
@@ -42,7 +42,8 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    userController.handleGetUserById(this.props.userid).then(res => {
+    const userid = window.location.search.split("=")[1];
+    userController.handleGetUserById(userid).then(res => {
       console.log(res, "userrrrr1");
       this.setState({
         selectedUser: res.data,
