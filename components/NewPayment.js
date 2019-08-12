@@ -181,6 +181,9 @@ class NewPayment extends React.Component {
 
   handleSubmit = async e => {
     e.preventDefault();
+    if (!this.state.formValues.partialPayment) {
+      delete this.state.formValues.partialAmount;
+    }
     if (this.customValidations()) {
       Swal.fire({
         title: "Are you sure you want to make a new payment?",
@@ -194,6 +197,7 @@ class NewPayment extends React.Component {
       }).then(result => {
         if (result.value) {
           // Confirmation passed, delete coupon.
+
           const data = this.state.formValues;
           purchasesController
             .handleCreateNewPurchase(data)
@@ -205,8 +209,8 @@ class NewPayment extends React.Component {
                 showConfirmButton: true,
                 confirmButtonText: "Okay"
               });
-              const id = this.state.id;
-              Router.push(`/admin/orders?id=${id}`);
+
+              Router.push(`/admin/orders?id=${this.state.id}`);
 
               // this.props.showOrders(this.state.selectedUser);
             })
