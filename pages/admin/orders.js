@@ -55,7 +55,7 @@ class Home extends React.Component {
           type: "error"
         });
       });
-    userController.handleGetUserById(this.props.userid).then(res => {
+    userController.handleGetUserById(userid).then(res => {
       console.log(res, "userrrrr");
       this.setState({
         selectedUser: res.data,
