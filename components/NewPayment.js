@@ -205,7 +205,8 @@ class NewPayment extends React.Component {
                 showConfirmButton: true,
                 confirmButtonText: "Okay"
               });
-              Router.push(`/admin/orders?id=${this.state.id}`);
+              const id = this.state.id;
+              Router.push(`/admin/orders?id=${id}`);
 
               // this.props.showOrders(this.state.selectedUser);
             })

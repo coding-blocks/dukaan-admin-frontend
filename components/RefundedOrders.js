@@ -40,7 +40,15 @@ class RefundedOrders extends React.Component {
     refundController
       .handleGetRefundFromTxnId(this.props.txn_id)
       .then(res => {
-        userController.handleGetUserById(res.data.user_id).then(res2 => {
+        let refunded_by_id;
+        console.log(res.data.wallet_logs);
+        if (res.data.type === "credit") {
+          refunded_by_id = res.data.wallet_logs[0].recorded_by;
+          // console.log(refunded_by);
+        } else if (res.data.type === "cheque") {
+          refunded_by_id = res.data.cheque.created_by;
+        }
+        userController.handleGetUserById(refunded_by_id).then(res2 => {
           this.setState({
             firstname: res2.data.firstname,
             lastname: res2.data.lastname,
