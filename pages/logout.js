@@ -12,11 +12,11 @@ class Logout extends React.Component {
   }
 
   componentDidMount() {
-    Cookies.remove('dukaan-token');
+    Cookies.remove('dukaan-token', { expires: 7, path: '/', domain: ".codingblocks.xyz" });
     Cookies.remove('oneauth');
     window.location = config.domain;
   }
-  
+
   render() {
     return (
       <div>
