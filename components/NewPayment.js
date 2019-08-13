@@ -86,35 +86,41 @@ class NewPayment extends React.Component {
       .handleCalculatePrice(data)
       .then(res => {
         if (res.data.amount >= 0 && res.data.couponApplied) {
-            this.setState({
-                amount: formatter.paisaToRs(res.data.amount)
-            });
-            Swal.fire({
-                type: "success",
-                title: `Coupon code: ${this.state.formValues.coupon} applied successfully!!
+          this.setState({
+            amount: formatter.paisaToRs(res.data.amount)
+          });
+          Swal.fire({
+            type: "success",
+            title: `Coupon code: ${
+              this.state.formValues.coupon
+            } applied successfully!!
                 Total Amount to pay: ${formatter.paisaToRs(res.data.amount)}
                 `
-            })
-        } else if (res.data.amount >= 0
-            && !res.data.couponApplied
-            && this.state.formValues.coupon) {
-            this.setState({
-                amount: formatter.paisaToRs(res.data.amount)
-            });
-            Swal.fire({
-                type: "error",
-                title: `Coupon code: ${this.state.formValues.coupon} not applied successfully !!
+          });
+        } else if (
+          res.data.amount >= 0 &&
+          !res.data.couponApplied &&
+          this.state.formValues.coupon
+        ) {
+          this.setState({
+            amount: formatter.paisaToRs(res.data.amount)
+          });
+          Swal.fire({
+            type: "error",
+            title: `Coupon code: ${
+              this.state.formValues.coupon
+            } not applied successfully !!
                 Total Amount to pay: ${formatter.paisaToRs(res.data.amount)}
                 `
-            })
-        } else if (res.data.amount >= 0
-            && !res.data.couponApplied
-            && !this.state.formValues.coupon) {
-
-            this.setState({
-                amount: formatter.paisaToRs(res.data.amount)
-            });
-
+          });
+        } else if (
+          res.data.amount >= 0 &&
+          !res.data.couponApplied &&
+          !this.state.formValues.coupon
+        ) {
+          this.setState({
+            amount: formatter.paisaToRs(res.data.amount)
+          });
         }
       })
       .catch(error => {
@@ -206,6 +212,7 @@ class NewPayment extends React.Component {
 
   handleSubmit = async e => {
     e.preventDefault();
+    const id = this.state.id;
     if (!this.state.formValues.partialPayment) {
       delete this.state.formValues.partialAmount;
     }
@@ -235,7 +242,7 @@ class NewPayment extends React.Component {
                 confirmButtonText: "Okay"
               });
 
-              Router.push(`/admin/orders?id=${this.state.id}`);
+              Router.push(`/admin/orders?id=${id}`);
 
               // this.props.showOrders(this.state.selectedUser);
             })

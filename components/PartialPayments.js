@@ -126,7 +126,7 @@ class PartialPayments extends React.Component {
     // console.log(window.location.search.split("&")[0].split("=")[1]);
     // console.log(window.location.search.split("&")[1].split("=")[1]);
     e.preventDefault();
-    // console.log(window.location.search.split("&")[0].split("=")[1], "yayy");
+    console.log(window.location.search.split("&")[0].split("=")[1], "yayy");
     const userid = window.location.search.split("&")[0].split("=")[1];
     const cart_id = window.location.search.split("&")[1].split("=")[1];
 
@@ -153,9 +153,12 @@ class PartialPayments extends React.Component {
               showConfirmButton: true,
               confirmButtonText: "Okay"
             });
-            Router.push(
-              `/admin/PartialHistory?userId=${userid}&cart_id=${cart_id}`
-            );
+            // Router.push(
+            //   `/admin/PartialHistory?userId=${userid}&cart_id=${cart_id}`
+            // );
+            setTimeout(() => {
+              window.location.reload("/");
+            }, 3000);
           })
           .catch(error => {
             Swal.fire({
