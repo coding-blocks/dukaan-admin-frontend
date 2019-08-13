@@ -24,7 +24,7 @@ class Layout extends React.Component {
         name: userInfo.data.firstname + " " + userInfo.data.lastname,
         pic: userInfo.data.photo,
         loggedIn: true,
-        admin: userInfo.data.role == "admin"
+        admin: userInfo.data.role !== "user"
       });
     }
   }
