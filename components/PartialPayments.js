@@ -13,15 +13,15 @@ import Price from "./Price";
 
 const customStyles = {
   content: {
-    padding: "8vh",
-    top: "50%",
+    top: "48%",
     left: "50%",
-    right: "auto",
-    bottom: "auto",
     marginRight: "-50%",
+    height: "65%",
+    width: "40%",
     transform: "translate(-50%, -50%)",
+    ariaHideApp: "false",
     borderRadius: "2vh",
-    ariaHideApp: "false"
+    padding: "5vh"
   }
 };
 
@@ -102,23 +102,14 @@ class PartialPayments extends React.Component {
     refundController
       .handleGetRefundFromTxnId(this.props.txn_id)
       .then(res => {
-        let refunded_by_id;
-        console.log(res.data.wallet_logs);
-        if (res.data.type === "credit") {
-          refunded_by_id = res.data.wallet_logs[0].recorded_by;
-          // console.log(refunded_by);
-        } else if (res.data.type === "cheque") {
-          refunded_by_id = res.data.cheque.created_by;
-        }
-        // console.log(refunded_by);
+        console.log(res.data, "refundoo");
 
-        userController.handleGetUserById(refunded_by_id).then(res2 => {
-          this.setState({
-            firstname: res2.data.firstname,
-            lastname: res2.data.lastname,
-            refundDetail: res.data,
-            showRefundDetailModal: true
-          });
+        console.log(res.data.refunded_created_by.firstname);
+        this.setState({
+          firstname: res.data.refunded_created_by.firstname,
+          lastname: res.data.refunded_created_by.lastname,
+          refundDetail: res.data,
+          showRefundDetailModal: true
         });
       })
       .catch(error => {
@@ -343,7 +334,8 @@ class PartialPayments extends React.Component {
             </div>
             <div className="divider-h mb-4 mt-4" />
             <div className="font-mds">
-              <h2>Payment Mode:</h2> {this.state.refundDetail.type}
+              <h2>Payment Mode:</h2>{" "}
+              {this.state.refundDetail.cheque ? "cheque" : "credits"}
             </div>
             <div>
               <div className="divider-h mb-4 mt-4" />
@@ -353,7 +345,32 @@ class PartialPayments extends React.Component {
                   "MMMM Do YYYY,h:mm:ss a"
                 )}
               </div>
+              <div className="divider-h mb-4 mt-4" />
             </div>
+            {this.state.refundDetail.cheque ? (
+              <div>
+                <div className="font-mds">
+                  <h2>Bank Name: </h2> {this.state.refundDetail.cheque.bank}
+                </div>
+
+                <div className="divider-h mb-4 mt-4" />
+                <div className="font-mds">
+                  <h2>Branch Name: </h2> {this.state.refundDetail.cheque.branch}
+                </div>
+                <div className="divider-h mb-4 mt-4" />
+                <div className="font-mds">
+                  <h2>Cheque Serial No.: </h2>{" "}
+                  {this.state.refundDetail.cheque.serial_number}
+                </div>
+
+                <div className="divider-h mb-4 mt-4" />
+                <div className="font-mds">
+                  <h2>Location: </h2> {this.state.refundDetail.cheque.location}
+                </div>
+              </div>
+            ) : (
+              ""
+            )}
           </div>
         </Modal>
 

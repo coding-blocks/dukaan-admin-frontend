@@ -10,15 +10,15 @@ import Link from "next/link";
 
 const customStyles = {
   content: {
-    padding: "10vh",
-    top: "50%",
+    top: "48%",
     left: "50%",
-    right: "auto",
-    bottom: "auto",
     marginRight: "-50%",
+    height: "65%",
+    width: "40%",
     transform: "translate(-50%, -50%)",
+    ariaHideApp: "false",
     borderRadius: "2vh",
-    ariaHideApp: "false"
+    padding: "5vh"
   }
 };
 class RefundedOrders extends React.Component {
@@ -40,21 +40,12 @@ class RefundedOrders extends React.Component {
     refundController
       .handleGetRefundFromTxnId(this.props.txn_id)
       .then(res => {
-        let refunded_by_id;
-        console.log(res.data.wallet_logs);
-        if (res.data.type === "credit") {
-          refunded_by_id = res.data.wallet_logs[0].recorded_by;
-          // console.log(refunded_by);
-        } else if (res.data.type === "cheque") {
-          refunded_by_id = res.data.cheque.created_by;
-        }
-        userController.handleGetUserById(refunded_by_id).then(res2 => {
-          this.setState({
-            firstname: res2.data.firstname,
-            lastname: res2.data.lastname,
-            refundDetail: res.data,
-            showRefundDetailModal: true
-          });
+        console.log(res.data, "refund");
+        this.setState({
+          firstname: res.data.refunded_created_by.firstname,
+          lastname: res.data.refunded_created_by.lastname,
+          refundDetail: res.data,
+          showRefundDetailModal: true
         });
       })
       .catch(error => {
@@ -81,29 +72,58 @@ class RefundedOrders extends React.Component {
           style={customStyles}
         >
           <h3 className="red">Refund Details</h3>
-          <div className="divider-h mb-4 mt-4" />
+          <div className="divider-h mb-4 mt-2" />
           <div>
             <div className="font-mds">
               <h2>Amount Refunded: </h2>{" "}
               <Price amount={this.state.refundDetail.amount_paid / 100} />
             </div>
-            <div className="divider-h mb-4 mt-4" />
+            <div className="divider-h mb-4 mt-2" />
             <div className="font-mds">
               <h2>Refunded By: </h2> {this.state.firstname}{" "}
               {this.state.lastname}
             </div>
-            <div className="divider-h mb-4 mt-4" />
+            <div className="divider-h mb-4 mt-2" />
             <div className="font-mds">
-              <h2>Payment Mode:</h2> {this.state.refundDetail.type}
+              <h2>Payment Mode:</h2>{" "}
+              {this.state.refundDetail.cheque ? "cheque" : "credits"}
             </div>
+            <div className="divider-h mb-4 mt-2" />
             <div>
-              <div className="divider-h mb-4 mt-4" />
+              <div className="divider-h mb-4 mt-2" />
               <div className="font-mds">
                 <h2>Refund Date: </h2>{" "}
                 {moment(this.state.refundDetail.created_at).format(
                   "MMMM Do YYYY,h:mm:ss a"
                 )}
               </div>
+              <div className="divider-h mb-4 mt-2" />
+              {this.state.refundDetail.cheque ? (
+                <div>
+                  <div className="font-mds">
+                    <h2>Bank Name: </h2> {this.state.refundDetail.cheque.bank}
+                  </div>
+
+                  <div className="divider-h mb-4 mt-2" />
+                  <div className="font-mds">
+                    <h2>Branch Name: </h2>{" "}
+                    {this.state.refundDetail.cheque.branch}
+                  </div>
+                  <div className="divider-h mb-4 mt-2" />
+                  <div className="font-mds">
+                    <h2>Cheque Serial No.: </h2>{" "}
+                    {this.state.refundDetail.cheque.serial_number}
+                  </div>
+
+                  <div className="divider-h mb-4 mt-2" />
+                  <div className="font-mds">
+                    <h2>Location: </h2>{" "}
+                    {this.state.refundDetail.cheque.location}
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
             </div>
           </div>
         </Modal>

@@ -34,6 +34,7 @@ class Home extends React.Component {
 
   componentDidMount() {
     const userid = window.location.search.split("=")[1];
+    // console.log(userid,'llll')
     purchasesController
       .handleGetPurchases(userid)
       .then(res => {
