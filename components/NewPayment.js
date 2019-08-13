@@ -86,10 +86,32 @@ class NewPayment extends React.Component {
     productsController
       .handleCalculatePrice(data)
       .then(res => {
-        if (res.data.amount) {
-          this.setState({
-            amount: res.data.amount
-          });
+        if (res.data.amount >= 0 && res.data.couponApplied) {
+            this.setState({
+                amount: res.data.amount
+            });
+            Swal.fire({
+                type: "success",
+                title: `Coupon code: ${this.state.formValues.coupon} applied successfully!!`
+            })
+        } else if (res.data.amount >= 0
+            && !res.data.couponApplied
+            && this.state.formValues.coupon) {
+            this.setState({
+                amount: res.data.amount
+            });
+            Swal.fire({
+                type: "error",
+                title: `Coupon code: ${this.state.formValues.coupon} not applied successfully !!`
+            })
+        } else if (res.data.amount >= 0
+            && !res.data.couponApplied
+            && !this.state.formValues.coupon) {
+
+            this.setState({
+                amount: res.data.amount
+            });
+
         }
       })
       .catch(error => {
