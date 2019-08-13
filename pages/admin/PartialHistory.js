@@ -7,22 +7,25 @@ import controller from "../../controllers/purchases";
 import userController from "../../controllers/users";
 
 class PartialHistory extends React.Component {
-  static async getInitialProps({ query }) {
-    console.log(query, "dsjhdjhs");
-    return { userid: query.userId, cart_id: query.cart_id };
-  }
+  // static async getInitialProps({ query }) {
+  //   console.log(query, "dsjhdjhs");
+  //   return { userid: query.userId, cart_id: query.cart_id };
+  // }
 
   constructor(props) {
     super(props);
     this.state = {
       userid: "",
+      cart_id: "",
       courseInfo: null
     };
   }
 
   componentDidMount() {
-    const userid = this.props.userid;
-    const cart_id = this.props.cart_id;
+    // console.log(window.location.search.split("&")[0].split("=")[1]);
+    // console.log(window.location.search.split("&")[1].split("=")[1]);
+    const userid = window.location.search.split("&")[0].split("=")[1];
+    const cart_id = window.location.search.split("&")[1].split("=")[1];
     this.setState({
       userid,
       cart_id
