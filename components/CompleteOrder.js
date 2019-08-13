@@ -338,7 +338,7 @@ class CompleteOrder extends React.Component {
               ) : (
                 ""
               )}
-              {this.props.status === "captured" ? (
+              {this.props.status === "captured" && this.props.amount !== 0 ? (
                 <button
                   className="button-solid lg"
                   onClick={this.openModalHandler}
