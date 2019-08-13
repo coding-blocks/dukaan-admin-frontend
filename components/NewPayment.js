@@ -91,7 +91,9 @@ class NewPayment extends React.Component {
             });
             Swal.fire({
                 type: "success",
-                title: `Coupon code: ${this.state.formValues.coupon} applied successfully!!`
+                title: `Coupon code: ${this.state.formValues.coupon} applied successfully!!
+                Total Amount to pay: ${formatter.paisaToRs(res.data.amount)}
+                `
             })
         } else if (res.data.amount >= 0
             && !res.data.couponApplied
@@ -101,7 +103,9 @@ class NewPayment extends React.Component {
             });
             Swal.fire({
                 type: "error",
-                title: `Coupon code: ${this.state.formValues.coupon} not applied successfully !!`
+                title: `Coupon code: ${this.state.formValues.coupon} not applied successfully !!
+                Total Amount to pay: ${formatter.paisaToRs(res.data.amount)}
+                `
             })
         } else if (res.data.amount >= 0
             && !res.data.couponApplied
