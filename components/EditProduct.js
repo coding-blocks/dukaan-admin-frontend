@@ -241,18 +241,6 @@ class EditProduct extends React.Component {
                     <input
                       type="checkbox"
                       onChange={this.handleCheckboxChange}
-                      defaultValue={this.state.queryParams.referral}
-                      name="referral"
-                      value="Referral" />Referral
-                    <input
-                      type="checkbox"
-                      onChange={this.handleCheckboxChange}
-                      checked={this.state.queryParams.campaign}
-                      name="campaign"
-                      value="Campaign" />Campaign
-                    <input
-                      type="checkbox"
-                      onChange={this.handleCheckboxChange}
                       checked={this.state.queryParams.is_offline}
                       name="is_offline"
                       value="Is Offline?" />Is Offline?
