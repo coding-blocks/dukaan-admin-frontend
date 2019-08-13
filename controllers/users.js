@@ -14,7 +14,7 @@ const querystring = require("querystring");
 const handleGetUserByEmail = email => {
   const response = new Promise((resolve, reject) => {
     axios
-      .get(`/api/v2/admin/users?email=` + email)
+      .get(`/api/v2/admin/users?email=${encodeURIComponent(email)}`)
       .then(r => {
         resolve(r);
       })
