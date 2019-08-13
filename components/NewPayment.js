@@ -14,7 +14,6 @@ import Router from "next/router";
 class NewPayment extends React.Component {
   constructor(props) {
     super(props);
-    console.log(props, "dsdsddsaahsuiakaj");
     this.state = {
       selectedUser: {},
       states: [],
@@ -88,7 +87,7 @@ class NewPayment extends React.Component {
       .then(res => {
         if (res.data.amount >= 0 && res.data.couponApplied) {
             this.setState({
-                amount: res.data.amount
+                amount: formatter.paisaToRs(res.data.amount)
             });
             Swal.fire({
                 type: "success",
@@ -98,7 +97,7 @@ class NewPayment extends React.Component {
             && !res.data.couponApplied
             && this.state.formValues.coupon) {
             this.setState({
-                amount: res.data.amount
+                amount: formatter.paisaToRs(res.data.amount)
             });
             Swal.fire({
                 type: "error",
@@ -109,7 +108,7 @@ class NewPayment extends React.Component {
             && !this.state.formValues.coupon) {
 
             this.setState({
-                amount: res.data.amount
+                amount: formatter.paisaToRs(res.data.amount)
             });
 
         }
