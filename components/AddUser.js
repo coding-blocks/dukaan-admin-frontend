@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import resourcesController from "../controllers/resources";
 import usersController from "../controllers/users";
 import withReactContent from "sweetalert2-react-content";
+import Router from "next/router";
 
 class AddUser extends React.Component {
   constructor(props) {
@@ -123,9 +124,7 @@ class AddUser extends React.Component {
               this.setState({
                 formValues
               });
-              setTimeout(() => {
-                window.location.reload("/");
-              }, 3000);
+              Router.push(`/admin/orders?id=${res.data.id}`);
             })
             .catch(error => {
               Swal.fire({
