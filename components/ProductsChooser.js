@@ -123,7 +123,7 @@ class ProductsChooser extends React.Component {
       return "";
     }
     const productObject = this.state.productsList.find(p => p.id == id);
-    const name = typeof productObject == 'undefined' ? "Choose a product" : productObject.name;
+    const name = typeof productObject == 'undefined' ? "Choose a product" : productObject.description;
     return name;
   }
 
