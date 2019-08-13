@@ -109,7 +109,7 @@ class Layout extends React.Component {
                 </li>
                 {this.state.loggedIn && (
                   <li className="nav-items pointer">
-                    <a href={config.oneauth.logout_url}>
+                    <a href="/logout">
                       <div className="button-solid lg">
                         <button type="submit" className="pl-1">
                           Logout

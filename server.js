@@ -33,11 +33,6 @@ app.prepare().then(() => {
     res.redirect(config.oneauth.login_url);
   });
 
-  http.get('/logout', (req, res) => {
-    res.cookie('dukaan-token', '');
-    res.redirect('/');
-  });
-
   http.use((req, res) => {
     const parsedUrl = parse(req.url, true);
     handle(req, res, parsedUrl);
