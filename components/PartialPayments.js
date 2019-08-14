@@ -50,7 +50,8 @@ class PartialPayments extends React.Component {
       formValues: {
         txn_id: props.txn_id,
         user_id: props.userid
-      }
+      },
+      status: this.props.status
     };
   }
 
@@ -153,12 +154,9 @@ class PartialPayments extends React.Component {
               showConfirmButton: true,
               confirmButtonText: "Okay"
             });
-            // Router.push(
-            //   `/admin/PartialHistory?userId=${userid}&cart_id=${cart_id}`
-            // );
-            setTimeout(() => {
-              window.location.reload("/");
-            }, 3000);
+              if (response.status === 200) {
+                  this.setState({status: 'refunded'})
+              }
           })
           .catch(error => {
             Swal.fire({
@@ -404,7 +402,7 @@ class PartialPayments extends React.Component {
           <p>Payment Collected By: {this.props.name}</p>
           <p>Payment Center: {this.props.center}</p>
           <p>Payment Status: {this.props.status}</p>
-          {this.props.status === "paid" ? (
+          {this.state.status === "paid" ? (
             <button
               id="view-invoice"
               className="button-solid ml-4 mb-2 mt-4 pl-5 pr-5"
