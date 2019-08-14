@@ -59,8 +59,8 @@ class PartialHistory extends React.Component {
           const date = moment(PartialPayment.created_at).format(
             "MMMM Do YYYY,h:mm:ss a"
           );
-          const mode = PartialPayment.transactions[0].payment_type;
-          const center = PartialPayment.transactions[0][mode].center.name;
+            const mode = PartialPayment.transactions[0].payment_type;
+            const center = mode !== 'razorpay' ? PartialPayment.transactions[0][mode].center.name : 'self';
           return (
             <PartialPayments
               date={date}
