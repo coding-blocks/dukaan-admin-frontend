@@ -61,9 +61,7 @@ class Home extends React.Component {
   mapOptionsToValues = options => {
     return options.map(option => ({
       value: option.email,
-      label: `${option.email} - ${option.username} - ${option.oneauth_id} - ${
-        option.id
-      }`
+      label: `Email: ${option.email} - Username: ${option.username} - OneauthId: ${option.oneauth_id}`
     }));
   };
 

@@ -7,7 +7,6 @@ import purchasesController from "../controllers/purchases";
 import Router from "next/router";
 
 function ContinuePayment(props) {
-  console.log(props, "ppppppp");
   const [formValues, setFormValues] = useState({
     comment: "",
     paymentMode: "cash",
