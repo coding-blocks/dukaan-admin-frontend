@@ -320,25 +320,29 @@ class CompleteOrder extends React.Component {
             </div>
             <div className="divider-h mt-4 mb-4" />
             <div className="d-flex justify-content-center mr-5">
-              <div className={"mr-4"}>
-                <a href={this.props.invoice_url} target="blank">
-                  <button className="button-solid lg">View Invoice</button>
-                </a>
-              </div>
+              {this.props.partial_payment ? ("") :
+                  (
+                      <div className={"mr-4"}>
+                      <a href={this.props.invoice_url} target="blank">
+                      <button className="button-solid lg">View Invoice</button>
+                      </a>
+                      </div>
+                  )
+              }
               {this.props.partial_payment ? (
                 <a
                   href={`/admin/PartialHistory?userId=${
                     this.props.userid
                   }&cart_id=${this.props.cart_id}`}
                   className="button-solid lg mr-4"
-                  target="blank"
                 >
                   View all Transactions
                 </a>
               ) : (
                 ""
               )}
-              {this.props.status === "captured" && this.props.amount !== 0 ? (
+              {!this.props.partial_payment &&
+                      this.props.status === "captured" && this.props.amount !== 0 ? (
                 <button
                   className="button-solid lg"
                   onClick={this.openModalHandler}
