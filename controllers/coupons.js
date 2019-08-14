@@ -1,6 +1,5 @@
-import axios from 'axios';
-import "../config";
-import ErrorHandler from "../ErrorHandler";
+import {axios} from "../DukaanAPI";
+import ErrorHandler from "../helpers/ErrorHandler";
 const querystring = require('querystring');
 
 /**

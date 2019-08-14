@@ -1,8 +1,8 @@
 import React from 'react';
 import Select from 'react-select';
-import axios from 'axios';
-import "../controllers/config";
+import productsController from "../controllers/products";
 import "../styles/components/ProductsChooser.scss";
+import Swal from 'sweetalert2';
 
 class ProductsChooser extends React.Component {
 
@@ -42,11 +42,18 @@ class ProductsChooser extends React.Component {
     }
 
     // Fetch all products
-    axios.get('/api/products?limit=100').then((results) => {
+    productsController.handleGetProducts({}, { page: 1, limit: 300 }).then((res) => {
       this.setState({
-        productsList: results.data.products
+        productsList: res.results
+      });
+    }).catch((error) => {
+      Swal.fire({
+        type: "error",
+        title: "Error fetching Products!",
+        text: error
       });
     });
+
   }
 
   /**
@@ -90,7 +97,7 @@ class ProductsChooser extends React.Component {
     this.setState({
       products
     });
-    let productsArray = products.map((key,value) => {
+    let productsArray = products.map((key, value) => {
       return key.toString();
     });
     this.props.productsCallback(productsArray);
@@ -116,17 +123,17 @@ class ProductsChooser extends React.Component {
       return "";
     }
     const productObject = this.state.productsList.find(p => p.id == id);
-    const name = typeof productObject == 'undefined' ? "Choose a product" : productObject.name;
+    const name = typeof productObject == 'undefined' ? "Choose a product" : productObject.description;
     return name;
   }
 
   render() {
     let productsListTags = this.state.productsList.map((p) => {
-        return {"value": p.id, "label": p.name}
-      }
+      return { "value": p.id, "label": p.name }
+    }
     )
     if (this.state.all) {
-      productsListTags = [{"value": "", "label": "All Products"}, ...productsListTags];
+      productsListTags = [{ "value": "", "label": "All Products" }, ...productsListTags];
     }
     return (
       <div>
@@ -134,9 +141,9 @@ class ProductsChooser extends React.Component {
           {
             !this.props.multiple &&
             <Select
-              className={"productInput mt-2 col-12"} 
+              className={"productInput mt-2 col-12"}
               placeholder={"Choose Product"}
-              defaultValue={{value: "", label: "All Products"}}
+              defaultValue={{ value: "", label: "All Products" }}
               type={"text"}
               onChange={this.setSingleProductID}
               required
@@ -148,22 +155,22 @@ class ProductsChooser extends React.Component {
             this.state.productsList.length > 2 &&
             this.state.products.map((key, index) => {
               return (
-                <div 
+                <div
                   className={"d-flex"}
-                  key={`product-`+index}
+                  key={`product-` + index}
                 >
                   <Select
                     className={"productInput mt-2 col-10"}
                     product-index={index}
                     type={"text"}
                     placeholder={"Choose a product"}
-                    defaultValue={{label: this.findProductNameByID(key), value: parseInt(key)}}
-                    onChange={(e) => {this.setProductName(e, index)}}
+                    defaultValue={{ label: this.findProductNameByID(key), value: parseInt(key) }}
+                    onChange={(e) => { this.setProductName(e, index) }}
                     options={productsListTags}
-                    required 
+                    required
                   />
                   {this.state.products.length > 1 &&
-                    <i 
+                    <i
                       className={"fa fa-times align-middle mt-3 d-flex align-items-center justify-content-center ml-4 remove-button red"}
                       product-index={index}
                       onClick={this.removeProduct}
@@ -171,7 +178,7 @@ class ProductsChooser extends React.Component {
                   }
                   {
                     this.state.products.length == 1 &&
-                    <i 
+                    <i
                       className={"fa fa-times align-middle mt-3 d-flex align-items-center justify-content-center ml-4 remove-button red disabled"}
                       product-index={index}
                     />
@@ -183,7 +190,7 @@ class ProductsChooser extends React.Component {
         </div>
         {
           this.props.multiple &&
-          <button 
+          <button
             className={"button-solid d-flex mt-3"}
             onClick={this.addProduct}
           >

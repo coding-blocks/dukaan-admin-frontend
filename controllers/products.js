@@ -1,6 +1,6 @@
-import axios from 'axios';
-import "../config";
-import ErrorHandler from "../ErrorHandler";
+
+import {axios} from "../DukaanAPI";
+import ErrorHandler from "../helpers/ErrorHandler";
 const querystring = require('querystring');
 
 /**
@@ -78,7 +78,6 @@ const handleEditProduct = (queryParams) => {
  *  successful or not
  */
 const handleAddProduct = (queryParams) => {
-  console.log(queryParams);
   Object.keys(queryParams).forEach((key) => {
     if (queryParams[key] == null) {
       queryParams[key] = "";
@@ -93,8 +92,26 @@ const handleAddProduct = (queryParams) => {
     }
   });
   let response = new Promise((resolve, reject) => {
-    axios.post(`/api/products`, queryParams).then((r) => {
+    axios.post(`/api/v2/admin/products/`, queryParams).then((r) => {
       resolve(r);
+    }).catch((error) => {
+      reject(ErrorHandler.handle(error));
+    });
+  });
+  return response;
+}
+
+/**
+ * Calculate price of products on the server
+ * @param {object} formBody – params required for calculating
+ *  the price of the server
+ * @return {Promise<object>} response
+ */
+const handleCalculatePrice = (formBody) => {
+  let queryString = querystring.stringify(formBody);
+  let response = new Promise((resolve, reject) => {
+    axios.post("/api/v2/admin/products/calculate", queryString).then((res) => {
+      resolve(res);
     }).catch((error) => {
       reject(ErrorHandler.handle(error));
     });
@@ -106,5 +123,6 @@ const handleAddProduct = (queryParams) => {
 module.exports = {
   handleGetProducts,
   handleAddProduct,
-  handleEditProduct
+  handleEditProduct,
+  handleCalculatePrice
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import Loader from '../../../components/loader';
 import FieldWithElement from '../../../components/FieldWithElement';
-import controller from '../../../controllers/admin/coupons';
+import controller from '../../../controllers/coupons';
 import "../../../styles/pages/admin/coupons.scss";
 import ProductsChooser from '../../../components/ProductsChooser';
 import Swal from 'sweetalert2';
@@ -64,7 +64,6 @@ class EditCoupon extends React.Component {
    * @return {boolean} isValid – Returns a bool that tells
    *  if the form passed validation
    */
-
   customValidations = () => {
     // No Duplicate Products in ProductChooser
     let products = this.state.queryParams.products;

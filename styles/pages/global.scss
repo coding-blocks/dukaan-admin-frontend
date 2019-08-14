@@ -1,3 +1,6 @@
+@import "../../../node_modules/@syncfusion/ej2-base/styles/material.css";
+@import "../../../node_modules/@syncfusion/ej2-inputs/styles/material.css";
+@import "../../../node_modules/@syncfusion/ej2-dropdowns/styles/material.css";
 .title {
   font-weight: 100;
 }
@@ -17,4 +20,25 @@ select {
   background-position: calc(100% - 20px) calc(50% + 2.5px);
   background-repeat: no-repeat;
   background-color: #e9e9e9;
+}
+
+.ReactModal__Overlay {
+  opacity: 0;
+  transition: opacity 500ms cubic-bezier(1, 0.01, 0, 1);
+}
+
+.ReactModal__Overlay--after-open {
+  opacity: 1;
+}
+
+.ReactModal__Overlay--before-close {
+  opacity: 0;
+}
+
+.tab {
+  width: max-content;
+}
+
+form {
+  width: 100%;
 }

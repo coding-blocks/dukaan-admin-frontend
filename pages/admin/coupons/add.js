@@ -4,10 +4,11 @@ import Head from '../../../components/head';
 import Layout from "../../../components/layout";
 import Loader from '../../../components/loader';
 import FieldWithElement from '../../../components/FieldWithElement';
-import controller from '../../../controllers/admin/coupons';
+import controller from '../../../controllers/coupons';
 import "../../../styles/pages/admin/coupons.scss";
 import Swal from 'sweetalert2';
 import ProductsChooser from "../../../components/ProductsChooser";
+import CheckLogin from "../../../components/CheckLogin";
 
 class AddCoupon extends React.Component {
 
@@ -107,192 +108,194 @@ class AddCoupon extends React.Component {
       <div>
         <Head title="Coding Blocks | Dukaan | Add Coupon" />
         <Layout />
-        <div className={"d-flex align-items-center justify-content-center"}>
-          <div className={"border-card coupon-card col-md-4 mt-5"}>
-            {this.state.loading &&
-              <Loader />
-            }
-            {!this.state.loading &&
-              <form id="addCouponForm" onSubmit={(e) => e.preventDefault()}>
-                <div className={"add-coupon-card"}>
+        <CheckLogin>
+          <div className={"d-flex align-items-center justify-content-center"}>
+            <div className={"border-card coupon-card col-md-4 mt-5"}>
+              {this.state.loading &&
+                <Loader />
+              }
+              {!this.state.loading &&
+                <form id="addCouponForm" onSubmit={(e) => e.preventDefault()}>
+                  <div className={"add-coupon-card"}>
 
-                  {/* Title */}
-                  <div className={"d-flex justify-content-center mt-1 pb-3"}>
-                    <h2 className={"title"}>Add Coupon</h2>
-                  </div>
-
-                  {/* Code */}
-                  <FieldWithElement name={"Code"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                    <input
-                      type="text"
-                      className="input-text"
-                      placeholder="Enter Code"
-                      name="code"
-                      defaultValue={this.state.queryParams.code}
-                      onChange={this.handleQueryParamChange}
-                      required
-                    />
-                  </FieldWithElement>
-
-                  {/* Categories */}
-                  <FieldWithElement name={"Category"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                    <select
-                      id="category"
-                      name="category"
-                      onChange={this.handleQueryParamChange}
-                      defaultValue={this.state.queryParams.category}
-                      required
-                    >
-                      <option value="referral">Referral</option>
-                      <option value="campus_ambassador">Campus Ambassador</option>
-                      <option value="campaign">Campaign</option>
-                      <option value="special_discount">Special Discount</option>
-                    </select>
-                  </FieldWithElement>
-
-                  {this.state.queryParams.category == "referral" &&
-                    <div>
-                      {/* Referrer ID */}
-                      <FieldWithElement name={"Referrer ID"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                        <input
-                          type="text"
-                          className="input-text"
-                          placeholder="Enter Referrer ID"
-                          name="referrer"
-                          onChange={this.handleQueryParamChange}
-                          required
-                        />
-                      </FieldWithElement>
-
-                      {/* Referrer Cashback */}
-                      <FieldWithElement name={"Cashback"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                        <input
-                          type="text"
-                          className="input-text"
-                          placeholder="Enter Referrer Cashback"
-                          name="referrer_cashback"
-                          onChange={this.handleQueryParamChange}
-                          defaultValue={this.state.queryParams.referrer_cashback}
-                          pattern="[0-9]{1,10}"
-                          title="Cashback must be a number"
-                          required
-                        />
-                      </FieldWithElement>
+                    {/* Title */}
+                    <div className={"d-flex justify-content-center mt-1 pb-3"}>
+                      <h2 className={"title"}>Add Coupon</h2>
                     </div>
-                  }
 
-                  {/* Products */}
-                  <FieldWithElement name={"Products"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                    <ProductsChooser 
-                      productsCallback={this.handleProductsChange}
-                      multiple={true}
-                    />
-                  </FieldWithElement>
-
-                  {/* Mode */}
-                  <FieldWithElement name={"Mode"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                    <select
-                      id="mode"
-                      name="mode"
-                      onChange={this.handleQueryParamChange}
-                      defaultValue={this.state.queryParams.mode}
-                      required
-                    >
-                      <option value="flat">Flat</option>
-                      <option value="percentage">Percentage</option>
-                    </select>
-                  </FieldWithElement>
-
-                  {this.state.queryParams.mode == "flat" && 
-                    /* Amount */
-                    <FieldWithElement 
-                      name={"Amount"} 
-                      nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    {/* Code */}
+                    <FieldWithElement name={"Code"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                       <input
                         type="text"
-                        className={"input-text"}
-                        placeholder="Enter Amount"
-                        name="amount"
-                        onChange={this.handleQueryParamChange}
-                        defaultValue={this.state.queryParams.amount}
-                        pattern="[0-9]{3,10}"
-                        title="Amount can only have 3 to 10 digit numbers"
-                        required
-                      />
-                    </FieldWithElement>
-                  }
-
-                  {this.state.queryParams.mode == "percentage" && 
-                    /* Percentage */
-                    <FieldWithElement 
-                      name={"Percentage"} 
-                      nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                      <input
-                        type="text"
-                        className={"input-text"}
-                        placeholder="Enter Percentage"
-                        name="percentage"
-                        defaultValue={this.state.queryParams.percentage}
+                        className="input-text"
+                        placeholder="Enter Code"
+                        name="code"
+                        defaultValue={this.state.queryParams.code}
                         onChange={this.handleQueryParamChange}
                         required
                       />
                     </FieldWithElement>
-                  }
 
-                  {/* Left */}
-                  <FieldWithElement name={"Left"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                    <input
-                      type="text"
-                      className={"input-text"}
-                      placeholder="Enter Left"
-                      name="left"
-                      onChange={this.handleQueryParamChange}
-                      defaultValue={this.state.queryParams.left}
-                      pattern="[0-9]{1,10}"
-                      title="Left can only have numbers"
-                      required
-                    />
-                  </FieldWithElement>
+                    {/* Categories */}
+                    <FieldWithElement name={"Category"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <select
+                        id="category"
+                        name="category"
+                        onChange={this.handleQueryParamChange}
+                        defaultValue={this.state.queryParams.category}
+                        required
+                      >
+                        <option value="referral">Referral</option>
+                        <option value="campus_ambassador">Campus Ambassador</option>
+                        <option value="campaign">Campaign</option>
+                        <option value="special_discount">Special Discount</option>
+                      </select>
+                    </FieldWithElement>
 
-                  {/* All Listed Products? */}
-                  <FieldWithElement name={"All Listed Products?"} nameCols={5} elementCols={7} elementClassName={"pl-4"}>
-                    <select
-                      name="allProducts"
-                      onChange={this.handleQueryParamChange}
-                      defaultValue={this.state.queryParams.allProducts}
-                    >
-                      <option value={"false"}>No</option>
-                      <option value={"true"}>Yes</option>
-                    </select>
-                  </FieldWithElement>
+                    {this.state.queryParams.category == "referral" &&
+                      <div>
+                        {/* Referrer ID */}
+                        <FieldWithElement name={"Referrer ID"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                          <input
+                            type="text"
+                            className="input-text"
+                            placeholder="Enter Referrer ID"
+                            name="referrer"
+                            onChange={this.handleQueryParamChange}
+                            required
+                          />
+                        </FieldWithElement>
 
-                  {/* Active */}
-                  <FieldWithElement name={"Active"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                    <select
-                      id="active"
-                      name="active"
-                      onChange={this.handleQueryParamChange}
-                      defaultValue={this.state.queryParams.active}
-                      required
-                    >
-                      <option value="true">True</option>
-                      <option value="false">False</option>
-                    </select>
-                  </FieldWithElement>
-                  <div className={"d-flex justify-content-center"}>
-                    <button
-                      id="search"
-                      className={"button-solid ml-4 mb-2 mt-4 pl-5 pr-5"}
-                      onClick={this.handleAddCoupon}
-                    >
-                      Add
+                        {/* Referrer Cashback */}
+                        <FieldWithElement name={"Cashback"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                          <input
+                            type="text"
+                            className="input-text"
+                            placeholder="Enter Referrer Cashback"
+                            name="referrer_cashback"
+                            onChange={this.handleQueryParamChange}
+                            defaultValue={this.state.queryParams.referrer_cashback}
+                            pattern="[0-9]{1,10}"
+                            title="Cashback must be a number"
+                            required
+                          />
+                        </FieldWithElement>
+                      </div>
+                    }
+
+                    {/* Products */}
+                    <FieldWithElement name={"Products"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <ProductsChooser
+                        productsCallback={this.handleProductsChange}
+                        multiple={true}
+                      />
+                    </FieldWithElement>
+
+                    {/* Mode */}
+                    <FieldWithElement name={"Mode"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <select
+                        id="mode"
+                        name="mode"
+                        onChange={this.handleQueryParamChange}
+                        defaultValue={this.state.queryParams.mode}
+                        required
+                      >
+                        <option value="flat">Flat</option>
+                        <option value="percentage">Percentage</option>
+                      </select>
+                    </FieldWithElement>
+
+                    {this.state.queryParams.mode == "flat" &&
+                      /* Amount */
+                      <FieldWithElement
+                        name={"Amount"}
+                        nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                        <input
+                          type="text"
+                          className={"input-text"}
+                          placeholder="Enter Amount"
+                          name="amount"
+                          onChange={this.handleQueryParamChange}
+                          defaultValue={this.state.queryParams.amount}
+                          pattern="[0-9]{3,10}"
+                          title="Amount can only have 3 to 10 digit numbers"
+                          required
+                        />
+                      </FieldWithElement>
+                    }
+
+                    {this.state.queryParams.mode == "percentage" &&
+                      /* Percentage */
+                      <FieldWithElement
+                        name={"Percentage"}
+                        nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                        <input
+                          type="text"
+                          className={"input-text"}
+                          placeholder="Enter Percentage"
+                          name="percentage"
+                          defaultValue={this.state.queryParams.percentage}
+                          onChange={this.handleQueryParamChange}
+                          required
+                        />
+                      </FieldWithElement>
+                    }
+
+                    {/* Left */}
+                    <FieldWithElement name={"Left"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <input
+                        type="text"
+                        className={"input-text"}
+                        placeholder="Enter Left"
+                        name="left"
+                        onChange={this.handleQueryParamChange}
+                        defaultValue={this.state.queryParams.left}
+                        pattern="[0-9]{1,10}"
+                        title="Left can only have numbers"
+                        required
+                      />
+                    </FieldWithElement>
+
+                    {/* All Listed Products? */}
+                    <FieldWithElement name={"All Listed Products?"} nameCols={5} elementCols={7} elementClassName={"pl-4"}>
+                      <select
+                        name="allProducts"
+                        onChange={this.handleQueryParamChange}
+                        defaultValue={this.state.queryParams.allProducts}
+                      >
+                        <option value={"false"}>No</option>
+                        <option value={"true"}>Yes</option>
+                      </select>
+                    </FieldWithElement>
+
+                    {/* Active */}
+                    <FieldWithElement name={"Active"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <select
+                        id="active"
+                        name="active"
+                        onChange={this.handleQueryParamChange}
+                        defaultValue={this.state.queryParams.active}
+                        required
+                      >
+                        <option value="true">True</option>
+                        <option value="false">False</option>
+                      </select>
+                    </FieldWithElement>
+                    <div className={"d-flex justify-content-center"}>
+                      <button
+                        id="search"
+                        className={"button-solid ml-4 mb-2 mt-4 pl-5 pr-5"}
+                        onClick={this.handleAddCoupon}
+                      >
+                        Add
                     </button>
+                    </div>
                   </div>
-                </div>
-              </form>
-            }
+                </form>
+              }
+            </div>
           </div>
-        </div>
+        </CheckLogin>
       </div>
     )
   }
