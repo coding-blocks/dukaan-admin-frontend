@@ -61,7 +61,8 @@ class Home extends React.Component {
   mapOptionsToValues = options => {
     return options.map(option => ({
       value: option.email,
-      label: `Email: ${option.email} - Username: ${option.username} - OneauthId: ${option.oneauth_id}`
+      label: `Email: ${option.email} - Username: ${option.username} - OneauthId: ${option.oneauth_id}`,
+      user_id: `${option.id}`
     }));
   };
 
@@ -133,9 +134,8 @@ class Home extends React.Component {
    * @param {object} selectedOption - The selected option
    */
   handleEmailChange = selectedOption => {
-    console.log(selectedOption.label.split("-")[3]);
     this.setState({
-      id: selectedOption.label.split(" - ")[3]
+      id: selectedOption.user_id
     });
   };
 
