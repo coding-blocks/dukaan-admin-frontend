@@ -257,12 +257,12 @@ class AddProduct extends React.Component {
                         type="checkbox"
                         onChange={this.handleCheckboxChange}
                         name="referral"
-                        value="Referral" />Referral
+                        value="Referral" />Add to Referral Coupons
                     <input
                         type="checkbox"
                         onChange={this.handleCheckboxChange}
                         name="campaign"
-                        value="Campaign" />Campaign
+                        value="Campaign" />Add to Campaign Coupons
                     <input
                         type="checkbox"
                         onChange={this.handleCheckboxChange}

@@ -40,7 +40,7 @@ class PartialHistory extends React.Component {
             lastname: res2.data.lastname,
             courseInfo: res.data.PartialPayments,
             mrp: res.data.amount,
-            name: res.data.product.name
+            name: res.data.product.description
           });
         });
       })
@@ -55,7 +55,6 @@ class PartialHistory extends React.Component {
     const partial = () => {
       if (this.state.courseInfo !== null) {
         return this.state.courseInfo.map(PartialPayment => {
-          console.log(PartialPayment, "pp");
           const date = moment(PartialPayment.created_at).format(
             "MMMM Do YYYY,h:mm:ss a"
           );

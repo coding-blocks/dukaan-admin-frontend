@@ -146,7 +146,7 @@ class AddUser extends React.Component {
           <div class="d-flex justify-content-center">
             <div />
             <div className={"d-flex justify-content-center mt-1 pb-3"}>
-              <h2 className={"title red"}>Create User</h2>
+              <h2 className={"title red"}>Create New User</h2>
             </div>
           </div>
           <form id="add_user_form">
