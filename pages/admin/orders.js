@@ -223,6 +223,7 @@ class Home extends React.Component {
               key={activeOrder.id}
               image={activeOrder.product.image_url}
               product_name={activeOrder.product.name}
+              product = {activeOrder.product}
               amount={activeOrder.amount / 100}
               created_at={activeOrder.created_at}
               userid={this.state.selectedUser.id}
