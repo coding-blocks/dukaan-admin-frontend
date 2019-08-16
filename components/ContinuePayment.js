@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import FieldWithElement from "./FieldWithElement";
 import "../styles/pages/admin/coupons.scss";
 import Swal from "sweetalert2";
+import formatter from "../helpers/formatter"
 import resourcesController from "../controllers/resources";
 import purchasesController from "../controllers/purchases";
 import Router from "next/router";
@@ -11,7 +12,7 @@ function ContinuePayment(props) {
     comment: "",
     paymentMode: "cash",
     quantity: "1",
-    oneauthId: "" + props.oneauthId,
+    oneauthId: props.oneauthId,
     cartId: props.cart_id,
     partialPayment: true
   });
@@ -44,7 +45,7 @@ function ContinuePayment(props) {
       comment: "",
       paymentMode: "cash",
       quantity: "1",
-      oneauthId: "" + props.oneauthId,
+      oneauthId: props.oneauthId,
       cartId: props.cart_id,
       partialPayment: true
     });
@@ -352,7 +353,7 @@ function ContinuePayment(props) {
               required
             />
             <span className="red">
-              Partial amount cannot be less than Rs. 20
+              Partial amount cannot be less than Rs. {formatter.paisaToRs(props.minBase)}
             </span>
           </FieldWithElement>
 
