@@ -14,7 +14,6 @@ import SingleUserDetail from "../../components/SingleUserDetail";
 
 class Home extends React.Component {
   static async getInitialProps({ query }) {
-    console.log(query, "gggggg");
     return { userid: query.id };
   }
   constructor(props) {
@@ -34,11 +33,9 @@ class Home extends React.Component {
 
   componentDidMount() {
     const userid = window.location.search.split("=")[1];
-    // console.log(userid,'llll')
     purchasesController
       .handleGetPurchases(userid)
       .then(res => {
-        console.log(res.data);
         if (res.data) {
           this.setState({
             courseInfo: res.data
@@ -57,7 +54,6 @@ class Home extends React.Component {
         });
       });
     userController.handleGetUserById(userid).then(res => {
-      console.log(res, "userrrrr");
       this.setState({
         selectedUser: res.data,
         newpayment: false
@@ -93,7 +89,6 @@ class Home extends React.Component {
     purchasesController
       .handleGetPurchases(user.id)
       .then(res => {
-        console.log(res.data);
         if (res.data) {
           this.setState({
             courseInfo: res.data
@@ -145,9 +140,7 @@ class Home extends React.Component {
           const txn_arr = refundedOrder.cart.transactions.filter(
             transaction => transaction.status === "captured"
           );
-          // console.log(txn_arr, "object txn");
           const txn_id = txn_arr[0].id;
-          console.log(refundedOrder.cart.transactions, "transact");
 
           return (
             <RefundedOrders
@@ -223,7 +216,7 @@ class Home extends React.Component {
               key={activeOrder.id}
               image={activeOrder.product.image_url}
               product_name={activeOrder.product.name}
-              product = {activeOrder.product}
+              product={activeOrder.product}
               amount={activeOrder.amount / 100}
               created_at={activeOrder.created_at}
               userid={this.state.selectedUser.id}
