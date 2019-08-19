@@ -104,9 +104,6 @@ class PartialPayments extends React.Component {
     refundController
       .handleGetRefundFromTxnId(this.props.txn_id)
       .then(res => {
-        console.log(res.data, "refundoo");
-
-        console.log(res.data.refunded_created_by.firstname);
         this.setState({
           firstname: res.data.refunded_created_by.firstname,
           lastname: res.data.refunded_created_by.lastname,
@@ -124,10 +121,7 @@ class PartialPayments extends React.Component {
   };
 
   handleSubmit = async e => {
-    // console.log(window.location.search.split("&")[0].split("=")[1]);
-    // console.log(window.location.search.split("&")[1].split("=")[1]);
     e.preventDefault();
-    console.log(window.location.search.split("&")[0].split("=")[1], "yayy");
     const userid = window.location.search.split("&")[0].split("=")[1];
     const cart_id = window.location.search.split("&")[1].split("=")[1];
 
@@ -155,7 +149,7 @@ class PartialPayments extends React.Component {
               confirmButtonText: "Okay"
             });
               if (response.status === 200) {
-                  this.setState({status: 'refunded'})
+                  this.setState({status: response.data.partialPayment.status})
               }
           })
           .catch(error => {
@@ -401,7 +395,7 @@ class PartialPayments extends React.Component {
           <p>Paid On: {this.props.date}</p>
           <p>Payment Collected By: {this.props.name}</p>
           <p>Payment Center: {this.props.center}</p>
-          <p>Payment Status: {this.props.status}</p>
+          <p>Payment Status: {this.state.status}</p>
           {this.state.status === "paid" ? (
             <button
               id="view-invoice"

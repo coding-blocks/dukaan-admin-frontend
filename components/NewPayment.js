@@ -58,6 +58,7 @@ class NewPayment extends React.Component {
         });
         this.setState({
           selectedUser: this.props.selectedUser,
+          showOrders: this.props.showOrders,
           centers: res4.data,
           states: res1.data,
           products: fetchedProducts,
@@ -173,7 +174,6 @@ class NewPayment extends React.Component {
     let newFormValues = this.state.formValues;
     newFormValues[e.target.name] = e.target.value;
     let min_emi = e.target.selectedOptions[0].dataset.emi / 100;
-    console.log(min_emi);
     this.setState({
       min_emi: min_emi,
       formValues: newFormValues
@@ -242,12 +242,10 @@ class NewPayment extends React.Component {
                 confirmButtonText: "Okay"
               });
 
-              Router.push(`/admin/orders?id=${id}`);
+              this.state.showOrders(this.props.selectedUser)
 
-              // this.props.showOrders(this.state.selectedUser);
             })
             .catch(err => {
-              console.log(err);
               Swal.fire({
                 title: "Error while making payment!",
                 text: err,

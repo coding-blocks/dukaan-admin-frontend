@@ -214,7 +214,7 @@ class Home extends React.Component {
                         />
                       </div>
 
-                      <Link href={`/admin/user?id=${this.state.id}`}>
+                      <Link href={`/admin/orders?id=${this.state.id}`}>
                         <button
                           id="search"
                           className="button-solid mb-1"
