@@ -31,7 +31,7 @@ class AddUser extends React.Component {
     }
 
     componentDidMount() {
-        resourcesController.getDemographicsCountriesGradYear().then(([demographics, countries, gradYear]) => {
+        resourcesController.getDemographicsCountriesGradYears().then(([demographics, countries, gradYear]) => {
             this.setState({
                 colleges: demographics.data.colleges,
                 branches: demographics.data.branches,
