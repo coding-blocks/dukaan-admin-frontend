@@ -62,6 +62,7 @@ class PartialHistory extends React.Component {
             const center = mode !== 'razorpay' ? PartialPayment.transactions[0][mode].center.name : 'self';
           return (
             <PartialPayments
+              key={PartialPayment.id}
               date={date}
               Productname={this.state.name}
               userid={this.state.userid}
