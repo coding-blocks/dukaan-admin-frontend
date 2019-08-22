@@ -265,6 +265,11 @@ class PartialPayments extends React.Component {
     formDisplay = () => {
         return (
             <div>
+                <p>Partial Amount Paid: ₹ {this.props.partial_amount}</p>
+                <p>Paid On: {this.props.date}</p>
+                <p>Payment Collected By: {this.props.name}</p>
+                <p>Payment Center: {this.props.center}</p>
+
                 <FieldWithElement
                     name={"Payment Method"}
                     nameCols={3}
@@ -414,7 +419,7 @@ class PartialPayments extends React.Component {
                     onRequestClose={this.closeRefundFormModal}
                     style={customFormStyles}
                 >
-                    <h3 className="red">Refund</h3>
+                    <h3 className="red"> Make a Refund</h3>
                     {this.formDisplay()}
                 </Modal>
                 <br/>
@@ -422,7 +427,7 @@ class PartialPayments extends React.Component {
                     <div className="font-mds mb-3 red">Payment ID: #{this.props.id}</div>
                     <div className="divider-h mb-4 mt-4"/>
                     <p>Payment Mode: {this.props.mode}</p>
-                    <p>Partial Amount: ₹ {this.props.partial_amount}</p>
+                    <p>Partial Amount Paid: ₹ {this.props.partial_amount}</p>
                     <p>Fee: ₹ {this.props.fee}</p>
                     <p>Tax Paid: ₹ {this.props.tax_collected}</p>
                     <p>Paid On: {this.props.date}</p>
