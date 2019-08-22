@@ -6,6 +6,15 @@ import resourcesController from "../controllers/resources";
 import usersController from "../controllers/users";
 import ErrorHandler from '../helpers/ErrorHandler';
 import Router from "next/router";
+import { css } from '@emotion/core';
+import { MoonLoader } from 'react-spinners';
+
+const override = css`
+    display: block;
+    margin: 2px auto;
+    border-color: red;
+`;
+
 
 class AddUser extends React.Component {
     constructor(props) {
@@ -26,7 +35,10 @@ class AddUser extends React.Component {
                 mobile_number: "",
                 email: "",
                 gradYear: "2026"
-            }
+            },
+            usernameAvailability: "",
+            usernameLookupLoading: false,
+            usernameAvailabilityColor: ""
         };
     }
 
@@ -54,6 +66,38 @@ class AddUser extends React.Component {
         this.setState({
             formValues: newFormValues
         });
+    };
+
+    onUsernameChange = e => {
+        let newFormValues = this.state.formValues;
+        newFormValues[e.target.name] = e.target.value;
+        this.setState({
+            formValues: newFormValues,
+        });
+        if(e.target.value.length>3){
+            this.setState({
+                usernameLookupLoading: true
+            });
+            usersController.getUsernameAvailability(e.target.value).then(() => {
+                this.setState({
+                    usernameAvailability: 'Username is available',
+                    usernameAvailabilityColor: '#32CD32'
+                });
+            }).catch(() => {
+                this.setState({
+                    usernameAvailability: 'Username is not available',
+                    usernameAvailabilityColor: 'tomato',
+                });
+            }).finally(() => {
+                this.setState({
+                    usernameLookupLoading: false
+                });
+            })
+        }else {
+            this.setState({
+                usernameAvailability: ''
+            });
+        }
     };
 
     /**
@@ -141,15 +185,32 @@ class AddUser extends React.Component {
                     <form id="add_user_form">
                         {/* username */}
                         <FieldWithElement nameCols={3} elementCols={9} name={"Username"}>
-                            <input
-                                type="text"
-                                className={"input-text icon user-bg"}
-                                placeholder="Username"
-                                name={"username"}
-                                onChange={this.onChangeValue}
-                                value={this.state.formValues.username}
-                                required
-                            />
+                            <h6 className="t-align-r card-md" style={{fontWeight:200, color:this.state.usernameAvailabilityColor}} >
+                                {this.state.usernameAvailability}
+                            </h6>
+                            <div className="d-flex">
+
+                                <input
+                                    type="text"
+                                    className={"input-text icon user-bg"}
+                                    placeholder="Username"
+                                    name={"username"}
+                                    onChange={this.onUsernameChange}
+                                    value={this.state.formValues.username}
+                                    required
+                                />
+                                <MoonLoader
+                                    css={override}
+                                    sizeUnit={"px"}
+                                    size={30}
+                                    color={'#f66'}
+                                    loading={this.state.usernameLookupLoading}
+                                />
+                            </div>
+
+                            <div className='sweet-loading'>
+
+                            </div>
                         </FieldWithElement>
 
                         <FieldWithElement nameCols={3} elementCols={9} name={"Firstname"}>
@@ -211,10 +272,10 @@ class AddUser extends React.Component {
                                 onChange={this.onChangeValue}
                                 required
                             >
-                                {this.state.countries.map((country, index)=> {
+                                {this.state.countries.map((country, index) => {
                                     if (country.dial_code === "+91") {
                                         return (
-                                            <option value={country.dial_code} key={country.id} selected >
+                                            <option value={country.dial_code} key={country.id} selected>
                                                 {country.name} {`(${country.dial_code})`}
                                             </option>
                                         );
