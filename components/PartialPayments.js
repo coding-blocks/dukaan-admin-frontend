@@ -101,37 +101,18 @@ class PartialPayments extends React.Component {
         });
     };
 
-    handleRefundDetails = () => {
-        refundController
-            .handleGetRefundFromTxnId(this.props.txn_id)
-            .then(res => {
-                console.log(res.data, "refundoo");
-
-                console.log(res.data.refunded_created_by.firstname);
-                this.setState({
-                    firstname: res.data.refunded_created_by.firstname,
-                    lastname: res.data.refunded_created_by.lastname,
-                    refundDetail: res.data,
-                    showRefundDetailModal: true
-                });
-            })
-            .catch(error => {
-                Swal.fire({
-                    type: "error",
-                    title: "Error fetching refunds!",
-                    text: error
-                });
-            });
-    };
-
-    handleSubmit = async e => {
-        // console.log(window.location.search.split("&")[0].split("=")[1]);
-        // console.log(window.location.search.split("&")[1].split("=")[1]);
-        e.preventDefault();
-        console.log(window.location.search.split("&")[0].split("=")[1], "yayy");
-        const userid = window.location.search.split("&")[0].split("=")[1];
-        const cart_id = window.location.search.split("&")[1].split("=")[1];
-
+  handleRefundDetails = () => {
+    refundController
+      .handleGetRefundFromTxnId(this.props.txn_id)
+      .then(res => {
+        this.setState({
+          firstname: res.data.refunded_created_by.firstname,
+          lastname: res.data.refunded_created_by.lastname,
+          refundDetail: res.data,
+          showRefundDetailModal: true
+        });
+      })
+      .catch(error => {
         Swal.fire({
             title: "Are you sure you want to make a refund?",
             type: "question",
@@ -169,7 +150,52 @@ class PartialPayments extends React.Component {
                     });
             }
         });
-    };
+      });
+  };
+
+  handleSubmit = async e => {
+    e.preventDefault();
+    const userid = window.location.search.split("&")[0].split("=")[1];
+    const cart_id = window.location.search.split("&")[1].split("=")[1];
+
+    Swal.fire({
+      title: "Are you sure you want to make a refund?",
+      type: "question",
+      confirmButtonColor: "#f66",
+      confirmButtonText: "Yes!",
+      cancelButtonText: "No!",
+      showCancelButton: true,
+      showConfirmButton: true,
+      showCloseButton: true
+    }).then(result => {
+      if (result.value) {
+        const data = this.state.formValues;
+        refundController
+          .handleCreateRefund(data)
+          .then(response => {
+            this.closeRefundFormModal();
+            Swal.fire({
+              title: "Refund made!",
+              type: "success",
+              timer: "30000",
+              showConfirmButton: true,
+              confirmButtonText: "Okay"
+            });
+              if (response.status === 200) {
+                  this.setState({status: response.data.partialPayment.status})
+              }
+          })
+          .catch(error => {
+            Swal.fire({
+              title: "Error while making refund!",
+              text: error,
+              type: "error",
+              showConfirmButton: true
+            });
+          });
+      }
+    });
+  };
 
     paymentMethod = () => {
         if (this.state.formValues.payment_type === "cheque") {
@@ -239,6 +265,11 @@ class PartialPayments extends React.Component {
     formDisplay = () => {
         return (
             <div>
+                <p>Partial Amount Paid: ₹ {this.props.partial_amount}</p>
+                <p>Paid On: {this.props.date}</p>
+                <p>Payment Collected By: {this.props.name}</p>
+                <p>Payment Center: {this.props.center}</p>
+
                 <FieldWithElement
                     name={"Payment Method"}
                     nameCols={3}
@@ -321,7 +352,7 @@ class PartialPayments extends React.Component {
         );
     };
 
-    render() {
+    render()  {
         return (
             <div className="col-md-4 col-12">
                 <Modal
@@ -388,7 +419,7 @@ class PartialPayments extends React.Component {
                     onRequestClose={this.closeRefundFormModal}
                     style={customFormStyles}
                 >
-                    <h3 className="red">Refund</h3>
+                    <h3 className="red"> Make a Refund</h3>
                     {this.formDisplay()}
                 </Modal>
                 <br/>
@@ -396,7 +427,7 @@ class PartialPayments extends React.Component {
                     <div className="font-mds mb-3 red">Payment ID: #{this.props.id}</div>
                     <div className="divider-h mb-4 mt-4"/>
                     <p>Payment Mode: {this.props.mode}</p>
-                    <p>Partial Amount: ₹ {this.props.partial_amount}</p>
+                    <p>Partial Amount Paid: ₹ {this.props.partial_amount}</p>
                     <p>Fee: ₹ {this.props.fee}</p>
                     <p>Tax Paid: ₹ {this.props.tax_collected}</p>
                     <p>Paid On: {this.props.date}</p>
@@ -432,6 +463,7 @@ class PartialPayments extends React.Component {
                         </button>
                     </a>
                 </div>
+
             </div>
         );
     }

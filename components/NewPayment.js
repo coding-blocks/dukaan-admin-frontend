@@ -14,62 +14,67 @@ import Router from "next/router";
 import ErrorHandler from "../helpers/ErrorHandler";
 
 class NewPayment extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            selectedUser: {},
-            states: [],
-            product_categories: [],
-            products: [],
-            product_category: "1",
-            amount: "",
-            min_emi: "",
-            centers: [],
-            id: props.id,
-            formValues: {
-                coupon: "",
-                comment: "",
-                paymentMode: "cash",
-                quantity: "1",
-                stateId: "AP",
-                oneauthId: "" + props.userid
-            }
-        };
-        this.ReactSwal = withReactContent(Swal);
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedUser: {},
+      states: [],
+      product_categories: [],
+      products: [],
+      product_category: "1",
+      amount: "",
+      min_emi: "",
+      centers: [],
+      id: props.id,
+      formValues: {
+        coupon: "",
+        comment: "",
+        paymentMode: "cash",
+        quantity: "1",
+        stateId: "AP",
+        oneauthId: "" + props.userid
+      }
+    };
+    this.ReactSwal = withReactContent(Swal);
+  }
 
-    componentDidMount() {
-        Promise.all([
-            resourcesController.getStates(),
-            productCategoriesController.handleGetAllProductCategories(),
-            productsController.handleGetProducts(
-                {
-                    product_category_id: this.state.product_category
-                },
-                {
-                    page: 1,
-                    limit: 100
-                }
-            ),
-            resourcesController.getCenters()
-        ]).then(([states, productCategories, fetchedProducts, centers]) => {
-            this.setState({
-                selectedUser: this.props.selectedUser,
-                centers: centers.data,
-                states: states.data,
-                products: fetchedProducts.results,
-                product_categories: productCategories.data
-            });
-        }).catch(error => {
-            ErrorHandler.handle(error)
-            Swal.fire({
-                type: "error",
-                title: "Error fetching data!",
-                text: error
-            });
+  componentDidMount() {
+    Promise.all([
+      resourcesController.getStates(),
+      productCategoriesController.handleGetAllProductCategories(),
+      productsController.handleGetProducts(
+        {
+          product_category_id: this.state.product_category
+        },
+        {
+          page: 1,
+          limit: 100
+        }
+      ),
+      resourcesController.getCenters()
+    ])
+      .then(([res1, res2, res3, res4]) => {
+        let fetchedProducts = [];
+        res3.results.map(product => {
+          fetchedProducts.push(product);
         });
-    }
-
+        this.setState({
+          selectedUser: this.props.selectedUser,
+          showOrders: this.props.showOrders,
+          centers: res4.data,
+          states: res1.data,
+          products: fetchedProducts,
+          product_categories: res2.data
+        });
+      })
+      .catch(error => {
+        Swal.fire({
+          type: "error",
+          title: "Error fetching data!",
+          text: error
+        });
+    })
+  }
     calculateAmount = e => {
         e.preventDefault();
         const data = {
@@ -133,32 +138,57 @@ class NewPayment extends React.Component {
         this.setState({
             [e.target.name]: e.target.value
         });
-        let productCategory = e.target.value;
-        productsController
-            .handleGetProducts(
-                {
-                    product_category_id: productCategory
-                },
-                {
-                    page: 1,
-                    limit: 100
-                }
-            )
-            .then(res => {
-                this.setState({
-                    products: res.results
-                });
-            })
-            .catch(error => {
-                Swal.fire({
-                    type: "error",
-                    text: error,
-                    title: "Error grabbing products by categories!"
-                });
-            });
-    };
+  };
 
-    onChangeValue = e => {
+  onChangeValue = e => {
+    let newFormValues = this.state.formValues;
+    newFormValues[e.target.name] = e.target.value;
+    this.setState({
+      formValues: newFormValues
+    });
+  };
+
+  onChangeHandler = e => {
+    let newFormValues = this.state.formValues;
+    newFormValues[e.target.name] = e.target.value;
+    let min_emi = e.target.selectedOptions[0].dataset.emi / 100;
+    this.setState({
+      min_emi: min_emi,
+      formValues: newFormValues
+    });
+  };
+
+  toggleCheck = e => {
+    let newFormValues = this.state.formValues;
+    newFormValues[e.target.name] = e.target.checked;
+
+    this.setState({
+      formValues: newFormValues
+    });
+  };
+
+  /**
+   * Custom Validations for the new payment form
+   * @return {boolean} isValid – Returns a bool that tells
+   *  if the form passed validation
+   */
+  customValidations = () => {
+    if (!document.getElementById("new_payment_form").checkValidity()) {
+      document.getElementById("new_payment_form").reportValidity();
+      return false;
+    }
+    if (this.state.min_emi > this.state.formValues.partialAmount) {
+      Swal.fire({
+        title: "Error adding new payment!",
+        text: `Partial payment cannot be less than ${this.state.min_emi}`,
+        type: "error"
+      });
+      return false;
+    }
+    return true;
+  };
+
+      onChangeValue = e => {
         let newFormValues = this.state.formValues;
         newFormValues[e.target.name] = e.target.value;
         this.setState({
@@ -238,10 +268,7 @@ class NewPayment extends React.Component {
                                 showConfirmButton: true,
                                 confirmButtonText: "Okay"
                             });
-
-                            Router.push(`/admin/orders?id=${id}`);
-
-                            // this.props.showOrders(this.state.selectedUser);
+                            this.props.showOrders(this.state.selectedUser);
                         })
                         .catch(err => {
                             console.log(err);
