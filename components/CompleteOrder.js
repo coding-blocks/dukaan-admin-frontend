@@ -120,20 +120,16 @@ class CompleteOrder extends React.Component {
                 onRequestClose={this.closeModalHandler}
                 handleSubmit={this.handleSubmit}
                 amount={this.props.amount}
-                name={this.props.product_name}
+                name={this.props.description}
                 style={customStyles}
             >
                 <div className=" col-md-12">
                     <div>
                         <div className="modal-header">
-                            <h3>Refund Payment</h3>
-                            <h3>
-                                Course Purchased{" "}
-                                <span className="red">{this.props.product_name}</span>
-                            </h3>
-                            <h3>
-                                Order Total <span className="red">₹ {this.props.amount}</span>
-                            </h3>
+                            <h3>Make a Refund </h3>
+                                <p>Course: <span className="red"> {this.props.description}</span></p>
+                                <p>Amount Paid:<span className="red"> ₹ {this.props.amount}</span></p>
+                                <p>Purchased on:<span className="red"> {this.props.date}</span></p>
                         </div>
                         <div className="modal-body">
                             <FieldWithElement
