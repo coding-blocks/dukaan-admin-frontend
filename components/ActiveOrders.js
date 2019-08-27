@@ -11,7 +11,7 @@ class ActiveOrders extends React.Component {
       >
         <div
           className="border-card pt-4 mb-4"
-          style={{ borderColor: "blue", borderWidth: ".4vh" }}
+          style={{ borderColor: "#ffad5f", borderWidth: ".2vh" }}
         >
           <div className="row justify-content-between align-items-center">
             <div className="col-md-7 col-12">

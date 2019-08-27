@@ -131,7 +131,7 @@ class RefundedOrders extends React.Component {
         <div className="row justify-content-center p-4">
           <div
             className="border-card pt-4 mb-4"
-            style={{ borderColor: "darkred", borderWidth: ".4vh" }}
+            style={{ borderColor: "#a3076c", borderWidth: ".2vh" }}
           >
             <div className="row justify-content-between align-items-center">
               <div className="img-desc col-md-8 col-12 mb-4 mb-md-0">
@@ -145,7 +145,7 @@ class RefundedOrders extends React.Component {
                   </div>
                 </div>
               </div>
-              <div style={{ color: "darkred", fontSize: "1.5rem" }}>
+              <div style={{ color: "#a3076c", fontSize: "1.5rem" }}>
                 <strong>
                   {this.props.status === "partially_refunded"
                     ? "Partially Refunded"
