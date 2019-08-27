@@ -112,7 +112,7 @@ class Products extends React.Component {
     return (
       <div>
         <Head title="Coding Blocks | Dukaan | Products" />
-        <Layout />
+        <Layout/>
         <CheckLogin>
           <Modal
             isOpen={this.state.showEditProductModal}
@@ -229,7 +229,7 @@ class Products extends React.Component {
                       <tbody className={`t-align-c`}>
                         {
                           this.state.results.map(p => (
-                            <tr>
+                            <tr key={p.id}>
                               <td className={"product-name"}>
                                 <img src={p.image_url} className={"product-image"} align={"absmiddle"}></img>
                                 <span className={"name"}>{p.name}</span>
