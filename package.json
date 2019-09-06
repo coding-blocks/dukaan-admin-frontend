@@ -26,7 +26,7 @@
     "frontend"
   ],
   "dependencies": {
-    "@sentry/browser": "^5.5.0",
+    "@sentry/browser": "^5.6.3",
     "@syncfusion/ej2-react-dropdowns": "^17.2.39",
     "@syncfusion/ej2-react-grids": "^17.2.39",
     "@zeit/next-sass": "^1.0.1",

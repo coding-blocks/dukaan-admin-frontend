@@ -2,7 +2,8 @@ import {
   captureMessage,
   captureException,
   captureEvent,
-  withScope
+  withScope,
+  configureScope
 } from "@sentry/browser";
 
 /**
@@ -78,6 +79,16 @@ const handle = error => {
   }
 };
 
+const setUserContext = (userInfo) => {
+  configureScope((scope) => {
+    scope.setUser({
+      "oneauth_id": userInfo.oneauth_id,
+      "email": userInfo.email
+    });
+  });
+
+};
+
 export default {
-  handle
+  handle, setUserContext
 };
