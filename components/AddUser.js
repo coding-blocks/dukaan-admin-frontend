@@ -80,14 +80,15 @@ class AddUser extends React.Component {
             this.setState({
                 usernameLookupLoading: true
             });
-            usersController.getUsernameAvailability(e.target.value).then(() => {
+            usersController.getUsernameAvailability(e.target.value).then((response) => {
                 this.setState({
-                    usernameAvailability: 'Username is available',
+                    usernameAvailability: response.data.message,
                     usernameAvailabilityColor: '#32CD32'
                 });
-            }).catch(() => {
+            }).catch((err) => {
+                if(err.response.data.status === 422)
                 this.setState({
-                    usernameAvailability: 'Username is not available',
+                    usernameAvailability: err.response.data.message,
                     usernameAvailabilityColor: 'tomato',
                 });
             }).finally(() => {
