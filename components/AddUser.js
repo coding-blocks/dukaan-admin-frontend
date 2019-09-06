@@ -36,6 +36,7 @@ class AddUser extends React.Component {
                 email: "",
                 gradYear: "2026"
             },
+            defaultDialCode: "+91",
             usernameAvailability: "",
             usernameLookupLoading: false,
             usernameAvailabilityColor: ""
@@ -64,7 +65,8 @@ class AddUser extends React.Component {
         let newFormValues = this.state.formValues;
         newFormValues[e.target.name] = e.target.value;
         this.setState({
-            formValues: newFormValues
+            formValues: newFormValues,
+            defaultDialCode: e.target.name === 'dial_code'?  e.target.value : "+91"
         });
     };
 
@@ -271,21 +273,14 @@ class AddUser extends React.Component {
                                 name="dial_code"
                                 onChange={this.onChangeValue}
                                 required
+                                value={this.state.defaultDialCode}
                             >
                                 {this.state.countries.map((country, index) => {
-                                    if (country.dial_code === "+91") {
-                                        return (
-                                            <option value={country.dial_code} key={country.id} selected>
-                                                {country.name} {`(${country.dial_code})`}
-                                            </option>
-                                        );
-                                    } else {
-                                        return (
-                                            <option value={country.dial_code} key={country.id}>
-                                                {country.name} {`(${country.dial_code})`}
-                                            </option>
-                                        );
-                                    }
+                                    return (
+                                        <option value={country.dial_code} key={country.id}>
+                                            {country.name} {`(${country.dial_code})`}
+                                        </option>
+                                    );
                                 })}
                             </select>
                         </FieldWithElement>
