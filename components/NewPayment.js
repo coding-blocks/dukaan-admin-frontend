@@ -371,10 +371,11 @@ class NewPayment extends React.Component {
                         >
                             <select
                                 name="product_category"
+                                defaultValue={"select"}
                                 onChange={this.handleProductCategory}
                                 required
                             >
-                                <option value="" selected>
+                                <option value="select" disabled={true} >
                                     Select Category
                                 </option>
                                 {this.state.product_categories.map(category => (
@@ -395,9 +396,10 @@ class NewPayment extends React.Component {
                                 id="course"
                                 name="productId"
                                 required
+                                defaultValue={"select"}
                                 onChange={this.onChangeHandler}
                             >
-                                <option value="" selected>
+                                <option value="select" disabled={true} >
                                     Select Course
                                 </option>
                                 {this.state.products.map(product => {
@@ -442,9 +444,10 @@ class NewPayment extends React.Component {
                             <select
                                 name="paymentCenterId"
                                 required
+                                defaultValue={"select"}
                                 onChange={this.onChangeValue}
                             >
-                                <option value="" selected>
+                                <option value="select" disabled={true}>
                                     Select Payment Center
                                 </option>
                                 {this.state.centers.map(center => {
