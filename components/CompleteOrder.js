@@ -129,7 +129,6 @@ class CompleteOrder extends React.Component {
                             <h3>Make a Refund </h3>
                                 <p>Course: <span className="red"> {this.props.description}</span></p>
                                 <p>Amount Paid:<span className="red"> ₹ {this.props.amount}</span></p>
-                                <p>Purchased on:<span className="red"> {this.props.date}</span></p>
                         </div>
                         <div className="modal-body">
                             <FieldWithElement
@@ -279,7 +278,7 @@ class CompleteOrder extends React.Component {
                 <div className="row justify-content-center p-4">
                     <div
                         className="border-card pt-4 mb-4"
-                        style={{borderColor: "green", borderWidth: ".4vh"}}
+                        style={{borderColor: "#27a87c", borderWidth: ".2vh"}}
                     >
                         <div className="row justify-content-between align-items-center">
                             <div className="img-desc col-md-8 col-12 mb-4 mb-md-0">
@@ -296,7 +295,7 @@ class CompleteOrder extends React.Component {
                             <div>
                                 {/* Payment status:{" "} */}
                                 {this.props.status === "captured" ? (
-                                    <div style={{color: "green", fontSize: "1.5rem"}}>
+                                    <div style={{color: "#27a87c", fontSize: "1.5rem"}}>
                                         <strong>Paid</strong>
                                         <i className="fa fa-check ml-2" aria-hidden="true"/>
                                     </div>
@@ -310,7 +309,16 @@ class CompleteOrder extends React.Component {
                                     <Price amount={this.props.amount}/>
                                 </div>
                                 <div className="font-sm grey">
-                                    Purchased on {this.props.date}
+                                    Mode Of Payment: {this.props.payment_type}
+                                </div>
+                                <div className="font-sm grey">
+                                    Payment Collected By: {this.props.admin}
+                                </div>
+                                <div className="font-sm grey">
+                                    Payment Center: {this.props.center}
+                                </div>
+                                <div className="font-sm grey">
+                                    Purchased on: {this.props.date}
                                 </div>
                             </div>
                         </div>
