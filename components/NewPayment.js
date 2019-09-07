@@ -19,7 +19,7 @@ class NewPayment extends React.Component {
             states: [],
             product_categories: [],
             products: [],
-            product_category: "1",
+            product_category: "",
             amount: "",
             min_emi: "",
             centers: [],
@@ -40,21 +40,13 @@ class NewPayment extends React.Component {
         Promise.all([
             resourcesController.getStates(),
             productCategoriesController.handleGetAllProductCategories(),
-            productsController.handleGetProducts({
-                    product_category_id: this.state.product_category
-                },{
-                    page: 1,
-                    limit: 100
-                }
-            ),
             resourcesController.getCenters()
-        ]).then(([states, productCategories, products, centers]) => {
+        ]).then(([states, productCategories, centers]) => {
             this.setState({
                 selectedUser: this.props.selectedUser,
                 showOrders: this.props.showOrders,
                 centers: centers.data,
                 states: states.data,
-                products: products.results,
                 product_categories: productCategories.data
             });
         }).catch(error => {
@@ -73,7 +65,7 @@ class NewPayment extends React.Component {
             oneauthId: this.props.userid,
             productId: this.state.formValues.productId,
             quantity: this.state.formValues.quantity
-        }).then(res => {
+        }).then((res) => {
             if (res.data.amount >= 0 && res.data.couponApplied) {
                 this.setState({
                     amount: formatter.paisaToRs(res.data.amount)
@@ -106,8 +98,19 @@ class NewPayment extends React.Component {
 
     handleProductCategory = e => {
         this.setState({
-            [e.target.name]: e.target.value
+            product_category : e.target.value
         });
+        productsController.handleGetProducts({
+                product_category_id: e.target.value
+            }, {
+                page: 1,
+                limit: 100
+            }
+        ).then((response) => {
+            this.setState({
+                products: response.results
+            });
+        })
     };
 
     onChangeValue = e => {
@@ -375,7 +378,7 @@ class NewPayment extends React.Component {
                                 onChange={this.handleProductCategory}
                                 required
                             >
-                                <option value="select" disabled={true} >
+                                <option value="select" disabled={true}>
                                     Select Category
                                 </option>
                                 {this.state.product_categories.map(category => (
@@ -399,7 +402,7 @@ class NewPayment extends React.Component {
                                 defaultValue={"select"}
                                 onChange={this.onChangeHandler}
                             >
-                                <option value="select" disabled={true} >
+                                <option value="select" disabled={true}>
                                     Select Course
                                 </option>
                                 {this.state.products.map(product => {
