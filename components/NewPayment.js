@@ -60,45 +60,50 @@ class NewPayment extends React.Component {
 
     calculateAmount = e => {
         e.preventDefault();
-        productsController.handleCalculatePrice({
-            coupon: this.state.formValues.coupon.toUpperCase(),
-            oneauthId: this.props.userid,
-            productId: this.state.formValues.productId,
-            quantity: this.state.formValues.quantity
-        }).then((res) => {
-            if (res.data.amount >= 0 && res.data.couponApplied) {
-                this.setState({
-                    amount: formatter.paisaToRs(res.data.amount)
-                });
-                return Swal.fire({
-                    type: "success",
-                    title: `Coupon ${this.state.formValues.coupon.toUpperCase()} applied successfully! \n Amount to pay ₹${formatter.paisaToRs(res.data.amount)}`
-                });
-            } else if (res.data.amount >= 0 && !res.data.couponApplied && this.state.formValues.coupon) {
-                this.setState({
-                    amount: formatter.paisaToRs(res.data.amount)
-                });
+        if (this.state.formValues.productId) {
+            productsController.handleCalculatePrice({
+                coupon: this.state.formValues.coupon.toUpperCase(),
+                oneauthId: this.props.userid,
+                productId: this.state.formValues.productId,
+                quantity: this.state.formValues.quantity
+            }).then((res) => {
+                if (res.data.amount >= 0 && res.data.couponApplied) {
+                    this.setState({
+                        amount: formatter.paisaToRs(res.data.amount)
+                    });
+                    return Swal.fire({
+                        type: "success",
+                        title: `Coupon ${this.state.formValues.coupon.toUpperCase()} applied successfully! \n Amount to pay ₹${formatter.paisaToRs(res.data.amount)}`
+                    });
+                } else if (res.data.amount >= 0 && !res.data.couponApplied && this.state.formValues.coupon) {
+                    this.setState({
+                        amount: formatter.paisaToRs(res.data.amount)
+                    });
+                    return Swal.fire({
+                        type: "error",
+                        title: `Coupon ${this.state.formValues.coupon.toUpperCase()} not applied \n Amount to pay ₹${formatter.paisaToRs(res.data.amount)}`
+                    });
+                } else if (res.data.amount >= 0 && !res.data.couponApplied && !this.state.formValues.coupon) {
+                    this.setState({
+                        amount: formatter.paisaToRs(res.data.amount)
+                    });
+                }
+            }).catch(error => {
                 return Swal.fire({
                     type: "error",
-                    title: `Coupon ${this.state.formValues.coupon.toUpperCase()} not applied \n Amount to pay ₹${formatter.paisaToRs(res.data.amount)}`
+                    text: error,
+                    title: "Error calculating price!"
                 });
-            } else if (res.data.amount >= 0 && !res.data.couponApplied && !this.state.formValues.coupon) {
-                this.setState({
-                    amount: formatter.paisaToRs(res.data.amount)
-                });
-            }
-        }).catch(error => {
-            return Swal.fire({
-                type: "error",
-                text: error,
-                title: "Error calculating price!"
             });
-        });
+        } else {
+
+        }
+
     };
 
     handleProductCategory = e => {
         this.setState({
-            product_category : e.target.value
+            product_category: e.target.value
         });
         productsController.handleGetProducts({
                 product_category_id: e.target.value
