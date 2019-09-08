@@ -372,7 +372,7 @@ class NewPayment extends React.Component {
 
                         {/* username */}
                         <FieldWithElement
-                            name={"Select Category For Course"}
+                            name={"Select course category"}
                             nameCols={3}
                             elementCols={9}
                             elementClassName={"pl-4"}
@@ -395,7 +395,7 @@ class NewPayment extends React.Component {
                         </FieldWithElement>
 
                         <FieldWithElement
-                            name={"Select Course"}
+                            name={"Select course"}
                             nameCols={3}
                             elementCols={9}
                             elementClassName={"pl-4"}
@@ -426,7 +426,7 @@ class NewPayment extends React.Component {
                         </FieldWithElement>
 
                         <FieldWithElement
-                            name={"Selling State"}
+                            name={"Select selling state"}
                             nameCols={3}
                             elementCols={9}
                             elementClassName={"pl-4"}
@@ -444,7 +444,7 @@ class NewPayment extends React.Component {
                         <div className="divider-h mb-5 mt-5"/>
                         {/* gender */}
                         <FieldWithElement
-                            name={"Payment Center"}
+                            name={"Select payment Center"}
                             nameCols={3}
                             elementCols={9}
                             elementClassName={"pl-4"}
@@ -472,7 +472,7 @@ class NewPayment extends React.Component {
                             <input
                                 type="text"
                                 className={"input-text"}
-                                placeholder="Coupon Code"
+                                placeholder="Add a coupon code"
                                 name={"coupon"}
                                 onChange={this.onChangeValue}
                                 value={this.state.formValues.mobile_number}
@@ -483,7 +483,7 @@ class NewPayment extends React.Component {
                             <input
                                 type="text"
                                 className={"input-text"}
-                                placeholder="Write Your Comment Here"
+                                placeholder="Place a comment"
                                 name={"comment"}
                                 onChange={this.onChangeValue}
                                 value={this.state.formValues.mobile_number}
@@ -496,14 +496,6 @@ class NewPayment extends React.Component {
                             elementCols={4}
                             name={"Total Amount (Rs.) = (Price - Discount - Credits) + Tax :"}
                         >
-                            {/* <input
-                type="text"
-                className={"input-text"}
-                name={"amount"}
-                onChange={this.onChangeValue}
-                value={this.state.amount}
-                readOnly
-              /> */}
                             <Price amount={this.state.amount}/>
                         </FieldWithElement>
 
@@ -513,14 +505,11 @@ class NewPayment extends React.Component {
                                 className={"button-solid mb-2 mt-4 pl-5 pr-5"}
                                 onClick={this.calculateAmount}
                             >
-                                Calculate Amount
+                                Calculate amount to pay
                             </button>
                         </div>
                         <div className="divider-h mb-5 mt-5"/>
 
-                        {/* code */}
-
-                        {/* Colleges */}
                         <FieldWithElement
                             name={"Choose Payment Method"}
                             nameCols={3}
@@ -558,7 +547,7 @@ class NewPayment extends React.Component {
                                         name="partialPayment"
                                         onChange={this.toggleCheck}
                                     />{" "}
-                                    Click For Partial Payment
+                                    Make this payment partial?
                                     <span/>
                                 </label>
                             </div>
