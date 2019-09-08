@@ -68,9 +68,7 @@ function ContinuePayment(props) {
     const onChangeValue = e => {
         // let newFormValues = { [e.target.name]: e.target.value };
         const name = e.target.name;
-        console.log(name, "mc");
         const val = e.target.value;
-        console.log(formValues);
         setFormValues(formValues => {
             return {
                 ...formValues,
@@ -121,7 +119,6 @@ function ContinuePayment(props) {
     };
 
     const PaymentMethod = () => {
-        console.log(formValues.paymentMode, "tttttttt");
         if (formValues.paymentMode === "cheque") {
             return (
                 <div>
@@ -293,8 +290,8 @@ function ContinuePayment(props) {
                         elementCols={9}
                         elementClassName={"pl-4"}
                     >
-                        <select name="paymentCenterId" onChange={onChangeValue} required>
-                            <option value="" selected>
+                        <select name="paymentCenterId" defaultValue={"select"} onChange={onChangeValue} required>
+                            <option value="select" disabled={true}>
                                 Select Payment Center
                             </option>
                             {centers.map(center => {
@@ -325,7 +322,7 @@ function ContinuePayment(props) {
                         elementClassName={"pl-4"}
                     >
                         <select name="paymentMode" onChange={onChangeValue}>
-                            <option selected value="cash">
+                            <option value="cash">
                                 CASH
                             </option>
                             <option value="neft">NEFT</option>
