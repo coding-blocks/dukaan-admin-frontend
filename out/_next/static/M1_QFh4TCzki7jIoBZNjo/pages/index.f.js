@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([["cf3f"],{"9vGP":function(n,w){},bBH5:function(n,w,o){(window.__NEXT_P=window.__NEXT_P||[]).push(["/index.f",function(){var n=o("9vGP");return{page:n.default||n}}])}},[["bBH5","5d41"]]]);
