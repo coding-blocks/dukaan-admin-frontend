@@ -25,7 +25,10 @@ const formatCurrency = (amount) => {
   return formatter.format(amount);
 }
 
+const paisaToRs = (p) => p / 100
+
 module.exports = {
   format,
-  formatCurrency
+  formatCurrency,
+  paisaToRs
 }

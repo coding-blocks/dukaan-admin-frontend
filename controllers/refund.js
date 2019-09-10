@@ -1,7 +1,7 @@
 /**
  * Controller for Refund
  */
-import {axios} from  "../DukaanAPI";
+import { axios } from "../DukaanAPI";
 import ErrorHandler from "../helpers/ErrorHandler";
 const querystring = require("querystring");
 

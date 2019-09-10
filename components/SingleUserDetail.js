@@ -1,10 +1,6 @@
 import Link from "next/link";
-import { useRouter } from "next/router";
 
-const UserCard = ({ userInfo, getUserById }) => {
-  const router = useRouter();
-
-  console.log("UserInfo", userInfo);
+const SingleUserDetail = ({ userInfo, showOrders, handleNewPayment }) => {
   if (userInfo) {
     return (
       <div className="border-card br-20 bg-light-grey mb-5">
@@ -15,28 +11,32 @@ const UserCard = ({ userInfo, getUserById }) => {
           }}
         >
           <p className="red">Username : {userInfo.username}</p>
-
           <p>
             Name : {userInfo.firstname} {userInfo.lastname}
           </p>
-
           <p>Email : {userInfo.email}</p>
-
           <p>Mobile : {userInfo.mobile_number}</p>
-
           <p>Wallet Amount : ₹ {userInfo.wallet_amount / 100}</p>
-
           <div className={"mt-4"}>
-            <Link href={`/admin/user?id=${userInfo.id}`}>
+            <Link href={`/admin/orders?id=${userInfo.id}`}>
               <button
                 className={"button-solid"}
                 onClick={() => {
-                  getUserById(userInfo.id);
+                  showOrders(userInfo);
                 }}
               >
-                Select User
+                Show Orders
               </button>
             </Link>
+
+            <button
+              className={"button-solid ml-4"}
+              onClick={() => {
+                handleNewPayment(userInfo);
+              }}
+            >
+              Make New Payment
+            </button>
           </div>
         </div>
       </div>
@@ -44,4 +44,4 @@ const UserCard = ({ userInfo, getUserById }) => {
   }
 };
 
-export default UserCard;
+export default SingleUserDetail;

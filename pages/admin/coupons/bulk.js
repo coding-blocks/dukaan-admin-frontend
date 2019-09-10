@@ -10,7 +10,7 @@ import Swal from 'sweetalert2';
 import ProductsChooser from "../../../components/ProductsChooser";
 import CheckLogin from "../../../components/CheckLogin";
 
-class AddCoupon extends React.Component {
+class AddBulkCoupons extends React.Component {
 
   constructor(props) {
     super(props);
@@ -18,7 +18,8 @@ class AddCoupon extends React.Component {
       loading: false,
       queryParams: {
         authority_doc: "",
-        code: "",
+        number_of_coupons: 2,
+        code_length: 10,
         products: [],
         type: "online",
         mode: "flat",
@@ -122,23 +123,61 @@ class AddCoupon extends React.Component {
 
                     {/* Title */}
                     <div className={"d-flex justify-content-center mt-1 pb-3"}>
-                      <h2 className={"title"}>Add Coupon</h2>
+                      <h2 className={"title"}>Add Bulk Coupons</h2>
                     </div>
 
                     {/* Code */}
-                    <FieldWithElement name={"Code*"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    <FieldWithElement name={"Number of Coupons"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                       <input
-                        type="text"
+                        type="number"
                         className="input-text"
                         placeholder="Enter Code"
-                        name="code"
-                        defaultValue={this.state.queryParams.code}
+                        name="number_of_coupons"
+                        defaultValue={this.state.queryParams.number_of_coupons}
                         onChange={this.handleQueryParamChange}
                         required
                       />
                     </FieldWithElement>
+                      {/* Length of code */}
+                      <FieldWithElement name={"Total Code Length"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <input
+                        type="number"
+                        className="input-text"
+                        placeholder="Enter Length of code"
+                        name="code_length"
+                        defaultValue={this.state.queryParams.code_length}
+                        onChange={this.handleQueryParamChange}
+                        required
+                      />
+                    </FieldWithElement>
+
+                      {/* Prepend */}
+
+                    <FieldWithElement name={"Starts with"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+
+                      <input
+                        type="text"
+                        className="input-text"
+                        placeholder="Enter text to prepend"
+                        name="starts_with"
+                        defaultValue={this.state.queryParams.starts_with}
+                        onChange={this.handleQueryParamChange}
+                      />
+                    </FieldWithElement>
+                      {/* Append */}
+                    <FieldWithElement name={"Ends with"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <input
+                        type="text"
+                        className="input-text"
+                        placeholder="Enter text to append"
+                        name="ends_with"
+                        defaultValue={this.state.queryParams.ends_with}
+                        onChange={this.handleQueryParamChange}
+                      />
+                    </FieldWithElement>
+
                     {/* Authority_code */}
-                    <FieldWithElement name={"Description*"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    <FieldWithElement name={"Description"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                       <input
                         type="text"
                         className="input-text"
@@ -149,8 +188,9 @@ class AddCoupon extends React.Component {
                         required
                       />
                     </FieldWithElement>
+
                     {/* Categories */}
-                    <FieldWithElement name={"Category*"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    <FieldWithElement name={"Category"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                       <select
                         id="category"
                         name="category"
@@ -173,7 +213,7 @@ class AddCoupon extends React.Component {
                     </FieldWithElement>
 
                     {/* Mode */}
-                    <FieldWithElement name={"Mode*"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    <FieldWithElement name={"Mode"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                       <select
                         id="mode"
                         name="mode"
@@ -189,7 +229,7 @@ class AddCoupon extends React.Component {
                     {this.state.queryParams.mode == "flat" &&
                       /* Amount */
                       <FieldWithElement
-                        name={"Discount*"}
+                        name={"Discount"}
                         nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                         <input
                           type="number"
@@ -206,7 +246,7 @@ class AddCoupon extends React.Component {
                     {this.state.queryParams.mode == "percentage" &&
                       /* Percentage */
                       <FieldWithElement
-                        name={"Percentage*"}
+                        name={"Percentage"}
                         nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                         <input
                           type="text"
@@ -221,7 +261,7 @@ class AddCoupon extends React.Component {
                     }
 
                     {/* Total number of times a coupon can be used*/}
-                    <FieldWithElement name={"How many times it can be used?*"} nameCols={6} elementCols={6} elementClassName={"pl-4"}>
+                    <FieldWithElement name={"How many times it can be used?"} nameCols={6} elementCols={6} elementClassName={"pl-4"}>
                       <input
                         type="number"
                         className={"input-text"}
@@ -238,7 +278,7 @@ class AddCoupon extends React.Component {
                     {/* All Listed Products? */}
                   <div className={"mt-3 row d-flex"}>
                       <div className={"col-md-6"}>
-                      <span className="text">Add All Listed Products?</span>
+                      <span class="text">Add All Listed Products?</span>
                       </div>
                       <div className={"col-md-6"}>
                       <input
@@ -265,7 +305,7 @@ class AddCoupon extends React.Component {
                     {/* All Listed Extensions? */}
                   <div className={"mt-3 row d-flex"}>
                       <div className={"col-md-6"}>
-                      <span className="text">Add All Listed Extensions?</span>
+                      <span class="text">Add All Listed Extensions?</span>
                       </div>
                       <div className={"col-md-6"}>
                       <input
@@ -292,7 +332,7 @@ class AddCoupon extends React.Component {
                     {/* Active */}
                   <div className={"mt-3 row d-flex"}>
                       <div className={"col-md-6"}>
-                      <span className="text">Activate</span>
+                      <span class="text">Activate</span>
                       </div>
                       <div className={"col-md-6"}>
                       <input
@@ -326,4 +366,5 @@ class AddCoupon extends React.Component {
 
 }
 
-export default withRouter(AddCoupon);
+export default withRouter(AddBulkCoupons);
+

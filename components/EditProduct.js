@@ -1,14 +1,13 @@
 import React from 'react';
-import FieldWithElement from '../../../components/FieldWithElement';
-import controller from '../../../controllers/products';
-import Loader from '../../../components/loader';
-import ImageChooser from '../../../components/ImageChooser';
+import FieldWithElement from './FieldWithElement';
+import controller from '../controllers/products';
+import Loader from './loader';
+import ImageChooser from './ImageChooser';
 
 class EditProduct extends React.Component {
-  
+
   constructor(props) {
     super(props);
-    console.log(props);
     this.state = {
       loading: false,
       queryParams: props.product || {},
@@ -17,7 +16,7 @@ class EditProduct extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     let queryParams = this.state.queryParams;
     queryParams.referral = false;
     queryParams.campaign = false;
@@ -66,8 +65,12 @@ class EditProduct extends React.Component {
    */
 
   customValidations = () => {
-    
-    return true;
+    if (!document.getElementById("editProductForm").checkValidity()) {
+      document.getElementById("editProductForm").reportValidity();
+      return false;
+    } else {
+      return true;
+    }
   }
 
   /**
@@ -76,32 +79,27 @@ class EditProduct extends React.Component {
    */
   handleSaveProduct = (e) => {
     e.preventDefault();
-    if (!document.getElementById("editProductForm").checkValidity()) {
-      document.getElementById("editProductForm").reportValidity();
-    } else {
-      if (this.customValidations()) {
-        this.setState({
-          loading: true,
-          errorMessage: ''
-        });
-        controller.handleEditProduct(this.state.queryParams).then((response) => {
-          if (response) {
-            this.setState({
-              loading: false,
-              errorMessage: ''
-            });
-            let productInfo = this.state.queryParams;
-            productInfo.id = this.state.productInfo.id;
-            this.props.callback(productInfo);
-          }
-        }).catch((error) => {
-          console.log(error);
+    if (this.customValidations()) {
+      this.setState({
+        loading: true,
+        errorMessage: ''
+      });
+      controller.handleEditProduct(this.state.queryParams).then((response) => {
+        if (response) {
           this.setState({
             loading: false,
-            errorMessage: error
+            errorMessage: ''
           });
+          let productInfo = this.state.queryParams;
+          productInfo.id = this.state.productInfo.id;
+          this.props.callback(productInfo);
+        }
+      }).catch((error) => {
+        this.setState({
+          loading: false,
+          errorMessage: error
         });
-      }
+      });
     }
   }
 
@@ -119,18 +117,18 @@ class EditProduct extends React.Component {
                 <div className={"d-fleex justify-content-center mt-1 pb-3"}>
                   <h2 className={"title"}>Edit Product</h2>
                 </div>
-                {this.state.errorMessage.length != 0 && 
-                    <div className={"red justify-content-center mt-1 pb-3"}>
-                      {this.state.errorMessage}
-                    </div>
+                {this.state.errorMessage.length != 0 &&
+                  <div className={"red justify-content-center mt-1 pb-3"}>
+                    {this.state.errorMessage}
+                  </div>
                 }
                 <form id="editProductForm">
                   {/* Product Name */}
                   <FieldWithElement name={"Product Name"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                    <input 
+                    <input
                       type={"text"}
                       className={"input-text"}
-                      placeholder="Enter Product Name" 
+                      placeholder="Enter Product Name"
                       name="name"
                       defaultValue={this.state.productInfo.name}
                       onChange={this.handleQueryParamChange}
@@ -140,8 +138,8 @@ class EditProduct extends React.Component {
                   <FieldWithElement name={"Description"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                     <input
                       type={"text"}
-                      className={"input-text" }
-                      placeholder="Enter Description" 
+                      className={"input-text"}
+                      placeholder="Enter Description"
                       name="description"
                       multiline={true}
                       defaultValue={this.state.productInfo.description}
@@ -152,8 +150,8 @@ class EditProduct extends React.Component {
                   <FieldWithElement name={"Display Slug"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                     <input
                       type={"text"}
-                      className={"input-text" }
-                      placeholder="Enter Display Slug" 
+                      className={"input-text"}
+                      placeholder="Enter Display Slug"
                       name="display_slug"
                       multiline={true}
                       defaultValue={this.state.productInfo.display_slug}
@@ -164,8 +162,8 @@ class EditProduct extends React.Component {
                   <FieldWithElement name={"MRP"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                     <input
                       type={"text"}
-                      className={"input-text" }
-                      placeholder="Enter Maximum Retail Price" 
+                      className={"input-text"}
+                      placeholder="Enter Maximum Retail Price"
                       name="mrp"
                       multiline={true}
                       defaultValue={this.state.productInfo.mrp}
@@ -179,7 +177,7 @@ class EditProduct extends React.Component {
                     <input
                       type={"text"}
                       className={"input-text"}
-                      placeholder="Enter List Price" 
+                      placeholder="Enter List Price"
                       name="list_price"
                       multiline={true}
                       defaultValue={this.state.productInfo.list_price}
@@ -199,14 +197,14 @@ class EditProduct extends React.Component {
                       <input
                         type={"text"}
                         className={"input-text"}
-                        placeholder="Enter Image URL" 
+                        placeholder="Enter Image URL"
                         name="image_url"
                         defaultValue={this.state.queryParams.image_url}
                         onChange={this.handleQueryParamChange}
                         required
                       />
                     </div>
-                    <ImageChooser 
+                    <ImageChooser
                       callback={(image_url) => {
                         let queryParams = this.state.queryParams;
                         queryParams.image_url = image_url;
@@ -220,7 +218,7 @@ class EditProduct extends React.Component {
                     <input
                       type={"text"}
                       className={"input-text"}
-                      placeholder="Enter Redirect URL" 
+                      placeholder="Enter Redirect URL"
                       name="redirect_url"
                       multiline={true}
                       defaultValue={this.state.productInfo.redirect_url}
@@ -229,7 +227,7 @@ class EditProduct extends React.Component {
                     />
                   </FieldWithElement>
                   <FieldWithElement name={"Type"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                  <select 
+                    <select
                       name="type"
                       defaultValue={this.state.productInfo.type}
                       onChange={this.handleQueryParamChange}
@@ -240,29 +238,17 @@ class EditProduct extends React.Component {
                     </select>
                   </FieldWithElement>
                   <div className={"checkboxes"}>
-                    <input 
-                      type="checkbox" 
-                      onChange={this.handleCheckboxChange} 
-                      defaultValue={this.state.queryParams.referral}
-                      name="referral" 
-                      value="Referral" />Referral
-                    <input 
-                      type="checkbox" 
-                      onChange={this.handleCheckboxChange} 
-                      checked={this.state.queryParams.campaign}
-                      name="campaign" 
-                      value="Campaign" />Campaign
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       onChange={this.handleCheckboxChange}
                       checked={this.state.queryParams.is_offline}
-                      name="is_offline" 
+                      name="is_offline"
                       value="Is Offline?" />Is Offline?
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       onChange={this.handleCheckboxChange}
                       checked={this.state.queryParams.listed}
-                      name="listed" 
+                      name="listed"
                       value="Listed?" />Listed?
                   </div>
 

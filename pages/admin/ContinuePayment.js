@@ -5,36 +5,13 @@ import ContinuePayment from "../../components/ContinuePayment";
 
 class continuePayment extends React.Component {
   static async getInitialProps({ query }) {
-    console.log(query, "dsjhdjhs");
     return {
-      oneauthid: query.oneauthid,
-      cart_id: query.cartid,
-      amountLeft: query.amountLeft
+      oneauthId: query.oneauthId,
+      cart_id: query.cartId,
+      amountLeft: query.amountLeft,
+      id: query.userId,
+      minBase: query.minBase
     };
-  }
-  constructor(props) {
-    super(props);
-    this.state = {
-      cart_id: "",
-      userid: "",
-      courseInfo: null,
-      amountLeft: "",
-      formValues: {}
-    };
-  }
-  componentDidMount() {
-    const cart_id = this.props.cart_id;
-    const userid = this.props.oneauthid;
-    const amountLeft = this.props.amountLeft;
-    console.log(cart_id, "CART");
-    console.log(userid, "USERID");
-    this.setState({
-      cart_id,
-      userid,
-      amountLeft
-    });
-
-    console.log(this.state);
   }
 
   render() {
@@ -44,9 +21,11 @@ class continuePayment extends React.Component {
         <Layout />
         <div className={"d-flex justify-content-center mt-5"}>
           <ContinuePayment
-            oneauthId={this.state.userid}
-            cart_id={this.state.cart_id}
-            amountLeft={this.state.amountLeft}
+            id={this.props.id}
+            oneauthId={this.props.oneauthId}
+            cart_id={this.props.cart_id}
+            amountLeft={this.props.amountLeft}
+            minBase={this.props.minBase}
           />
         </div>
       </div>

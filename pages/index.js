@@ -2,25 +2,11 @@ import React from "react";
 import Link from "next/link";
 import Head from "../components/head";
 import Layout from "../components/layout";
-import CompleteOrders from "../components/CompleteOrder";
 import AddUser from "../components/AddUser";
-import NewPayment from "../components/NewPayment";
 import CheckLogin from "../components/CheckLogin";
-// import "semantic-ui-css/semantic.min.css";
-import moment from "moment";
-// import axios from "axios";
-import InCompleteOrder from "../components/ActiveOrders";
-// import PartialPayments from "../components/PartialPayments";
-import RefundedOrders from "../components/RefundedOrders";
-import { resolve } from "url";
 import userController from "../controllers/users";
-import purchasesController from "../controllers/purchases";
 import swal from "sweetalert2";
-import ActiveOrders from "../components/ActiveOrders";
-import UserCard from "../components/UserCard";
 import AsyncSelect from "react-select/async";
-import _ from "lodash";
-
 
 const customStyles = {
   option: provided => ({
@@ -37,131 +23,138 @@ const customStyles = {
   })
 };
 
-import axios from 'axios'
+import axios from "axios";
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      id: "",
       suggestions: [],
       email: "",
-      completeTab: true,
+      allTab: true,
+      completeTab: false,
       activeTab: false,
       refundedTab: false,
       userFound: false,
       userInfo: [],
-      courseInfo: [],
+      courseInfo: {},
       createUser: false,
       newpayment: false,
-      refund: false,
       selectedUser: {}
     };
-    this.loadOptions = _.debounce(this.loadOptions.bind(this), 500);
-    this.handleChange = this.handleChange.bind(this);
+    // this.handleChange = this.handleChange.bind(this);
+  }
+  componentDidMount() {
+    this.setState({
+      createUser: true
+    });
+
   }
 
+  /**
+   * Creates the object that is used by react-select
+   * to display options.
+   * @param {object} options - Object to generate options for
+   * @return {object}
+   */
   mapOptionsToValues = options => {
     return options.map(option => ({
       value: option.email,
-      label: option.email
+      label: `Email: ${option.email} - Username: ${option.username} - OneauthId: ${option.oneauth_id}`,
+      user_id: `${option.id}`
     }));
   };
 
+  /**
+   * Used for fetching suggestions. Called by AsyncSelect
+   * everytime the input field changes to load suggestions.
+   * @param {string} inputValue - Value of the search box
+   *  (in this case it is the email field)
+   * @param {function} callback - Callback function with options
+   *  that will be populated in the suggestions
+   */
   loadOptions = (inputValue, callback) => {
     if (!inputValue) {
       return callback([]);
     }
-
-    axios
-      .get(`/api/v2/admin/users?email=${inputValue}`, {
-        withCredentials: true
+    if (inputValue == "") {
+      Swal.fire({
+        type: "error",
+        title: "Error searching for user!",
+        text: "Email cannot be empty"
       })
-      .then(res => {
+    } else {
+      userController.handleGetUserByEmail(inputValue).then((res) => {
         callback(this.mapOptionsToValues(res.data));
-      });
+      }).catch((error) => {
+        callback([]);
+      })
+    }
   };
 
+  /**
+   * Handles and sorts all orders based off different categories
+   * (active, completed, refunded) to display them correctly in
+   * the all orders tab.
+   * @param {array} orders
+   */
+  handleAllOrders = (orders) => {
+    orders.activePayments = orders.activePayments.map((p) => {
+      p.type = "active";
+      return p;
+    });
+    orders.completedPayments = orders.completedPayments.map((p) => {
+      p.type = "completed";
+      return p;
+    });
+    orders.refundedPayments = orders.refundedPayments.map((p) => {
+      p.type = "refunded";
+      return p;
+    });
+    let allOrders = [...orders.activePayments, ...orders.completedPayments, ...orders.refundedPayments];
+    allOrders.sort((first, second) => {
+      if (first.updated_at > second.updated_at) return -1;
+      if (first.updated_at < second.updated_at) return 1;
+    });
+    let courseInfo = [];
+    courseInfo.allOrders = allOrders;
+    courseInfo.activePayments = orders.activePayments;
+    courseInfo.completedPayments = orders.completedPayments;
+    courseInfo.refundedPayments = orders.refundedPayments;
+    this.setState({
+      courseInfo
+    });
+  }
+
+  /**
+   * Handles the value that is of the selected option.
+   * Not to be confused with the handleEmailTextboxChange
+   * method below.
+   * @param {object} selectedOption - The selected option
+   */
   handleEmailChange = selectedOption => {
     this.setState({
-      email: selectedOption.value
+      id: selectedOption.user_id
     });
   };
 
-  handleChange = event => {
-    this.setState({
-      [event.target.name]: event.target.value
-    });
-  };
-
-  toggleCompleteTab = () => {
-    this.setState(prevstate => ({
-      completeTab: true,
-      activeTab: false,
-      refundedTab: false
-    }));
-  };
-
-  toggleActiveTab = () => {
-    this.setState(prevstate => ({
-      completeTab: false,
-      activeTab: true,
-      refundedTab: false
-    }));
-  };
-
-  toggleRefundTab = () => {
-    this.setState(prevstate => ({
-      completeTab: false,
-      activeTab: false,
-      refundedTab: true
-    }));
-  };
-
-  handleGetPaymentForUser = user => {
-    purchasesController
-      .handleGetPurchases(user.id)
-      .then(res => {
-        if (res.data) {
-          this.setState({
-            courseInfo: res.data
-          });
-        } else {
-          this.setState({
-            courseInfo: null
-          });
-        }
-      })
-      .catch(error => {
-        swal.fire({
-          title: "Error searching for user's purchases!",
-          html: error,
-          type: "error"
-        });
-      });
-  };
-
-  handleNewPayment = user => {
-    this.setState({
-      selectedUser: user,
-      newpayment: true
-    });
-  };
-
-  showOrders = user => {
-    this.handleGetPaymentForUser(user);
-    this.setState({
-      selectedUser: user,
-      newpayment: false
-    });
-  };
-
+  /**
+   * Handles the search when the email search form is submitted.
+   * @param {SyntheticEvent} e – Form submission event
+   */
   handleSearch = async e => {
-    e.preventDefault();
+    // e.preventDefault();
     if (!document.getElementById("email-search-form").checkValidity()) {
       document.getElementById("email-search-form").reportValidity();
     } else {
+      if (this.state.email == "") {
+        this.setState({
+          email: this.state.emailValue
+        })
+      }
       userController
-        .handleGetUserByEmail(this.state.email)
+        .handleGetUserById(this.state.id)
         .then(res => {
           if (res.data.length >= 1) {
             this.setState({
@@ -186,6 +179,9 @@ class Home extends React.Component {
     }
   };
 
+  /**
+   * Shows the create user form
+   */
   handleCreateUser = () => {
     this.setState({
       createUser: true
@@ -193,231 +189,51 @@ class Home extends React.Component {
   };
 
   render() {
-    let orders;
-    const completeTab = this.state.completeTab;
-    if (this.state.refundedTab) {
-      if (
-        this.state.courseInfo.refundedPayments &&
-        this.state.courseInfo.refundedPayments.length > 0
-      ) {
-        orders = this.state.courseInfo.refundedPayments.map(refundedOrder => {
-          const date = moment(refundedOrder.created_at).format(
-            "MMMM Do YYYY,h:mm:ss a"
-          );
-          const txn_obj = refundedOrder.cart.transactions.filter(
-            transaction => transaction.status === "captured"
-          );
-          const txn_id = txn_obj[0].id;
-
-          return (
-            <RefundedOrders
-              txn_id={txn_id}
-              status={refundedOrder.status}
-              description={refundedOrder.product.description}
-              invoice_url={refundedOrder.invoice_link}
-              amountLeft={refundedOrder.amountLeft}
-              partial_payment={refundedOrder.partial_payment}
-              date={date}
-              key={refundedOrder.id}
-              image={refundedOrder.product.image_url}
-              product_name={refundedOrder.product.name}
-              amount={refundedOrder.amount / 100}
-              created_at={refundedOrder.created_at}
-              userid={this.state.userInfo[0].id}
-              oneauthid={this.state.userInfo[0].oneauth_id}
-              cart_id={refundedOrder.cart_id}
-              partial_payment={refundedOrder.partial_payment}
-              amount_refunded={refundedOrder.cart.transactions[0].amount_paid}
-            />
-          );
-        });
-      } else {
-        orders = <div>No Refunded Orders Found.</div>;
-      }
-    }
-
-    if (completeTab) {
-      if (
-        this.state.userFound &&
-        this.state.courseInfo !== null &&
-        !this.state.newpayment &&
-        this.state.courseInfo.completedPayments &&
-        this.state.courseInfo.completedPayments.length > 0
-      ) {
-        orders = this.state.courseInfo.completedPayments.map(completeOrder => {
-          const date = moment(completeOrder.created_at).format(
-            "MMMM Do YYYY,h:mm:ss a"
-          );
-          return (
-            <CompleteOrders
-              date={date}
-              txn_id={completeOrder.cart.transactions[0].id}
-              key={completeOrder.id}
-              image={completeOrder.product.image_url}
-              product_name={completeOrder.product.name}
-              status={completeOrder.status}
-              amount={completeOrder.amount / 100}
-              invoice_url={completeOrder.invoice_link}
-              refunded={completeOrder.cart.transactions[0].status}
-              userid={this.state.userInfo[0].id}
-              payment_type={completeOrder.cart.transactions[0].payment_type}
-              description={completeOrder.product.description}
-              partial_payment={completeOrder.partial_payment}
-              cart_id={completeOrder.cart.id}
-            />
-          );
-        });
-      } else {
-        orders = <div>No Completed Orders Found.</div>;
-      }
-    } else if (this.state.activeTab) {
-      if (
-        this.state.courseInfo.activePayments &&
-        this.state.courseInfo.activePayments.length > 0
-      ) {
-        orders = this.state.courseInfo.activePayments.map(activeOrder => {
-          const date = moment(activeOrder.created_at).format(
-            "MMMM Do YYYY,h:mm:ss a"
-          );
-
-          return (
-
-            <ActiveOrders
-              amountLeft={activeOrder.amountLeft}
-              partial_payment={activeOrder.partial_payment}
-              date={date}
-              status={activeOrder.status}
-              key={activeOrder.id}
-              image={activeOrder.product.image_url}
-              product_name={activeOrder.product.name}
-              amount={activeOrder.amount / 100}
-              created_at={activeOrder.created_at}
-              userid={this.state.userInfo[0].id}
-              oneauthid={this.state.userInfo[0].oneauth_id}
-              cart_id={activeOrder.cart_id}
-              description={activeOrder.product.description}
-            />
-          );
-        });
-      } else {
-        orders = <div>No Active Orders Found.</div>;
-      }
-    }
-
     return (
       <CheckLogin>
         <div>
           <Head title="Coding Blocks | Dukaan" />
-          <Layout />
-          {/* Search User */}
-          <div className="container mt-4">
-            <div className="row">
-              <div className="col-md-12 col-12">
-                <div className={"d-flex"}>
-                  <form
-                    id={"email-search-form"}
-                    className={"d-flex col-md-12 px-0"}
-                  >
-                    <div className="col-md-12 col-12">
-                      <AsyncSelect
-                        cacheOptions
-                        defaultOptions
-                        placeholder="Enter Email.."
-                        loadOptions={this.loadOptions}
-                        onChange={this.handleEmailChange}
-                        styles={customStyles}
-                      />
-                    </div>
-
-                    <button
-                      id="search"
-                      className="button-solid mb-1"
-                      style={{ fontSize: "1.3rem" }}
-                      onClick={this.handleSearch}
+          <Layout>
+            {/* Search User */}
+            <div className="container mt-4">
+              <div className="row">
+                <div className="col-md-12 col-12">
+                  <div className={"d-flex"}>
+                    <form
+                      id={"email-search-form"}
+                      className={"d-flex col-md-12 px-0"}
                     >
-                      Search
-                    </button>
-                  </form>
-                </div>
-              </div>
-              {/* Form 2  */}
-              <div className="row mx-0 w-100 mt-4">
-                {this.state.userInfo.length >= 1 && (
-                  <div className={"col-md-4"}>
-                    {this.state.userInfo.map(user => (
-                      <div>
-                        <UserCard
-                          key={user.id}
-                          userInfo={user}
-                          showOrders={this.showOrders}
-                          handleNewPayment={this.handleNewPayment}
-                          newPaymentState={this.state.handleNewPayment}
+                      <div className="col-md-12 col-12">
+                        <AsyncSelect
+                          cacheOptions
+                          defaultOptions
+                          placeholder="Enter Email.."
+                          loadOptions={this.loadOptions}
+                          onChange={this.handleEmailChange}
+                          styles={customStyles}
                         />
                       </div>
-                    ))}
-                  </div>
-                )}
-                {this.state.userInfo.length == 0 && (
-                  <div className="col-12 col-md-4">
-                    <div className="border-card br-20 bg-light-grey mb-5">
-                      <h5 style={{ textAlign: "center" }}>Search a user ? </h5>
-                      <h5 className="mt-4" style={{ textAlign: "center" }}>
-                        OR
-                      </h5>
-                      <div style={{ textAlign: "center" }}>
-                        <button
-                          className="button-solid p-3 mt-4"
-                          onClick={this.handleCreateUser}
-                        >
-                          Create New User
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {!this.state.newpayment ? (
-                  <div className="col-md-8 col-12">
-                    <div className="border-card br-20 bg-light-grey mb-5 w-100">
-                      <div className="tab-nav-underline mb-5">
-                        <div
-                          className={
-                            this.state.activeTab ? "tab active" : "tab"
-                          }
-                          onClick={this.toggleActiveTab}
-                        >
-                          Active Orders
-                        </div>
-                        <div
-                          className={
-                            this.state.completeTab ? "tab active" : "tab"
-                          }
-                          onClick={this.toggleCompleteTab}
-                        >
-                          Completed Orders
-                        </div>
 
-                        <div
-                          className={
-                            this.state.refundedTab ? "tab active" : "tab"
-                          }
-                          onClick={this.toggleRefundTab}
+                      <Link href={`/admin/orders?id=${this.state.id}`}>
+                        <button
+                          id="search"
+                          className="button-solid mb-1"
+                          style={{ fontSize: "1.3rem" }}
+                          onClick={this.handleSearch}
                         >
-                          Refunded Orders
-                        </div>
-                      </div>
-                      <div style={{ marginBottom: "1.8vh" }}>{orders}</div>
-                    </div>
+                          Search
+                        </button>
+                      </Link>
+                    </form>
                   </div>
-                ) : (
-                  <NewPayment userid={this.state.selectedUser.oneauth_id} />
-                )}
+                </div>
+                {this.state.createUser ? <AddUser /> : ""}
               </div>
-              {this.state.createUser ? <AddUser /> : ""}
-              {/* Order history card */}
             </div>
-          </div>
+          </Layout>
         </div>
       </CheckLogin>
+
     );
   }
 }
