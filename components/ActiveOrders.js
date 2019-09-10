@@ -11,7 +11,7 @@ class ActiveOrders extends React.Component {
       >
         <div
           className="border-card pt-4 mb-4"
-          style={{ borderColor: "blue", borderWidth: ".4vh" }}
+          style={{ borderColor: "#ffad5f", borderWidth: ".2vh" }}
         >
           <div className="row justify-content-between align-items-center">
             <div className="col-md-7 col-12">
@@ -60,10 +60,10 @@ class ActiveOrders extends React.Component {
             </Link>
 
             <Link
-              href={`/admin/ContinuePayment?cartid=${
+              href={`/admin/ContinuePayment?cartId=${
                 this.props.cart_id
-              }&oneauthid=${this.props.oneauthid}&amountLeft=${this.props
-                .amountLeft / 100}&userid=${this.props.userid}`}
+              }&oneauthId=${this.props.oneauthid}&amountLeft=${this.props
+                .amountLeft / 100}&userId=${this.props.userid}&productId=${this.props.product.id}&minBase=${this.props.product.emi_min_base}`}
             >
               <button
                 className="button-solid lg"

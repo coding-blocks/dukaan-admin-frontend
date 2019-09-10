@@ -43,6 +43,7 @@
     "react-dom": "^16.8.6",
     "react-modal": "^3.9.1",
     "react-select": "^3.0.4",
+    "react-spinners": "^0.6.1",
     "sweetalert2": "^8.13.0",
     "sweetalert2-react-content": "^1.1.0"
   },

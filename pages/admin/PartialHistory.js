@@ -7,10 +7,6 @@ import controller from "../../controllers/purchases";
 import userController from "../../controllers/users";
 
 class PartialHistory extends React.Component {
-  // static async getInitialProps({ query }) {
-  //   console.log(query, "dsjhdjhs");
-  //   return { userid: query.userId, cart_id: query.cart_id };
-  // }
 
   constructor(props) {
     super(props);
@@ -22,8 +18,6 @@ class PartialHistory extends React.Component {
   }
 
   componentDidMount() {
-    // console.log(window.location.search.split("&")[0].split("=")[1]);
-    // console.log(window.location.search.split("&")[1].split("=")[1]);
     const userid = window.location.search.split("&")[0].split("=")[1];
     const cart_id = window.location.search.split("&")[1].split("=")[1];
     this.setState({
@@ -40,7 +34,7 @@ class PartialHistory extends React.Component {
             lastname: res2.data.lastname,
             courseInfo: res.data.PartialPayments,
             mrp: res.data.amount,
-            name: res.data.product.name
+            name: res.data.product.description
           });
         });
       })
@@ -55,14 +49,14 @@ class PartialHistory extends React.Component {
     const partial = () => {
       if (this.state.courseInfo !== null) {
         return this.state.courseInfo.map(PartialPayment => {
-          console.log(PartialPayment, "pp");
           const date = moment(PartialPayment.created_at).format(
             "MMMM Do YYYY,h:mm:ss a"
           );
-          const mode = PartialPayment.transactions[0].payment_type;
-          const center = PartialPayment.transactions[0][mode].center.name;
+            const mode = PartialPayment.transactions[0].payment_type;
+            const center = mode !== 'razorpay' ? PartialPayment.transactions[0][mode].center.name : 'self';
           return (
             <PartialPayments
+              key={PartialPayment.id}
               date={date}
               Productname={this.state.name}
               userid={this.state.userid}

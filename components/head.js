@@ -54,7 +54,6 @@ const Head = props => (
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
 
-    <link rel="stylesheet" href="/css/bootstrap-social.css" />
     <link
       rel="stylesheet"
       href="https://unpkg.com/@coding-blocks/motley@0.3.49/dist/app.min.css"

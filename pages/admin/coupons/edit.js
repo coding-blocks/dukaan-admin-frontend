@@ -22,7 +22,6 @@ class EditCoupon extends React.Component {
       queryParams: this.props.coupon || {},
       couponInfo: this.props.coupon || {}
     });
-    console.log(this.props.coupon);
   }
 
   /**

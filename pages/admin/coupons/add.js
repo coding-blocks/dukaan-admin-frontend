@@ -17,19 +17,14 @@ class AddCoupon extends React.Component {
     this.state = {
       loading: false,
       queryParams: {
-        authority_doc: "Coding Blocks",
+        authority_doc: "",
         code: "",
         products: [],
-        referrer_cashback: "",
-        allProducts: "false",
         type: "online",
         mode: "flat",
-        percentage: "",
-        amount: 0,
-        left: 0,
-        category: "referral",
-        active: "true",
-        referrer: ""
+        left: 1,
+        category: "special_discount",
+        active: false
       },
     };
   }
@@ -46,17 +41,23 @@ class AddCoupon extends React.Component {
    *  />
    *  // Changes the value of this.state.queryParams.email
    */
-  handleQueryParamChange = (event) => {
-    let newQueryParams = this.state.queryParams;
-    newQueryParams[event.target.name] = event.target.value;
-    this.setState(prevState => ({
-      queryParams: newQueryParams
-    }));
-  };
+    handleQueryParamChange = (event) => {
+        let newQueryParams = this.state.queryParams;
+        if (event.target.name === 'allProducts'
+            || event.target.name === 'allExtensions'
+            || event.target.name === 'active') {
+            newQueryParams[event.target.name] = event.target.checked;
+        } else {
+            newQueryParams[event.target.name] = event.target.value;
+        }
+        this.setState(prevState => ({
+            queryParams: newQueryParams
+        }));
+    };
 
   /**
    * Callback function for ProductsChooser component that updates
-   * them in the state when ProductsChooser returns an array of 
+   * them in the state when ProductsChooser returns an array of
    * products added
    * @param {array} products – Array of with the names of products
    */
@@ -67,6 +68,7 @@ class AddCoupon extends React.Component {
       queryParams
     })
   }
+
 
   /**
    * Method to handle saving of coupon
@@ -124,7 +126,7 @@ class AddCoupon extends React.Component {
                     </div>
 
                     {/* Code */}
-                    <FieldWithElement name={"Code"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    <FieldWithElement name={"Code*"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                       <input
                         type="text"
                         className="input-text"
@@ -135,9 +137,20 @@ class AddCoupon extends React.Component {
                         required
                       />
                     </FieldWithElement>
-
+                    {/* Authority_code */}
+                    <FieldWithElement name={"Description*"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <input
+                        type="text"
+                        className="input-text"
+                        placeholder="Enter Description"
+                        name="authority_doc"
+                        defaultValue={this.state.queryParams.authority_doc}
+                        onChange={this.handleQueryParamChange}
+                        required
+                      />
+                    </FieldWithElement>
                     {/* Categories */}
-                    <FieldWithElement name={"Category"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    <FieldWithElement name={"Category*"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                       <select
                         id="category"
                         name="category"
@@ -145,43 +158,11 @@ class AddCoupon extends React.Component {
                         defaultValue={this.state.queryParams.category}
                         required
                       >
-                        <option value="referral">Referral</option>
-                        <option value="campus_ambassador">Campus Ambassador</option>
-                        <option value="campaign">Campaign</option>
                         <option value="special_discount">Special Discount</option>
+                        <option value="campaign">Campaign</option>
+                        <option value="campus_ambassador">Campus Ambassador</option>
                       </select>
                     </FieldWithElement>
-
-                    {this.state.queryParams.category == "referral" &&
-                      <div>
-                        {/* Referrer ID */}
-                        <FieldWithElement name={"Referrer ID"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                          <input
-                            type="text"
-                            className="input-text"
-                            placeholder="Enter Referrer ID"
-                            name="referrer"
-                            onChange={this.handleQueryParamChange}
-                            required
-                          />
-                        </FieldWithElement>
-
-                        {/* Referrer Cashback */}
-                        <FieldWithElement name={"Cashback"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                          <input
-                            type="text"
-                            className="input-text"
-                            placeholder="Enter Referrer Cashback"
-                            name="referrer_cashback"
-                            onChange={this.handleQueryParamChange}
-                            defaultValue={this.state.queryParams.referrer_cashback}
-                            pattern="[0-9]{1,10}"
-                            title="Cashback must be a number"
-                            required
-                          />
-                        </FieldWithElement>
-                      </div>
-                    }
 
                     {/* Products */}
                     <FieldWithElement name={"Products"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
@@ -192,7 +173,7 @@ class AddCoupon extends React.Component {
                     </FieldWithElement>
 
                     {/* Mode */}
-                    <FieldWithElement name={"Mode"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    <FieldWithElement name={"Mode*"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                       <select
                         id="mode"
                         name="mode"
@@ -208,17 +189,15 @@ class AddCoupon extends React.Component {
                     {this.state.queryParams.mode == "flat" &&
                       /* Amount */
                       <FieldWithElement
-                        name={"Amount"}
+                        name={"Discount*"}
                         nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                         <input
-                          type="text"
+                          type="number"
                           className={"input-text"}
-                          placeholder="Enter Amount"
+                          placeholder="Enter discount value"
                           name="amount"
                           onChange={this.handleQueryParamChange}
-                          defaultValue={this.state.queryParams.amount}
-                          pattern="[0-9]{3,10}"
-                          title="Amount can only have 3 to 10 digit numbers"
+                          title="Discount can only have 3 to 10 digit numbers"
                           required
                         />
                       </FieldWithElement>
@@ -227,7 +206,7 @@ class AddCoupon extends React.Component {
                     {this.state.queryParams.mode == "percentage" &&
                       /* Percentage */
                       <FieldWithElement
-                        name={"Percentage"}
+                        name={"Percentage*"}
                         nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                         <input
                           type="text"
@@ -241,46 +220,91 @@ class AddCoupon extends React.Component {
                       </FieldWithElement>
                     }
 
-                    {/* Left */}
-                    <FieldWithElement name={"Left"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    {/* Total number of times a coupon can be used*/}
+                    <FieldWithElement name={"How many times it can be used?*"} nameCols={6} elementCols={6} elementClassName={"pl-4"}>
                       <input
-                        type="text"
+                        type="number"
                         className={"input-text"}
                         placeholder="Enter Left"
                         name="left"
                         onChange={this.handleQueryParamChange}
                         defaultValue={this.state.queryParams.left}
-                        pattern="[0-9]{1,10}"
+                        min={1}
                         title="Left can only have numbers"
                         required
                       />
                     </FieldWithElement>
 
                     {/* All Listed Products? */}
-                    <FieldWithElement name={"All Listed Products?"} nameCols={5} elementCols={7} elementClassName={"pl-4"}>
-                      <select
-                        name="allProducts"
+                  <div className={"mt-3 row d-flex"}>
+                      <div className={"col-md-6"}>
+                      <span className="text">Add All Listed Products?</span>
+                      </div>
+                      <div className={"col-md-6"}>
+                      <input
+                        className={"ml-4 mt-3"}
+                        type="checkbox"
                         onChange={this.handleQueryParamChange}
                         defaultValue={this.state.queryParams.allProducts}
-                      >
-                        <option value={"false"}>No</option>
-                        <option value={"true"}>Yes</option>
-                      </select>
+                        name="allProducts" />
+                      </div>
+                      </div>
+                    {/* Min price */}
+                    <FieldWithElement name={"Minimum Product Price?"} nameCols={6} elementCols={6} elementClassName={"pl-4"}>
+                      <input
+                        type="number"
+                        className={"input-text"}
+                        placeholder="Min product price"
+                        name="minProductPrice"
+                        onChange={this.handleQueryParamChange}
+                        defaultValue={this.state.queryParams.minProductPrice}
+                        title="minProductPrice can only have numbers"
+                      />
+                    </FieldWithElement>
+
+                    {/* All Listed Extensions? */}
+                  <div className={"mt-3 row d-flex"}>
+                      <div className={"col-md-6"}>
+                      <span className="text">Add All Listed Extensions?</span>
+                      </div>
+                      <div className={"col-md-6"}>
+                      <input
+                        className={"ml-4 mt-3"}
+                        type="checkbox"
+                        onChange={this.handleQueryParamChange}
+                        defaultValue={this.state.queryParams.allExtensions}
+                        name="allExtensions" />
+                      </div>
+                      </div>
+                    {/* Min price */}
+                    <FieldWithElement name={"Minimum Extension Price?"} nameCols={6} elementCols={6} elementClassName={"pl-4"}>
+                      <input
+                        type="number"
+                        className={"input-text"}
+                        placeholder="Min extension price"
+                        name="minExtensionPrice"
+                        onChange={this.handleQueryParamChange}
+                        defaultValue={this.state.queryParams.minExtensionPrice}
+                        title="minExtensionPrice can only have numbers"
+                      />
                     </FieldWithElement>
 
                     {/* Active */}
-                    <FieldWithElement name={"Active"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                      <select
-                        id="active"
-                        name="active"
+                  <div className={"mt-3 row d-flex"}>
+                      <div className={"col-md-6"}>
+                      <span className="text">Activate</span>
+                      </div>
+                      <div className={"col-md-6"}>
+                      <input
+                        className={"ml-4 mt-3"}
+                        type="checkbox"
                         onChange={this.handleQueryParamChange}
                         defaultValue={this.state.queryParams.active}
-                        required
-                      >
-                        <option value="true">True</option>
-                        <option value="false">False</option>
-                      </select>
-                    </FieldWithElement>
+                        name="active" />
+                      </div>
+
+                      </div>
+
                     <div className={"d-flex justify-content-center"}>
                       <button
                         id="search"
