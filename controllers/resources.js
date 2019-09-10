@@ -37,7 +37,7 @@ const getCenters = () => {
     return axios.get(`/api/v2/admin/resources/centers`)
 }
 
-const getDemographicsCountriesGradYear = () => {
+const getDemographicsCountriesGradYears = () => {
     const gradYears = [];
     for (let i = 2026; i >= 2000; i--) {
         gradYears.push(i.toString());
@@ -53,5 +53,5 @@ module.exports = {
     getStates,
     getCountries,
     getCenters,
-    getDemographicsCountriesGradYear
+    getDemographicsCountriesGradYears
 };

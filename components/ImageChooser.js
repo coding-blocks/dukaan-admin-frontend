@@ -25,9 +25,10 @@ class ImageChooser extends React.Component {
       'https://minio.codingblocks.com/amoeba/c896bde5-e629-461d-877c-243d9a44cf15.compprog2png'
     ];
 
-    this.imagesHTML = images.map((url) => {
+    this.imagesHTML = images.map((url, index) => {
       return (
-        <img 
+        <img
+            key={index}
           src={url}
           width={100}
           onClick={() => {

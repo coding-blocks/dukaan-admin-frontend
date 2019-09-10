@@ -6,6 +6,15 @@ import resourcesController from "../controllers/resources";
 import usersController from "../controllers/users";
 import ErrorHandler from '../helpers/ErrorHandler';
 import Router from "next/router";
+import { css } from '@emotion/core';
+import { MoonLoader } from 'react-spinners';
+
+const override = css`
+    display: block;
+    margin: 2px auto;
+    border-color: red;
+`;
+
 
 class AddUser extends React.Component {
     constructor(props) {
@@ -26,12 +35,16 @@ class AddUser extends React.Component {
                 mobile_number: "",
                 email: "",
                 gradYear: "2026"
-            }
+            },
+            defaultDialCode: "+91",
+            usernameAvailability: "",
+            usernameLookupLoading: false,
+            usernameAvailabilityColor: ""
         };
     }
 
     componentDidMount() {
-        resourcesController.getDemographicsCountriesGradYear().then(([demographics, countries, gradYear]) => {
+        resourcesController.getDemographicsCountriesGradYears().then(([demographics, countries, gradYear]) => {
             this.setState({
                 colleges: demographics.data.colleges,
                 branches: demographics.data.branches,
@@ -52,8 +65,42 @@ class AddUser extends React.Component {
         let newFormValues = this.state.formValues;
         newFormValues[e.target.name] = e.target.value;
         this.setState({
-            formValues: newFormValues
+            formValues: newFormValues,
+            defaultDialCode: e.target.name === 'dial_code'?  e.target.value : "+91"
         });
+    };
+
+    onUsernameChange = e => {
+        let newFormValues = this.state.formValues;
+        newFormValues[e.target.name] = e.target.value;
+        this.setState({
+            formValues: newFormValues,
+        });
+        if(e.target.value.length>3){
+            this.setState({
+                usernameLookupLoading: true
+            });
+            usersController.getUsernameAvailability(e.target.value).then((response) => {
+                this.setState({
+                    usernameAvailability: response.data.message,
+                    usernameAvailabilityColor: '#32CD32'
+                });
+            }).catch((err) => {
+                if(err.response.data.status === 422)
+                this.setState({
+                    usernameAvailability: err.response.data.message,
+                    usernameAvailabilityColor: 'tomato',
+                });
+            }).finally(() => {
+                this.setState({
+                    usernameLookupLoading: false
+                });
+            })
+        }else {
+            this.setState({
+                usernameAvailability: ''
+            });
+        }
     };
 
     /**
@@ -141,15 +188,32 @@ class AddUser extends React.Component {
                     <form id="add_user_form">
                         {/* username */}
                         <FieldWithElement nameCols={3} elementCols={9} name={"Username"}>
-                            <input
-                                type="text"
-                                className={"input-text icon user-bg"}
-                                placeholder="Username"
-                                name={"username"}
-                                onChange={this.onChangeValue}
-                                value={this.state.formValues.username}
-                                required
-                            />
+                            <h6 className="t-align-r card-md" style={{fontWeight:200, color:this.state.usernameAvailabilityColor}} >
+                                {this.state.usernameAvailability}
+                            </h6>
+                            <div className="d-flex">
+
+                                <input
+                                    type="text"
+                                    className={"input-text icon user-bg"}
+                                    placeholder="Username"
+                                    name={"username"}
+                                    onChange={this.onUsernameChange}
+                                    value={this.state.formValues.username}
+                                    required
+                                />
+                                <MoonLoader
+                                    css={override}
+                                    sizeUnit={"px"}
+                                    size={30}
+                                    color={'#f66'}
+                                    loading={this.state.usernameLookupLoading}
+                                />
+                            </div>
+
+                            <div className='sweet-loading'>
+
+                            </div>
                         </FieldWithElement>
 
                         <FieldWithElement nameCols={3} elementCols={9} name={"Firstname"}>
@@ -210,21 +274,14 @@ class AddUser extends React.Component {
                                 name="dial_code"
                                 onChange={this.onChangeValue}
                                 required
+                                value={this.state.defaultDialCode}
                             >
-                                {this.state.countries.map((country, index)=> {
-                                    if (country.dial_code === "+91") {
-                                        return (
-                                            <option value={country.dial_code} key={country.id} selected >
-                                                {country.name} {`(${country.dial_code})`}
-                                            </option>
-                                        );
-                                    } else {
-                                        return (
-                                            <option value={country.dial_code} key={country.id}>
-                                                {country.name} {`(${country.dial_code})`}
-                                            </option>
-                                        );
-                                    }
+                                {this.state.countries.map((country, index) => {
+                                    return (
+                                        <option value={country.dial_code} key={country.id}>
+                                            {country.name} {`(${country.dial_code})`}
+                                        </option>
+                                    );
                                 })}
                             </select>
                         </FieldWithElement>

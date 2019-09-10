@@ -10,185 +10,115 @@ import purchasesController from "../controllers/purchases";
 import resourcesController from "../controllers/resources";
 import productsController from "../controllers/products";
 import productCategoriesController from "../controllers/productcategories";
-import Router from "next/router";
-import ErrorHandler from "../helpers/ErrorHandler";
 
 class NewPayment extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedUser: {},
-      states: [],
-      product_categories: [],
-      products: [],
-      product_category: "1",
-      amount: "",
-      min_emi: "",
-      centers: [],
-      id: props.id,
-      formValues: {
-        coupon: "",
-        comment: "",
-        paymentMode: "cash",
-        quantity: "1",
-        stateId: "AP",
-        oneauthId: "" + props.userid
-      }
-    };
-    this.ReactSwal = withReactContent(Swal);
-  }
+    constructor(props) {
+        super(props);
+        this.state = {
+            selectedUser: {},
+            states: [],
+            product_categories: [],
+            products: [],
+            product_category: "",
+            amount: "",
+            min_emi: "",
+            centers: [],
+            id: props.id,
+            formValues: {
+                coupon: "",
+                comment: "",
+                paymentMode: "cash",
+                quantity: "1",
+                stateId: "AP",
+                oneauthId: "" + props.userid
+            }
+        };
+        this.ReactSwal = withReactContent(Swal);
+    }
 
-  componentDidMount() {
-    Promise.all([
-      resourcesController.getStates(),
-      productCategoriesController.handleGetAllProductCategories(),
-      productsController.handleGetProducts(
-        {
-          product_category_id: this.state.product_category
-        },
-        {
-          page: 1,
-          limit: 100
-        }
-      ),
-      resourcesController.getCenters()
-    ])
-      .then(([res1, res2, res3, res4]) => {
-        let fetchedProducts = [];
-        res3.results.map(product => {
-          fetchedProducts.push(product);
-        });
-        this.setState({
-          selectedUser: this.props.selectedUser,
-          showOrders: this.props.showOrders,
-          centers: res4.data,
-          states: res1.data,
-          products: fetchedProducts,
-          product_categories: res2.data
-        });
-      })
-      .catch(error => {
-        Swal.fire({
-          type: "error",
-          title: "Error fetching data!",
-          text: error
-        });
-    })
-  }
+    componentDidMount() {
+        Promise.all([
+            resourcesController.getStates(),
+            productCategoriesController.handleGetAllProductCategories(),
+            resourcesController.getCenters()
+        ]).then(([states, productCategories, centers]) => {
+            this.setState({
+                selectedUser: this.props.selectedUser,
+                showOrders: this.props.showOrders,
+                centers: centers.data,
+                states: states.data,
+                product_categories: productCategories.data
+            });
+        }).catch(error => {
+            Swal.fire({
+                type: "error",
+                title: "Error fetching data!",
+                text: error
+            });
+        })
+    }
+
     calculateAmount = e => {
         e.preventDefault();
-        const data = {
-            coupon: this.state.formValues.coupon,
-            oneauthId: this.props.userid,
-            productId: this.state.formValues.productId,
-            quantity: this.state.formValues.quantity
-        };
-
-        productsController
-            .handleCalculatePrice(data)
-            .then(res => {
+        if (this.state.formValues.productId) {
+            productsController.handleCalculatePrice({
+                coupon: this.state.formValues.coupon.toUpperCase(),
+                oneauthId: this.props.userid,
+                productId: this.state.formValues.productId,
+                quantity: this.state.formValues.quantity
+            }).then((res) => {
                 if (res.data.amount >= 0 && res.data.couponApplied) {
                     this.setState({
                         amount: formatter.paisaToRs(res.data.amount)
                     });
-                    Swal.fire({
+                    return Swal.fire({
                         type: "success",
-                        title: `Coupon code: ${
-                            this.state.formValues.coupon
-                        } applied successfully!!
-                Total Amount to pay: ${formatter.paisaToRs(res.data.amount)}
-                `
+                        title: `Coupon ${this.state.formValues.coupon.toUpperCase()} applied successfully! \n Amount to pay ₹${formatter.paisaToRs(res.data.amount)}`
                     });
-                } else if (
-                    res.data.amount >= 0 &&
-                    !res.data.couponApplied &&
-                    this.state.formValues.coupon
-                ) {
+                } else if (res.data.amount >= 0 && !res.data.couponApplied && this.state.formValues.coupon) {
                     this.setState({
                         amount: formatter.paisaToRs(res.data.amount)
                     });
-                    Swal.fire({
+                    return Swal.fire({
                         type: "error",
-                        title: `Coupon code: ${
-                            this.state.formValues.coupon
-                        } not applied successfully !!
-                Total Amount to pay: ${formatter.paisaToRs(res.data.amount)}
-                `
+                        title: `Coupon ${this.state.formValues.coupon.toUpperCase()} not applied \n Amount to pay ₹${formatter.paisaToRs(res.data.amount)}`
                     });
-                } else if (
-                    res.data.amount >= 0 &&
-                    !res.data.couponApplied &&
-                    !this.state.formValues.coupon
-                ) {
+                } else if (res.data.amount >= 0 && !res.data.couponApplied && !this.state.formValues.coupon) {
                     this.setState({
                         amount: formatter.paisaToRs(res.data.amount)
                     });
                 }
-            })
-            .catch(error => {
-                Swal.fire({
+            }).catch(error => {
+                return Swal.fire({
                     type: "error",
                     text: error,
                     title: "Error calculating price!"
                 });
             });
+        } else {
+
+        }
+
     };
 
     handleProductCategory = e => {
         this.setState({
-            [e.target.name]: e.target.value
+            product_category: e.target.value
         });
-  };
+        productsController.handleGetProducts({
+                product_category_id: e.target.value
+            }, {
+                page: 1,
+                limit: 100
+            }
+        ).then((response) => {
+            this.setState({
+                products: response.results
+            });
+        })
+    };
 
-  onChangeValue = e => {
-    let newFormValues = this.state.formValues;
-    newFormValues[e.target.name] = e.target.value;
-    this.setState({
-      formValues: newFormValues
-    });
-  };
-
-  onChangeHandler = e => {
-    let newFormValues = this.state.formValues;
-    newFormValues[e.target.name] = e.target.value;
-    let min_emi = e.target.selectedOptions[0].dataset.emi / 100;
-    this.setState({
-      min_emi: min_emi,
-      formValues: newFormValues
-    });
-  };
-
-  toggleCheck = e => {
-    let newFormValues = this.state.formValues;
-    newFormValues[e.target.name] = e.target.checked;
-
-    this.setState({
-      formValues: newFormValues
-    });
-  };
-
-  /**
-   * Custom Validations for the new payment form
-   * @return {boolean} isValid – Returns a bool that tells
-   *  if the form passed validation
-   */
-  customValidations = () => {
-    if (!document.getElementById("new_payment_form").checkValidity()) {
-      document.getElementById("new_payment_form").reportValidity();
-      return false;
-    }
-    if (this.state.min_emi > this.state.formValues.partialAmount) {
-      Swal.fire({
-        title: "Error adding new payment!",
-        text: `Partial payment cannot be less than ${this.state.min_emi}`,
-        type: "error"
-      });
-      return false;
-    }
-    return true;
-  };
-
-      onChangeValue = e => {
+    onChangeValue = e => {
         let newFormValues = this.state.formValues;
         newFormValues[e.target.name] = e.target.value;
         this.setState({
@@ -200,7 +130,6 @@ class NewPayment extends React.Component {
         let newFormValues = this.state.formValues;
         newFormValues[e.target.name] = e.target.value;
         let min_emi = e.target.selectedOptions[0].dataset.emi / 100;
-        console.log(min_emi);
         this.setState({
             min_emi: min_emi,
             formValues: newFormValues
@@ -256,29 +185,23 @@ class NewPayment extends React.Component {
             }).then(result => {
                 if (result.value) {
                     // Confirmation passed, delete coupon.
-
-                    const data = this.state.formValues;
-                    purchasesController
-                        .handleCreateNewPurchase(data)
-                        .then(() => {
-                            Swal.fire({
-                                title: "Payment has been recorded successfully!",
-                                type: "success",
-                                timer: "3000",
-                                showConfirmButton: true,
-                                confirmButtonText: "Okay"
-                            });
-                            this.props.showOrders(this.state.selectedUser);
-                        })
-                        .catch(err => {
-                            console.log(err);
-                            Swal.fire({
-                                title: "Error while making payment!",
-                                text: err,
-                                type: "error",
-                                showConfirmButton: true
-                            });
+                    purchasesController.handleCreateNewPurchase(this.state.formValues).then(() => {
+                        Swal.fire({
+                            title: "Payment has been recorded successfully!",
+                            type: "success",
+                            timer: "3000",
+                            showConfirmButton: true,
+                            confirmButtonText: "Okay"
                         });
+                        this.props.showOrders(this.state.selectedUser);
+                    }).catch(err => {
+                        Swal.fire({
+                            title: "Error while making payment!",
+                            text: err,
+                            type: "error",
+                            showConfirmButton: true
+                        });
+                    });
                 }
             });
         }
@@ -449,17 +372,18 @@ class NewPayment extends React.Component {
 
                         {/* username */}
                         <FieldWithElement
-                            name={"Select Category For Course"}
+                            name={"Select course category"}
                             nameCols={3}
                             elementCols={9}
                             elementClassName={"pl-4"}
                         >
                             <select
                                 name="product_category"
+                                defaultValue={"select"}
                                 onChange={this.handleProductCategory}
                                 required
                             >
-                                <option value="" selected>
+                                <option value="select" disabled={true}>
                                     Select Category
                                 </option>
                                 {this.state.product_categories.map(category => (
@@ -471,7 +395,7 @@ class NewPayment extends React.Component {
                         </FieldWithElement>
 
                         <FieldWithElement
-                            name={"Select Course"}
+                            name={"Select course"}
                             nameCols={3}
                             elementCols={9}
                             elementClassName={"pl-4"}
@@ -480,9 +404,10 @@ class NewPayment extends React.Component {
                                 id="course"
                                 name="productId"
                                 required
+                                defaultValue={"select"}
                                 onChange={this.onChangeHandler}
                             >
-                                <option value="" selected>
+                                <option value="select" disabled={true}>
                                     Select Course
                                 </option>
                                 {this.state.products.map(product => {
@@ -501,7 +426,7 @@ class NewPayment extends React.Component {
                         </FieldWithElement>
 
                         <FieldWithElement
-                            name={"Selling State"}
+                            name={"Select selling state"}
                             nameCols={3}
                             elementCols={9}
                             elementClassName={"pl-4"}
@@ -519,7 +444,7 @@ class NewPayment extends React.Component {
                         <div className="divider-h mb-5 mt-5"/>
                         {/* gender */}
                         <FieldWithElement
-                            name={"Payment Center"}
+                            name={"Select payment Center"}
                             nameCols={3}
                             elementCols={9}
                             elementClassName={"pl-4"}
@@ -527,9 +452,10 @@ class NewPayment extends React.Component {
                             <select
                                 name="paymentCenterId"
                                 required
+                                defaultValue={"select"}
                                 onChange={this.onChangeValue}
                             >
-                                <option value="" selected>
+                                <option value="select" disabled={true}>
                                     Select Payment Center
                                 </option>
                                 {this.state.centers.map(center => {
@@ -546,7 +472,7 @@ class NewPayment extends React.Component {
                             <input
                                 type="text"
                                 className={"input-text"}
-                                placeholder="Coupon Code"
+                                placeholder="Add a coupon code"
                                 name={"coupon"}
                                 onChange={this.onChangeValue}
                                 value={this.state.formValues.mobile_number}
@@ -557,7 +483,7 @@ class NewPayment extends React.Component {
                             <input
                                 type="text"
                                 className={"input-text"}
-                                placeholder="Write Your Comment Here"
+                                placeholder="Place a comment"
                                 name={"comment"}
                                 onChange={this.onChangeValue}
                                 value={this.state.formValues.mobile_number}
@@ -570,14 +496,6 @@ class NewPayment extends React.Component {
                             elementCols={4}
                             name={"Total Amount (Rs.) = (Price - Discount - Credits) + Tax :"}
                         >
-                            {/* <input
-                type="text"
-                className={"input-text"}
-                name={"amount"}
-                onChange={this.onChangeValue}
-                value={this.state.amount}
-                readOnly
-              /> */}
                             <Price amount={this.state.amount}/>
                         </FieldWithElement>
 
@@ -587,14 +505,11 @@ class NewPayment extends React.Component {
                                 className={"button-solid mb-2 mt-4 pl-5 pr-5"}
                                 onClick={this.calculateAmount}
                             >
-                                Calculate Amount
+                                Calculate amount to pay
                             </button>
                         </div>
                         <div className="divider-h mb-5 mt-5"/>
 
-                        {/* code */}
-
-                        {/* Colleges */}
                         <FieldWithElement
                             name={"Choose Payment Method"}
                             nameCols={3}
@@ -602,7 +517,7 @@ class NewPayment extends React.Component {
                             elementClassName={"pl-4"}
                         >
                             <select name="paymentMode" onChange={this.onChangeValue}>
-                                <option selected value="cash">
+                                <option value="cash">
                                     CASH
                                 </option>
                                 <option value="neft">NEFT</option>
@@ -632,7 +547,7 @@ class NewPayment extends React.Component {
                                         name="partialPayment"
                                         onChange={this.toggleCheck}
                                     />{" "}
-                                    Click For Partial Payment
+                                    Make this payment partial?
                                     <span/>
                                 </label>
                             </div>
