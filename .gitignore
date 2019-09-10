@@ -10,7 +10,8 @@
 /build
 /dist
 /.next
-
+/out
+.idea
 # misc
 .DS_Store
 .env
