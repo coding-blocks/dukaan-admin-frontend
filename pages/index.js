@@ -5,6 +5,7 @@ import Layout from "../components/layout";
 import AddUser from "../components/AddUser";
 import CheckLogin from "../components/CheckLogin";
 import userController from "../controllers/users";
+import ErrorBoundary from "../components/ErrorBoundary";
 import swal from "sweetalert2";
 import AsyncSelect from "react-select/async";
 
@@ -190,50 +191,51 @@ class Home extends React.Component {
 
   render() {
     return (
-      <CheckLogin>
-        <div>
-          <Head title="Coding Blocks | Dukaan" />
-          <Layout>
-            {/* Search User */}
-            <div className="container mt-4">
-              <div className="row">
-                <div className="col-md-12 col-12">
-                  <div className={"d-flex"}>
-                    <form
-                      id={"email-search-form"}
-                      className={"d-flex col-md-12 px-0"}
-                    >
-                      <div className="col-md-12 col-12">
-                        <AsyncSelect
-                          cacheOptions
-                          defaultOptions
-                          placeholder="Enter Email.."
-                          loadOptions={this.loadOptions}
-                          onChange={this.handleEmailChange}
-                          styles={customStyles}
-                        />
-                      </div>
-
-                      <Link href={`/admin/orders?id=${this.state.id}`}>
-                        <button
-                          id="search"
-                          className="button-solid mb-1"
-                          style={{ fontSize: "1.3rem" }}
-                          onClick={this.handleSearch}
+        <ErrorBoundary>
+          <CheckLogin>
+            <div>
+              <Head title="Coding Blocks | Dukaan" />
+              <Layout>
+                {/* Search User */}
+                <div className="container mt-4">
+                  <div className="row">
+                    <div className="col-md-12 col-12">
+                      <div className={"d-flex"}>
+                        <form
+                            id={"email-search-form"}
+                            className={"d-flex col-md-12 px-0"}
                         >
-                          Search
-                        </button>
-                      </Link>
-                    </form>
+                          <div className="col-md-12 col-12">
+                            <AsyncSelect
+                                cacheOptions
+                                defaultOptions
+                                placeholder="Enter Email.."
+                                loadOptions={this.loadOptions}
+                                onChange={this.handleEmailChange}
+                                styles={customStyles}
+                            />
+                          </div>
+
+                          <Link href={`/admin/orders?id=${this.state.id}`}>
+                            <button
+                                id="search"
+                                className="button-solid mb-1"
+                                style={{ fontSize: "1.3rem" }}
+                                onClick={this.handleSearch}
+                            >
+                              Search
+                            </button>
+                          </Link>
+                        </form>
+                      </div>
+                    </div>
+                    {this.state.createUser ? <AddUser /> : ""}
                   </div>
                 </div>
-                {this.state.createUser ? <AddUser /> : ""}
-              </div>
+              </Layout>
             </div>
-          </Layout>
-        </div>
-      </CheckLogin>
-
+          </CheckLogin>
+        </ErrorBoundary>
     );
   }
 }

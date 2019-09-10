@@ -7,25 +7,28 @@ import Loader from '../components/loader';
 
 class Logout extends React.Component {
 
-  constructor(props) {
-    super(props);
-  }
+    constructor(props) {
+        super(props);
+    }
 
-  componentDidMount() {
-    Cookies.remove('dukaan-token', { expires: 7, path: '/', domain: ".codingblocks.xyz" });
-    Cookies.remove('oneauth');
-    window.location = config.domain;
-  }
+    componentDidMount() {
+        Cookies.remove('dukaan-token', {
+            expires: 7,
+            path: '/',
+            domain: config.dukaan_backend.cookie_domain
+        });
+        window.location = config.domain;
+    }
 
-  render() {
-    return (
-      <div>
-        <Head />
-        <Layout title={"Logging out... | Dukaan | Coding Blocks"} />
-        <Loader />
-      </div>
-    )
-  }
+    render() {
+        return (
+            <div>
+                <Head/>
+                <Layout title={"Logging out... | Dukaan | Coding Blocks"}/>
+                <Loader/>
+            </div>
+        )
+    }
 
 }
 

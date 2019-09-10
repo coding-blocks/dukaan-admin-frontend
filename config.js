@@ -25,7 +25,8 @@ const config = {
     },
     dukaan_backend: {
         domain: settings.dukaan_backend.domain,
-        token_url: process.env.TOKEN_URL || `${settings.dukaan_backend.domain}/auth/token`
+        token_url: process.env.TOKEN_URL || `${settings.dukaan_backend.domain}/auth/token`,
+        cookie_domain: process.env.COOKIE_DOMAIN
     },
 };
 
