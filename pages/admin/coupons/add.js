@@ -238,7 +238,7 @@ class AddCoupon extends React.Component {
                     {/* All Listed Products? */}
                   <div className={"mt-3 row d-flex"}>
                       <div className={"col-md-6"}>
-                      <span class="text">Add All Listed Products?</span>
+                      <span className="text">Add All Listed Products?</span>
                       </div>
                       <div className={"col-md-6"}>
                       <input
@@ -265,7 +265,7 @@ class AddCoupon extends React.Component {
                     {/* All Listed Extensions? */}
                   <div className={"mt-3 row d-flex"}>
                       <div className={"col-md-6"}>
-                      <span class="text">Add All Listed Extensions?</span>
+                      <span className="text">Add All Listed Extensions?</span>
                       </div>
                       <div className={"col-md-6"}>
                       <input
@@ -292,7 +292,7 @@ class AddCoupon extends React.Component {
                     {/* Active */}
                   <div className={"mt-3 row d-flex"}>
                       <div className={"col-md-6"}>
-                      <span class="text">Activate</span>
+                      <span className="text">Activate</span>
                       </div>
                       <div className={"col-md-6"}>
                       <input

@@ -67,8 +67,19 @@ const handleAddUser = data => {
   return response;
 };
 
+
+const getUsernameAvailability = username => {
+    return axios.get(`/api/v2/admin/signup_check/username`, {
+      params: {
+        username: encodeURIComponent(username)
+      },
+    })
+
+};
+
 module.exports = {
   handleGetUserByEmail,
   handleAddUser,
-  handleGetUserById
+  handleGetUserById,
+  getUsernameAvailability
 };

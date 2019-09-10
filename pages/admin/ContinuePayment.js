@@ -13,22 +13,6 @@ class continuePayment extends React.Component {
       minBase: query.minBase
     };
   }
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     id: "",
-  //     cart_id: "",
-  //     userid: "",
-  //     courseInfo: null,
-  //     amountLeft: "",
-  //     formValues: {}
-  //   };
-  // }
-  // componentDidMount() {
-  //   this.setState({
-  //       ...this.props
-  //   });
-  // }
 
   render() {
     return (
