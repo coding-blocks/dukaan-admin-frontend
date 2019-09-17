@@ -6,16 +6,7 @@ import resourcesController from "../controllers/resources";
 import usersController from "../controllers/users";
 import ErrorHandler from '../helpers/ErrorHandler';
 import Router from "next/router";
-import {css} from '@emotion/core';
-import {MoonLoader} from 'react-spinners';
 import {Formik, Field} from 'formik';
-
-const override = css`
-    display: block;
-    margin: 2px auto;
-    border-color: red;
-`;
-
 
 class AddUser extends React.Component {
     constructor(props) {
@@ -25,10 +16,7 @@ class AddUser extends React.Component {
             branches: [],
             gradYear: [],
             countries: [],
-            username: "",
-            usernameAvailability: "",
-            usernameLookupLoading: false,
-            usernameAvailabilityColor: ""
+            usernameAvailable: null
         };
     }
 
@@ -51,116 +39,58 @@ class AddUser extends React.Component {
     }
 
 
-    onUsernameChange = e => {
-        this.setState({
-            username: e.target.value,
-        });
-        if (e.target.value.length > 3) {
-            this.setState({
-                usernameLookupLoading: true
-            });
-            usersController.getUsernameAvailability(e.target.value).then((response) => {
-                this.setState({
-                    usernameAvailability: response.data.message,
-                    usernameAvailabilityColor: '#32CD32'
-                });
+    validateUsername = username => {
+        if (username.length > 3)
+            return usersController.getUsernameAvailability(username).then((response) => {
             }).catch((err) => {
                 if (err.response.data.status === 422)
-                    this.setState({
-                        usernameAvailability: err.response.data.message,
-                        usernameAvailabilityColor: 'tomato',
-                    });
-            }).finally(() => {
-                this.setState({
-                    usernameLookupLoading: false
-                });
+                    return err.response.data.message
             })
-        } else {
-            this.setState({
-                usernameAvailability: ''
-            });
-        }
     };
 
-    validateUsername = e => {
-        return usersController.getUsernameAvailability(e.target.value).then((response) => {
-            return response.data.message;
-        }).catch((err) => {
-            if (err.response.data.status === 422)
-                return err.response.data.message;
-        })
-    };
 
-    /**
-     * Custom validations method for the add user form
-     * @return {boolean} – if the validation passed or not
-     */
-    customValidations = () => {
-        if (!document.getElementById("add_user_form").checkValidity()) {
-            document.getElementById("add_user_form").reportValidity();
-            return false;
-        } else {
-            return true;
-        }
-    };
+    renameKeys = (keysMap, obj) => Object
+        .keys(obj)
+        .reduce((acc, key) => ({
+            ...acc,
+            ...{[keysMap[key] || key]: obj[key]}
+        }), {});
 
-    handleSubmit = async e => {
-        e.preventDefault();
-        if (this.customValidations()) {
-            Swal.fire({
-                title: "Are you sure you want to add a user?",
-                type: "question",
-                html: `Username: ${this.state.formValues.username}<br/>Name : ${
-                    this.state.formValues.firstname
-                } ${this.state.formValues.lastname}<br/> Phone: ${
-                    this.state.formValues.mobile_number
-                }<br/>Email Id: ${this.state.formValues.email}<br/>`,
-                confirmButtonColor: "#f66",
-                confirmButtonText: "Yes!",
-                cancelButtonText: "No!",
-                showCancelButton: true,
-                showConfirmButton: true,
-                showCloseButton: true
-            }).then(result => {
-                if (result.value) {
-                    // Confirmation passed
-                    const data = this.state.formValues;
-                    usersController
-                        .handleAddUser(data)
-                        .then(res => {
-                            Swal.fire({
-                                title: "User added!",
-                                type: "success",
-                                timer: "3000",
-                                showConfirmButton: true,
-                                confirmButtonText: "Okay"
-                            });
-                            // Reset the form
-                            let formValues = this.state.formValues;
-                            Object.keys(formValues).map(key => {
-                                formValues[key] = "";
-                            });
-                            formValues.gender = "male";
-                            formValues.dial_code = "+91";
-                            formValues.gradYear = "2026";
-                            formValues.collegeId = "1";
-                            formValues.branchId = "1";
-                            this.setState({
-                                formValues
-                            });
-                            Router.push(`/admin/orders?id=${res.data.id}`);
-                        })
-                        .catch(error => {
-                            Swal.fire({
-                                title: "Error while adding user!",
-                                type: "error",
-                                text: error
-                            });
-                        });
-                }
-            });
-        }
-    };
+    submitFormShowingSweetAlert = (formValues) => {
+        Swal.fire({
+            title: "Create new user?",
+            html: `Username: ${formValues.username}<br/>Name : ${
+                formValues.firstname
+            } ${formValues.lastname}<br/> Phone: ${
+                formValues.mobile_number
+            }<br/>Email Id: ${formValues.email}<br/>`,
+            confirmButtonColor: "#f66",
+            confirmButtonText: "Yes!",
+            cancelButtonText: "No!",
+            showCancelButton: true,
+            showConfirmButton: true,
+            showCloseButton: true
+        }).then((result) => {
+            if (result.value) {
+                usersController.handleAddUser(formValues).then(res => {
+                    Swal.fire({
+                        title: "User added!",
+                        type: "success",
+                        timer: "3000",
+                        showConfirmButton: true,
+                        confirmButtonText: "Okay"
+                    });
+                    Router.push(`/admin/orders?id=${res.data.id}`);
+                }).catch(error => {
+                    Swal.fire({
+                        title: "Error while adding user!",
+                        type: "error",
+                        text: error
+                    });
+                });
+            }
+        });
+    }
 
     render() {
         return (
@@ -196,6 +126,9 @@ class AddUser extends React.Component {
                             if (!values.firstName) {
                                 errors.firstName = 'First Name is Required';
                             }
+                            if (!values.username) {
+                                errors.username = 'Username is Required';
+                            }
                             if (!values.lastName) {
                                 errors.lastName = 'Last Name is required';
                             }
@@ -205,10 +138,13 @@ class AddUser extends React.Component {
                             return errors;
                         }}
                         onSubmit={(values, {setSubmitting}) => {
-                            setTimeout(() => {
-                                alert(JSON.stringify(values, null, 2));
-                                setSubmitting(false);
-                            }, 400);
+                            const keysMap = {
+                                firstName: 'firstname',
+                                lastName: 'lastname',
+                                dialCode: 'dial_code',
+                                mobileNumber: 'mobile_number'
+                            };
+                            this.submitFormShowingSweetAlert(this.renameKeys(keysMap, values))
                         }}
                     >
                         {({
@@ -219,37 +155,24 @@ class AddUser extends React.Component {
                               handleBlur,
                               handleSubmit,
                               isSubmitting,
-                              /* and other goodies */
                           }) => (
                             <form id="add_user_form" onSubmit={handleSubmit}>
                                 {/* username */}
-                                <FieldWithElement nameCols={3} elementCols={9} name={"Username"}>
-                                    <h6 className="t-align-r card-md"
-                                        style={{fontWeight: 200, color: this.state.usernameAvailabilityColor}}>
-                                        {this.state.usernameAvailability}
-                                    </h6>
-                                    <div className="d-flex">
-                                        <Field
-                                            name={"username"}
-                                            required type={"text"}
-                                            className={"input-text icon user-bg"}
-                                            placeholder="Username"
-                                            onChange={handleChange}
-                                            value={values.username}
-                                            validate={this.validateUsername}
-                                        />
-                                        <MoonLoader
-                                            css={override}
-                                            sizeUnit={"px"}
-                                            size={30}
-                                            color={'#f66'}
-                                            loading={this.state.usernameLookupLoading}
-                                        />
-                                    </div>
-
-                                    <div className='sweet-loading'>
-
-                                    </div>
+                                <FieldWithElement
+                                    nameCols={3}
+                                    elementCols={9}
+                                    name={"Username"}
+                                    errorColor={'tomato'}
+                                    errors={errors.username}>
+                                    <Field
+                                        name={"username"}
+                                        required type={"text"}
+                                        className={"input-text icon user-bg"}
+                                        placeholder="Username"
+                                        onChange={handleChange}
+                                        value={values.username}
+                                        validate={this.validateUsername}
+                                    />
                                 </FieldWithElement>
 
                                 <FieldWithElement
@@ -433,9 +356,8 @@ class AddUser extends React.Component {
                                 <div className={"d-flex justify-content-center"}>
                                     <button
                                         id="search"
+                                        type="submit"
                                         className={"button-solid ml-4 mb-2 mt-4 pl-5 pr-5"}
-                                        disabled={isSubmitting}
-                                        onSubmit={handleSubmit}
                                     >
                                         Create User
                                     </button>
