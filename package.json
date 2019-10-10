@@ -8,7 +8,8 @@
     "start": "NODE_ENV=production next start",
     "export": "next export",
     "deploy": "next build && next export",
-    "eject": "next eject"
+    "eject": "next eject",
+    "preinstall": "node -e \"if(process.env.npm_execpath.indexOf('yarn') === -1) throw new Error('You must use Yarn to install, not NPM')\""
   },
   "repository": {
     "type": "git",
@@ -34,6 +35,7 @@
     "cookie-parser": "^1.4.4",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
+    "formik": "^1.5.8",
     "js-cookie": "^2.2.0",
     "js-cookies": "^1.0.4",
     "jsonwebtoken": "^8.5.1",

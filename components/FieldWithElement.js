@@ -10,6 +10,10 @@ class FieldWithElement extends React.Component {
                 </div>
                 <div className={`element col-md-${this.props.elementCols}`}>
                     {this.props.children}
+                    <h6 className="t-align-r card-md"
+                        style={{fontWeight: 200, color: this.props.errorColor}}>
+                        {this.props.errors}
+                    </h6>
                 </div>
             </div>
         )
