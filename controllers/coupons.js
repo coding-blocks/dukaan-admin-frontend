@@ -113,19 +113,35 @@ const handleAddCoupon = (queryParams) => {
   return response;
 }
 
+const handleAddBulkCoupons = (queryParams) => {
+    let response = new Promise((resolve, reject) => {
+        axios.post(`/api/v2/admin/coupons/bulk`, queryParams).then((r) => {
+            const url = window.URL.createObjectURL(new Blob([r.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'coupons.txt');
+            document.body.appendChild(link);
+            link.click();
+            resolve(r.data);
+        }).catch((error) => {
+            reject(ErrorHandler.handle(error));
+        });
+    });
+    return response;
+}
 /**
  * Sends the coupon ID to delete
  * @param {int} id 
  */
 const handleDeleteCoupon = (id) => {
-  let response = new Promise((resolve, reject) => {
-    axios.delete(`/api/v2/admin/coupons/`+id).then((response) => {
-      resolve(response);
-    }).catch((error) => {
-      reject(ErrorHandler.handle(error));
-    });  
-  });
-  return response;
+    let response = new Promise((resolve, reject) => {
+        axios.delete(`/api/v2/admin/coupons/`+id).then((response) => {
+            resolve(response);
+        }).catch((error) => {
+            reject(ErrorHandler.handle(error));
+        });  
+    });
+    return response;
 }
 
 module.exports = {
@@ -133,5 +149,6 @@ module.exports = {
   handleEditCoupon,
   handleGetCouponFromID,
   handleAddCoupon,
+  handleAddBulkCoupons,
   handleDeleteCoupon
 };
