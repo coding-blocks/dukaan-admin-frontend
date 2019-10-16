@@ -3,7 +3,7 @@ const http = express();
 const { parse } = require('url');
 const next = require('next');
 const axios = require('axios');
-const dev = process.env.NODE_ENV !== 'production';
+const dev = process.env.NODE_ENV || 5959 !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 const config = require('./config');
