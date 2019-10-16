@@ -33,6 +33,9 @@ class Home extends React.Component {
         const search = window.location.search;
         const params = new URLSearchParams(search);
         const userId = params.get('id');
+        if(!userId){
+            window.location.href = '/'
+        }
         purchasesController
             .handleGetPurchases(userId).then((res) => {
             if (res.data) {
@@ -230,7 +233,7 @@ class Home extends React.Component {
         return (
             <CheckLogin>
                 <div>
-                    <Head title="Coding Blocks | Dukaan"/>
+                    <Head title="User Orders | Dukaan"/>
                     <Layout>
                         <div className="container mt-4">
                             <div className="row">
