@@ -110,7 +110,7 @@ class AddUser extends React.Component {
                             username: "",
                             firstName: "",
                             lastName: "",
-                            gender: "male",
+                            gender: "MALE",
                             dialCode: "+91",
                             collegeId: "1",
                             branchId: "1",
@@ -272,11 +272,11 @@ class AddUser extends React.Component {
                                         value={values.gender}
                                         required
                                     >
-                                        <option value="male">
+                                        <option value="MALE">
                                             Male
                                         </option>
-                                        <option value="female">Female</option>
-                                        <option value="undisclosed">Undisclosed</option>
+                                        <option value="FEMALE">Female</option>
+                                        <option value="UNDISCLOSED">Undisclosed</option>
                                     </select>
                                 </FieldWithElement>
 
@@ -371,9 +371,10 @@ class AddUser extends React.Component {
                                     elementClassName={"pl-4"}
                                 >
                                     <select
-                                        id="grad_year"
+                                        id="gradYear"
                                         name="gradYear"
-                                        onChange={this.onChangeValue}
+                                        onChange={handleChange}
+                                        value={values.gradYear}
                                     >
                                         {this.state.gradYear.map((year, index) => {
                                             return <option key={year} value={year}>{year}</option>;

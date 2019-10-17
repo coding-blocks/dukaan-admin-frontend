@@ -47,6 +47,10 @@ const handleGetUserById = id => {
   return response;
 };
 
+const getUserByFromOneAuthByOneAuthId = (oneauthId) => {
+  return axios.get(`/api/v2/admin/users/oneauth/` + oneauthId)
+}
+
 /**
  * Add the user
  * @param {object} data – Object with user data
@@ -77,9 +81,17 @@ const getUsernameAvailability = username => {
 
 };
 
+const updateUserDetails = (values) => {
+    return axios
+        .patch(`/api/v2/admin/users`, values)
+
+};
+
 module.exports = {
   handleGetUserByEmail,
   handleAddUser,
   handleGetUserById,
-  getUsernameAvailability
+  getUsernameAvailability,
+  getUserByFromOneAuthByOneAuthId,
+  updateUserDetails
 };

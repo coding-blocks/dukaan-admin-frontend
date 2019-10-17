@@ -10,7 +10,7 @@ const SingleUserDetail = ({ userInfo, showOrders, handleNewPayment }) => {
               </div>
 
               <div className = {"ml-4"}>
-                  <Link href={`/admin/users/edit?id=${userInfo.id}`}>
+                  <Link href={`/admin/users/edit?oneauthId=${userInfo.oneauth_id}`}>
                       <button className={"button-solid"}>
                           Edit Details
                       </button>
