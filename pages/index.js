@@ -8,236 +8,145 @@ import userController from "../controllers/users";
 import ErrorBoundary from "../components/ErrorBoundary";
 import swal from "sweetalert2";
 import AsyncSelect from "react-select/async";
+import ErrorHandler from "../helpers/ErrorHandler";
 
-const customStyles = {
-  option: provided => ({
-    ...provided,
-    height: "6vh",
-    width: "100%"
-  }),
-  control: provided => ({
-    ...provided,
-    height: "6vh",
-    width: "100%",
-    borderRadius: "2vh",
-    backgroundColor: "#f6f6f6"
-  })
-};
-
-import axios from "axios";
 
 class Home extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      id: "",
-      suggestions: [],
-      email: "",
-      allTab: true,
-      completeTab: false,
-      activeTab: false,
-      refundedTab: false,
-      userFound: false,
-      userInfo: [],
-      courseInfo: {},
-      createUser: false,
-      newpayment: false,
-      selectedUser: {}
+    constructor(props) {
+        super(props);
+        this.state = {
+            id: "",
+            searchOption: "email",
+            searchPlaceholder: "Start typing email to get suggestions",
+        };
+    }
+
+    componentDidMount() {
+
+    }
+
+    /**
+     * Creates the object that is used by react-select
+     * to display options.
+     * @param {object} response - Object to generate options for
+     * @return {object}
+     */
+    mapResponseToResults = (response) => {
+        return response.map(user => ({
+            value: user.email,
+            label: `Email: ${user.email} Phone: ${user.mobile_number} - Username: ${user.username} - OneauthId: ${user.oneauth_id}`,
+            user_id: `${user.id}`
+        }));
     };
-    // this.handleChange = this.handleChange.bind(this);
-  }
-  componentDidMount() {
-    this.setState({
-      createUser: true
-    });
 
-  }
+    /**
+     * Used for fetching suggestions. Called by AsyncSelect
+     * everytime the input field changes to load suggestions.
+     * @param {string} inputValue - Value of the search box
+     *  (in this case it is the email field)
+     * @param {function} callback - Callback function with options
+     *  that will be populated in the suggestions
+     */
+    loadOptions = (inputValue, callback) => {
+        if (inputValue) {
+            userController.handleGetUserByEmailOrPhone(this.state.searchOption, inputValue).then((response) => {
+                callback(this.mapResponseToResults(response.data));
+            }).catch((error) => {
+                ErrorHandler.handle(error)
+                callback([]);
+            })
+        }
+    };
 
-  /**
-   * Creates the object that is used by react-select
-   * to display options.
-   * @param {object} options - Object to generate options for
-   * @return {object}
-   */
-  mapOptionsToValues = options => {
-    return options.map(option => ({
-      value: option.email,
-      label: `Email: ${option.email} - Username: ${option.username} - OneauthId: ${option.oneauth_id}`,
-      user_id: `${option.id}`
-    }));
-  };
 
-  /**
-   * Used for fetching suggestions. Called by AsyncSelect
-   * everytime the input field changes to load suggestions.
-   * @param {string} inputValue - Value of the search box
-   *  (in this case it is the email field)
-   * @param {function} callback - Callback function with options
-   *  that will be populated in the suggestions
-   */
-  loadOptions = (inputValue, callback) => {
-    if (!inputValue) {
-      return callback([]);
-    }
-    if (inputValue == "") {
-      Swal.fire({
-        type: "error",
-        title: "Error searching for user!",
-        text: "Email cannot be empty"
-      })
-    } else {
-      userController.handleGetUserByEmail(inputValue).then((res) => {
-        callback(this.mapOptionsToValues(res.data));
-      }).catch((error) => {
-        callback([]);
-      })
-    }
-  };
-
-  /**
-   * Handles and sorts all orders based off different categories
-   * (active, completed, refunded) to display them correctly in
-   * the all orders tab.
-   * @param {array} orders
-   */
-  handleAllOrders = (orders) => {
-    orders.activePayments = orders.activePayments.map((p) => {
-      p.type = "active";
-      return p;
-    });
-    orders.completedPayments = orders.completedPayments.map((p) => {
-      p.type = "completed";
-      return p;
-    });
-    orders.refundedPayments = orders.refundedPayments.map((p) => {
-      p.type = "refunded";
-      return p;
-    });
-    let allOrders = [...orders.activePayments, ...orders.completedPayments, ...orders.refundedPayments];
-    allOrders.sort((first, second) => {
-      if (first.updated_at > second.updated_at) return -1;
-      if (first.updated_at < second.updated_at) return 1;
-    });
-    let courseInfo = [];
-    courseInfo.allOrders = allOrders;
-    courseInfo.activePayments = orders.activePayments;
-    courseInfo.completedPayments = orders.completedPayments;
-    courseInfo.refundedPayments = orders.refundedPayments;
-    this.setState({
-      courseInfo
-    });
-  }
-
-  /**
-   * Handles the value that is of the selected option.
-   * Not to be confused with the handleEmailTextboxChange
-   * method below.
-   * @param {object} selectedOption - The selected option
-   */
-  handleEmailChange = selectedOption => {
-    this.setState({
-      id: selectedOption.user_id
-    });
-  };
-
-  /**
-   * Handles the search when the email search form is submitted.
-   * @param {SyntheticEvent} e – Form submission event
-   */
-  handleSearch = async e => {
-    // e.preventDefault();
-    if (!document.getElementById("email-search-form").checkValidity()) {
-      document.getElementById("email-search-form").reportValidity();
-    } else {
-      if (this.state.email == "") {
+    /**
+     * Handles the value that is of the selected option.
+     * Not to be confused with the handleEmailTextboxChange
+     * method below.
+     * @param {object} selectedOption - The selected option
+     */
+    handleInputChange = selectedOption => {
         this.setState({
-          email: this.state.emailValue
-        })
-      }
-      userController
-        .handleGetUserById(this.state.id)
-        .then(res => {
-          if (res.data.length >= 1) {
-            this.setState({
-              userInfo: res.data,
-              userFound: true,
-              createUser: false
-            });
-          } else {
-            this.setState({
-              userFound: false,
-              createUser: false
-            });
-          }
-        })
-        .catch(error => {
-          swal.fire({
-            title: "Error searching for user!",
-            html: error,
-            type: "error"
-          });
+            id: selectedOption.user_id
         });
-    }
-  };
+    };
 
-  /**
-   * Shows the create user form
-   */
-  handleCreateUser = () => {
-    this.setState({
-      createUser: true
-    });
-  };
+    handleSearchOptionChange = (event) => {
+        if(event.target.value === 'email'){
+            this.setState({
+                searchOption: "email",
+                searchPlaceholder: "Start typing email to get suggestions",
+            });
+        }else if(event.target.value === 'phone'){
+            this.setState({
+                searchOption: "phone",
+                searchPlaceholder: "Start typing phone number to get suggestions",
+            });
+        }
 
-  render() {
-    return (
-        <ErrorBoundary>
-          <CheckLogin>
-            <div>
-              <Head title="Coding Blocks | Dukaan" />
-              <Layout>
-                {/* Search User */}
-                <div className="container mt-4">
-                  <div className="row">
-                    <div className="col-md-12 col-12">
-                      <div className={"d-flex"}>
-                        <form
-                            id={"email-search-form"}
-                            className={"d-flex col-md-12 px-0"}
-                        >
-                          <div className="col-md-12 col-12">
-                            <AsyncSelect
-                                cacheOptions
-                                defaultOptions
-                                placeholder="Enter Email.."
-                                loadOptions={this.loadOptions}
-                                onChange={this.handleEmailChange}
-                                styles={customStyles}
-                            />
-                          </div>
+    };
 
-                          <Link href={`/admin/orders?id=${this.state.id}`}>
-                            <button
-                                id="search"
-                                className="button-solid mb-1"
-                                style={{ fontSize: "1.3rem" }}
-                                onClick={this.handleSearch}
-                            >
-                              Search
-                            </button>
-                          </Link>
-                        </form>
-                      </div>
+    /**
+     * Handles the search when the email search form is submitted.
+     * @param {SyntheticEvent} e – Form submission event
+     */
+
+
+    render() {
+        return (
+            <ErrorBoundary>
+                <CheckLogin>
+                    <div>
+                        <Head title="Coding Blocks | Dukaan"/>
+                        <Layout>
+                            {/* Search User */}
+                            <div className="container mt-4">
+                                <div className="row">
+                                    <div className="col-md-12 col-12">
+                                        <div>
+                                            <form
+                                                id={"email-search-form"}
+                                                className={"d-flex col-md-12 px-0"}>
+                                                <div className={"col-md-12"}>
+                                                    <select id={"search-field-option"} required={true}
+                                                            defaultValue={this.state.searchOption}
+                                                            onChange={this.handleSearchOptionChange}>
+                                                        <option value={"email"}>Search by email</option>
+                                                        <option value={"phone"}>Search by phone</option>
+                                                    </select>
+
+                                                    <div className="col-md-12 col-12">
+                                                        <AsyncSelect
+                                                            cacheOptions
+                                                            defaultOptions
+                                                            placeholder={this.state.searchPlaceholder}
+                                                            loadOptions={this.loadOptions}
+                                                            onChange={this.handleInputChange}/>
+                                                    </div>
+
+                                                </div>
+
+
+                                                <Link href={`/admin/orders?id=${this.state.id}`}>
+                                                    <button
+                                                        id="search"
+                                                        className="button-solid mb-1"
+                                                        style={{fontSize: "1.3rem"}}>
+                                                        Search
+                                                    </button>
+                                                </Link>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <AddUser/>
+                                </div>
+                            </div>
+                        </Layout>
                     </div>
-                    {this.state.createUser ? <AddUser /> : ""}
-                  </div>
-                </div>
-              </Layout>
-            </div>
-          </CheckLogin>
-        </ErrorBoundary>
-    );
-  }
+                </CheckLogin>
+            </ErrorBoundary>
+        );
+    }
 }
 
 export default Home;
