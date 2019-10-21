@@ -83,7 +83,8 @@ class AddBulkCoupons extends React.Component {
       this.setState({
         loading: true
       });
-      controller.handleAddCoupon(this.state.queryParams).then((response) => {
+      controller.handleAddBulkCoupons(this.state.queryParams).then((response) => {
+        window.open(response)
         this.setState({
           loading: false
         });
