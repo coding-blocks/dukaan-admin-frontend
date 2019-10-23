@@ -113,6 +113,16 @@ const handleAddCoupon = (queryParams) => {
   return response;
 }
 
+
+const generateRandomCouponCode = () => {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    for (let i = 0; i < 10; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+}
+
 const handleAddBulkCoupons = (queryParams) => {
     let response = new Promise((resolve, reject) => {
         axios.post(`/api/v2/admin/coupons/bulk`, queryParams).then((r) => {
@@ -150,5 +160,6 @@ module.exports = {
   handleGetCouponFromID,
   handleAddCoupon,
   handleAddBulkCoupons,
-  handleDeleteCoupon
+  handleDeleteCoupon,
+    generateRandomCouponCode
 };

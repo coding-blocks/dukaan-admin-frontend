@@ -5,10 +5,12 @@ import Layout from "../../../components/layout";
 import Loader from '../../../components/loader';
 import FieldWithElement from '../../../components/FieldWithElement';
 import controller from '../../../controllers/coupons';
+import organizationController from '../../../controllers/organizations';
 import "../../../styles/pages/admin/coupons.scss";
 import Swal from 'sweetalert2';
 import ProductsChooser from "../../../components/ProductsChooser";
 import CheckLogin from "../../../components/CheckLogin";
+import ErrorHandler from "../../../helpers/ErrorHandler";
 
 class AddCoupon extends React.Component {
 
@@ -16,9 +18,11 @@ class AddCoupon extends React.Component {
     super(props);
     this.state = {
       loading: false,
+      organizations: [],
       queryParams: {
         authority_doc: "",
         code: "",
+        organization_id: null,
         products: [],
         type: "online",
         mode: "flat",
@@ -50,6 +54,9 @@ class AddCoupon extends React.Component {
         } else {
             newQueryParams[event.target.name] = event.target.value;
         }
+        if(event.target.name === 'organization_id'){
+          newQueryParams['organization_id'] = Number(event.target.value);
+        }
         this.setState(prevState => ({
             queryParams: newQueryParams
         }));
@@ -70,9 +77,28 @@ class AddCoupon extends React.Component {
   }
 
 
+  componentDidMount() {
+    organizationController.getAllOrganizations().then((response) => {
+      if(response){
+        let oldQueryParams = this.state.queryParams;
+        oldQueryParams.organization_id = response.data[0].id
+        this.setState({
+          organizations: response.data,
+          queryParams: oldQueryParams
+        })
+      }
+    }).catch((error) => {
+      ErrorHandler.handle(error)
+    })
+  }
+
   /**
    * Method to handle saving of coupon
    */
+
+
+
+
   handleAddCoupon = (event) => {
     event.preventDefault();
     // Show the loading icon
@@ -105,6 +131,15 @@ class AddCoupon extends React.Component {
     }
   }
 
+
+  setRandomCouponCode = () => {
+    let newQueryParams = this.state.queryParams;
+    newQueryParams.code = controller.generateRandomCouponCode()
+    this.setState({
+      queryParams: newQueryParams
+    })
+  }
+
   render() {
     return (
       <div>
@@ -125,6 +160,24 @@ class AddCoupon extends React.Component {
                       <h2 className={"title"}>Add Coupon</h2>
                     </div>
 
+                    {/* organization */}
+                    <FieldWithElement name={"Organization"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <select
+                          id="organization_id"
+                          name="organization_id"
+                          onChange={this.handleQueryParamChange}
+                          required>
+                        {
+                          this.state.organizations.map((organization) => {
+                            return (
+                              <option value={Number(organization.id)} key={organization.id}>
+                                {organization.name}
+                              </option>)
+                          })
+                        }
+                      </select>
+                    </FieldWithElement>
+
                     {/* Code */}
                     <FieldWithElement name={"Code*"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                       <input
@@ -137,6 +190,18 @@ class AddCoupon extends React.Component {
                         required
                       />
                     </FieldWithElement>
+
+                    {/* Generate Random Code */}
+                    <FieldWithElement name={"Generate Code"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <button
+                          id="search"
+                          type={"button"}
+                          className={"button-solid ml-4 pr-5"}
+                          onClick={this.setRandomCouponCode}>
+                        Generate Random Code
+                      </button>
+                    </FieldWithElement>
+
                     {/* Authority_code */}
                     <FieldWithElement name={"Description*"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                       <input
@@ -169,6 +234,19 @@ class AddCoupon extends React.Component {
                       <ProductsChooser
                         productsCallback={this.handleProductsChange}
                         multiple={true}
+                        productType = {'course'}
+                        organizationId = {this.state.organization_id}
+                      />
+                    </FieldWithElement>
+
+
+                    {/* Extensions */}
+                    <FieldWithElement name={"Extensions"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <ProductsChooser
+                          productsCallback={this.handleProductsChange}
+                          multiple={true}
+                          productType = {'extensions'}
+                          organizationId = {this.state.organization_id}
                       />
                     </FieldWithElement>
 
