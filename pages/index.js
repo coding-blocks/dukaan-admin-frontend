@@ -106,8 +106,8 @@ class Home extends React.Component {
                                         <div>
                                             <form
                                                 id={"email-search-form"}
-                                                className={"d-flex col-md-12 px-0"}>
-                                                <div className={"col-md-12"}>
+                                                className={"row align-items-center"}>
+                                                <div className={"col-md-3 col-6"}>
                                                     <select id={"search-field-option"} required={true}
                                                             defaultValue={this.state.searchOption}
                                                             onChange={this.handleSearchOptionChange}>
@@ -115,15 +115,14 @@ class Home extends React.Component {
                                                         <option value={"phone"}>Search by phone</option>
                                                     </select>
 
-                                                    <div className="col-md-12 col-12">
-                                                        <AsyncSelect
-                                                            cacheOptions
-                                                            defaultOptions
-                                                            placeholder={this.state.searchPlaceholder}
-                                                            loadOptions={this.loadOptions}
-                                                            onChange={this.handleInputChange}/>
-                                                    </div>
-
+                                                </div>
+                                                <div className="col-md-7 col-6">
+                                                    <AsyncSelect
+                                                        cacheOptions
+                                                        defaultOptions
+                                                        placeholder={this.state.searchPlaceholder}
+                                                        loadOptions={this.loadOptions}
+                                                        onChange={this.handleInputChange}/>
                                                 </div>
 
 
