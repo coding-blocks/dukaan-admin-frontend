@@ -11,7 +11,6 @@ import Swal from 'sweetalert2';
 import ProductsChooser from "../../../components/ProductsChooser";
 import CheckLogin from "../../../components/CheckLogin";
 import ErrorHandler from "../../../helpers/ErrorHandler";
-import ProductsSelector from "../../../components/ProductsSelector";
 
 class AddCoupon extends React.Component {
 
@@ -29,7 +28,8 @@ class AddCoupon extends React.Component {
         mode: "flat",
         left: 1,
         category: "special_discount",
-        active: false
+        active: false,
+        extensions:[]
       },
     };
   }
@@ -77,6 +77,14 @@ class AddCoupon extends React.Component {
     })
   }
 
+  handleExtensionsChange = (extensions) => {
+    let queryParams = this.state.queryParams;
+    queryParams['extensions'] = extensions;
+    this.setState({
+      queryParams
+    })
+  }
+
 
   componentDidMount() {
     organizationController.getAllOrganizations().then((response) => {
@@ -107,9 +115,12 @@ class AddCoupon extends React.Component {
       document.getElementById("addCouponForm").reportValidity();
     } else {
       this.setState({
-        loading: true
+        loading: true,
       });
-      controller.handleAddCoupon(this.state.queryParams).then((response) => {
+
+      const toSubmit = this.state.queryParams;
+      toSubmit['products'] = [...this.state.queryParams.products, ...this.state.queryParams.extensions]
+      controller.handleAddCoupon(toSubmit).then((response) => {
         this.setState({
           loading: false
         });
@@ -250,7 +261,7 @@ class AddCoupon extends React.Component {
                     {/* Extensions */}
                     <FieldWithElement name={"Extensions"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                       <ProductsChooser
-                          productsCallback={this.handleProductsChange}
+                          productsCallback={this.handleExtensionsChange}
                           multiple={true}
                           productType = {'extension'}
                           key = {this.state.queryParams.organization_id}
