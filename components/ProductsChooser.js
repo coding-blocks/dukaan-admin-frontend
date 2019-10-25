@@ -22,6 +22,8 @@ class ProductsChooser extends React.Component {
     super(props);
     this.state = {
       products: props.products || [],
+      organizationId: this.props.organizationId,
+      productType: this.props.productType,
       all: props.all || false,
       productsList: [
         {
@@ -33,16 +35,12 @@ class ProductsChooser extends React.Component {
     };
   }
 
-  componentDidMount() {
-
-    if (this.state.products.length == 0) {
-      this.setState({
-        products: ["0"]
-      });
-    }
-
+  fetchProducts = () => {
     // Fetch all products
-    productsController.handleGetProducts({}, { page: 1, limit: 300 }).then((res) => {
+    productsController.handleGetProducts({
+      organization_id: this.state.organizationId,
+      type: this.state.productType
+    }, { page: 1, limit: 300 }).then((res) => {
       this.setState({
         productsList: res.results
       });
@@ -53,8 +51,21 @@ class ProductsChooser extends React.Component {
         text: error
       });
     });
+  }
+
+
+  componentDidMount() {
+
+    console.log('Component did mount called');
+    if (this.state.products.length == 0) {
+      this.setState({
+        products: ["0"]
+      });
+    }
+    this.fetchProducts()
 
   }
+
 
   /**
    * Adds a new object to the projects array so that another
@@ -152,7 +163,7 @@ class ProductsChooser extends React.Component {
           }
           {
             this.props.multiple &&
-            this.state.productsList.length > 2 &&
+            this.state.productsList.length > 0 &&
             this.state.products.map((key, index) => {
               return (
                 <div
@@ -164,7 +175,7 @@ class ProductsChooser extends React.Component {
                     product-index={index}
                     type={"text"}
                     placeholder={"Choose a product"}
-                    defaultValue={{ label: this.findProductNameByID(key), value: parseInt(key) }}
+                    value={{ label: this.findProductNameByID(key), value: parseInt(key) }}
                     onChange={(e) => { this.setProductName(e, index) }}
                     options={productsListTags}
                     required

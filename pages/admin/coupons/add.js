@@ -11,6 +11,7 @@ import Swal from 'sweetalert2';
 import ProductsChooser from "../../../components/ProductsChooser";
 import CheckLogin from "../../../components/CheckLogin";
 import ErrorHandler from "../../../helpers/ErrorHandler";
+import ProductsSelector from "../../../components/ProductsSelector";
 
 class AddCoupon extends React.Component {
 
@@ -142,6 +143,9 @@ class AddCoupon extends React.Component {
   }
 
   render() {
+    if(!this.state.queryParams.organization_id){
+      return <div>Loading...</div>
+    }
     return (
       <div>
         <Head title="Coding Blocks | Dukaan | Add Coupon" />
@@ -237,7 +241,8 @@ class AddCoupon extends React.Component {
                         productsCallback={this.handleProductsChange}
                         multiple={true}
                         productType = {'course'}
-                        organizationId = {this.state.organization_id}
+                        key = {this.state.queryParams.organization_id}
+                        organizationId = {this.state.queryParams.organization_id}
                       />
                     </FieldWithElement>
 
@@ -247,8 +252,9 @@ class AddCoupon extends React.Component {
                       <ProductsChooser
                           productsCallback={this.handleProductsChange}
                           multiple={true}
-                          productType = {'extensions'}
-                          organizationId = {this.state.organization_id}
+                          productType = {'extension'}
+                          key = {this.state.queryParams.organization_id}
+                          organizationId = {this.state.queryParams.organization_id}
                       />
                     </FieldWithElement>
 
