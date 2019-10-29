@@ -10,7 +10,7 @@ class Layout extends React.Component {
     super(props);
     this.state = {
       name: "Guest",
-      pic: "https://placehold.it/48x48",
+      pic: "../static/user_login.svg",
       loggedIn: false,
       admin: false
     };
