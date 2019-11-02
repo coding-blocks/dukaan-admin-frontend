@@ -243,9 +243,9 @@ class NewPayment extends React.Component {
                                 type="text"
                                 className={"input-text"}
                                 placeholder="Enter Your Bank Name"
-                                name={"bank"}
+                                name={"chequeBank"}
                                 onChange={this.onChangeValue}
-                                value={this.state.formValues.bank}
+                                value={this.state.formValues.chequeBank}
                             />
                         </FieldWithElement>
 
@@ -302,6 +302,20 @@ class NewPayment extends React.Component {
                             />
                         </FieldWithElement>
 
+                        <FieldWithElement
+                            nameCols={3}
+                            elementCols={9}
+                            name={"Bank"}
+                        >
+                            <input
+                                type="text"
+                                className={"input-text"}
+                                placeholder="Enter bank name"
+                                name={"neftBank"}
+                                onChange={this.onChangeValue}
+                                value={this.state.formValues.neftBank}
+                            />
+                        </FieldWithElement>
                         <FieldWithElement nameCols={3} elementCols={9} name={"Issue Date"}>
                             <input
                                 type="date"
@@ -332,7 +346,7 @@ class NewPayment extends React.Component {
                         <FieldWithElement
                             nameCols={3}
                             elementCols={9}
-                            name={"SWIPE Transaction ID"}
+                            name={"Swipe Transaction Id"}
                         >
                             <input
                                 type="text"
@@ -344,6 +358,20 @@ class NewPayment extends React.Component {
                             />
                         </FieldWithElement>
 
+                        <FieldWithElement
+                            nameCols={3}
+                            elementCols={9}
+                            name={"Swipe App Code"}
+                        >
+                            <input
+                                type="text"
+                                className={"input-text"}
+                                placeholder="Enter Swipe App Code"
+                                name={"swipeAppCode"}
+                                onChange={this.onChangeValue}
+                                value={this.state.formValues.swipeAppCode}
+                            />
+                        </FieldWithElement>
                         <FieldWithElement nameCols={3} elementCols={9} name={"Issue Date"}>
                             <input
                                 type="date"
