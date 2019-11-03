@@ -7,44 +7,17 @@ import ErrorHandler from "../helpers/ErrorHandler";
 const querystring = require("querystring");
 
 /**
- * Get user by email
- * @param {string} email - The email
+ * Get user by email or phone
+ * @param {string} option - The email or phone option
+ * @param {string} value - The input value for email or phone
  * @return {Promise<Array>} - The results
  */
-const handleGetUserByEmail = email => {
-  const response = new Promise((resolve, reject) => {
-    axios
-      .get(`/api/v2/admin/users?email=${encodeURIComponent(email)}`)
-      .then(r => {
-        resolve(r);
-      })
-      .catch(error => {
-        if (error.response.status === 404) {
-          reject("User not found");
-        } else {
-          reject(ErrorHandler.handle(error));
-        }
-      });
-  });
-  return response;
+const handleGetUserByEmailOrPhone = (option, value) => {
+  return axios.get(`/api/v2/admin/users?${option}=${encodeURIComponent(value)}`)
 };
 
 const handleGetUserById = id => {
-  const response = new Promise((resolve, reject) => {
-    axios
-      .get(`/api/v2/admin/users/` + id)
-      .then(r => {
-        resolve(r);
-      })
-      .catch(error => {
-        if (error.response.status == 404) {
-          reject("User not found");
-        } else {
-          reject(ErrorHandler.handle(error));
-        }
-      });
-  });
-  return response;
+  return axios.get(`/api/v2/admin/users/` + id)
 };
 
 /**
@@ -78,7 +51,7 @@ const getUsernameAvailability = username => {
 };
 
 module.exports = {
-  handleGetUserByEmail,
+  handleGetUserByEmailOrPhone,
   handleAddUser,
   handleGetUserById,
   getUsernameAvailability
