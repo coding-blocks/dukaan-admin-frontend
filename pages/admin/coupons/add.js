@@ -5,10 +5,12 @@ import Layout from "../../../components/layout";
 import Loader from '../../../components/loader';
 import FieldWithElement from '../../../components/FieldWithElement';
 import controller from '../../../controllers/coupons';
+import organizationController from '../../../controllers/organizations';
 import "../../../styles/pages/admin/coupons.scss";
 import Swal from 'sweetalert2';
 import ProductsChooser from "../../../components/ProductsChooser";
 import CheckLogin from "../../../components/CheckLogin";
+import ErrorHandler from "../../../helpers/ErrorHandler";
 
 class AddCoupon extends React.Component {
 
@@ -16,15 +18,18 @@ class AddCoupon extends React.Component {
     super(props);
     this.state = {
       loading: false,
+      organizations: [],
       queryParams: {
         authority_doc: "",
         code: "",
+        organization_id: null,
         products: [],
         type: "online",
         mode: "flat",
         left: 1,
         category: "special_discount",
-        active: false
+        active: false,
+        extensions:[]
       },
     };
   }
@@ -50,6 +55,9 @@ class AddCoupon extends React.Component {
         } else {
             newQueryParams[event.target.name] = event.target.value;
         }
+        if(event.target.name === 'organization_id'){
+          newQueryParams['organization_id'] = Number(event.target.value);
+        }
         this.setState(prevState => ({
             queryParams: newQueryParams
         }));
@@ -69,10 +77,37 @@ class AddCoupon extends React.Component {
     })
   }
 
+  handleExtensionsChange = (extensions) => {
+    let queryParams = this.state.queryParams;
+    queryParams['extensions'] = extensions;
+    this.setState({
+      queryParams
+    })
+  }
+
+
+  componentDidMount() {
+    organizationController.getAllOrganizations().then((response) => {
+      if(response){
+        let oldQueryParams = this.state.queryParams;
+        oldQueryParams.organization_id = response.data[0].id
+        this.setState({
+          organizations: response.data,
+          queryParams: oldQueryParams
+        })
+      }
+    }).catch((error) => {
+      ErrorHandler.handle(error)
+    })
+  }
 
   /**
    * Method to handle saving of coupon
    */
+
+
+
+
   handleAddCoupon = (event) => {
     event.preventDefault();
     // Show the loading icon
@@ -80,9 +115,12 @@ class AddCoupon extends React.Component {
       document.getElementById("addCouponForm").reportValidity();
     } else {
       this.setState({
-        loading: true
+        loading: true,
       });
-      controller.handleAddCoupon(this.state.queryParams).then((response) => {
+
+      const toSubmit = this.state.queryParams;
+      toSubmit['products'] = [...this.state.queryParams.products, ...this.state.queryParams.extensions]
+      controller.handleAddCoupon(toSubmit).then((response) => {
         this.setState({
           loading: false
         });
@@ -105,7 +143,20 @@ class AddCoupon extends React.Component {
     }
   }
 
+
+  setRandomCouponCode = () => {
+    console.log('State at the moment is', this.state.queryParams)
+    let newQueryParams = this.state.queryParams;
+    newQueryParams.code = controller.generateRandomCouponCode()
+    this.setState({
+      queryParams: newQueryParams
+    })
+  }
+
   render() {
+    if(!this.state.queryParams.organization_id){
+      return <div>Loading...</div>
+    }
     return (
       <div>
         <Head title="Coding Blocks | Dukaan | Add Coupon" />
@@ -125,18 +176,49 @@ class AddCoupon extends React.Component {
                       <h2 className={"title"}>Add Coupon</h2>
                     </div>
 
+                    {/* organization */}
+                    <FieldWithElement name={"Organization"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <select
+                          id="organization_id"
+                          name="organization_id"
+                          onChange={this.handleQueryParamChange}
+                          required>
+                        {
+                          this.state.organizations.map((organization) => {
+                            return (
+                              <option value={Number(organization.id)} key={organization.id}>
+                                {organization.name}
+                              </option>)
+                          })
+                        }
+                      </select>
+                    </FieldWithElement>
+
                     {/* Code */}
                     <FieldWithElement name={"Code*"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                       <input
                         type="text"
+                        id="code"
                         className="input-text"
                         placeholder="Enter Code"
                         name="code"
-                        defaultValue={this.state.queryParams.code}
+                        value={this.state.queryParams.code}
                         onChange={this.handleQueryParamChange}
                         required
                       />
                     </FieldWithElement>
+
+                    {/* Generate Random Code */}
+                    <FieldWithElement name={"Generate Code"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <button
+                          id="search"
+                          type={"button"}
+                          className={"button-solid ml-4 pr-5"}
+                          onClick={this.setRandomCouponCode}>
+                        Generate Random Code
+                      </button>
+                    </FieldWithElement>
+
                     {/* Authority_code */}
                     <FieldWithElement name={"Description*"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                       <input
@@ -144,7 +226,7 @@ class AddCoupon extends React.Component {
                         className="input-text"
                         placeholder="Enter Description"
                         name="authority_doc"
-                        defaultValue={this.state.queryParams.authority_doc}
+                        value={this.state.queryParams.authority_doc}
                         onChange={this.handleQueryParamChange}
                         required
                       />
@@ -155,7 +237,7 @@ class AddCoupon extends React.Component {
                         id="category"
                         name="category"
                         onChange={this.handleQueryParamChange}
-                        defaultValue={this.state.queryParams.category}
+                        value={this.state.queryParams.category}
                         required
                       >
                         <option value="special_discount">Special Discount</option>
@@ -169,6 +251,21 @@ class AddCoupon extends React.Component {
                       <ProductsChooser
                         productsCallback={this.handleProductsChange}
                         multiple={true}
+                        productType = {'course'}
+                        key = {this.state.queryParams.organization_id}
+                        organizationId = {this.state.queryParams.organization_id}
+                      />
+                    </FieldWithElement>
+
+
+                    {/* Extensions */}
+                    <FieldWithElement name={"Extensions"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <ProductsChooser
+                          productsCallback={this.handleExtensionsChange}
+                          multiple={true}
+                          productType = {'extension'}
+                          key = {this.state.queryParams.organization_id}
+                          organizationId = {this.state.queryParams.organization_id}
                       />
                     </FieldWithElement>
 
@@ -178,7 +275,7 @@ class AddCoupon extends React.Component {
                         id="mode"
                         name="mode"
                         onChange={this.handleQueryParamChange}
-                        defaultValue={this.state.queryParams.mode}
+                        value={this.state.queryParams.mode}
                         required
                       >
                         <option value="flat">Flat</option>
@@ -213,7 +310,7 @@ class AddCoupon extends React.Component {
                           className={"input-text"}
                           placeholder="Enter Percentage"
                           name="percentage"
-                          defaultValue={this.state.queryParams.percentage}
+                          value={this.state.queryParams.percentage}
                           onChange={this.handleQueryParamChange}
                           required
                         />
@@ -228,7 +325,7 @@ class AddCoupon extends React.Component {
                         placeholder="Enter Left"
                         name="left"
                         onChange={this.handleQueryParamChange}
-                        defaultValue={this.state.queryParams.left}
+                        value={this.state.queryParams.left}
                         min={1}
                         title="Left can only have numbers"
                         required
@@ -245,7 +342,7 @@ class AddCoupon extends React.Component {
                         className={"ml-4 mt-3"}
                         type="checkbox"
                         onChange={this.handleQueryParamChange}
-                        defaultValue={this.state.queryParams.allProducts}
+                        value={this.state.queryParams.allProducts}
                         name="allProducts" />
                       </div>
                       </div>
@@ -257,7 +354,7 @@ class AddCoupon extends React.Component {
                         placeholder="Min product price"
                         name="minProductPrice"
                         onChange={this.handleQueryParamChange}
-                        defaultValue={this.state.queryParams.minProductPrice}
+                        value={this.state.queryParams.minProductPrice}
                         title="minProductPrice can only have numbers"
                       />
                     </FieldWithElement>
@@ -272,7 +369,7 @@ class AddCoupon extends React.Component {
                         className={"ml-4 mt-3"}
                         type="checkbox"
                         onChange={this.handleQueryParamChange}
-                        defaultValue={this.state.queryParams.allExtensions}
+                        value={this.state.queryParams.allExtensions}
                         name="allExtensions" />
                       </div>
                       </div>
@@ -284,7 +381,7 @@ class AddCoupon extends React.Component {
                         placeholder="Min extension price"
                         name="minExtensionPrice"
                         onChange={this.handleQueryParamChange}
-                        defaultValue={this.state.queryParams.minExtensionPrice}
+                        value={this.state.queryParams.minExtensionPrice}
                         title="minExtensionPrice can only have numbers"
                       />
                     </FieldWithElement>
@@ -299,7 +396,7 @@ class AddCoupon extends React.Component {
                         className={"ml-4 mt-3"}
                         type="checkbox"
                         onChange={this.handleQueryParamChange}
-                        defaultValue={this.state.queryParams.active}
+                        value={this.state.queryParams.active}
                         name="active" />
                       </div>
 
