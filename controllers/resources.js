@@ -45,6 +45,7 @@ const getDemographicsCountriesGradYears = () => {
     return Promise.all([
         getDemographics(),
         getCountries(),
+        getStates(),
         gradYears
     ])
 }

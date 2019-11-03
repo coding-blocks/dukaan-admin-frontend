@@ -16,16 +16,18 @@ class AddUser extends React.Component {
             branches: [],
             gradYear: [],
             countries: [],
+            addressStates: [],
             usernameAvailable: null
         };
     }
 
     componentDidMount() {
-        resourcesController.getDemographicsCountriesGradYears().then(([demographics, countries, gradYear]) => {
+        resourcesController.getDemographicsCountriesGradYears().then(([demographics, countries, states, gradYear]) => {
             this.setState({
                 colleges: demographics.data.colleges,
                 branches: demographics.data.branches,
                 countries: countries.data,
+                addressStates: states.data,
                 gradYear
             });
         }).catch(error => {
@@ -114,7 +116,14 @@ class AddUser extends React.Component {
                             branchId: "1",
                             mobileNumber: "",
                             email: "",
-                            gradYear: "2026"
+                            gradYear: "2026",
+                            pincode: "",
+                            streetAddress: "",
+                            landmark: "",
+                            city: "",
+                            whatsappNumber: "",
+                            stateId: "DL",
+                            countryId: "IN"
                         }}
                         validate={(values) => {
                             let errors = {};
@@ -126,6 +135,15 @@ class AddUser extends React.Component {
                             if (!values.firstName) {
                                 errors.firstName = 'First Name is Required';
                             }
+                            if (!values.streetAddress) {
+                                errors.streetAddress = 'Address Line 1 is Required';
+                            }
+                            if (!values.landmark) {
+                                errors.landmark = 'Landmark is Required';
+                            }
+                            if (!values.city) {
+                                errors.city = 'City is Required';
+                            }
                             if (!values.username) {
                                 errors.username = 'Username is Required';
                             }
@@ -135,6 +153,13 @@ class AddUser extends React.Component {
                             if (!/^\d{10}$/.test(values.mobileNumber)) {
                                 errors.mobileNumber = `Enter a valid 10 digit phone number`;
                             }
+
+                            if (!/^\d{10}$/.test(values.whatsappNumber)) {
+                                errors.whatsappNumber = `Enter a valid 10 digit phone number`;
+                            }
+                            if (!/^\d{6}$/.test(values.pincode)) {
+                                errors.pincode = `Enter a valid 6 digit pincode`;
+                            }
                             return errors;
                         }}
                         onSubmit={(values, {setSubmitting}) => {
@@ -142,7 +167,9 @@ class AddUser extends React.Component {
                                 firstName: 'firstname',
                                 lastName: 'lastname',
                                 dialCode: 'dial_code',
-                                mobileNumber: 'mobile_number'
+                                mobileNumber: 'mobile_number',
+                                whatsappNumber: 'whatsapp_number',
+                                streetAddress: 'street_address'
                             };
                             this.submitFormShowingSweetAlert(this.renameKeys(keysMap, values))
                         }}
@@ -211,6 +238,26 @@ class AddUser extends React.Component {
                                     />
                                 </FieldWithElement>
 
+                                {/* email */}
+                                <FieldWithElement
+                                    name={"Email"}
+                                    nameCols={3}
+                                    elementCols={9}
+                                    elementClassName={"pl-4"}
+                                    errors={errors.email}
+                                    errorColor={'tomato'}
+                                >
+                                    <input
+                                        type="email"
+                                        className={"input-text icon mail-bg"}
+                                        placeholder="Email Address"
+                                        name="email"
+                                        onChange={handleChange}
+                                        value={values.email}
+                                        required
+                                    />
+                                </FieldWithElement>
+
                                 {/* gender */}
                                 <FieldWithElement
                                     name={"Gender"}
@@ -257,6 +304,7 @@ class AddUser extends React.Component {
                                     </select>
                                 </FieldWithElement>
 
+                                {/* mobileNumber */}
                                 <FieldWithElement
                                     nameCols={3}
                                     elementCols={9}
@@ -333,25 +381,159 @@ class AddUser extends React.Component {
                                     </select>
                                 </FieldWithElement>
 
-                                {/* email */}
+                                <FieldWithElement>
+                                    <div className={"d-flex justify-content-right mt-1 pb-4"}>
+                                        <h2 className={"title red"}>User Address</h2>
+                                    </div>
+                                </FieldWithElement>
+
+
+                                {/* Address line 1 */}
                                 <FieldWithElement
-                                    name={"Email"}
                                     nameCols={3}
                                     elementCols={9}
-                                    elementClassName={"pl-4"}
-                                    errors={errors.email}
+                                    name={"Address Line 1"}
+                                    errors={errors.streetAddress}
                                     errorColor={'tomato'}
                                 >
                                     <input
-                                        type="email"
-                                        className={"input-text icon mail-bg"}
-                                        placeholder="Email Address"
-                                        name="email"
+                                        type="text"
+                                        className={"input-text"}
+                                        placeholder="Street address"
+                                        name="streetAddress"
                                         onChange={handleChange}
-                                        value={values.email}
+                                        value={values.streetAddress}
                                         required
                                     />
                                 </FieldWithElement>
+
+                                {/* landmark */}
+                                <FieldWithElement
+                                    nameCols={3}
+                                    elementCols={9}
+                                    name={"Landmark"}
+                                    errors={errors.landmark}
+                                    errorColor={'tomato'}
+                                >
+                                    <input
+                                        type="text"
+                                        className={"input-text"}
+                                        placeholder="Landmark"
+                                        name="landmark"
+                                        onChange={handleChange}
+                                        value={values.landmark}
+                                        required
+                                    />
+                                </FieldWithElement>
+
+                                {/* city */}
+                                <FieldWithElement
+                                    nameCols={3}
+                                    elementCols={9}
+                                    name={"City"}
+                                    errors={errors.city}
+                                    errorColor={'tomato'}
+                                >
+                                    <input
+                                        type="text"
+                                        className={"input-text"}
+                                        placeholder="City"
+                                        name="city"
+                                        onChange={handleChange}
+                                        value={values.city}
+                                        required
+                                    />
+                                </FieldWithElement>
+
+                                {/* address state */}
+                                <FieldWithElement
+                                    name={"State"}
+                                    nameCols={3}
+                                    elementCols={9}
+                                    elementClassName={"pl-4 "}
+                                >
+                                    <select
+                                        id="stateId"
+                                        name="stateId"
+                                        onChange={handleChange}
+                                        required
+                                        value={values.stateId}
+                                    >
+                                        {this.state.addressStates.map((state, index) => {
+                                            return (
+                                                <option value={state.state_code} key={state.id}>
+                                                    {state.name}
+                                                </option>
+                                            );
+                                        })}
+                                    </select>
+                                </FieldWithElement>
+
+                                {/* address country */}
+                                <FieldWithElement
+                                    name={"Country"}
+                                    nameCols={3}
+                                    elementCols={9}
+                                    elementClassName={"pl-4 "}
+                                >
+                                    <select
+                                        id="countryId"
+                                        name="countryId"
+                                        onChange={handleChange}
+                                        required
+                                        value={values.countryId}
+                                    >
+                                        {this.state.countries.map((country, index) => {
+                                            return (
+                                                <option value={country.country_code} key={country.id}>
+                                                    {country.name}
+                                                </option>
+                                            );
+                                        })}
+                                    </select>
+                                </FieldWithElement>
+
+                                {/* pincode */}
+                                <FieldWithElement
+                                    nameCols={3}
+                                    elementCols={9}
+                                    name={"Pin Code"}
+                                    errors={errors.pincode}
+                                    errorColor={'tomato'}>
+                                    <input
+                                        type="tel"
+                                        className={"input-text"}
+                                        placeholder="Area Pincode"
+                                        name="pincode"
+                                        onChange={handleChange}
+                                        style={{backgroundColor: "#f6f6f6"}}
+                                        value={values.pincode}
+                                        pattern={"[0-9]{6}"}
+                                        required
+                                    />
+                                </FieldWithElement>
+
+                                {/* whatsappNumber */}
+                                <FieldWithElement
+                                    nameCols={3}
+                                    elementCols={9}
+                                    name={"WhatsApp Number"}
+                                    errors={errors.whatsappNumber}
+                                    errorColor={'tomato'}
+                                >
+                                    <input
+                                        type="tel"
+                                        className={"input-text fab fa-whatsapp"}
+                                        placeholder="WhatsApp Number"
+                                        name="whatsappNumber"
+                                        onChange={handleChange}
+                                        style={{backgroundColor: "#f6f6f6"}}
+                                        value={values.whatsappNumber}
+                                        pattern={"[0-9]{10}"}
+                                        required
+                                    />
+                                </FieldWithElement>
+
 
                                 <div className={"d-flex justify-content-center"}>
                                     <button
