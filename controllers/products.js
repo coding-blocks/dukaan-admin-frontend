@@ -11,7 +11,23 @@ const querystring = require('querystring');
 const handleGetProducts = (queryParams, pageInfo) => {
   let query = querystring.stringify(queryParams);
   let response = new Promise((resolve, reject) => {
-    axios.get(`/api/v2/admin/products?page=`+pageInfo.page+`&limit=`+pageInfo.limit+`&`+query).then((r) => {
+    axios.get(`/api/v2/admin/products?page=`+pageInfo.page+`&limit=`+pageInfo.limit+`&`+query+`&organization_id=1`).then((r) => {
+      let data = {
+        results: r.data.products,
+        pagesInfo: r.data.pagesInfo
+      }
+      resolve(data);
+    }).catch((error) => {
+      reject(ErrorHandler.handle(error));
+    });
+  });
+  return response;
+}
+
+const handleGetListedProducts = (queryParams, pageInfo) => {
+  let query = querystring.stringify(queryParams);
+  let response = new Promise((resolve, reject) => {
+    axios.get(`/api/v2/admin/products?page=`+pageInfo.page+`&limit=`+pageInfo.limit+`&`+query+`&listed=true&organization_id=1`).then((r) => {
       let data = {
         results: r.data.products,
         pagesInfo: r.data.pagesInfo
@@ -122,6 +138,7 @@ const handleCalculatePrice = (formBody) => {
 
 module.exports = {
   handleGetProducts,
+  handleGetListedProducts,
   handleAddProduct,
   handleEditProduct,
   handleCalculatePrice
