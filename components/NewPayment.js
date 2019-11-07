@@ -105,7 +105,7 @@ class NewPayment extends React.Component {
         this.setState({
             product_category: e.target.value
         });
-        productsController.handleGetProducts({
+        productsController.handleGetListedProducts({
                 product_category_id: e.target.value
             }, {
                 page: 1,
@@ -117,6 +117,12 @@ class NewPayment extends React.Component {
             });
         })
     };
+
+    handleProductSelection = e => {
+        this.onChangeValue(e)
+        this.calculateAmount(e)
+    };
+
 
     onChangeValue = e => {
         let newFormValues = this.state.formValues;
@@ -433,7 +439,7 @@ class NewPayment extends React.Component {
                                 name="productId"
                                 required
                                 defaultValue={"select"}
-                                onChange={this.onChangeHandler}
+                                onChange={this.handleProductSelection}
                             >
                                 <option value="select" disabled={true}>
                                     Select Course
@@ -471,6 +477,51 @@ class NewPayment extends React.Component {
                         </FieldWithElement>
                         <div className="divider-h mb-5 mt-5"/>
                         {/* gender */}
+
+
+                        <FieldWithElement nameCols={3} elementCols={4} name={"Coupon Code"}>
+                            <input
+                                type="text"
+                                className={"input-text"}
+                                placeholder="Add a coupon code"
+                                name={"coupon"}
+                                onChange={this.onChangeValue}
+                                value={this.state.formValues.mobile_number}
+                            />
+                            <button
+                                id="search"
+                                className={"button-solid mb-2 mt-4 pl-5 pr-5"}
+                                onClick={this.calculateAmount}
+                            >
+                                Apply coupon
+                            </button>
+                        </FieldWithElement>
+
+
+
+                        <FieldWithElement nameCols={3} elementCols={9} name={"Comment"}>
+                            <input
+                                type="text"
+                                className={"input-text"}
+                                placeholder="Place a comment"
+                                name={"comment"}
+                                onChange={this.onChangeValue}
+                                value={this.state.formValues.mobile_number}
+                            />
+                        </FieldWithElement>
+
+                        <FieldWithElement
+                            className="red"
+                            nameCols={3}
+                            elementCols={4}
+                            name={"Total Amount (Rs.) = (Price - Discount - Credits) + Tax :"}
+                        >
+                            <Price amount={this.state.amount}/>
+                        </FieldWithElement>
+
+
+                        <div className="divider-h mb-5 mt-5"/>
+
                         <FieldWithElement
                             name={"Select payment Center"}
                             nameCols={3}
@@ -495,49 +546,6 @@ class NewPayment extends React.Component {
                                 })}
                             </select>
                         </FieldWithElement>
-
-                        <FieldWithElement nameCols={3} elementCols={4} name={"Coupon Code"}>
-                            <input
-                                type="text"
-                                className={"input-text"}
-                                placeholder="Add a coupon code"
-                                name={"coupon"}
-                                onChange={this.onChangeValue}
-                                value={this.state.formValues.mobile_number}
-                            />
-                        </FieldWithElement>
-
-                        <FieldWithElement nameCols={3} elementCols={9} name={"Comment"}>
-                            <input
-                                type="text"
-                                className={"input-text"}
-                                placeholder="Place a comment"
-                                name={"comment"}
-                                onChange={this.onChangeValue}
-                                value={this.state.formValues.mobile_number}
-                            />
-                        </FieldWithElement>
-
-                        <FieldWithElement
-                            className="red"
-                            nameCols={3}
-                            elementCols={4}
-                            name={"Total Amount (Rs.) = (Price - Discount - Credits) + Tax :"}
-                        >
-                            <Price amount={this.state.amount}/>
-                        </FieldWithElement>
-
-                        <div className={"d-flex"}>
-                            <button
-                                id="search"
-                                className={"button-solid mb-2 mt-4 pl-5 pr-5"}
-                                onClick={this.calculateAmount}
-                            >
-                                Calculate amount to pay
-                            </button>
-                        </div>
-                        <div className="divider-h mb-5 mt-5"/>
-
                         <FieldWithElement
                             name={"Choose Payment Method"}
                             nameCols={3}
