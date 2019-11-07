@@ -42,14 +42,18 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    const userid = window.location.search.split("=")[1];
-    userController.handleGetUserById(userid).then(res => {
-      console.log(res, "userrrrr1");
+    const userId = window.location.search.split("=")[1];
+    if(!userId){
+      window.location.href = '/'
+    }
+    userController.handleGetUserById(userId).then(res => {
       this.setState({
         selectedUser: res.data,
         newpayment: true
       });
-    });
+    }).catch((error) => {
+
+    })
   }
 
   toggleCompleteTab = () => {

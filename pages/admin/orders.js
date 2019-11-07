@@ -33,6 +33,9 @@ class Home extends React.Component {
         const search = window.location.search;
         const params = new URLSearchParams(search);
         const userId = params.get('id');
+        if(!userId){
+            window.location.href = '/'
+        }
         purchasesController
             .handleGetPurchases(userId).then((res) => {
                 if (res.data) {
@@ -229,26 +232,25 @@ class Home extends React.Component {
 
         return (
             <CheckLogin>
-            <div>
-            <Head title="Coding Blocks | Dukaan"/>
-            <Layout>
-            <div className="container mt-4">
-            <div className="row">
-            {/* Form 2  */}
-            <div className="row mx-0 w-100 mt-4">
-            {this.state.selectedUser && (
-                <div className={"col-md-4"}>
-                <div key={this.state.selectedUser.id}>
-                <SingleUserDetail
-                userInfo={this.state.selectedUser}
-                showOrders={this.showOrders}
-                handleNewPayment={this.handleNewPayment}
-                newPaymentState={this.state.handleNewPayment}
-                />
-                </div>
-                </div>
-            )}
-
+                <div>
+                    <Head title="User Orders | Dukaan"/>
+                    <Layout>
+                        <div className="container mt-4">
+                            <div className="row">
+                                {/* Form 2  */}
+                                <div className="row mx-0 w-100 mt-4">
+                                    {this.state.selectedUser && (
+                                        <div className={"col-md-4"}>
+                                            <div key={this.state.selectedUser.id}>
+                                                <SingleUserDetail
+                                                    userInfo={this.state.selectedUser}
+                                                    showOrders={this.showOrders}
+                                                    handleNewPayment={this.handleNewPayment}
+                                                    newPaymentState={this.state.handleNewPayment}
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
             {!this.state.newpayment ? (
                 <div className="col-md-8 col-12">
                 <div className="border-card br-20 bg-light-grey mb-5 w-100">
