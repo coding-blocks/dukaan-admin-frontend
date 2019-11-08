@@ -105,8 +105,10 @@ class NewPayment extends React.Component {
         this.setState({
             product_category: e.target.value
         });
-        productsController.handleGetListedProducts({
-                product_category_id: e.target.value
+        productsController.handleGetProducts({
+                product_category_id: e.target.value,
+                listed: true,
+                organization_id : 1
             }, {
                 page: 1,
                 limit: 100

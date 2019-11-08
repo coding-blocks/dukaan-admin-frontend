@@ -22,7 +22,7 @@ class ProductsChooser extends React.Component {
     super(props);
     this.state = {
       products: props.products || [],
-      organizationId: this.props.organizationId,
+      organization_id: this.props.organization_id,
       productType: this.props.productType,
       all: props.all || false,
       productsList: [
