@@ -5,6 +5,7 @@ import Layout from "../../../components/layout";
 import Loader from '../../../components/loader';
 import FieldWithElement from '../../../components/FieldWithElement';
 import controller from '../../../controllers/coupons';
+import organizationController from '../../../controllers/organizations';
 import "../../../styles/pages/admin/coupons.scss";
 import Swal from 'sweetalert2';
 import ProductsChooser from "../../../components/ProductsChooser";
@@ -16,6 +17,7 @@ class AddBulkCoupons extends React.Component {
     super(props);
     this.state = {
       loading: false,
+      organizations: [],
       queryParams: {
         authority_doc: "",
         number_of_coupons: 2,
@@ -25,7 +27,8 @@ class AddBulkCoupons extends React.Component {
         mode: "flat",
         left: 1,
         category: "special_discount",
-        active: false
+        active: false,
+        organization_id: null
       },
     };
   }
@@ -51,10 +54,29 @@ class AddBulkCoupons extends React.Component {
         } else {
             newQueryParams[event.target.name] = event.target.value;
         }
+        if(event.target.name === 'organization_id'){
+          newQueryParams['organization_id'] = Number(event.target.value);
+        }
+
         this.setState(prevState => ({
             queryParams: newQueryParams
         }));
     };
+
+    componentDidMount() {
+        organizationController.getAllOrganizations().then((response) => {
+            if(response){
+                let oldQueryParams = this.state.queryParams;
+                oldQueryParams.organization_id = response.data[0].id
+                this.setState({
+                    organizations: response.data,
+                    queryParams: oldQueryParams
+                })
+            }
+        }).catch((error) => {
+            ErrorHandler.handle(error)
+        })
+    }
 
   /**
    * Callback function for ProductsChooser component that updates
@@ -126,6 +148,23 @@ class AddBulkCoupons extends React.Component {
                     <div className={"d-flex justify-content-center mt-1 pb-3"}>
                       <h2 className={"title"}>Add Bulk Coupons</h2>
                     </div>
+                      {/* organization */}
+                      <FieldWithElement name={"Organization"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <select
+                  id="organization_id"
+                  name="organization_id"
+                  onChange={this.handleQueryParamChange}
+                  required>
+                      {
+                          this.state.organizations.map((organization) => {
+                              return (
+                                  <option value={Number(organization.id)} key={organization.id}>
+                                  {organization.name}
+                                  </option>)
+                          })
+                      }
+                      </select>
+                      </FieldWithElement>
 
                     {/* Code */}
                     <FieldWithElement name={"Number of Coupons"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
