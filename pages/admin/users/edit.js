@@ -140,20 +140,20 @@ class EditUser extends React.Component {
                                 initialValues={{
                                     firstName: this.state.userFromOneauth.firstname,
                                     lastName: this.state.userFromOneauth.lastname,
-                                    gender: this.state.userFromOneauth.gender,
-                                    dialCode: this.state.userFromOneauth.mobile_number.substr(0, 3),
-                                    collegeId: String(this.state.userFromOneauth.demographic.collegeId),
-                                    branchId: String(this.state.userFromOneauth.demographic.branchId),
-                                    mobileNumber: this.state.userFromOneauth.mobile_number.replace('+91-', ''),
-                                    gradYear: this.state.userFromOneauth.graduationYear,
-                                    pincode: this.state.userFromOneauth.demographic.addresses[0].pincode,
-                                    streetAddress: this.state.userFromOneauth.demographic.addresses[0].street_address,
-                                    landmark: this.state.userFromOneauth.demographic.addresses[0].landmark,
-                                    city: this.state.userFromOneauth.demographic.addresses[0].city,
-                                    addressEmail: this.state.userFromOneauth.demographic.addresses[0].email,
-                                    whatsappNumber: this.state.userFromOneauth.demographic.addresses[0].whatsapp_number,
-                                    stateId: String(this.state.userFromOneauth.demographic.addresses[0].stateId),
-                                    countryId: String(this.state.userFromOneauth.demographic.addresses[0].countryId)
+                                    gender: this.state.userFromOneauth.gender || null,
+                                    dialCode: this.state.userFromOneauth.mobile_number.substr(0, 3) || null,
+                                    collegeId: this.state.userFromOneauth.demographic.collegeId ? String(this.state.userFromOneauth.demographic.collegeId) : "",
+                                    branchId: this.state.userFromOneauth.demographic.branchId ? String(this.state.userFromOneauth.demographic.branchId) : "",
+                                    mobileNumber: this.state.userFromOneauth.mobile_number.replace('+91-', '') || null,
+                                    gradYear: this.state.userFromOneauth.graduationYear || null,
+                                    pincode: this.state.userFromOneauth.demographic.addresses[0] ? this.state.userFromOneauth.demographic.addresses[0].pincode : "",
+                                    streetAddress: this.state.userFromOneauth.demographic.addresses[0] ? this.state.userFromOneauth.demographic.addresses[0].street_address : "",
+                                    landmark: this.state.userFromOneauth.demographic.addresses[0] ? this.state.userFromOneauth.demographic.addresses[0].landmark : "",
+                                    city: this.state.userFromOneauth.demographic.addresses[0] ? this.state.userFromOneauth.demographic.addresses[0].city : "",
+                                    addressEmail: this.state.userFromOneauth.demographic.addresses[0] ? this.state.userFromOneauth.demographic.addresses[0].email : "",
+                                    whatsappNumber: this.state.userFromOneauth.demographic.addresses[0] ? this.state.userFromOneauth.demographic.addresses[0].whatsapp_number : "",
+                                    stateId: this.state.userFromOneauth.demographic.addresses[0] ? String(this.state.userFromOneauth.demographic.addresses[0].stateId) : "",
+                                    countryId: this.state.userFromOneauth.demographic.addresses[0] ? String(this.state.userFromOneauth.demographic.addresses[0].countryId) : ""
                                 }}
                                 validate={(values) => {
                                     let errors = {};
