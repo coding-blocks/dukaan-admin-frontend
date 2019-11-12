@@ -123,7 +123,8 @@ class AddUser extends React.Component {
                             city: "",
                             whatsappNumber: "",
                             stateId: "DL",
-                            countryId: "IN"
+                            countryId: "IN",
+                            label: "Home"
                         }}
                         validate={(values) => {
                             let errors = {};
