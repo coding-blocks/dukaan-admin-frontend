@@ -138,9 +138,10 @@ class EditUser extends React.Component {
                             </div>
                             <Formik
                                 initialValues={{
+                                    label: this.state.userFromOneauth.demographic.addresses[0] ? this.state.userFromOneauth.demographic.addresses[0].label : "HOME",
                                     firstName: this.state.userFromOneauth.firstname,
                                     lastName: this.state.userFromOneauth.lastname,
-                                    gender: this.state.userFromOneauth.gender || null,
+                                    gender: this.state.userFromOneauth.gender || "UNDISCLOSED",
                                     dialCode: this.state.userFromOneauth.mobile_number.substr(0, 3) || null,
                                     collegeId: this.state.userFromOneauth.demographic.collegeId ? String(this.state.userFromOneauth.demographic.collegeId) : "",
                                     branchId: this.state.userFromOneauth.demographic.branchId ? String(this.state.userFromOneauth.demographic.branchId) : "",

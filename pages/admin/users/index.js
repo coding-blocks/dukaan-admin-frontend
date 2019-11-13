@@ -77,13 +77,13 @@ class User extends React.Component {
                             </p>
                             <p>Email : {this.state.user.email}</p>
                             <p>Mobile : {this.state.user.mobile_number}</p>
-                            <p>WhatsApp Number : {this.state.user.demographic.addresses[0].whatsapp_number}</p>
+                            <p>WhatsApp Number : {this.state.user.demographic.addresses[0] ? this.state.user.demographic.addresses[0].whatsapp_number : ""}</p>
                             <p>Graduation Year : {this.state.user.graduationYear}</p>
                             <p>College: {this.state.user.demographic.college.name}</p>
                             <p>Branch: {this.state.user.demographic.branch.name}</p>
-                            <p>Address: {`${this.state.user.demographic.addresses[0].street_address}, 
-                            ${this.state.user.demographic.addresses[0].landmark} 
-                            ${this.state.user.demographic.addresses[0].city} 
+                            <p>Address: {`${this.state.user.demographic.addresses[0] ? this.state.user.demographic.addresses[0].street_address : ""}, 
+                            ${this.state.user.demographic.addresses[0] ? this.state.user.demographic.addresses[0].landmark : ""} 
+                            ${this.state.user.demographic.addresses[0] ? this.state.user.demographic.addresses[0].city : ""} 
                             `}</p>
                         </div>
                     </div>
