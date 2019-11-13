@@ -17,6 +17,14 @@ const SingleUserDetail = ({ userInfo, showOrders, handleNewPayment }) => {
                   </Link>
               </div>
 
+              <div className = {"ml-4"}>
+                  <Link href={`/admin/users?oneauthId=${userInfo.oneauth_id}`}>
+                      <button className={"button-solid"}>
+                         View Details
+                      </button>
+                  </Link>
+              </div>
+
           </div>
         <div
           style={{
