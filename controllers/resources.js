@@ -39,7 +39,7 @@ const getCenters = () => {
 
 const getDemographicsCountriesGradYears = () => {
     const gradYears = [];
-    for (let i = 2026; i >= 2000; i--) {
+    for (let i = 2025; i >= 2000; i--) {
         gradYears.push(i.toString());
     }
     return Promise.all([

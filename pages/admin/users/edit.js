@@ -146,7 +146,7 @@ class EditUser extends React.Component {
                                     collegeId: this.state.userFromOneauth.demographic.collegeId ? String(this.state.userFromOneauth.demographic.collegeId) : "",
                                     branchId: this.state.userFromOneauth.demographic.branchId ? String(this.state.userFromOneauth.demographic.branchId) : "",
                                     mobileNumber: this.state.userFromOneauth.mobile_number.replace('+91-', '') || null,
-                                    gradYear: this.state.userFromOneauth.graduationYear || null,
+                                    gradYear: this.state.userFromOneauth.graduationYear || "2025",
                                     pincode: this.state.userFromOneauth.demographic.addresses[0] ? this.state.userFromOneauth.demographic.addresses[0].pincode : "",
                                     streetAddress: this.state.userFromOneauth.demographic.addresses[0] ? this.state.userFromOneauth.demographic.addresses[0].street_address : "",
                                     landmark: this.state.userFromOneauth.demographic.addresses[0] ? this.state.userFromOneauth.demographic.addresses[0].landmark : "",
