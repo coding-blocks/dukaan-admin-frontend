@@ -32,6 +32,8 @@ class NewPayment extends React.Component {
         this.creditsRemoveRef = React.createRef();
         this.creditsClubbingRef = React.createRef();
 
+        this.couponCannotClubbedRef = React.createRef();
+
         this.state = {
             selectedProduct: null,
             amountToPay: 0,
@@ -82,6 +84,15 @@ class NewPayment extends React.Component {
                 text: error
             });
         })
+    }
+
+    applyCoupon2 = () => {
+
+    }
+
+
+    removeCoupon2 = () => {
+
     }
 
     calculateAmount = (applyCredits) => {
@@ -359,15 +370,17 @@ class NewPayment extends React.Component {
 
 
     applyCredits = () => {
-        this.setState({
-            useCredits: true
-        }, () => {
-            this.calculateAmount()
-        });
+        if (this.state.selectedProduct) {
+            this.setState({
+                useCredits: true
+            }, () => {
+                this.calculateAmount()
+            });
 
-        if (this.state.totalAppliedCredits > 0) {
-            this.creditsRemoveRef.current.style = {}
-            this.creditsApplyRef.current.style.display = 'none'
+            if (this.state.totalAppliedCredits > 0) {
+                this.creditsRemoveRef.current.style = {}
+                this.creditsApplyRef.current.style.display = 'none'
+            }
         }
     }
 
@@ -390,6 +403,7 @@ class NewPayment extends React.Component {
                     this.calculateAmount()
                     this.creditsApplyRef.current.style = {}
                     this.creditsRemoveRef.current.style.display = 'none'
+                    this.couponCannotClubbedRef.current.style.display = 'none'
                 });
             }
         })
@@ -397,17 +411,21 @@ class NewPayment extends React.Component {
     }
 
     checkCouponExclusivity = () => {
-        if (this.state.coupon) {
+        if (this.state.coupon && this.state.selectedProduct) {
             couponController.checkCouponExclusivity({
                 couponName: this.state.coupon, userId: this.state.selectedUser.id
             }).then((response) => {
                 if (response.data.clubbingResponse === 'CLUBBING_INVALID') {
-                    this.calculateAmount();
-                    this.creditsClubbingRef.current.style = {}
-                    this.creditsApplyRef.current.style.display = 'none'
-                    this.creditsRemoveRef.current.style.display = 'none'
-                    console.log('Credits cannot be applied')
-                } else if(response.data.clubbingResponse === 'CLUBBING_OK'){
+                    if (this.state.useCredits) {
+                        this.couponCannotClubbedRef.current.style =  {}
+                        console.log('Coupon cannot be applied as credits is being used')
+                    } else {
+                        this.calculateAmount();
+                        this.creditsClubbingRef.current.style = {}
+                        this.creditsApplyRef.current.style.display = 'none'
+                        this.creditsRemoveRef.current.style.display = 'none'
+                    }
+                } else if (response.data.clubbingResponse === 'CLUBBING_OK') {
                     this.calculateAmount();
                 }
             }).catch((error) => {
@@ -597,6 +615,11 @@ class NewPayment extends React.Component {
                                         <div ref={this.couponNotAppliedTextRef} style={{display: 'none'}}>
                                             <p style={{color: 'red'}}>{`Coupon ${this.state.coupon} not applied`}</p>
                                         </div>
+
+                                        <div ref={this.couponCannotClubbedRef} style={{display: 'none'}}>
+                                            <p style={{color: 'red'}}>{`Coupon cannot be applied as credits is being used.`}</p>
+                                        </div>
+
                                     </div>
 
 
