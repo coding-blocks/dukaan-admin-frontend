@@ -116,7 +116,7 @@ class AddUser extends React.Component {
                             branchId: "1",
                             mobileNumber: "",
                             email: "",
-                            gradYear: "2026",
+                            gradYear: "2025",
                             pincode: "",
                             streetAddress: "",
                             landmark: "",
