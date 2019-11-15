@@ -174,6 +174,7 @@ class Home extends React.Component {
                     const date = moment(completeOrder.created_at).format(
                         "MMMM Do YYYY,h:mm:ss a"
                     );
+                    const paymentType = completeOrder.cart.transactions[0].payment_type
                     return (
                         <CompleteOrders
                         date={date}
@@ -186,9 +187,11 @@ class Home extends React.Component {
                         invoice_url={completeOrder.invoice_link}
                         refunded={completeOrder.cart.transactions[0].status}
                         userid={this.state.selectedUser.id}
-                        payment_type={completeOrder.cart.transactions[0].payment_type}
+                        center={completeOrder.cart.transactions[0].center}
+                        payment_type={paymentType}
                         description={completeOrder.product.description}
                         partial_payment={completeOrder.partial_payment}
+                        transaction={completeOrder.cart.transactions[0]}
                         cart_id={completeOrder.cart.id}
                         />
                     );

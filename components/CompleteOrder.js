@@ -5,6 +5,7 @@ import Router from "next/router";
 import Modal from "react-modal";
 import Price from "./Price";
 import resourcesController from "../controllers/resources";
+import purchasesController from "../controllers/purchases";
 import refundController from "../controllers/refund";
 import ErrorHandler from "../helpers/ErrorHandler";
 
@@ -29,7 +30,8 @@ class CompleteOrder extends React.Component {
             formValues: {
                 payment_type: "credits",
                 user_id: this.props.userid,
-                txn_id: this.props.txn_id
+                txn_id: this.props.txn_id,
+                cart_id: this.props.cart_id
             }
         };
     }
@@ -56,6 +58,41 @@ class CompleteOrder extends React.Component {
             formValues: newFormValues
         });
     };
+    handleCancelReceipt = async e => {
+        e.preventDefault();
+        Swal.fire({
+            title: "Are you sure you want to cancel the receipt?",
+            type: "question",
+            confirmButtonColor: "#f66",
+            confirmButtonText: "Yes!",
+            cancelButtonText: "No!",
+            showCancelButton: true,
+            showConfirmButton: true,
+            showCloseButton: true
+        })
+        .then((result) => {
+            if (result.value) {
+                purchasesController.cancelReceipt(this.state.formValues.user_id, this.state.formValues.cart_id)
+                    .then((res) => {
+                        Swal.fire({
+                            title: "Receipt successfully cancelled",
+                            type: "success",
+                            timer: "3000",
+                            showConfirmButton: true,
+                            confirmButtonText: "Okay"
+                        })
+                        .then(() => window.location.reload())
+                    }).catch(err => {
+                        Swal.fire({
+                            title: "Error while cancelling receipt",
+                            text: err,
+                            type: "error",
+                            showConfirmButton: true
+                        });
+                    });
+            }
+        })
+    }
 
     handleSubmit = async e => {
         e.preventDefault();
@@ -311,12 +348,18 @@ class CompleteOrder extends React.Component {
                                 <div className="font-sm grey">
                                     Mode Of Payment: {this.props.payment_type}
                                 </div>
-                                <div className="font-sm grey">
-                                    Payment Collected By: {this.props.admin}
-                                </div>
-                                <div className="font-sm grey">
-                                    Payment Center: {this.props.center}
-                                </div>
+                               {this.props.partial_payment || this.props.transaction.razorpay_id ? ("") :
+                                   (
+                                     <div>
+                                        <div className="font-sm grey">
+                                            Payment Collected By: {this.props.transaction[this.props.payment_type]['admin']['center']}
+                                        </div>
+                                        <div className="font-sm grey">
+                                            Payment Center: {this.props.transaction[this.props.payment_type]['center']['name']}
+                                        </div>
+                                     </div>
+                               )
+                               }
                                 <div className="font-sm grey">
                                     Purchased on: {this.props.date}
                                 </div>
@@ -356,6 +399,18 @@ class CompleteOrder extends React.Component {
                             ) : (
                                 ""
                             )}
+
+            <button
+              onClick={this.handleCancelReceipt}
+            >
+              <button
+                className="button-solid lg"
+                style={{ marginLeft: "10vh" }}
+              >
+               Cancel Receipt
+              </button>
+            </button>
+
                             <input id="orderIdInput" type="hidden"/>
                             <div className="row justify-content-center">
                                 <a target="blank" id="anchorInvoiceUpdate"/>
