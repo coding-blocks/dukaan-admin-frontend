@@ -30,6 +30,7 @@ class NewPayment extends React.Component {
 
         this.creditsApplyRef = React.createRef();
         this.creditsRemoveRef = React.createRef();
+        this.creditsClubbingRef = React.createRef();
 
         this.state = {
             selectedProduct: null,
@@ -202,6 +203,14 @@ class NewPayment extends React.Component {
         });
     };
 
+    onChangeValue = e => {
+        let newFormValues = this.state.formValues;
+        newFormValues[e.target.name] = e.target.value;
+        this.setState({
+            formValues: newFormValues
+        });
+    };
+
     toggleCheck = e => {
         let newFormValues = this.state.formValues;
         newFormValues[e.target.name] = e.target.checked;
@@ -318,6 +327,7 @@ class NewPayment extends React.Component {
         }).then(result => {
             if (result.value) {
                 this.resetCouponUI()
+                this.resetCreditsUI()
             }
         })
     }
@@ -342,6 +352,7 @@ class NewPayment extends React.Component {
 
     resetCreditsUI = () => {
         this.creditsApplyRef.current.style = {}
+        this.creditsClubbingRef.current.style.display = 'none'
         this.creditsRemoveRef.current.style.display = 'none'
         this.calculateAmount();
     }
@@ -386,12 +397,22 @@ class NewPayment extends React.Component {
     }
 
     checkCouponExclusivity = () => {
-        if(this.state.coupon){
+        if (this.state.coupon) {
             couponController.checkCouponExclusivity({
                 couponName: this.state.coupon, userId: this.state.selectedUser.id
             }).then((response) => {
-                console.log(response)
+                if (response.data.clubbingResponse === 'CLUBBING_INVALID') {
+                    this.calculateAmount();
+                    this.creditsClubbingRef.current.style = {}
+                    this.creditsApplyRef.current.style.display = 'none'
+                    this.creditsRemoveRef.current.style.display = 'none'
+                    console.log('Credits cannot be applied')
+                } else if(response.data.clubbingResponse === 'CLUBBING_OK'){
+                    this.calculateAmount();
+                }
             }).catch((error) => {
+                console.log('Error occured')
+                this.calculateAmount();
                 ErrorHandler.handle(error)
             })
         }
@@ -624,6 +645,15 @@ class NewPayment extends React.Component {
                                             </div>
                                         </div>
 
+
+                                        <div className={"row align-items-center"} style={{display: 'none'}}
+                                             ref={this.creditsClubbingRef}>
+                                            <div>
+                                                <p className={"red"}>{`Credits cannot be applied as coupon is exclusive`}</p>
+                                            </div>
+
+                                        </div>
+
                                     </div>
 
                                 </FieldWithElement> : <div></div>}
@@ -682,7 +712,7 @@ class NewPayment extends React.Component {
                                 </FieldWithElement>
 
 
-                                {this.state.partialPayment ? (
+                                {this.state.formValues.partialPayment ? (
                                     <FieldWithElement
                                         className="red"
                                         nameCols={3}
