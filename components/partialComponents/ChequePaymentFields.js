@@ -1,6 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import * as moment from "moment";
 import FieldWithElement from "../FieldWithElement";
+
+const getMinMaxDateRange = () => {
+    return {
+        max: moment.format('YYYY-MM-DD')
+    }
+}
 
 const ChequeFields = ({chequeLocation, serialNumber, bankName, branchName, issueDate}) => {
     return (
@@ -48,6 +55,7 @@ const ChequeFields = ({chequeLocation, serialNumber, bankName, branchName, issue
                 <input
                     type="date"
                     className={"input-text"}
+                    max = {getMinMaxDateRange().max}
                     placeholder="Select Date"
                     name={"issueDate"}
                     value={issueDate}/>

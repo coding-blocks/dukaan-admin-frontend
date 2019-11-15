@@ -16,7 +16,7 @@ const SingleUserDetail = ({ userInfo, showOrders, handleNewPayment }) => {
           </p>
           <p>Email : {userInfo.email}</p>
           <p>Mobile : {userInfo.mobile_number}</p>
-          <p>Wallet Amount : ₹ {userInfo.wallet_amount / 100}</p>
+          <p>Credits Available : ₹ {userInfo.wallet_amount / 100}</p>
           <div className={"mt-4"}>
             <Link href={`/admin/orders?id=${userInfo.id}`}>
               <button

@@ -9,6 +9,7 @@ import formatter from "../helpers/formatter";
 import purchasesController from "../controllers/purchases";
 import resourcesController from "../controllers/resources";
 import productsController from "../controllers/products";
+import couponController from "../controllers/coupons";
 import productCategoriesController from "../controllers/productcategories";
 import ChequeFields from "./partialComponents/ChequePaymentFields";
 import SwipeFields from "./partialComponents/SwipePaymentFields";
@@ -27,10 +28,13 @@ class NewPayment extends React.Component {
         this.couponApplyButtonRef = React.createRef();
         this.couponRemoveButtonRef = React.createRef();
 
+        this.creditsApplyRef = React.createRef();
+        this.creditsRemoveRef = React.createRef();
+
         this.state = {
             selectedProduct: null,
             amountToPay: 0,
-            selectedUser: {},
+            selectedUser: props.selectedUser,
             states: [],
             product_categories: [],
             products: [],
@@ -41,7 +45,17 @@ class NewPayment extends React.Component {
             id: props.id,
             coupon: "",
             paymentMode: "cash",
-            partialPayment: false
+            partialPayment: false,
+            useCredits: false,
+            totalAppliedCredits: 0,
+            formValues: {
+                coupon: "",
+                comment: "",
+                paymentMode: "cash",
+                quantity: "1",
+                stateId: "AP",
+                oneauthId: "" + props.userid
+            }
         };
         this.ReactSwal = withReactContent(Swal);
     }
@@ -69,18 +83,20 @@ class NewPayment extends React.Component {
         })
     }
 
-    calculateAmount = () => {
+    calculateAmount = (applyCredits) => {
         if (this.state.selectedProduct)
             if (this.state.selectedProduct.id) {
                 productsController.handleCalculatePrice({
                     coupon: this.state.coupon.toUpperCase(),
                     oneauthId: this.props.userid,
                     productId: this.state.selectedProduct.id,
-                    quantity: 1
+                    quantity: 1,
+                    useCredits: this.state.useCredits
                 }).then((res) => {
                     if (res.data.amount >= 0 && res.data.couponApplied) {
                         this.setState({
-                            amountToPay: formatter.paisaToRs(res.data.amount)
+                            amountToPay: formatter.paisaToRs(res.data.amount),
+                            totalAppliedCredits: res.data.creditsApplied
                         });
                         this.couponInputRef.current.disabled = true
                         this.couponAppliedTextRef.current.style.display = 'block'
@@ -90,13 +106,15 @@ class NewPayment extends React.Component {
                         this.couponApplyButtonRef.current.style.display = 'none'
                     } else if (res.data.amount >= 0 && !res.data.couponApplied && this.state.coupon) {
                         this.setState({
-                            amountToPay: formatter.paisaToRs(res.data.amount)
+                            amountToPay: formatter.paisaToRs(res.data.amount),
+                            totalAppliedCredits: res.data.creditsApplied
                         });
                         this.couponNotAppliedTextRef.current.style.display = 'block'
                         this.couponAppliedTextRef.current.style.display = 'none'
                     } else if (res.data.amount >= 0 && !res.data.couponApplied && !this.state.coupon) {
                         this.setState({
-                            amountToPay: formatter.paisaToRs(res.data.amount)
+                            amountToPay: formatter.paisaToRs(res.data.amount),
+                            totalAppliedCredits: res.data.creditsApplied
                         });
                     }
                 }).catch(error => {
@@ -107,14 +125,21 @@ class NewPayment extends React.Component {
                     });
                 });
             } else {
+                this.setState({
+                    amountToPay: 0,
+                    totalAppliedCredits: 0,
+                    useCredits: false
+                });
 
+                console.log('Reset coupon UI must be called now')
+                this.resetCouponUI();
             }
 
     };
 
     handleProductCategoryChange = e => {
         this.setState({
-            product_category: e.target.value
+            product_category: e.target.value,
         });
         productsController.handleGetProducts({
                 product_category_id: e.target.value
@@ -123,36 +148,47 @@ class NewPayment extends React.Component {
                 limit: 100
             }
         ).then((response) => {
-            this.setState({
-                products: response.results,
-                amountToPay: response.results[0] ? response.results[0].list_price : 0,
-                selectedProduct: response.results ? response.results[0] : {}
-            });
-            this.calculateAmount()
+            if (response.results.length > 0) {
+                this.setState({
+                    products: response.results,
+                    selectedProduct: response.results ? response.results[0] : {},
+                }, () => {
+                    this.calculateAmount();
+                });
+            } else {
+                console.log('Else case chalna chahiye')
+                this.setState({
+                    products: [],
+                    selectedProduct: {},
+                    amountToPay: 0
+                }, () => {
+                    this.calculateAmount();
+                });
+            }
         })
     };
 
     handleProductChange = e => {
         this.setState({
             selectedProduct: JSON.parse(e.target.selectedOptions[0].dataset.product),
+        }, () => {
+            this.calculateAmount();
         })
-        this.calculateAmount()
     }
 
-    handleCouponChange = e => {
+    handleCouponChange = (e) => {
         this.setState({
             coupon: e.target.value
         })
-        if(e.target.value.length === 0){
+        if (e.target.value.length === 0) {
             this.couponNotAppliedTextRef.current.style.display = 'none'
         }
+
     }
 
-    onChangeValue = e => {
-        let newFormValues = this.state.formValues;
-        newFormValues[e.target.name] = e.target.value;
+    onChangePaymentMode = e => {
         this.setState({
-            formValues: newFormValues
+            paymentMode: e.target.value
         });
     };
 
@@ -280,18 +316,85 @@ class NewPayment extends React.Component {
             showConfirmButton: true,
             showCloseButton: true
         }).then(result => {
-            if(result.value){
-                this.setState({
-                    coupon: ""
-                })
-                this.calculateAmount();
+            if (result.value) {
+                this.resetCouponUI()
+            }
+        })
+    }
+
+
+    resetCouponUI = () => {
+        if (this.state.coupon.length > 0) {
+            this.setState({
+                coupon: ""
+            }, () => {
                 this.couponInputRef.current.disabled = false
                 this.couponInputRef.current.value = ''
                 this.couponRemoveButtonRef.current.style.display = 'none'
                 this.couponApplyButtonRef.current.style.display = 'block'
                 this.couponAppliedTextRef.current.style.display = 'none'
+                this.calculateAmount();
+            })
+
+        }
+
+    }
+
+    resetCreditsUI = () => {
+        this.creditsApplyRef.current.style = {}
+        this.creditsRemoveRef.current.style.display = 'none'
+        this.calculateAmount();
+    }
+
+
+    applyCredits = () => {
+        this.setState({
+            useCredits: true
+        }, () => {
+            this.calculateAmount()
+        });
+
+        if (this.state.totalAppliedCredits > 0) {
+            this.creditsRemoveRef.current.style = {}
+            this.creditsApplyRef.current.style.display = 'none'
+        }
+    }
+
+    removeCredits = () => {
+        Swal.fire({
+            title: "Remove applied credits?",
+            type: "question",
+            confirmButtonColor: "#f66",
+            confirmButtonText: "Remove",
+            cancelButtonText: "Cancel",
+            showCancelButton: true,
+            showConfirmButton: true,
+            showCloseButton: true
+        }).then(result => {
+            if (result.value) {
+                this.setState({
+                    useCredits: false,
+                    totalAppliedCredits: 0,
+                }, () => {
+                    this.calculateAmount()
+                    this.creditsApplyRef.current.style = {}
+                    this.creditsRemoveRef.current.style.display = 'none'
+                });
             }
         })
+
+    }
+
+    checkCouponExclusivity = () => {
+        if(this.state.coupon){
+            couponController.checkCouponExclusivity({
+                couponName: this.state.coupon, userId: this.state.selectedUser.id
+            }).then((response) => {
+                console.log(response)
+            }).catch((error) => {
+                ErrorHandler.handle(error)
+            })
+        }
     }
 
     render() {
@@ -425,7 +528,7 @@ class NewPayment extends React.Component {
                                 {/* Coupon code*/}
                                 <FieldWithElement
                                     nameCols={3}
-                                    elementCols={4} name={"Coupon Code"}
+                                    elementCols={7} name={"Coupon Code"}
                                     errors={errors.coupon}
                                     errorColor={'tomato'}>
 
@@ -444,15 +547,14 @@ class NewPayment extends React.Component {
                                             <div ref={this.couponApplyButtonRef}>
                                                 <button
                                                     id="applyCoupon"
-
                                                     type="button"
-                                                    onClick={this.calculateAmount}
+                                                    onClick={this.checkCouponExclusivity}
                                                     className={" col button-solid ml-2"}>
                                                     Apply Coupon
                                                 </button>
                                             </div>
 
-                                            <div  style={{display: 'none'}} ref={this.couponRemoveButtonRef}>
+                                            <div style={{display: 'none'}} ref={this.couponRemoveButtonRef}>
                                                 <button
                                                     id="removeCoupon"
                                                     type="button"
@@ -468,16 +570,63 @@ class NewPayment extends React.Component {
 
                                     <div id={"couponStatus"}>
                                         <div ref={this.couponAppliedTextRef} style={{display: 'none'}}>
-                                            <p style={{color: 'green'}}>Coupon applied successfully</p>
+                                            <p style={{color: 'green'}}>{`Coupon ${this.state.coupon} applied successfully`}</p>
                                         </div>
 
                                         <div ref={this.couponNotAppliedTextRef} style={{display: 'none'}}>
-                                            <p style={{color: 'red'}}>Coupon not applied</p>
+                                            <p style={{color: 'red'}}>{`Coupon ${this.state.coupon} not applied`}</p>
                                         </div>
                                     </div>
 
 
                                 </FieldWithElement>
+
+
+                                {/* Wallet Credits */}
+                                {this.state.selectedUser.wallet_amount > 0 ? <FieldWithElement
+                                    nameCols={3}
+                                    elementCols={7}
+                                    name={"Dukaan Credits"}>
+
+                                    <div>
+
+                                        <div className={"row align-items-center"} ref={this.creditsApplyRef}>
+                                            <div>
+                                                <p className={"red"}>{`Available ₹ ${this.state.selectedUser.wallet_amount / 100}`}</p>
+                                            </div>
+
+                                            <div>
+                                                <button
+                                                    id="applyCredits"
+                                                    type="button"
+                                                    onClick={this.applyCredits}
+                                                    className={"red font-xs ml-4"}>
+                                                    Apply Credits
+                                                </button>
+                                            </div>
+                                        </div>
+
+
+                                        <div className={"row align-items-center"} style={{display: 'none'}}
+                                             ref={this.creditsRemoveRef}>
+                                            <div>
+                                                <p className={"green"}>{`₹ ${this.state.totalAppliedCredits / 100} Credits Applied`}</p>
+                                            </div>
+
+                                            <div>
+                                                <button
+                                                    id="removeCredits"
+                                                    type="button"
+                                                    onClick={this.removeCredits}
+                                                    className={"red font-xs ml-4"}>
+                                                    Remove Credits
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </FieldWithElement> : <div></div>}
 
 
                                 {/* Total Amount */}
@@ -496,7 +645,7 @@ class NewPayment extends React.Component {
                                     nameCols={3}
                                     elementCols={9}
                                     elementClassName={"pl-4"}>
-                                    <select name="paymentMode" onChange={this.onChangeValue}>
+                                    <select name="paymentMode" onChange={this.onChangePaymentMode}>
                                         <option value="cash">
                                             CASH
                                         </option>
@@ -506,6 +655,7 @@ class NewPayment extends React.Component {
                                     </select>
                                 </FieldWithElement>
                                 <div className="divider-h mb-5 mt-5"/>
+
                                 {this.PaymentMethod()}
 
                                 <FieldWithElement
@@ -563,7 +713,7 @@ class NewPayment extends React.Component {
                                         className={"input-text"}
                                         placeholder="Place a comment"
                                         name={"comment"}
-                                        onChange={this.onChangeValue}
+                                        onChange={handleChange}
                                         value={values.comment}
                                     />
                                 </FieldWithElement>
@@ -576,8 +726,6 @@ class NewPayment extends React.Component {
                                         Record Payment
                                     </button>
                                 </div>
-
-
                             </div>
                         </form>
                     )}
