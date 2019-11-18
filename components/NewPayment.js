@@ -86,14 +86,166 @@ class NewPayment extends React.Component {
         })
     }
 
-    applyCoupon2 = () => {
+    calculateAmountToPay = () => {
+        return productsController.handleCalculatePrice({
+            coupon: this.state.coupon.toUpperCase(),
+            oneauthId: this.props.userid,
+            productId: this.state.selectedProduct.id,
+            quantity: 1,
+            useCredits: this.state.useCredits
+        }).then((res) => {
+            return res;
+        }).catch((error) => {
+            ErrorHandler.handle(error)
+        });
+    }
 
+    applyCoupon2 = () => {
+        if (this.state.coupon && this.state.selectedProduct) {
+            couponController.checkCouponExclusivity({
+                couponName: this.state.coupon, userId: this.state.selectedUser.id
+            }).then((response) => {
+                if (response.data.clubbingResponse === 'CLUBBING_INVALID' && this.state.useCredits) {
+                    this.showCouponClubbingInvalid()
+                } else if (response.data.clubbingResponse === 'CLUBBING_INVALID') {
+                    this.calculateAmountToPay().then((response) => {
+                        this.setState({
+                            amountToPay: formatter.paisaToRs(response.data.amount),
+                        })
+                        this.setCouponAppliedUI()
+                        this.showCreditClubbingInvalid()
+                    })
+                } else if (response.data.clubbingResponse === 'CLUBBING_OK') {
+                    this.calculateAmountToPay().then((response) => {
+                        this.setState({
+                            amountToPay: formatter.paisaToRs(response.data.amount),
+                        })
+                        this.setCouponAppliedUI()
+                    })
+                }
+            }).catch((error) => {
+                ErrorHandler.handle(error)
+            })
+        }
     }
 
 
     removeCoupon2 = () => {
+        Swal.fire({
+            title: "Remove applied coupon?",
+            type: "question",
+            confirmButtonColor: "#f66",
+            confirmButtonText: "Remove",
+            cancelButtonText: "Cancel",
+            showCancelButton: true,
+            showConfirmButton: true,
+            showCloseButton: true
+        }).then(result => {
+            if (result.value) {
+                this.setState({
+                    coupon: "",
+                    useCredits: false
+                })
+                this.calculateAmountToPay().then((response) => {
+                    this.setState({
+                        amountToPay: formatter.paisaToRs(response.data.amount),
+                    })
+                })
+                this.removeCouponAppliedUI()
+                this.removeCreditsAppliedUI()
+            }
+        })
+
 
     }
+
+    applyCredits2 = () => {
+        if (this.state.selectedProduct) {
+            this.setState({
+                useCredits: true
+            }, () => {
+                this.calculateAmountToPay().then((res) => {
+                    this.setState({
+                        amountToPay: formatter.paisaToRs(res.data.amount),
+                        totalAppliedCredits: res.data.creditsApplied
+                    })
+                })
+            });
+            this.setCreditsAppliedUI()
+
+        }
+    }
+
+    removeCredits2 = () => {
+        Swal.fire({
+            title: "Remove applied credits?",
+            type: "question",
+            confirmButtonColor: "#f66",
+            confirmButtonText: "Remove",
+            cancelButtonText: "Cancel",
+            showCancelButton: true,
+            showConfirmButton: true,
+            showCloseButton: true
+        }).then(result => {
+            if (result.value) {
+                this.setState({
+                    useCredits: false,
+                    coupon: ""
+                })
+                this.calculateAmountToPay().then((res) => {
+                    this.setState({
+                        amountToPay: formatter.paisaToRs(res.data.amount)
+                    }, () => {
+                        this.removeCreditsAppliedUI()
+                        this.removeCouponAppliedUI()
+                    });
+                })
+
+            }
+        })
+    }
+
+
+    setCouponAppliedUI = () => {
+        this.couponInputRef.current.disabled = true
+        this.couponAppliedTextRef.current.style.display = 'block'
+        this.couponNotAppliedTextRef.current.style.display = 'none'
+        this.couponCannotClubbedRef.current.style.display = 'none'
+        this.couponRemoveButtonRef.current.style.display = 'block'
+        this.couponApplyButtonRef.current.style.display = 'none'
+    }
+
+    removeCouponAppliedUI = () => {
+        this.couponInputRef.current.disabled = false
+        this.couponInputRef.current.value = ''
+        this.couponRemoveButtonRef.current.style.display = 'none'
+        this.couponApplyButtonRef.current.style.display = 'block'
+        this.couponAppliedTextRef.current.style.display = 'none'
+    }
+
+    setCreditsAppliedUI = () => {
+        this.creditsRemoveRef.current.style = {}
+        this.creditsApplyRef.current.style.display = 'none'
+    }
+
+    removeCreditsAppliedUI = () => {
+        this.creditsApplyRef.current.style = {}
+        this.creditsRemoveRef.current.style.display = 'none'
+        this.couponCannotClubbedRef.current.style.display = 'none'
+        this.creditsClubbingRef.current.style.display = 'none'
+
+    }
+
+    showCouponClubbingInvalid = () => {
+        this.couponCannotClubbedRef.current.style = {}
+    }
+
+    showCreditClubbingInvalid = () => {
+        this.creditsClubbingRef.current.style = {}
+        this.creditsApplyRef.current.style.display = 'none'
+        this.creditsRemoveRef.current.style.display = 'none'
+    }
+
 
     calculateAmount = (applyCredits) => {
         if (this.state.selectedProduct)
@@ -165,7 +317,6 @@ class NewPayment extends React.Component {
                     products: response.results,
                     selectedProduct: response.results ? response.results[0] : {},
                 }, () => {
-                    this.calculateAmount();
                 });
             } else {
                 console.log('Else case chalna chahiye')
@@ -174,7 +325,6 @@ class NewPayment extends React.Component {
                     selectedProduct: {},
                     amountToPay: 0
                 }, () => {
-                    this.calculateAmount();
                 });
             }
         })
@@ -184,7 +334,18 @@ class NewPayment extends React.Component {
         this.setState({
             selectedProduct: JSON.parse(e.target.selectedOptions[0].dataset.product),
         }, () => {
-            this.calculateAmount();
+            this.setState({
+                useCredits: false,
+                amountToPay: 0,
+                coupon: ""
+            })
+            this.calculateAmountToPay().then((res) => {
+                this.setState({
+                    amountToPay: formatter.paisaToRs(res.data.amount),
+                })
+            })
+            this.removeCouponAppliedUI();
+            this.removeCreditsAppliedUI();
         })
     }
 
@@ -417,7 +578,7 @@ class NewPayment extends React.Component {
             }).then((response) => {
                 if (response.data.clubbingResponse === 'CLUBBING_INVALID') {
                     if (this.state.useCredits) {
-                        this.couponCannotClubbedRef.current.style =  {}
+                        this.couponCannotClubbedRef.current.style = {}
                         console.log('Coupon cannot be applied as credits is being used')
                     } else {
                         this.calculateAmount();
@@ -587,7 +748,7 @@ class NewPayment extends React.Component {
                                                 <button
                                                     id="applyCoupon"
                                                     type="button"
-                                                    onClick={this.checkCouponExclusivity}
+                                                    onClick={this.applyCoupon2}
                                                     className={" col button-solid ml-2"}>
                                                     Apply Coupon
                                                 </button>
@@ -597,7 +758,7 @@ class NewPayment extends React.Component {
                                                 <button
                                                     id="removeCoupon"
                                                     type="button"
-                                                    onClick={this.removeCoupon}
+                                                    onClick={this.removeCoupon2}
                                                     className={" col button-solid ml-2"}>
                                                     Remove Coupon
                                                 </button>
@@ -643,7 +804,7 @@ class NewPayment extends React.Component {
                                                 <button
                                                     id="applyCredits"
                                                     type="button"
-                                                    onClick={this.applyCredits}
+                                                    onClick={this.applyCredits2}
                                                     className={"red font-xs ml-4"}>
                                                     Apply Credits
                                                 </button>
@@ -661,7 +822,7 @@ class NewPayment extends React.Component {
                                                 <button
                                                     id="removeCredits"
                                                     type="button"
-                                                    onClick={this.removeCredits}
+                                                    onClick={this.removeCredits2}
                                                     className={"red font-xs ml-4"}>
                                                     Remove Credits
                                                 </button>
