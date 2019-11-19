@@ -21,6 +21,7 @@ class Home extends React.Component {
             completeTab: true,
             activeTab: false,
             refundedTab: false,
+            cancelledTab: false,
             userFound: false,
             userInfo: [],
             courseInfo: {},
@@ -66,7 +67,8 @@ class Home extends React.Component {
         this.setState(prevstate => ({
             completeTab: true,
             activeTab: false,
-            refundedTab: false
+            refundedTab: false,
+            cancelledTab: false
         }));
     };
 
@@ -74,7 +76,8 @@ class Home extends React.Component {
         this.setState(prevstate => ({
             completeTab: false,
             activeTab: true,
-            refundedTab: false
+            refundedTab: false,
+            cancelledTab: false
         }));
     };
 
@@ -82,7 +85,17 @@ class Home extends React.Component {
         this.setState(prevstate => ({
             completeTab: false,
             activeTab: false,
-            refundedTab: true
+            refundedTab: true,
+            cancelledTab: false
+        }));
+    };
+
+    toggleCancelledTab = () => {
+        this.setState(prevstate => ({
+            completeTab: false,
+            activeTab: false,
+            refundedTab: false,
+            cancelledTab: true
         }));
     };
 
@@ -127,6 +140,7 @@ class Home extends React.Component {
         const completeTab = this.state.completeTab;
         const refundTab = this.state.refundedTab;
         const activeTab = this.state.activeTab;
+        const cancelledTab = this.state.cancelledTab;
         if (refundTab) {
             if (
                 this.state.courseInfo.refundedPayments &&
@@ -231,8 +245,43 @@ class Home extends React.Component {
             } else {
                 orders = <div>No Active Orders Found.</div>;
             }
-        }
+        } else if (cancelledTab) {
+            if (
+                this.state.courseInfo.cancelledPayments &&
+                this.state.courseInfo.cancelledPayments.length > 0
+            ) {
 
+                orders = this.state.courseInfo.cancelledPayments.map(cancelledOrder => {
+                    const date = moment(cancelledOrder.created_at).format(
+                        "MMMM Do YYYY,h:mm:ss a"
+                    );
+                    const paymentType = cancelledOrder.cart.transactions[0].payment_type
+
+                    return (
+                        <CompleteOrders
+                        date={date}
+                        txn_id={cancelledOrder.cart.transactions[0].id}
+                        key={cancelledOrder.id}
+                        image={cancelledOrder.product.image_url}
+                        product_name={cancelledOrder.product.name}
+                        status={cancelledOrder.status}
+                        amount={cancelledOrder.amount / 100}
+                        invoice_url={cancelledOrder.invoice_link}
+                        refunded={cancelledOrder.cart.transactions[0].status}
+                        userid={this.state.selectedUser.id}
+                        center={cancelledOrder.cart.transactions[0].center}
+                        payment_type={paymentType}
+                        description={cancelledOrder.product.description}
+                        partial_payment={cancelledOrder.partial_payment}
+                        transaction={cancelledOrder.cart.transactions[0]}
+                        cart_id={cancelledOrder.cart.id}
+                        />
+                    );
+                });
+            } else {
+                orders = <div>No Cancelled Orders Found.</div>;
+            }
+        }
         return (
             <CheckLogin>
                 <div>
@@ -283,6 +332,15 @@ class Home extends React.Component {
                 >
                 Refunded Orders
                 </div>
+                <div
+                className={
+                    this.state.cancelledTab ? "tab active" : "tab"
+                }
+                onClick={this.toggleCancelledTab}
+                >
+                Cancelled Orders
+                </div>
+
                 </div>
                 <div style={{marginBottom: "1.8vh"}}>{orders}</div>
                 </div>
