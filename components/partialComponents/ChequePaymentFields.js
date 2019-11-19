@@ -5,17 +5,19 @@ import FieldWithElement from "../FieldWithElement";
 
 const getMinMaxDateRange = () => {
     return {
-        max: moment.format('YYYY-MM-DD')
+        max: moment().format('YYYY-MM-DD'),
+        min: moment().subtract(85, 'd').format('YYYY-MM-DD')
     }
 }
 
-const ChequeFields = ({chequeLocation, serialNumber, bankName, branchName, issueDate}) => {
+const ChequeFields = ({chequeLocation, serialNumber, bankName, branchName, issueDate, onChange}) => {
     return (
         <div>
             <FieldWithElement nameCols={3} elementCols={9} name={"Location"}>
                 <input
                     type="text"
                     className={"input-text"}
+                    onChange={onChange}
                     placeholder="Enter Your Location"
                     name={"chequeLocation"}
                     value={chequeLocation}/>
@@ -28,6 +30,7 @@ const ChequeFields = ({chequeLocation, serialNumber, bankName, branchName, issue
                 <input
                     type="text"
                     className={"input-text"}
+                    onChange={onChange}
                     placeholder="Enter Serial Number"
                     name={"serialNumber"}
                     value={serialNumber}/>
@@ -37,6 +40,7 @@ const ChequeFields = ({chequeLocation, serialNumber, bankName, branchName, issue
                 <input
                     type="text"
                     className={"input-text"}
+                    onChange={onChange}
                     placeholder="Enter Your Bank Name"
                     name={"bank"}
                     value={bankName}/>
@@ -46,6 +50,7 @@ const ChequeFields = ({chequeLocation, serialNumber, bankName, branchName, issue
                 <input
                     type="text"
                     className={"input-text"}
+                    onChange={onChange}
                     placeholder="Enter Your Branch Name"
                     name={"branch"}
                     value={branchName}/>
@@ -55,6 +60,8 @@ const ChequeFields = ({chequeLocation, serialNumber, bankName, branchName, issue
                 <input
                     type="date"
                     className={"input-text"}
+                    min={getMinMaxDateRange().min}
+                    onChange={onChange}
                     max = {getMinMaxDateRange().max}
                     placeholder="Select Date"
                     name={"issueDate"}
