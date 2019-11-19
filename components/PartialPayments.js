@@ -443,7 +443,7 @@ class PartialPayments extends React.Component {
                         >
                             Refund
                         </button>
-                    ) : (
+                    ) : (this.state.status === "cancelled") ? ("") : (
                         <button
                             id="view-invoice"
                             className="button-solid ml-4 mb-2 mt-4 pl-5 pr-5"

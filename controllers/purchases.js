@@ -43,8 +43,8 @@ const handleGetPartialPurchases = (userId, cartId) => {
   return response;
 };
 
-const cancelReceipt = (userId, cartId) => {
-    const formBody = {userId: userId, cartId:cartId}
+const cancelReceipt = (userId, cartId, comment) => {
+    const formBody = {userId: userId, cartId:cartId, comment: comment}
     let response = new Promise((resolve, reject) => {
         axios
             .post(`/api/v2/admin/purchases/cancel`, formBody)

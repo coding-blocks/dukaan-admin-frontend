@@ -62,17 +62,23 @@ class CompleteOrder extends React.Component {
         e.preventDefault();
         Swal.fire({
             title: "Are you sure you want to cancel the receipt?",
-            type: "question",
+            input: 'text',
             confirmButtonColor: "#f66",
-            confirmButtonText: "Yes!",
-            cancelButtonText: "No!",
+            confirmButtonText: "Submit",
+            cancelButtonText: "Cancel",
             showCancelButton: true,
             showConfirmButton: true,
-            showCloseButton: true
+            showCloseButton: true,
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'You need to write the reason for cancelling the receipt.'
+                }
+            }
         })
         .then((result) => {
             if (result.value) {
-                purchasesController.cancelReceipt(this.state.formValues.user_id, this.state.formValues.cart_id)
+                purchasesController.cancelReceipt(this.state.formValues.user_id,
+                    this.state.formValues.cart_id, result.value)
                     .then((res) => {
                         Swal.fire({
                             title: "Receipt successfully cancelled",
@@ -352,7 +358,7 @@ class CompleteOrder extends React.Component {
                                    (
                                      <div>
                                         <div className="font-sm grey">
-                                            Payment Collected By: {this.props.transaction[this.props.payment_type]['admin']['center']}
+                                            Payment Collected By: {this.props.transaction[this.props.payment_type]['admin']['username']}
                                         </div>
                                         <div className="font-sm grey">
                                             Payment Center: {this.props.transaction[this.props.payment_type]['center']['name']}
@@ -399,7 +405,7 @@ class CompleteOrder extends React.Component {
                             ) : (
                                 ""
                             )}
-
+            {this.props.status === "captured" && this.props.amount !== 0 ? (
             <button
               onClick={this.handleCancelReceipt}
             >
@@ -410,7 +416,7 @@ class CompleteOrder extends React.Component {
                Cancel Receipt
               </button>
             </button>
-
+            ) : ("")}
                             <input id="orderIdInput" type="hidden"/>
                             <div className="row justify-content-center">
                                 <a target="blank" id="anchorInvoiceUpdate"/>
