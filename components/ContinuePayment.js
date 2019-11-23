@@ -7,6 +7,9 @@ import resourcesController from "../controllers/resources";
 import purchasesController from "../controllers/purchases";
 import Router from "next/router";
 import ErrorHandler from '../helpers/ErrorHandler';
+import ChequeFields from "./partialComponents/ChequePaymentFields";
+import NeftFields from "./partialComponents/NeftPaymentFields";
+import SwipeFields from "./partialComponents/SwipePaymentFields";
 
 
 function ContinuePayment(props) {
@@ -120,153 +123,34 @@ function ContinuePayment(props) {
 
     const PaymentMethod = () => {
         if (formValues.paymentMode === "cheque") {
-            return (
-                <div>
-                    <FieldWithElement nameCols={3} elementCols={9} name={"Location"}>
-                        <input
-                            type="text"
-                            className={"input-text"}
-                            placeholder="Enter Your Location"
-                            name={"chequeLocation"}
-                            onChange={onChangeValue}
-                            value={formValues.chequeLocation}
-                        />
-                    </FieldWithElement>
+            return <ChequeFields bankName={formValues.bank}
+                                 chequeLocation={formValues.chequeLocation}
+                                 serialNumber={formValues.serialNumber}
+                                 branchName={formValues.branchName}
+                                 issueDate={formValues.issueDate}
+                                 onChange={onChangeValue}
 
-                    <FieldWithElement nameCols={3} elementCols={9} name={"Serial Number"}>
-                        <input
-                            type="text"
-                            className={"input-text"}
-                            placeholder="Enter Serial Number"
-                            name={"serialNumber"}
-                            onChange={onChangeValue}
-                            value={formValues.serialNumber}
-                        />
-                    </FieldWithElement>
-
-                    <FieldWithElement nameCols={3} elementCols={9} name={"Bank Name"}>
-                        <input
-                            type="text"
-                            className={"input-text"}
-                            placeholder="Enter Your Bank Name"
-                            name={"chequeBank"}
-                            onChange={onChangeValue}
-                            value={formValues.chequeBank}
-                        />
-                    </FieldWithElement>
-
-                    <FieldWithElement nameCols={3} elementCols={9} name={"Branch Name"}>
-                        <input
-                            type="text"
-                            className={"input-text"}
-                            placeholder="Enter Your Branch Name"
-                            name={"branch"}
-                            onChange={onChangeValue}
-                            value={formValues.branch}
-                        />
-                    </FieldWithElement>
-
-                    <FieldWithElement nameCols={3} elementCols={9} name={"Issue Date"}>
-                        <input
-                            type="date"
-                            className={"input-text"}
-                            placeholder="Select Date"
-                            name={"issueDate"}
-                            onChange={onChangeValue}
-                            value={formValues.issueDate}
-                        />
-                    </FieldWithElement>
-                    <div className="divider-h mb-5 mt-5"/>
-                </div>
-            );
+            />
         } else if (formValues.paymentMode === "neft") {
-            return (
-                <div>
-                    <FieldWithElement nameCols={3} elementCols={9} name={"Location"}>
-                        <input
-                            type="text"
-                            className={"input-text"}
-                            placeholder="Enter Your Location"
-                            name={"neftLocation"}
-                            onChange={onChangeValue}
-                            value={formValues.neftLocation}
-                        />
-                    </FieldWithElement>
-
-                    <FieldWithElement
-                        nameCols={3}
-                        elementCols={9}
-                        name={"NEFT Transaction ID"}
-                    >
-                        <input
-                            type="text"
-                            className={"input-text"}
-                            placeholder="Enter Your Transaction ID"
-                            name={"neftUtr"}
-                            onChange={onChangeValue}
-                            value={formValues.neftUtr}
-                        />
-                    </FieldWithElement>
-
-                    <FieldWithElement nameCols={3} elementCols={9} name={"Issue Date"}>
-                        <input
-                            type="date"
-                            className={"input-text"}
-                            placeholder="Select Date"
-                            name={"neftDate"}
-                            onChange={onChangeValue}
-                            value={formValues.neftDate}
-                        />
-                    </FieldWithElement>
-                    <div className="divider-h mb-5 mt-5"/>
-                </div>
-            );
+            return <NeftFields neftLocation={formValues.neftLocation}
+                               neftUTR={formValues.neftUtr}
+                               neftDate={formValues.neftDate}
+                               neftBank={formValues.neftBank}
+                               onChange={onChangeValue}
+            />
         } else if (formValues.paymentMode === "swipe") {
-            return (
-                <div>
-                    <FieldWithElement nameCols={3} elementCols={9} name={"Location"}>
-                        <input
-                            type="text"
-                            className={"input-text"}
-                            placeholder="Enter Your Location"
-                            name={"swipeLocation"}
-                            onChange={onChangeValue}
-                            value={formValues.swipeLocation}
-                        />
-                    </FieldWithElement>
+            return <SwipeFields swipeLocation={formValues.swipeLocation}
+                                swipeAppCode={formValues.swipeAppCode}
+                                swipeUTR={formValues.swipeUtr}
+                                issueDate={formValues.issueDate}
+                                onChange={onChangeValue}
 
-                    <FieldWithElement
-                        nameCols={3}
-                        elementCols={9}
-                        name={"SWIPE Transaction ID"}
-                    >
-                        <input
-                            type="text"
-                            className={"input-text"}
-                            placeholder="Enter Your Swipe ID"
-                            name={"swipeUtr"}
-                            onChange={onChangeValue}
-                            value={formValues.swipeUtr}
-                        />
-                    </FieldWithElement>
-
-                    <FieldWithElement nameCols={3} elementCols={9} name={"Issue Date"}>
-                        <input
-                            type="date"
-                            className={"input-text"}
-                            placeholder="Select Date"
-                            name={"swipeDate"}
-                            onChange={onChangeValue}
-                            value={formValues.swipeDate}
-                        />
-                    </FieldWithElement>
-                    <div className="divider-h mb-5 mt-5"/>
-                </div>
-            );
+            />
         } else {
             return <div/>;
         }
     };
+
 
     return (
         <div className={"d-flex align-items-center col-md-8"}>
