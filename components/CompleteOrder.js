@@ -78,7 +78,8 @@ class CompleteOrder extends React.Component {
         .then((result) => {
             if (result.value) {
                 purchasesController.cancelReceipt(this.state.formValues.user_id,
-                    this.state.formValues.cart_id, result.value)
+                    this.state.formValues.cart_id, this.state.formValues.txn_id,
+                    result.value)
                     .then((res) => {
                         Swal.fire({
                             title: "Receipt successfully cancelled",
@@ -369,6 +370,17 @@ class CompleteOrder extends React.Component {
                                 <div className="font-sm grey">
                                     Purchased on: {this.props.date}
                                 </div>
+                            {this.props.transaction.status === 'cancelled' ? (
+                                <div>
+                             <div className="font-sm grey">
+                                    Reason: {this.props.transaction.meta.comment}
+                                </div>
+                             <div className="font-sm grey">
+                                    Cancelled By: {this.props.transaction.meta.cancelled_by ?
+                                        this.props.transaction.meta.cancelled_by.username : ""}
+                                </div>
+                                </div>
+                                 ) : ("")}
                             </div>
                         </div>
                         <div className="divider-h mt-4 mb-4"/>
@@ -405,7 +417,8 @@ class CompleteOrder extends React.Component {
                             ) : (
                                 ""
                             )}
-            {this.props.status === "captured" && this.props.amount !== 0 ? (
+            {this.props.status === "captured" &&  !this.props.partial_payment
+                    && this.props.amount !== 0 ? (
             <button
               onClick={this.handleCancelReceipt}
             >

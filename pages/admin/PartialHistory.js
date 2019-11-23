@@ -73,6 +73,7 @@ class PartialHistory extends React.Component {
               mrp={this.state.mrp / 100}
               center={center}
               txn_id={PartialPayment.transactions[0].id}
+              cart_id={PartialPayment.transactions[0].cart_id}
             />
           );
         });

@@ -6,6 +6,7 @@ import withReactContent from "sweetalert2-react-content";
 import "../DukaanAPI";
 import Modal from "react-modal";
 import moment from "moment";
+import purchasesController from "../controllers/purchases";
 import refundController from "../controllers/refund";
 import resourcesController from "../controllers/resources";
 import userController from "../controllers/users";
@@ -51,7 +52,8 @@ class PartialPayments extends React.Component {
             refundDetail: {},
             formValues: {
                 txn_id: props.txn_id,
-                user_id: props.userid
+                user_id: props.userid,
+                cart_id: props.cart_id
             },
             status: this.props.status
         };
@@ -153,6 +155,48 @@ class PartialPayments extends React.Component {
       });
   };
 
+    handleCancelReceipt = async e => {
+        e.preventDefault();
+        Swal.fire({
+            title: "Are you sure you want to cancel the receipt?",
+            input: 'text',
+            confirmButtonColor: "#f66",
+            confirmButtonText: "Submit",
+            cancelButtonText: "Cancel",
+            showCancelButton: true,
+            showConfirmButton: true,
+            showCloseButton: true,
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'You need to write the reason for cancelling the receipt.'
+                }
+            }
+        })
+            .then((result) => {
+                if (result.value) {
+                    purchasesController.cancelReceipt(this.state.formValues.user_id,
+                        this.state.formValues.cart_id, this.state.formValues.txn_id,
+                        result.value)
+                        .then((res) => {
+                            Swal.fire({
+                                title: "Receipt successfully cancelled",
+                                type: "success",
+                                timer: "3000",
+                                showConfirmButton: true,
+                                confirmButtonText: "Okay"
+                            })
+                                .then(() => window.location.reload())
+                        }).catch(err => {
+                            Swal.fire({
+                                title: "Error while cancelling receipt",
+                                text: err,
+                                type: "error",
+                                showConfirmButton: true
+                            });
+                        });
+                }
+            })
+    }
   handleSubmit = async e => {
     e.preventDefault();
     const userid = window.location.search.split("&")[0].split("=")[1];
@@ -460,6 +504,15 @@ class PartialPayments extends React.Component {
                             type="submit"
                         >
                             View Invoice
+                        </button>
+                    </a>
+                    <a onClick={this.handleCancelReceipt} target="blank">
+                        <button
+                            id="view-invoice"
+                            className="button-solid ml-4 mb-2 mt-4 pl-5 pr-5"
+                            type="submit"
+                        >
+                         Cancel Receipt
                         </button>
                     </a>
                 </div>

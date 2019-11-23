@@ -52,7 +52,8 @@ class NewPayment extends React.Component {
             totalAppliedCredits: 0,
 
             formValues: {
-                comment: "",
+                comments: "",
+                coupon: "",
                 paymentMode: "cash",
                 quantity: "1",
                 stateId: "AP",
@@ -524,9 +525,7 @@ class NewPayment extends React.Component {
                                 })}
                             </select>
                         </FieldWithElement>
-
                         <div className="divider-h mb-5 mt-5"/>
-
 
                         {/* Payment center */}
                         <FieldWithElement
@@ -752,9 +751,9 @@ class NewPayment extends React.Component {
                                 type="text"
                                 className={"input-text"}
                                 placeholder="Place a comment"
-                                name={"comment"}
+                                name={"comments"}
                                 onChange={this.onChangeValue}
-                                value={this.state.formValues.comment}
+                                value={this.state.formValues.comments}
                             />
                         </FieldWithElement>
 

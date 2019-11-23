@@ -18,40 +18,40 @@ class ActiveOrders extends React.Component {
             user_id: this.props.userid
         })
     }
-    handleCancelReceipt = async e => {
-        e.preventDefault();
-        Swal.fire({
-            title: "Are you sure you want to cancel the receipt?",
-            type: "question",
-            confirmButtonColor: "#f66",
-            confirmButtonText: "Yes!",
-            cancelButtonText: "No!",
-            showCancelButton: true,
-            showConfirmButton: true,
-            showCloseButton: true
-        })
-        .then((result) => {
-            if (result.value) {
-                purchasesController.cancelReceipt(this.state.user_id, this.state.cart_id)
-                    .then(() => {
-                        Swal.fire({
-                            title: "Receipt successfully cancelled",
-                            type: "success",
-                            timer: "3000",
-                            showConfirmButton: true,
-                            confirmButtonText: "Okay"
-                        }).then(() => window.location.reload());
-                    }).catch(err => {
-                        Swal.fire({
-                            title: "Error while cancelling receipt",
-                            text: err,
-                            type: "error",
-                            showConfirmButton: true
-                        });
-                    });
-            }
-        })
-    }
+    // handleCancelReceipt = async e => {
+    //     e.preventDefault();
+    //     Swal.fire({
+    //         title: "Are you sure you want to cancel the receipt?",
+    //         type: "question",
+    //         confirmButtonColor: "#f66",
+    //         confirmButtonText: "Yes!",
+    //         cancelButtonText: "No!",
+    //         showCancelButton: true,
+    //         showConfirmButton: true,
+    //         showCloseButton: true
+    //     })
+    //     .then((result) => {
+    //         if (result.value) {
+    //             purchasesController.cancelReceipt(this.state.user_id, this.state.cart_id)
+    //                 .then(() => {
+    //                     Swal.fire({
+    //                         title: "Receipt successfully cancelled",
+    //                         type: "success",
+    //                         timer: "3000",
+    //                         showConfirmButton: true,
+    //                         confirmButtonText: "Okay"
+    //                     }).then(() => window.location.reload());
+    //                 }).catch(err => {
+    //                     Swal.fire({
+    //                         title: "Error while cancelling receipt",
+    //                         text: err,
+    //                         type: "error",
+    //                         showConfirmButton: true
+    //                     });
+    //                 });
+    //         }
+    //     })
+    // }
   render() {
     return (
       <div
@@ -128,12 +128,6 @@ class ActiveOrders extends React.Component {
               }&oneauthId=${this.props.oneauthid}&amountLeft=${this.props
                 .amountLeft / 100}&userId=${this.props.userid}&productId=${this.props.product.id}&minBase=${this.props.product.emi_min_base}`}
             >
-              <button
-                className="button-solid lg"
-                style={{ marginLeft: "10vh" }}
-              >
-               Cancel Receipt
-              </button>
             </button>
           </div>
         </div>

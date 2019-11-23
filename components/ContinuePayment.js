@@ -11,7 +11,7 @@ import ErrorHandler from '../helpers/ErrorHandler';
 
 function ContinuePayment(props) {
     const [formValues, setFormValues] = useState({
-        comment: "",
+        comments: "",
         paymentMode: "cash",
         quantity: "1",
         oneauthId: props.oneauthId,
@@ -42,7 +42,7 @@ function ContinuePayment(props) {
 
     useEffect(() => {
         setFormValues({
-            comment: "",
+            comments: "",
             paymentMode: "cash",
             quantity: "1",
             oneauthId: props.oneauthId,
@@ -149,9 +149,9 @@ function ContinuePayment(props) {
                             type="text"
                             className={"input-text"}
                             placeholder="Enter Your Bank Name"
-                            name={"bank"}
+                            name={"chequeBank"}
                             onChange={onChangeValue}
-                            value={formValues.bank}
+                            value={formValues.chequeBank}
                         />
                     </FieldWithElement>
 
@@ -309,7 +309,7 @@ function ContinuePayment(props) {
                             type="text"
                             className={"input-text"}
                             placeholder="Write Your Comment Here"
-                            name={"comment"}
+                            name={"comments"}
                             onChange={onChangeValue}
                             value={formValues.mobile_number}
                         />
