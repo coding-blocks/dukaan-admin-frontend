@@ -124,7 +124,7 @@ class AddUser extends React.Component {
                             whatsappNumber: "",
                             stateId: "DL",
                             countryId: "IN",
-                            label: "Home"
+                            label: "HOME"
                         }}
                         validate={(values) => {
                             let errors = {};

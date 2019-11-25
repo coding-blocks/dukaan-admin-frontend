@@ -11,8 +11,10 @@ import purchasesController from "../../controllers/purchases";
 import swal from "sweetalert2";
 import ActiveOrders from "../../components/ActiveOrders";
 import SingleUserDetail from "../../components/SingleUserDetail";
+import ErrorHandler from "../../helpers/ErrorHandler";
+import {filterPrimaryAddress} from "../../helpers/filterPrimaryAddress";
 
-class Home extends React.Component {
+class OrderDashBoard extends React.Component {
 
     constructor(props) {
         super(props);
@@ -26,40 +28,40 @@ class Home extends React.Component {
             userInfo: [],
             courseInfo: {},
             newpayment: false,
-            selectedUser: {}
+            selectedUser: {},
+            oneauthUserResponse: {}
         };
     }
+
+
 
     componentDidMount() {
         const search = window.location.search;
         const params = new URLSearchParams(search);
         const userId = params.get('id');
-        if(!userId){
+        if (!userId) {
             window.location.href = '/'
         }
-        purchasesController
-            .handleGetPurchases(userId).then((res) => {
-                if (res.data) {
-                    this.setState({
-                        courseInfo: res.data
-                    });
-                } else {
-                    this.setState({
-                        courseInfo: {}
-                    });
-                }
-            }).catch(error => {
-                swal.fire({
-                    title: "Error searching for user's purchases!",
-                    html: error,
-                    type: "error"
-                });
-            });
-        userController.handleGetUserById(userId).then(res => {
+        purchasesController.handleGetPurchases(userId).then((purchases) => {
+            return purchases
+        }).then((purchases) => {
+            return Promise.all([purchases, userController.handleGetUserById(userId)])
+        }).then(([purchases, userResponse]) => {
             this.setState({
-                selectedUser: res.data,
-                newpayment: false
-            });
+                courseInfo: purchases.data,
+                selectedUser: userResponse.data,
+                newpayment: false,
+            })
+            return Promise.all([purchases, userResponse])
+        }).then(() => {
+            return userController.getUserByFromOneAuthByOneAuthId(this.state.selectedUser.oneauth_id)
+        }).then((oneauthResponse) => {
+            this.setState({
+                oneauthUserResponse: oneauthResponse.data,
+                primaryAddress: oneauthResponse.data.demographic.addresses ? filterPrimaryAddress(oneauthResponse.data.demographic.addresses) : {}
+            })
+        }).catch(error => {
+            ErrorHandler.handle(error)
         });
     }
 
@@ -102,22 +104,22 @@ class Home extends React.Component {
     handleGetPaymentForUser = user => {
         purchasesController
             .handleGetPurchases(user.id).then(res => {
-                if (res.data) {
-                    this.setState({
-                        courseInfo: res.data
-                    });
-                } else {
-                    this.setState({
-                        courseInfo: {}
-                    });
-                }
-            }).catch(error => {
-                swal.fire({
-                    title: "Error searching for user's purchases!",
-                    html: error,
-                    type: "error"
+            if (res.data) {
+                this.setState({
+                    courseInfo: res.data
                 });
+            } else {
+                this.setState({
+                    courseInfo: {}
+                });
+            }
+        }).catch(error => {
+            swal.fire({
+                title: "Error searching for user's purchases!",
+                html: error,
+                type: "error"
             });
+        });
     };
 
     handleNewPayment = user => {
@@ -157,22 +159,22 @@ class Home extends React.Component {
 
                     return (
                         <RefundedOrders
-                        key={refundedOrder.id}
-                        // TODO: this is the txnId used to get refund details
-                        txn_id={txn_id}
-                        status={refundedOrder.status}
-                        description={refundedOrder.product.description}
-                        invoice_url={refundedOrder.invoice_link}
-                        amountLeft={refundedOrder.amountLeft}
-                        partial_payment={refundedOrder.partial_payment}
-                        date={date}
-                        image={refundedOrder.product.image_url}
-                        product_name={refundedOrder.product.name}
-                        amount={refundedOrder.amount / 100}
-                        created_at={refundedOrder.created_at}
-                        userid={this.state.selectedUser.id}
-                        oneauthid={this.state.selectedUser.oneauth_id}
-                        cart_id={refundedOrder.cart_id}
+                            key={refundedOrder.id}
+                            // TODO: this is the txnId used to get refund details
+                            txn_id={txn_id}
+                            status={refundedOrder.status}
+                            description={refundedOrder.product.description}
+                            invoice_url={refundedOrder.invoice_link}
+                            amountLeft={refundedOrder.amountLeft}
+                            partial_payment={refundedOrder.partial_payment}
+                            date={date}
+                            image={refundedOrder.product.image_url}
+                            product_name={refundedOrder.product.name}
+                            amount={refundedOrder.amount / 100}
+                            created_at={refundedOrder.created_at}
+                            userid={this.state.selectedUser.id}
+                            oneauthid={this.state.selectedUser.oneauth_id}
+                            cart_id={refundedOrder.cart_id}
                         />
                     );
                 });
@@ -191,22 +193,22 @@ class Home extends React.Component {
                     const paymentType = completeOrder.cart.transactions[0].payment_type
                     return (
                         <CompleteOrders
-                        date={date}
-                        txn_id={completeOrder.cart.transactions[0].id}
-                        key={completeOrder.id}
-                        image={completeOrder.product.image_url}
-                        product_name={completeOrder.product.name}
-                        status={completeOrder.status}
-                        amount={completeOrder.amount / 100}
-                        invoice_url={completeOrder.invoice_link}
-                        refunded={completeOrder.cart.transactions[0].status}
-                        userid={this.state.selectedUser.id}
-                        center={completeOrder.cart.transactions[0].center}
-                        payment_type={paymentType}
-                        description={completeOrder.product.description}
-                        partial_payment={completeOrder.partial_payment}
-                        transaction={completeOrder.cart.transactions[0]}
-                        cart_id={completeOrder.cart.id}
+                            date={date}
+                            txn_id={completeOrder.cart.transactions[0].id}
+                            key={completeOrder.id}
+                            image={completeOrder.product.image_url}
+                            product_name={completeOrder.product.name}
+                            status={completeOrder.status}
+                            amount={completeOrder.amount / 100}
+                            invoice_url={completeOrder.invoice_link}
+                            refunded={completeOrder.cart.transactions[0].status}
+                            userid={this.state.selectedUser.id}
+                            center={completeOrder.cart.transactions[0].center}
+                            payment_type={paymentType}
+                            description={completeOrder.product.description}
+                            partial_payment={completeOrder.partial_payment}
+                            transaction={completeOrder.cart.transactions[0]}
+                            cart_id={completeOrder.cart.id}
                         />
                     );
                 });
@@ -225,20 +227,20 @@ class Home extends React.Component {
 
                     return (
                         <ActiveOrders
-                        amountLeft={activeOrder.amountLeft}
-                        partial_payment={activeOrder.partial_payment}
-                        date={date}
-                        status={activeOrder.status}
-                        key={activeOrder.id}
-                        image={activeOrder.product.image_url}
-                        product_name={activeOrder.product.name}
-                        product={activeOrder.product}
-                        amount={activeOrder.amount / 100}
-                        created_at={activeOrder.created_at}
-                        userid={this.state.selectedUser.id}
-                        oneauthid={this.state.selectedUser.oneauth_id}
-                        cart_id={activeOrder.cart_id}
-                        description={activeOrder.product.description}
+                            amountLeft={activeOrder.amountLeft}
+                            partial_payment={activeOrder.partial_payment}
+                            date={date}
+                            status={activeOrder.status}
+                            key={activeOrder.id}
+                            image={activeOrder.product.image_url}
+                            product_name={activeOrder.product.name}
+                            product={activeOrder.product}
+                            amount={activeOrder.amount / 100}
+                            created_at={activeOrder.created_at}
+                            userid={this.state.selectedUser.id}
+                            oneauthid={this.state.selectedUser.oneauth_id}
+                            cart_id={activeOrder.cart_id}
+                            description={activeOrder.product.description}
                         />
                     );
                 });
@@ -259,22 +261,22 @@ class Home extends React.Component {
 
                     return (
                         <CompleteOrders
-                        date={date}
-                        txn_id={cancelledOrder.cart.transactions[0].id}
-                        key={cancelledOrder.id}
-                        image={cancelledOrder.product.image_url}
-                        product_name={cancelledOrder.product.name}
-                        status={cancelledOrder.status}
-                        amount={cancelledOrder.amount / 100}
-                        invoice_url={cancelledOrder.invoice_link}
-                        refunded={cancelledOrder.cart.transactions[0].status}
-                        userid={this.state.selectedUser.id}
-                        center={cancelledOrder.cart.transactions[0].center}
-                        payment_type={paymentType}
-                        description={cancelledOrder.product.description}
-                        partial_payment={cancelledOrder.partial_payment}
-                        transaction={cancelledOrder.cart.transactions[0]}
-                        cart_id={cancelledOrder.cart.id}
+                            date={date}
+                            txn_id={cancelledOrder.cart.transactions[0].id}
+                            key={cancelledOrder.id}
+                            image={cancelledOrder.product.image_url}
+                            product_name={cancelledOrder.product.name}
+                            status={cancelledOrder.status}
+                            amount={cancelledOrder.amount / 100}
+                            invoice_url={cancelledOrder.invoice_link}
+                            refunded={cancelledOrder.cart.transactions[0].status}
+                            userid={this.state.selectedUser.id}
+                            center={cancelledOrder.cart.transactions[0].center}
+                            payment_type={paymentType}
+                            description={cancelledOrder.product.description}
+                            partial_payment={cancelledOrder.partial_payment}
+                            transaction={cancelledOrder.cart.transactions[0]}
+                            cart_id={cancelledOrder.cart.id}
                         />
                     );
                 });
@@ -299,67 +301,68 @@ class Home extends React.Component {
                                                     showOrders={this.showOrders}
                                                     handleNewPayment={this.handleNewPayment}
                                                     newPaymentState={this.state.handleNewPayment}
+                                                    primaryAddress={this.state.primaryAddress}
                                                 />
                                             </div>
                                         </div>
                                     )}
-            {!this.state.newpayment ? (
-                <div className="col-md-8 col-12">
-                <div className="border-card br-20 bg-light-grey mb-5 w-100">
-                <div className="tab-nav-underline mb-5">
-                <div
-                className={
-                    this.state.activeTab ? "tab active" : "tab"
-                }
-                onClick={this.toggleActiveTab}
-                >
-                Active Orders
-                </div>
-                <div
-                className={
-                    this.state.completeTab ? "tab active" : "tab"
-                }
-                onClick={this.toggleCompleteTab}
-                >
-                Completed Orders
-                </div>
+                                    {!this.state.newpayment ? (
+                                        <div className="col-md-8 col-12">
+                                            <div className="border-card br-20 bg-light-grey mb-5 w-100">
+                                                <div className="tab-nav-underline mb-5">
+                                                    <div
+                                                        className={
+                                                            this.state.activeTab ? "tab active" : "tab"
+                                                        }
+                                                        onClick={this.toggleActiveTab}
+                                                    >
+                                                        Active Orders
+                                                    </div>
+                                                    <div
+                                                        className={
+                                                            this.state.completeTab ? "tab active" : "tab"
+                                                        }
+                                                        onClick={this.toggleCompleteTab}
+                                                    >
+                                                        Completed Orders
+                                                    </div>
 
-                <div
-                className={
-                    this.state.refundedTab ? "tab active" : "tab"
-                }
-                onClick={this.toggleRefundTab}
-                >
-                Refunded Orders
-                </div>
-                <div
-                className={
-                    this.state.cancelledTab ? "tab active" : "tab"
-                }
-                onClick={this.toggleCancelledTab}
-                >
-                Cancelled Orders
-                </div>
+                                                    <div
+                                                        className={
+                                                            this.state.refundedTab ? "tab active" : "tab"
+                                                        }
+                                                        onClick={this.toggleRefundTab}
+                                                    >
+                                                        Refunded Orders
+                                                    </div>
+                                                    <div
+                                                        className={
+                                                            this.state.cancelledTab ? "tab active" : "tab"
+                                                        }
+                                                        onClick={this.toggleCancelledTab}
+                                                    >
+                                                        Cancelled Orders
+                                                    </div>
 
+                                                </div>
+                                                <div style={{marginBottom: "1.8vh"}}>{orders}</div>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <NewPayment
+                                            userid={this.state.selectedUser.oneauth_id}
+                                            selectedUser={this.state.selectedUser}
+                                            showOrders={this.showOrders}
+                                        />
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </Layout>
                 </div>
-                <div style={{marginBottom: "1.8vh"}}>{orders}</div>
-                </div>
-                </div>
-            ) : (
-                <NewPayment
-                userid={this.state.selectedUser.oneauth_id}
-                selectedUser={this.state.selectedUser}
-                showOrders={this.showOrders}
-                />
-            )}
-            </div>
-            </div>
-            </div>
-            </Layout>
-            </div>
             </CheckLogin>
         );
     }
 }
 
-export default Home;
+export default OrderDashBoard;

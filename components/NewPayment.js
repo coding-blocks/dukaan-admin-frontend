@@ -57,6 +57,7 @@ class NewPayment extends React.Component {
                 paymentMode: "cash",
                 quantity: "1",
                 stateId: "AP",
+                partialAmount: 0,
                 oneauthId: "" + props.userid
             }
         };
