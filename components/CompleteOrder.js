@@ -419,15 +419,14 @@ class CompleteOrder extends React.Component {
                             )}
             {this.props.status === "captured" &&  !this.props.partial_payment
                     && this.props.amount !== 0 ? (
-            <button
-              onClick={this.handleCancelReceipt}
-            >
+
               <button
+                  onClick={this.handleCancelReceipt}
                 className="button-solid lg"
                 style={{ marginLeft: "10vh" }}
               >
                Cancel Receipt
-              </button>
+
             </button>
             ) : ("")}
                             <input id="orderIdInput" type="hidden"/>
