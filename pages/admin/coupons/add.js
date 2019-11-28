@@ -82,7 +82,9 @@ class AddCoupon extends React.Component {
       this.setState({
         loading: true
       });
-      controller.handleAddCoupon(this.state.queryParams).then((response) => {
+      const couponPayload = this.state.queryParams;
+      couponPayload.organization_id = 1
+      controller.handleAddCoupon(couponPayload).then((response) => {
         this.setState({
           loading: false
         });

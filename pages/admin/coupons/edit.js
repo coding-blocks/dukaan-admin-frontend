@@ -89,7 +89,9 @@ class EditCoupon extends React.Component {
           loading: true,
           errorMessage: ''
         });
-        controller.handleEditCoupon(this.state.queryParams).then((response) => {
+        const couponPayload = this.state.queryParams;
+        couponPayload.organization_id = 1
+        controller.handleEditCoupon(couponPayload).then((response) => {
           if (response) {
             this.setState({
               loading: false,
