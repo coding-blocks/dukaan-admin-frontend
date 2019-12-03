@@ -1,16 +1,20 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Head from "../../../components/head";
 import Layout from "../../../components/layout";
-import {Formik} from "formik";
-import FieldWithElement from "../../../components/FieldWithElement";
+import ErrorHandler from "../../../helpers/ErrorHandler";
+
+const {getTransactionByRazorpayPaymentId} = require("../../../controllers/dukaanTransactions");
 
 class DukaanPayments extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            payments: undefined
+            payments: undefined,
+            formValues: {
+                razorpayPaymentId: ""
+            }
+
         }
 
     }
@@ -20,22 +24,43 @@ class DukaanPayments extends React.Component {
 
     }
 
+    onChangeValue = e => {
+        let newFormValues = this.state.formValues;
+        newFormValues[e.target.name] = e.target.value;
+        this.setState({
+            formValues: newFormValues
+        });
+    };
+
+    fetchDukaanPayments() {
+        if (this.state.formValues.razorpayPaymentId) {
+            getTransactionByRazorpayPaymentId(this.state.formValues.razorpayPaymentId).then((response) => {
+                console.log('Payments is', response)
+            }).catch((err) => {
+                ErrorHandler.handle(err)
+            })
+        }
+
+    }
+
     render() {
 
         return (<div>
 
 
             <div>
-                <Head title="Edit User | Dukaan"/>
+                <Head title="System Transactions | Dukaan"/>
                 <Layout>
                     <div className={"d-flex col-12 mt-4 ml-3 justify-content-center"}>
 
                         <div className="input-search w-75" style={{display: "inline-block"}}>
-                            <input id="search-bar" type="text" placeholder="Enter razorpay payment ID"></input>
+                            <input id="razorpayPaymentId" value={this.state.formValues.razorpayPaymentId} type="text"
+                                   placeholder="Enter razorpay payment ID" onChange={this.onChangeValue}/>
                         </div>
 
                         <button
                             id="search"
+                            onClick={this.fetchDukaanPayments}
                             className="button-solid mb-1"
                             style={{fontSize: "1.3rem"}}>
                             Search
