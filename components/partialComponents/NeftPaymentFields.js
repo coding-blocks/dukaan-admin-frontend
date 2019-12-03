@@ -54,7 +54,7 @@ const NeftFields = ({neftLocation, neftUTR, issueDate, neftBank, onChange}) => {
                 />
             </FieldWithElement>
 
-            <FieldWithElement nameCols={3} elementCols={9} name={"Issue Date"}>
+            <FieldWithElement nameCols={3} elementCols={9} name={"NEFT Date"}>
                 <input
                     type="date"
                     min={getMinMaxDateRange().min}

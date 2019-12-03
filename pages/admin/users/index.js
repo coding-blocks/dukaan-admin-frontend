@@ -10,13 +10,13 @@ import Head from "../../../components/head";
 import Layout from "../../../components/layout";
 import SingleUserDetail from "../../../components/SingleUserDetail";
 import Link from "next/link";
+import PrimaryAddress from "../../../components/partialComponents/PrimaryAddressComponent";
+import {filterPrimaryAddress} from "../../../helpers/filterPrimaryAddress"
 
 class User extends React.Component {
     constructor() {
         super();
-        this.state = {
-
-        }
+        this.state = {}
 
     }
 
@@ -24,20 +24,21 @@ class User extends React.Component {
         const search = window.location.search;
         const params = new URLSearchParams(search);
         const oneauthId = params.get('oneauthId');
-        if(!oneauthId){
+        if (!oneauthId) {
             window.location.href = '/'
         }
         userController.getUserByFromOneAuthByOneAuthId(oneauthId).then((response) => {
             this.setState({
-                user:response.data
+                user: response.data,
+                primaryAddress: response.data.demographic.addresses ? filterPrimaryAddress(response.data.demographic.addresses) : {}
             })
         }).catch((error) => {
             ErrorHandler.handle(error)
         })
     }
 
-    render(){
-        if(!this.state.user){
+    render() {
+        if (!this.state.user) {
             return (<div>
                 <Head title={"Loading..."}>
                     <Layout>
@@ -50,7 +51,8 @@ class User extends React.Component {
         }
         return (
             <div>
-            <Head title={"User Details | Dukaan"}/>
+                <Head title={"User Details | Dukaan"}/>
+
                 <Layout>
                     <div className="border-card br-20 bg-light-grey mb-5">
                         <div className={"row"}>
@@ -58,7 +60,7 @@ class User extends React.Component {
                                 <h5>User Details</h5>
                             </div>
 
-                            <div className = {"ml-4"}>
+                            <div className={"ml-4"}>
                                 <Link href={`/admin/users/edit?oneauthId=${this.state.user.id}`}>
                                     <button className={"button-solid"}>
                                         Edit Details
@@ -77,14 +79,12 @@ class User extends React.Component {
                             </p>
                             <p>Email : {this.state.user.email}</p>
                             <p>Mobile : {this.state.user.mobile_number}</p>
-                            <p>WhatsApp Number : {this.state.user.demographic.addresses[0] ? this.state.user.demographic.addresses[0].whatsapp_number : ""}</p>
                             <p>Graduation Year : {this.state.user.graduationYear}</p>
-                            <p>College: {this.state.user.demographic.college.name}</p>
-                            <p>Branch: {this.state.user.demographic.branch.name}</p>
-                            <p>Address: {`${this.state.user.demographic.addresses[0] ? this.state.user.demographic.addresses[0].street_address : ""}, 
-                            ${this.state.user.demographic.addresses[0] ? this.state.user.demographic.addresses[0].landmark : ""} 
-                            ${this.state.user.demographic.addresses[0] ? this.state.user.demographic.addresses[0].city : ""} 
-                            `}</p>
+                            {this.state.primaryAddress ? <PrimaryAddress primaryAddress={this.state.primaryAddress}
+                                                                         college={this.state.user.demographic ? this.state.user.demographic.college : {}}
+                                                                         branch={this.state.user.demographic ? this.state.user.demographic.branch : {}}/> :
+                                <div></div>}
+
                         </div>
                     </div>
                 </Layout>

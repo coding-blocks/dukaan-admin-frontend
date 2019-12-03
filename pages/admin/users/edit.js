@@ -13,6 +13,7 @@ import userController from "../../../controllers/users"
 import ErrorHandler from "../../../helpers/ErrorHandler";
 import Swal from "sweetalert2";
 import Router from "next/dist/client/router";
+import {filterPrimaryAddress} from "../../../helpers/filterPrimaryAddress";
 
 class EditUser extends React.Component {
     constructor(props) {
@@ -50,7 +51,8 @@ class EditUser extends React.Component {
                 countries,
                 addressStates,
                 gradYear,
-                userFromOneauth: data
+                userFromOneauth: data,
+                primaryAddress: data.demographic.addresses ? filterPrimaryAddress(data.demographic.addresses) : {}
             });
         }).catch(error => {
             ErrorHandler.handle(error)
@@ -110,6 +112,29 @@ class EditUser extends React.Component {
         });
     }
 
+    getFormikInitialValues() {
+        return {
+            label: this.state.primaryAddress ? this.state.primaryAddress.label : "HOME",
+            firstName: this.state.userFromOneauth.firstname,
+            lastName: this.state.userFromOneauth.lastname,
+            gender: this.state.userFromOneauth.gender || "UNDISCLOSED",
+            dialCode: this.state.userFromOneauth.mobile_number.substr(0, 3) || null,
+            collegeId: this.state.userFromOneauth.demographic.collegeId ? String(this.state.userFromOneauth.demographic.collegeId) : "",
+            branchId: this.state.userFromOneauth.demographic.branchId ? String(this.state.userFromOneauth.demographic.branchId) : "",
+            mobileNumber: this.state.userFromOneauth.mobile_number.replace('+91-', '') || null,
+            gradYear: this.state.userFromOneauth.graduationYear || "2025",
+            pincode: this.state.primaryAddress ? this.state.primaryAddress.pincode : "",
+            streetAddress: this.state.primaryAddress ? this.state.primaryAddress.street_address : "",
+            landmark: this.state.primaryAddress ? this.state.primaryAddress.landmark : "",
+            city: this.state.primaryAddress ? this.state.primaryAddress.city : "",
+            addressEmail: this.state.primaryAddress ? this.state.primaryAddress.email : "",
+            whatsappNumber: this.state.primaryAddress ? this.state.primaryAddress.whatsapp_number : "",
+            stateId: this.state.primaryAddress ? String(this.state.primaryAddress.stateId) : "",
+            countryId: this.state.primaryAddress ? String(this.state.primaryAddress.countryId) : "",
+            address_id: this.state.primaryAddress ? String(this.state.primaryAddress.id) : undefined
+        }
+    }
+
 
     render() {
         if (!this.state.userFromOneauth) {
@@ -137,25 +162,7 @@ class EditUser extends React.Component {
                                 </div>
                             </div>
                             <Formik
-                                initialValues={{
-                                    label: this.state.userFromOneauth.demographic.addresses[0] ? this.state.userFromOneauth.demographic.addresses[0].label : "HOME",
-                                    firstName: this.state.userFromOneauth.firstname,
-                                    lastName: this.state.userFromOneauth.lastname,
-                                    gender: this.state.userFromOneauth.gender || "UNDISCLOSED",
-                                    dialCode: this.state.userFromOneauth.mobile_number.substr(0, 3) || null,
-                                    collegeId: this.state.userFromOneauth.demographic.collegeId ? String(this.state.userFromOneauth.demographic.collegeId) : "",
-                                    branchId: this.state.userFromOneauth.demographic.branchId ? String(this.state.userFromOneauth.demographic.branchId) : "",
-                                    mobileNumber: this.state.userFromOneauth.mobile_number.replace('+91-', '') || null,
-                                    gradYear: this.state.userFromOneauth.graduationYear || "2025",
-                                    pincode: this.state.userFromOneauth.demographic.addresses[0] ? this.state.userFromOneauth.demographic.addresses[0].pincode : "",
-                                    streetAddress: this.state.userFromOneauth.demographic.addresses[0] ? this.state.userFromOneauth.demographic.addresses[0].street_address : "",
-                                    landmark: this.state.userFromOneauth.demographic.addresses[0] ? this.state.userFromOneauth.demographic.addresses[0].landmark : "",
-                                    city: this.state.userFromOneauth.demographic.addresses[0] ? this.state.userFromOneauth.demographic.addresses[0].city : "",
-                                    addressEmail: this.state.userFromOneauth.demographic.addresses[0] ? this.state.userFromOneauth.demographic.addresses[0].email : "",
-                                    whatsappNumber: this.state.userFromOneauth.demographic.addresses[0] ? this.state.userFromOneauth.demographic.addresses[0].whatsapp_number : "",
-                                    stateId: this.state.userFromOneauth.demographic.addresses[0] ? String(this.state.userFromOneauth.demographic.addresses[0].stateId) : "",
-                                    countryId: this.state.userFromOneauth.demographic.addresses[0] ? String(this.state.userFromOneauth.demographic.addresses[0].countryId) : ""
-                                }}
+                                initialValues={this.getFormikInitialValues()}
                                 validate={(values) => {
                                     let errors = {};
                                     if (!values.addressEmail) {

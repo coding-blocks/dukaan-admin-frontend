@@ -54,7 +54,7 @@ const SwipeFields = ({swipeLocation, swipeUTR, issueDate, swipeAppCode, onChange
                 />
             </FieldWithElement>
 
-            <FieldWithElement nameCols={3} elementCols={9} name={"Issue Date"}>
+            <FieldWithElement nameCols={3} elementCols={9} name={"Swipe Date"}>
                 <input
                     type="date"
                     className={"input-text"}
