@@ -3,6 +3,8 @@ import FieldWithElement from "./FieldWithElement";
 import "../styles/pages/admin/coupons.scss";
 import "../DukaanAPI";
 import Swal from "sweetalert2";
+import Cookies from 'js-cookie'
+import jwt from "jsonwebtoken";
 import withReactContent from "sweetalert2-react-content";
 import Price from "../components/Price";
 import formatter from "../helpers/formatter";
@@ -77,6 +79,14 @@ class NewPayment extends React.Component {
                 states: states.data,
                 product_categories: productCategories.data
             });
+        }).then(() => {
+            const dukaanToken = Cookies.get("dukaan-token");
+            if (dukaanToken) {
+                const userInfo = jwt.decode(dukaanToken);
+                this.setState({
+                    admin_center_id: userInfo.data.center_id,
+                });
+            }
         }).catch(error => {
             ErrorHandler.handle(error);
         })
@@ -505,29 +515,6 @@ class NewPayment extends React.Component {
                         </FieldWithElement>
 
 
-                        {/* State */}
-                        <FieldWithElement
-                            name={"User Address State"}
-                            nameCols={3}
-                            elementCols={9}
-                            elementClassName={"pl-4"}>
-                            <select
-                                name="stateId"
-                                onChange={this.onChangeValue}
-                                required
-                                disabled={true}
-                                value={this.props.primaryAddress.stateId}
-                                id="stateId">
-
-                                {this.state.states.map((state, index) => {
-                                    return (
-                                        <option value={state.state_code} key={state.id}>
-                                            {state.name}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                        </FieldWithElement>
                         <div className="divider-h mb-5 mt-5"/>
 
                         {/* Payment center */}
