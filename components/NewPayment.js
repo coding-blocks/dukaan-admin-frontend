@@ -507,7 +507,7 @@ class NewPayment extends React.Component {
 
                         {/* State */}
                         <FieldWithElement
-                            name={"Select selling state"}
+                            name={"User Address State"}
                             nameCols={3}
                             elementCols={9}
                             elementClassName={"pl-4"}>
@@ -515,6 +515,8 @@ class NewPayment extends React.Component {
                                 name="stateId"
                                 onChange={this.onChangeValue}
                                 required
+                                disabled={true}
+                                value={this.props.primaryAddress.stateId}
                                 id="stateId">
 
                                 {this.state.states.map((state, index) => {

@@ -127,7 +127,6 @@ class EditUser extends React.Component {
             streetAddress: this.state.primaryAddress ? this.state.primaryAddress.street_address : "",
             landmark: this.state.primaryAddress ? this.state.primaryAddress.landmark : "",
             city: this.state.primaryAddress ? this.state.primaryAddress.city : "",
-            addressEmail: this.state.primaryAddress ? this.state.primaryAddress.email : "",
             whatsappNumber: this.state.primaryAddress ? this.state.primaryAddress.whatsapp_number : "",
             stateId: this.state.primaryAddress ? String(this.state.primaryAddress.stateId) : "",
             countryId: this.state.primaryAddress ? String(this.state.primaryAddress.countryId) : "",
@@ -165,11 +164,6 @@ class EditUser extends React.Component {
                                 initialValues={this.getFormikInitialValues()}
                                 validate={(values) => {
                                     let errors = {};
-                                    if (!values.addressEmail) {
-                                        errors.addressEmail = 'Email is required';
-                                    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.addressEmail)) {
-                                        errors.addressEmail = 'Invalid email address';
-                                    }
                                     if (!values.firstName) {
                                         errors.firstName = 'First Name is Required';
                                     }
@@ -224,6 +218,15 @@ class EditUser extends React.Component {
                                         <FieldWithElement
                                             nameCols={3}
                                             elementCols={9}
+                                            name={"Username"}>
+                                            <p className={"input-text"}>
+                                                {this.state.userFromOneauth.username}
+                                            </p>
+                                        </FieldWithElement>
+
+                                        <FieldWithElement
+                                            nameCols={3}
+                                            elementCols={9}
                                             name={"First Name"}
                                             errors={errors.firstName}
                                             errorColor={'tomato'}
@@ -257,6 +260,15 @@ class EditUser extends React.Component {
                                             />
                                         </FieldWithElement>
 
+
+                                        <FieldWithElement
+                                            nameCols={3}
+                                            elementCols={9}
+                                            name={"Email"}>
+                                            <p className={"input-text"}>
+                                                {this.state.userFromOneauth.email}
+                                            </p>
+                                        </FieldWithElement>
 
                                         {/* gender */}
                                         <FieldWithElement
@@ -390,26 +402,6 @@ class EditUser extends React.Component {
                                             </div>
                                         </FieldWithElement>
 
-
-                                        {/* addressEmail */}
-                                        <FieldWithElement
-                                            name={"Address Email"}
-                                            nameCols={3}
-                                            elementCols={9}
-                                            elementClassName={"pl-4"}
-                                            errors={errors.addressEmail}
-                                            errorColor={'tomato'}
-                                        >
-                                            <input
-                                                type="email"
-                                                className={"input-text icon mail-bg"}
-                                                placeholder="Email Address"
-                                                name="addressEmail"
-                                                onChange={handleChange}
-                                                value={values.addressEmail}
-                                                required
-                                            />
-                                        </FieldWithElement>
 
                                         {/* Address line 1 */}
                                         <FieldWithElement
