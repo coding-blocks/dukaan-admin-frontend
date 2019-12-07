@@ -50,7 +50,7 @@ class NewPayment extends React.Component {
             useCredits: false,
             useCoupon: false,
             totalAppliedCredits: 0,
-            userAmountInput: null,
+            userAmountInput: "",
 
             formValues: {
                 comments: "",

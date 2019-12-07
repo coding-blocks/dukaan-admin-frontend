@@ -12,7 +12,7 @@ import NeftFields from "./partialComponents/NeftPaymentFields";
 import SwipeFields from "./partialComponents/SwipePaymentFields";
 
 
-function ContinuePayment(props) {
+function PaymentInstallmentForm(props) {
     const [formValues, setFormValues] = useState({
         comments: "",
         paymentMode: "cash",
@@ -157,7 +157,7 @@ function ContinuePayment(props) {
             <div className={"border-card coupon-card "}>
                 {/* Title */}
                 <div className={"d-flex justify-content-center mt-1 pb-3"}>
-                    <h2 className={"title red"}>Continue Payment</h2>
+                    <h2 className={"title red"}>Make another installment</h2>
                 </div>
                 <div className={"d-flex justify-content-center mt-1 pb-3"}>
                     <h3>
@@ -253,4 +253,4 @@ function ContinuePayment(props) {
     );
 }
 
-export default ContinuePayment;
+export default PaymentInstallmentForm;

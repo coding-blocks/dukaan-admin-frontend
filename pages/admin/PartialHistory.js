@@ -92,7 +92,7 @@ class PartialHistory extends React.Component {
                                 <i className="fas fa-arrow-left pointer" style={{"fontSize": "30px"}}/>
                             </Link>
                             <div className={"ml-4"}>
-                                <h3 className="mb-2">List of partial payments made for this purchase</h3>
+                                <h3 className="mb-2">List of Payment Installments made for this purchase</h3>
                                 <div className="font-sm no-gutters">
                                     <div>
                                         <strong>{this.state.name}</strong>
