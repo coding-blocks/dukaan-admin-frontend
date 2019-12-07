@@ -106,6 +106,19 @@ class PartialHistory extends React.Component {
                             </div>
                         </div>
 
+                        <Link
+                            href={{
+                                pathname: `/admin/paymentInstallment`,
+                                query: {
+                                    cartId: this.state.cart_id,
+                                }
+                            }}>
+                            <button
+                                className="button-solid lg"
+                                style={{marginLeft: "10vh"}}>
+                                Make New Installment
+                            </button>
+                        </Link>
 
                     </div>
                     <div className="item-heading row">{partial()}</div>

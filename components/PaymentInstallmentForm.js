@@ -84,7 +84,7 @@ function PaymentInstallmentForm(props) {
         e.preventDefault();
         if (customValidations()) {
             const result = await Swal.fire({
-                title: "Are you sure you want to make a new payment?",
+                title: "Create a new installment?",
                 type: "question",
                 confirmButtonColor: "#f66",
                 confirmButtonText: "Yes!",

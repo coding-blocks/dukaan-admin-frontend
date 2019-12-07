@@ -3,6 +3,7 @@ import Head from "../../components/head";
 import Layout from "../../components/layout";
 import PaymentInstallmentForm from "../../components/PaymentInstallmentForm";
 import {getPurchaseByCartId} from "../../controllers/purchases"
+import ErrorHandler from "../../helpers/ErrorHandler";
 
 class PaymentInstallment extends React.Component {
 
@@ -24,6 +25,8 @@ class PaymentInstallment extends React.Component {
             this.setState({
                 purchase: response.data[0]
             })
+        }).catch((error) => {
+            ErrorHandler.handle(error)
         })
     }
 
