@@ -6,3 +6,8 @@
 
 
 Frontend for Coding Blocks Dukaan.
+
+
+## Copyright and license
+
+The MIT License (MIT) [http://www.opensource.org/licenses/mit-license.php](http://www.opensource.org/licenses/mit-license.php)
