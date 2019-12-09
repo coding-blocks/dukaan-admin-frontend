@@ -8,6 +8,7 @@ import resourcesController from "../controllers/resources";
 import purchasesController from "../controllers/purchases";
 import refundController from "../controllers/refund";
 import ErrorHandler from "../helpers/ErrorHandler";
+import ChequeFields from "./partialComponents/ChequePaymentFields";
 
 const customStyles = {
     content: {
@@ -75,21 +76,21 @@ class CompleteOrder extends React.Component {
                 }
             }
         })
-        .then((result) => {
-            if (result.value) {
-                purchasesController.cancelReceipt(this.state.formValues.user_id,
-                    this.state.formValues.cart_id, this.state.formValues.txn_id,
-                    result.value)
-                    .then((res) => {
-                        Swal.fire({
-                            title: "Receipt successfully cancelled",
-                            type: "success",
-                            timer: "3000",
-                            showConfirmButton: true,
-                            confirmButtonText: "Okay"
-                        })
-                        .then(() => window.location.reload())
-                    }).catch(err => {
+            .then((result) => {
+                if (result.value) {
+                    purchasesController.cancelReceipt(this.state.formValues.user_id,
+                        this.state.formValues.cart_id, this.state.formValues.txn_id,
+                        result.value)
+                        .then((res) => {
+                            Swal.fire({
+                                title: "Receipt successfully cancelled",
+                                type: "success",
+                                timer: "3000",
+                                showConfirmButton: true,
+                                confirmButtonText: "Okay"
+                            })
+                                .then(() => window.location.reload())
+                        }).catch(err => {
                         Swal.fire({
                             title: "Error while cancelling receipt",
                             text: err,
@@ -97,8 +98,8 @@ class CompleteOrder extends React.Component {
                             showConfirmButton: true
                         });
                     });
-            }
-        })
+                }
+            })
     }
 
     handleSubmit = async e => {
@@ -171,8 +172,8 @@ class CompleteOrder extends React.Component {
                     <div>
                         <div className="modal-header">
                             <h3>Make a Refund </h3>
-                                <p>Course: <span className="red"> {this.props.description}</span></p>
-                                <p>Amount Paid:<span className="red"> ₹ {this.props.amount}</span></p>
+                            <p>Course: <span className="red"> {this.props.description}</span></p>
+                            <p>Amount Paid:<span className="red"> ₹ {this.props.amount}</span></p>
                         </div>
                         <div className="modal-body">
                             <FieldWithElement
@@ -182,12 +183,13 @@ class CompleteOrder extends React.Component {
                                 elementClassName={"pl-4"}
                             >
                                 <select name="payment_type" onChange={this.onChangeValue}>
-                                    <option value="credits">CREDITS</option>
-                                    <option value="cheque">CHEQUE</option>
-                                    {this.razorpayOption()}
                                     <option value="undisclosed" selected>
                                         Select Payment Mode
                                     </option>
+                                    <option value="credits">CREDITS</option>
+                                    <option value="cheque">CHEQUE</option>
+                                    {this.razorpayOption()}
+
                                 </select>
                             </FieldWithElement>
 
@@ -252,63 +254,13 @@ class CompleteOrder extends React.Component {
     paymentMethod = () => {
         if (this.state.formValues.payment_type === "cheque") {
             return (
-                <div>
-                    <FieldWithElement nameCols={3} elementCols={9} name={"Location"}>
-                        <input
-                            type="text"
-                            className={"input-text"}
-                            placeholder="Enter Your Location"
-                            name={"cheque_location"}
-                            onChange={this.onChangeValue}
-                            value={this.state.formValues.chequeLocation}
-                        />
-                    </FieldWithElement>
+                <ChequeFields bankName={this.state.formValues.bank}
+                              serialNumber={this.state.formValues.serialNumber}
+                              branchName={this.state.formValues.branch}
+                              issueDate={this.state.formValues.issueDate}
+                              minDate={60}
+                              onChange={this.onChangeValue}/>
 
-                    <FieldWithElement nameCols={3} elementCols={9} name={"Serial Number"}>
-                        <input
-                            type="text"
-                            className={"input-text"}
-                            placeholder="Enter Serial Number"
-                            name={"serial_number"}
-                            onChange={this.onChangeValue}
-                            value={this.state.formValues.serialNumber}
-                        />
-                    </FieldWithElement>
-
-                    <FieldWithElement nameCols={3} elementCols={9} name={"Bank Name"}>
-                        <input
-                            type="text"
-                            className={"input-text"}
-                            placeholder="Enter Your Bank Name"
-                            name={"bank_name"}
-                            onChange={this.onChangeValue}
-                            value={this.state.formValues.bank}
-                        />
-                    </FieldWithElement>
-
-                    <FieldWithElement nameCols={3} elementCols={9} name={"Branch Name"}>
-                        <input
-                            type="text"
-                            className={"input-text"}
-                            placeholder="Enter Your Branch Name"
-                            name={"branch_name"}
-                            onChange={this.onChangeValue}
-                            value={this.state.formValues.branch}
-                        />
-                    </FieldWithElement>
-
-                    <FieldWithElement nameCols={3} elementCols={9} name={"Issue Date"}>
-                        <input
-                            type="date"
-                            className={"input-text"}
-                            placeholder="Select Date"
-                            name={"cheque_date"}
-                            onChange={this.onChangeValue}
-                            value={this.state.formValues.issueDate}
-                        />
-                    </FieldWithElement>
-                    <div className="divider-h mb-5 mt-5"/>
-                </div>
             );
         } else if (this.state.formValues.payment_type === "credits") {
             return "";
@@ -355,32 +307,34 @@ class CompleteOrder extends React.Component {
                                 <div className="font-sm grey">
                                     Mode Of Payment: {this.props.payment_type}
                                 </div>
-                               {this.props.partial_payment || this.props.transaction.razorpay_id ? ("") :
-                                   (
-                                     <div>
-                                        <div className="font-sm grey">
-                                            Payment Collected By: {this.props.transaction[this.props.payment_type]['admin']['username']}
+                                {this.props.partial_payment || this.props.transaction.razorpay_id ? ("") :
+                                    (
+                                        <div>
+                                            <div className="font-sm grey">
+                                                Payment Collected
+                                                By: {this.props.transaction[this.props.payment_type]['admin']['username']}
+                                            </div>
+                                            <div className="font-sm grey">
+                                                Payment
+                                                Center: {this.props.transaction[this.props.payment_type]['center']['name']}
+                                            </div>
                                         </div>
-                                        <div className="font-sm grey">
-                                            Payment Center: {this.props.transaction[this.props.payment_type]['center']['name']}
-                                        </div>
-                                     </div>
-                               )
-                               }
+                                    )
+                                }
                                 <div className="font-sm grey">
                                     Purchased on: {this.props.date}
                                 </div>
-                            {this.props.transaction.status === 'cancelled' ? (
-                                <div>
-                             <div className="font-sm grey">
-                                    Reason: {this.props.transaction.meta.comment}
-                                </div>
-                             <div className="font-sm grey">
-                                    Cancelled By: {this.props.transaction.meta.cancelled_by ?
-                                        this.props.transaction.meta.cancelled_by.username : ""}
-                                </div>
-                                </div>
-                                 ) : ("")}
+                                {this.props.transaction.status === 'cancelled' ? (
+                                    <div>
+                                        <div className="font-sm grey">
+                                            Reason: {this.props.transaction.meta.comment}
+                                        </div>
+                                        <div className="font-sm grey">
+                                            Cancelled By: {this.props.transaction.meta.cancelled_by ?
+                                            this.props.transaction.meta.cancelled_by.username : ""}
+                                        </div>
+                                    </div>
+                                ) : ("")}
                             </div>
                         </div>
                         <div className="divider-h mt-4 mb-4"/>
@@ -417,18 +371,18 @@ class CompleteOrder extends React.Component {
                             ) : (
                                 ""
                             )}
-            {this.props.status === "captured" &&  !this.props.partial_payment
-                    && this.props.amount !== 0 ? (
+                            {this.props.status === "captured" && !this.props.partial_payment
+                            && this.props.amount !== 0 ? (
 
-              <button
-                  onClick={this.handleCancelReceipt}
-                className="button-solid lg"
-                style={{ marginLeft: "10vh" }}
-              >
-               Cancel Receipt
+                                <button
+                                    onClick={this.handleCancelReceipt}
+                                    className="button-solid lg"
+                                    style={{marginLeft: "10vh"}}
+                                >
+                                    Cancel Receipt
 
-            </button>
-            ) : ("")}
+                                </button>
+                            ) : ("")}
                             <input id="orderIdInput" type="hidden"/>
                             <div className="row justify-content-center">
                                 <a target="blank" id="anchorInvoiceUpdate"/>

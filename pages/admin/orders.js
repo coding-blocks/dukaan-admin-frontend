@@ -352,6 +352,7 @@ class OrderDashBoard extends React.Component {
                                         <NewPayment
                                             userid={this.state.selectedUser.oneauth_id}
                                             selectedUser={this.state.selectedUser}
+                                            primaryAddress={this.state.primaryAddress}
                                             showOrders={this.showOrders}
                                         />
                                     )}

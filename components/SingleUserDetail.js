@@ -39,31 +39,40 @@ const SingleUserDetail = ({userInfo, showOrders, handleNewPayment, primaryAddres
                     <p>Mobile : {userInfo.mobile_number}</p>
                     <p>Credits Available : ₹ {userInfo.wallet_amount / 100}</p>
                     {primaryAddress ?
-                        <p>Primary
-                            Address: {`${primaryAddress.street_address}, ${primaryAddress.landmark}, ${primaryAddress.city}`}</p> :
-                        <div></div>}
-                    <div className={"mt-4"}>
-                        <Link href={`/admin/orders?id=${userInfo.id}`}>
-                            <button
-                                className={"button-solid"}
-                                onClick={() => {
-                                    showOrders(userInfo);
-                                }}
-                            >
-                                Show Orders
-                            </button>
-                        </Link>
+                        <div>
+
+                            <p>Primary
+                                Address: {`${primaryAddress.street_address},
+                             ${primaryAddress.landmark}, ${primaryAddress.city}`}
+                            </p>
+                            <div className={"mt-4"}>
+                                <Link href={`/admin/orders?id=${userInfo.id}`}>
+                                    <button
+                                        className={"button-solid"}
+                                        onClick={() => {
+                                            showOrders(userInfo);
+                                        }}
+                                    >
+                                        Show Orders
+                                    </button>
+                                </Link>
 
 
-                        <button
-                            className={"button-solid ml-4"}
-                            onClick={() => {
-                                handleNewPayment(userInfo);
-                            }}
-                        >
-                            Make New Payment
-                        </button>
-                    </div>
+                                <button
+                                    className={"button-solid ml-4"}
+                                    onClick={() => {
+                                        handleNewPayment(userInfo);
+                                    }}
+                                >
+                                    Make New Payment
+                                </button>
+                            </div>
+
+                        </div>
+                        :
+                        <div>User does not have a primary address. Click Edit Details to add.</div>
+                    }
+
                 </div>
             </div>
         );

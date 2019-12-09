@@ -13,22 +13,10 @@ const getMinMaxDateRange = () => {
 const SwipeFields = ({swipeLocation, swipeUTR, issueDate, swipeAppCode, onChange}) => {
     return (
         <div>
-            <FieldWithElement nameCols={3} elementCols={9} name={"Location"}>
-                <input
-                    type="text"
-                    className={"input-text"}
-                    placeholder="Enter Your Location"
-                    name={"swipeLocation"}
-                    onChange={onChange}
-                    value={swipeLocation}
-                />
-            </FieldWithElement>
-
             <FieldWithElement
                 nameCols={3}
                 elementCols={9}
-                name={"SWIPE Transaction ID"}
-            >
+                name={"SWIPE Transaction ID"}>
                 <input
                     type="text"
                     className={"input-text"}

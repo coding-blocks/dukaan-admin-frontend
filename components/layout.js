@@ -22,6 +22,7 @@ class Layout extends React.Component {
       const userInfo = jwt.decode(dukaanToken);
       this.setState({
         name: userInfo.data.firstname + " " + userInfo.data.lastname,
+        center_id: userInfo.data.center_id,
         pic: userInfo.data.photo,
         loggedIn: true,
         admin: userInfo.data.role !== "user"

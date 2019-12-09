@@ -9,21 +9,14 @@ const getMinMaxDateRange = () => {
         min: moment().subtract(85, 'd').format('YYYY-MM-DD')
     }
 }
+const alphaOnly = (e)  =>{
+    let key = e.keyCode;
+    return ((key >= 65 && key <= 90) || key === 8);
+};
 
 const NeftFields = ({neftLocation, neftUTR, issueDate, neftBank, onChange}) => {
     return (
         <div>
-            <FieldWithElement nameCols={3} elementCols={9} name={"Location"}>
-                <input
-                    type="text"
-                    className={"input-text"}
-                    placeholder="Enter Your Location"
-                    name={"neftLocation"}
-                    onChange={onChange}
-                    value={neftLocation}
-                />
-            </FieldWithElement>
-
             <FieldWithElement
                 nameCols={3}
                 elementCols={9}
@@ -46,6 +39,7 @@ const NeftFields = ({neftLocation, neftUTR, issueDate, neftBank, onChange}) => {
             >
                 <input
                     type="text"
+                    onKeyPress={alphaOnly}
                     className={"input-text"}
                     placeholder="Enter bank name"
                     name={"neftBank"}

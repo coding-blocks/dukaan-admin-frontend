@@ -3,6 +3,8 @@ import FieldWithElement from "./FieldWithElement";
 import "../styles/pages/admin/coupons.scss";
 import "../DukaanAPI";
 import Swal from "sweetalert2";
+import Cookies from 'js-cookie'
+import jwt from "jsonwebtoken";
 import withReactContent from "sweetalert2-react-content";
 import Price from "../components/Price";
 import formatter from "../helpers/formatter";
@@ -43,13 +45,12 @@ class NewPayment extends React.Component {
             amountToPay: 0,
             selectedUser: props.selectedUser,
             product_category: "",
-            amount: "",
             coupon: "",
             paymentMode: "cash",
-            partialPayment: false,
             useCredits: false,
             useCoupon: false,
             totalAppliedCredits: 0,
+            userAmountInput: "",
 
             formValues: {
                 comments: "",
@@ -57,7 +58,6 @@ class NewPayment extends React.Component {
                 paymentMode: "cash",
                 quantity: "1",
                 stateId: "AP",
-                partialAmount: 0,
                 oneauthId: "" + props.userid
             }
         };
@@ -77,6 +77,14 @@ class NewPayment extends React.Component {
                 states: states.data,
                 product_categories: productCategories.data
             });
+        }).then(() => {
+            const dukaanToken = Cookies.get("dukaan-token");
+            if (dukaanToken) {
+                const userInfo = jwt.decode(dukaanToken);
+                this.setState({
+                    admin_center_id: userInfo.data.center_id,
+                });
+            }
         }).catch(error => {
             ErrorHandler.handle(error);
         })
@@ -329,6 +337,12 @@ class NewPayment extends React.Component {
         });
     };
 
+    onChangeAmountInput = e => {
+        this.setState({
+            userAmountInput: e.target.value
+        })
+    };
+
     toggleCheck = e => {
         let newFormValues = this.state.formValues;
         newFormValues[e.target.name] = e.target.checked;
@@ -348,14 +362,24 @@ class NewPayment extends React.Component {
             document.getElementById("new_payment_form").reportValidity();
             return false;
         }
-        if (this.state.formValues.partialAmount < formatter.paisaToRs(this.state.selectedProduct.emi_min_base)) {
+        if (this.state.userAmountInput < formatter.paisaToRs(this.state.selectedProduct.emi_min_base)) {
             Swal.fire({
                 title: "Cannot create payment!",
-                text: `Partial payment cannot be less than ₹ ${formatter.paisaToRs(this.state.selectedProduct.emi_min_base)}`,
+                text: `Payment amount cannot be less than ₹ ${formatter.paisaToRs(this.state.selectedProduct.emi_min_base)}`,
                 type: "info"
             });
             return false;
         }
+
+        if (this.state.userAmountInput > this.state.amountToPay) {
+            Swal.fire({
+                title: "Cannot create payment!",
+                text: `Payment amount cannot be greater than ₹ ${(this.state.amountToPay)}`,
+                type: "info"
+            });
+            return false;
+        }
+
         if (!this.state.formValues.paymentCenterId) {
             Swal.fire({
                 title: "Cannot create payment!",
@@ -367,48 +391,92 @@ class NewPayment extends React.Component {
         return true;
     };
 
+
+    makePaymentNetworkRequest = (purchasePayload) => {
+        purchasesController.handleCreateNewPurchase(purchasePayload).then(() => {
+            Swal.fire({
+                title: "Payment has been recorded successfully!",
+                type: "success",
+                timer: "3000",
+                showConfirmButton: true,
+                confirmButtonText: "Okay"
+            });
+            this.props.showOrders(this.state.selectedUser);
+        }).catch(err => {
+            Swal.fire({
+                title: "Error while making payment!",
+                text: err,
+                type: "error",
+                showConfirmButton: true
+            });
+        });
+    }
+
+    showPartialCheckConfirmation = () => {
+        Swal.fire({
+            input: 'checkbox',
+            titleText: "Create a partial payment?",
+            text: `Payment amount ₹ ${this.state.userAmountInput} is less than ₹ ${this.state.amountToPay}`,
+            inputPlaceholder:
+                'Make this payment partial',
+            confirmButtonColor: "#f66",
+            confirmButtonText: "Submit",
+            cancelButtonText: "Cancel",
+            showCancelButton: true,
+            showConfirmButton: true,
+            showCloseButton: true,
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'Mark this as partial payment to continue.'
+                }
+            }
+        }).then((result) => {
+            if (result.value) {
+                const purchasePayload = {
+                    coupon: this.state.coupon,
+                    useCredits: this.state.useCredits,
+                    partialAmount: this.state.userAmountInput,
+                    partialPayment: true,
+                    productId: this.state.selectedProduct.id,
+                    ...this.state.formValues
+                }
+                this.makePaymentNetworkRequest(purchasePayload)
+            }
+        })
+    }
+
+
+    showCompleteCheckConfirmation = () => {
+        Swal.fire({
+            title: "Are you sure you want to make a new payment?",
+            type: "question",
+            confirmButtonColor: "#f66",
+            confirmButtonText: "Yes!",
+            cancelButtonText: "No!",
+            showCancelButton: true,
+            showConfirmButton: true,
+            showCloseButton: true
+        }).then(result => {
+            if (result.value) {
+                const purchasePayload = {
+                    coupon: this.state.coupon,
+                    useCredits: this.state.useCredits,
+                    productId: this.state.selectedProduct.id,
+                    ...this.state.formValues
+                }
+                this.makePaymentNetworkRequest(purchasePayload)
+            }
+        });
+    }
+
     handleSubmit = async e => {
         e.preventDefault();
-        if (!this.state.formValues.partialPayment) {
-            delete this.state.formValues.partialAmount;
-        }
         if (this.customValidations()) {
-            Swal.fire({
-                title: "Are you sure you want to make a new payment?",
-                type: "question",
-                confirmButtonColor: "#f66",
-                confirmButtonText: "Yes!",
-                cancelButtonText: "No!",
-                showCancelButton: true,
-                showConfirmButton: true,
-                showCloseButton: true
-            }).then(result => {
-                if (result.value) {
-                    const purchasePayload = {
-                        coupon: this.state.coupon,
-                        useCredits: this.state.useCredits,
-                        productId: this.state.selectedProduct.id,
-                        ...this.state.formValues
-                    }
-                    purchasesController.handleCreateNewPurchase(purchasePayload).then(() => {
-                        Swal.fire({
-                            title: "Payment has been recorded successfully!",
-                            type: "success",
-                            timer: "3000",
-                            showConfirmButton: true,
-                            confirmButtonText: "Okay"
-                        });
-                        this.props.showOrders(this.state.selectedUser);
-                    }).catch(err => {
-                        Swal.fire({
-                            title: "Error while making payment!",
-                            text: err,
-                            type: "error",
-                            showConfirmButton: true
-                        });
-                    });
-                }
-            });
+            if (this.state.userAmountInput < this.state.amountToPay) {
+                this.showPartialCheckConfirmation()
+            } else {
+                this.showCompleteCheckConfirmation()
+            }
         }
     };
 
@@ -446,7 +514,7 @@ class NewPayment extends React.Component {
     render() {
         return (
             <div className={"d-flex align-items-center col-md-8"}>
-                <form id="new_payment_form" onSubmit={this.handleSubmit}>
+                <form id="new_payment_form" autoComplete="off" onSubmit={this.handleSubmit}>
                     <div className={"border-card coupon-card "}>
                         {/* Title */}
                         <div className={"d-flex justify-content-center mt-1 pb-3"}>
@@ -505,27 +573,6 @@ class NewPayment extends React.Component {
                         </FieldWithElement>
 
 
-                        {/* State */}
-                        <FieldWithElement
-                            name={"Select selling state"}
-                            nameCols={3}
-                            elementCols={9}
-                            elementClassName={"pl-4"}>
-                            <select
-                                name="stateId"
-                                onChange={this.onChangeValue}
-                                required
-                                id="stateId">
-
-                                {this.state.states.map((state, index) => {
-                                    return (
-                                        <option value={state.state_code} key={state.id}>
-                                            {state.name}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                        </FieldWithElement>
                         <div className="divider-h mb-5 mt-5"/>
 
                         {/* Payment center */}
@@ -694,57 +741,31 @@ class NewPayment extends React.Component {
                                 <option value="swipe">SWIPE</option>
                             </select>
                         </FieldWithElement>
+
+
                         <div className="divider-h mb-5 mt-5"/>
 
                         {this.PaymentMethod()}
 
                         <FieldWithElement
-                            name={"Partial Payment"}
+                            className="red"
                             nameCols={3}
                             elementCols={9}
-                            elementClassName={"pl-4"}>
-                            <div className="mt-2">
-                                <label
-                                    className="input-checkbox checkbox-tick font-sm"
-                                    htmlFor="tick"
-                                    value={this.state.partial_checked}>
-                                    <input
-                                        type="checkbox"
-                                        id="tick"
-                                        defaultValue={false}
-                                        name="partialPayment"
-                                        onChange={this.toggleCheck}
-                                    />{" "}
-                                    Make this payment partial?
-                                    <span/>
-                                </label>
-                            </div>
+                            name={"Payment Amount (₹)"}>
+                            <input
+                                type="number"
+                                className={"input-text"}
+                                required
+                                onChange={this.onChangeAmountInput}
+                                name={"userAmountInput"}
+                                value={this.state.userAmountInput}
+                                pattern={"[0-9]{1,10}"}
+                            />
+                            <span className="red">
+                  Payment amount cannot be less than ₹ {this.state.selectedProduct ? formatter.paisaToRs(this.state.selectedProduct.emi_min_base) : 0}
+                </span>
                         </FieldWithElement>
 
-
-                        {this.state.formValues.partialPayment ? (
-                            <FieldWithElement
-                                className="red"
-                                nameCols={3}
-                                elementCols={9}
-                                name={"Partial Amount (₹)"}>
-                                <input
-                                    type="text"
-                                    className={"input-text"}
-                                    name={"partialAmount"}
-                                    onChange={this.onChangeValue}
-                                    value={this.state.formValues.partialAmount}
-                                    pattern={"[0-9]{1,10}"}
-                                    required={this.state.formValues.partialPayment}
-                                    title={"Partial amount can only be in numbers"}
-                                />
-                                <span className="red">
-                  Partial amount cannot be less than ₹ {this.state.selectedProduct ? formatter.paisaToRs(this.state.selectedProduct.emi_min_base) : 0}
-                </span>
-                            </FieldWithElement>
-                        ) : (
-                            <div></div>
-                        )}
 
                         {/* Payment comments */}
                         <FieldWithElement nameCols={3} elementCols={9} name={"Comment"}>
