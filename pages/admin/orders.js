@@ -58,7 +58,7 @@ class OrderDashBoard extends React.Component {
         }).then((oneauthResponse) => {
             this.setState({
                 oneauthUserResponse: oneauthResponse.data,
-                primaryAddress: oneauthResponse.data.demographic.addresses ? filterPrimaryAddress(oneauthResponse.data.demographic.addresses) : {}
+                primaryAddress: oneauthResponse.data.demographic.addresses ? filterPrimaryAddress(oneauthResponse.data.demographic.addresses) : null
             })
         }).catch(error => {
             ErrorHandler.handle(error)
