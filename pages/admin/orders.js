@@ -11,8 +11,10 @@ import purchasesController from "../../controllers/purchases";
 import swal from "sweetalert2";
 import ActiveOrders from "../../components/ActiveOrders";
 import SingleUserDetail from "../../components/SingleUserDetail";
+import ErrorHandler from "../../helpers/ErrorHandler";
+import {filterPrimaryAddress} from "../../helpers/filterPrimaryAddress";
 
-class Home extends React.Component {
+class OrderDashBoard extends React.Component {
 
     constructor(props) {
         super(props);
@@ -21,41 +23,45 @@ class Home extends React.Component {
             completeTab: true,
             activeTab: false,
             refundedTab: false,
+            cancelledTab: false,
             userFound: false,
             userInfo: [],
             courseInfo: {},
             newpayment: false,
-            selectedUser: {}
+            selectedUser: {},
+            oneauthUserResponse: {}
         };
     }
+
+
 
     componentDidMount() {
         const search = window.location.search;
         const params = new URLSearchParams(search);
         const userId = params.get('id');
-        purchasesController
-            .handleGetPurchases(userId).then((res) => {
-            if (res.data) {
-                this.setState({
-                    courseInfo: res.data
-                });
-            } else {
-                this.setState({
-                    courseInfo: {}
-                });
-            }
-        }).catch(error => {
-            swal.fire({
-                title: "Error searching for user's purchases!",
-                html: error,
-                type: "error"
-            });
-        });
-        userController.handleGetUserById(userId).then(res => {
+        if (!userId) {
+            window.location.href = '/'
+        }
+        purchasesController.handleGetPurchases(userId).then((purchases) => {
+            return purchases
+        }).then((purchases) => {
+            return Promise.all([purchases, userController.handleGetUserById(userId)])
+        }).then(([purchases, userResponse]) => {
             this.setState({
-                selectedUser: res.data,
-                newpayment: false
-            });
+                courseInfo: purchases.data,
+                selectedUser: userResponse.data,
+                newpayment: false,
+            })
+            return Promise.all([purchases, userResponse])
+        }).then(() => {
+            return userController.getUserByFromOneAuthByOneAuthId(this.state.selectedUser.oneauth_id)
+        }).then((oneauthResponse) => {
+            this.setState({
+                oneauthUserResponse: oneauthResponse.data,
+                primaryAddress: oneauthResponse.data.demographic.addresses ? filterPrimaryAddress(oneauthResponse.data.demographic.addresses) : null
+            })
+        }).catch(error => {
+            ErrorHandler.handle(error)
         });
     }
 
@@ -63,7 +69,8 @@ class Home extends React.Component {
         this.setState(prevstate => ({
             completeTab: true,
             activeTab: false,
-            refundedTab: false
+            refundedTab: false,
+            cancelledTab: false
         }));
     };
 
@@ -71,7 +78,8 @@ class Home extends React.Component {
         this.setState(prevstate => ({
             completeTab: false,
             activeTab: true,
-            refundedTab: false
+            refundedTab: false,
+            cancelledTab: false
         }));
     };
 
@@ -79,7 +87,17 @@ class Home extends React.Component {
         this.setState(prevstate => ({
             completeTab: false,
             activeTab: false,
-            refundedTab: true
+            refundedTab: true,
+            cancelledTab: false
+        }));
+    };
+
+    toggleCancelledTab = () => {
+        this.setState(prevstate => ({
+            completeTab: false,
+            activeTab: false,
+            refundedTab: false,
+            cancelledTab: true
         }));
     };
 
@@ -124,6 +142,7 @@ class Home extends React.Component {
         const completeTab = this.state.completeTab;
         const refundTab = this.state.refundedTab;
         const activeTab = this.state.activeTab;
+        const cancelledTab = this.state.cancelledTab;
         if (refundTab) {
             if (
                 this.state.courseInfo.refundedPayments &&
@@ -171,6 +190,7 @@ class Home extends React.Component {
                     const date = moment(completeOrder.created_at).format(
                         "MMMM Do YYYY,h:mm:ss a"
                     );
+                    const paymentType = completeOrder.cart.transactions[0].payment_type
                     return (
                         <CompleteOrders
                             date={date}
@@ -183,9 +203,11 @@ class Home extends React.Component {
                             invoice_url={completeOrder.invoice_link}
                             refunded={completeOrder.cart.transactions[0].status}
                             userid={this.state.selectedUser.id}
-                            payment_type={completeOrder.cart.transactions[0].payment_type}
+                            center={completeOrder.cart.transactions[0].center}
+                            payment_type={paymentType}
                             description={completeOrder.product.description}
                             partial_payment={completeOrder.partial_payment}
+                            transaction={completeOrder.cart.transactions[0]}
                             cart_id={completeOrder.cart.id}
                         />
                     );
@@ -225,12 +247,47 @@ class Home extends React.Component {
             } else {
                 orders = <div>No Active Orders Found.</div>;
             }
-        }
+        } else if (cancelledTab) {
+            if (
+                this.state.courseInfo.cancelledPayments &&
+                this.state.courseInfo.cancelledPayments.length > 0
+            ) {
 
+                orders = this.state.courseInfo.cancelledPayments.map(cancelledOrder => {
+                    const date = moment(cancelledOrder.created_at).format(
+                        "MMMM Do YYYY,h:mm:ss a"
+                    );
+                    const paymentType = cancelledOrder.cart.transactions[0].payment_type
+
+                    return (
+                        <CompleteOrders
+                            date={date}
+                            txn_id={cancelledOrder.cart.transactions[0].id}
+                            key={cancelledOrder.id}
+                            image={cancelledOrder.product.image_url}
+                            product_name={cancelledOrder.product.name}
+                            status={cancelledOrder.status}
+                            amount={cancelledOrder.amount / 100}
+                            invoice_url={cancelledOrder.invoice_link}
+                            refunded={cancelledOrder.cart.transactions[0].status}
+                            userid={this.state.selectedUser.id}
+                            center={cancelledOrder.cart.transactions[0].center}
+                            payment_type={paymentType}
+                            description={cancelledOrder.product.description}
+                            partial_payment={cancelledOrder.partial_payment}
+                            transaction={cancelledOrder.cart.transactions[0]}
+                            cart_id={cancelledOrder.cart.id}
+                        />
+                    );
+                });
+            } else {
+                orders = <div>No Cancelled Orders Found.</div>;
+            }
+        }
         return (
             <CheckLogin>
                 <div>
-                    <Head title="Coding Blocks | Dukaan"/>
+                    <Head title="User Orders | Dukaan"/>
                     <Layout>
                         <div className="container mt-4">
                             <div className="row">
@@ -244,11 +301,11 @@ class Home extends React.Component {
                                                     showOrders={this.showOrders}
                                                     handleNewPayment={this.handleNewPayment}
                                                     newPaymentState={this.state.handleNewPayment}
+                                                    primaryAddress={this.state.primaryAddress}
                                                 />
                                             </div>
                                         </div>
                                     )}
-
                                     {!this.state.newpayment ? (
                                         <div className="col-md-8 col-12">
                                             <div className="border-card br-20 bg-light-grey mb-5 w-100">
@@ -278,6 +335,15 @@ class Home extends React.Component {
                                                     >
                                                         Refunded Orders
                                                     </div>
+                                                    <div
+                                                        className={
+                                                            this.state.cancelledTab ? "tab active" : "tab"
+                                                        }
+                                                        onClick={this.toggleCancelledTab}
+                                                    >
+                                                        Cancelled Orders
+                                                    </div>
+
                                                 </div>
                                                 <div style={{marginBottom: "1.8vh"}}>{orders}</div>
                                             </div>
@@ -286,6 +352,7 @@ class Home extends React.Component {
                                         <NewPayment
                                             userid={this.state.selectedUser.oneauth_id}
                                             selectedUser={this.state.selectedUser}
+                                            primaryAddress={this.state.primaryAddress}
                                             showOrders={this.showOrders}
                                         />
                                     )}
@@ -299,4 +366,4 @@ class Home extends React.Component {
     }
 }
 
-export default Home;
+export default OrderDashBoard;

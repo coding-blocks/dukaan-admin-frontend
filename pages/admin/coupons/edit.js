@@ -137,7 +137,7 @@ class EditCoupon extends React.Component {
                       className={"input-text"}
                       placeholder="Enter Code"
                       name="code"
-                      defaultValue={this.state.couponInfo.code}
+                      value={this.state.couponInfo.code}
                       onChange={this.handleQueryParamChange}
                       required
                     />
@@ -148,7 +148,7 @@ class EditCoupon extends React.Component {
                     <select 
                       id="category" 
                       name="category"
-                      defaultValue={this.state.couponInfo.category}
+                      value={this.state.couponInfo.category}
                       onChange={this.handleQueryParamChange}
                       required
                     >
@@ -169,7 +169,7 @@ class EditCoupon extends React.Component {
                         name="referrer_cashback"
                         pattern="[0-9]{1,10}"
                         title="Cashback must be a number"
-                        defaultValue={this.state.couponInfo.referrer_cashback}
+                        value={this.state.couponInfo.referrer_cashback}
                         onChange={this.handleQueryParamChange}
                         required
                       />
@@ -185,7 +185,7 @@ class EditCoupon extends React.Component {
                         name="referrer"
                         pattern="[0-9]{1,10}"
                         title="Referrer must be a User's ID"
-                        defaultValue={this.state.couponInfo.referrer}
+                        value={this.state.couponInfo.referrer}
                         onChange={this.handleQueryParamChange}
                         required
                       />
@@ -197,7 +197,7 @@ class EditCoupon extends React.Component {
                     <select 
                       id="mode"
                       name="mode"
-                      defaultValue={this.state.couponInfo.mode}
+                      value={this.state.couponInfo.mode}
                       onChange={this.handleQueryParamChange}
                       required
                     >
@@ -215,7 +215,7 @@ class EditCoupon extends React.Component {
                       name="amount"
                       pattern="[0-9]{3,10}"
                       title="Amount can only have 3 to 10 digit numbers"
-                      defaultValue={this.state.couponInfo.amount}
+                      value={this.state.couponInfo.amount}
                       onChange={this.handleQueryParamChange}
                       required
                     />
@@ -228,7 +228,7 @@ class EditCoupon extends React.Component {
                       className="input-text" 
                       placeholder="Enter Left"
                       name="left"
-                      defaultValue={this.state.couponInfo.left}
+                      value={this.state.couponInfo.left}
                       pattern="[0-9]{1,10}"
                       title="Left can only have numbers"
                       onChange={this.handleQueryParamChange}
@@ -241,6 +241,7 @@ class EditCoupon extends React.Component {
                     <ProductsChooser
                       products={this.state.couponInfo.products}
                       productsCallback={this.handleProductsChange}
+                      organizationId={this.state.couponInfo.organization_id}
                       multiple={true}
                     />
                   </FieldWithElement>
@@ -250,7 +251,7 @@ class EditCoupon extends React.Component {
                     <select 
                       id="active" 
                       name="active"
-                      defaultValue={this.state.couponInfo.active}
+                      value={this.state.couponInfo.active}
                       onChange={this.handleQueryParamChange}
                       required
                     >

@@ -22,6 +22,7 @@ class Layout extends React.Component {
       const userInfo = jwt.decode(dukaanToken);
       this.setState({
         name: userInfo.data.firstname + " " + userInfo.data.lastname,
+        center_id: userInfo.data.center_id,
         pic: userInfo.data.photo,
         loggedIn: true,
         admin: userInfo.data.role !== "user"
@@ -71,7 +72,14 @@ class Layout extends React.Component {
                             <a>Add New</a>
                           </Link>
                         </div>
+                        <div className="divider-h" />
+                        <div className="flex-row justify-content-center">
+                          <Link href="/admin/coupons/bulk">
+                            <a>Add Bulk</a>
+                          </Link>
+                        </div>
                       </div>
+
                     </li>
 
                     <li className="dropdown">

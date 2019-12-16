@@ -6,12 +6,14 @@ import withReactContent from "sweetalert2-react-content";
 import "../DukaanAPI";
 import Modal from "react-modal";
 import moment from "moment";
+import purchasesController from "../controllers/purchases";
 import refundController from "../controllers/refund";
 import resourcesController from "../controllers/resources";
 import userController from "../controllers/users";
 import Price from "./Price";
 import Router from "next/router";
 import ErrorHandler from "../helpers/ErrorHandler";
+import ChequeFields from "./partialComponents/ChequePaymentFields";
 
 const customStyles = {
     content: {
@@ -51,7 +53,8 @@ class PartialPayments extends React.Component {
             refundDetail: {},
             formValues: {
                 txn_id: props.txn_id,
-                user_id: props.userid
+                user_id: props.userid,
+                cart_id: props.cart_id
             },
             status: this.props.status
         };
@@ -101,18 +104,105 @@ class PartialPayments extends React.Component {
         });
     };
 
-  handleRefundDetails = () => {
-    refundController
-      .handleGetRefundFromTxnId(this.props.txn_id)
-      .then(res => {
-        this.setState({
-          firstname: res.data.refunded_created_by.firstname,
-          lastname: res.data.refunded_created_by.lastname,
-          refundDetail: res.data,
-          showRefundDetailModal: true
-        });
-      })
-      .catch(error => {
+    handleRefundDetails = () => {
+        refundController
+            .handleGetRefundFromTxnId(this.props.txn_id)
+            .then(res => {
+                this.setState({
+                    firstname: res.data.refunded_created_by.firstname,
+                    lastname: res.data.refunded_created_by.lastname,
+                    refundDetail: res.data,
+                    showRefundDetailModal: true
+                });
+            })
+            .catch(error => {
+                Swal.fire({
+                    title: "Are you sure you want to make a refund?",
+                    type: "question",
+                    confirmButtonColor: "#f66",
+                    confirmButtonText: "Yes!",
+                    cancelButtonText: "No!",
+                    showCancelButton: true,
+                    showConfirmButton: true,
+                    showCloseButton: true
+                }).then(result => {
+                    if (result.value) {
+                        const data = this.state.formValues;
+                        refundController
+                            .handleCreateRefund(data)
+                            .then(response => {
+                                this.closeRefundFormModal();
+                                Swal.fire({
+                                    title: "Refund made!",
+                                    type: "success",
+                                    timer: "30000",
+                                    showConfirmButton: true,
+                                    confirmButtonText: "Okay"
+                                });
+                                if (response.status === 200) {
+                                    this.setState({status: 'refunded'})
+                                }
+                            })
+                            .catch(error => {
+                                Swal.fire({
+                                    title: "Error while making refund!",
+                                    text: error,
+                                    type: "error",
+                                    showConfirmButton: true
+                                });
+                            });
+                    }
+                });
+            });
+    };
+
+    handleCancelReceipt = async e => {
+        e.preventDefault();
+        Swal.fire({
+            title: "Are you sure you want to cancel the receipt?",
+            input: 'text',
+            confirmButtonColor: "#f66",
+            confirmButtonText: "Submit",
+            cancelButtonText: "Cancel",
+            showCancelButton: true,
+            showConfirmButton: true,
+            showCloseButton: true,
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'You need to write the reason for cancelling the receipt.'
+                }
+            }
+        })
+            .then((result) => {
+                if (result.value) {
+                    purchasesController.cancelReceipt(this.state.formValues.user_id,
+                        this.state.formValues.cart_id, this.state.formValues.txn_id,
+                        result.value)
+                        .then((res) => {
+                            Swal.fire({
+                                title: "Receipt successfully cancelled",
+                                type: "success",
+                                timer: "3000",
+                                showConfirmButton: true,
+                                confirmButtonText: "Okay"
+                            })
+                                .then(() => window.location.reload())
+                        }).catch(err => {
+                        Swal.fire({
+                            title: "Error while cancelling receipt",
+                            text: err,
+                            type: "error",
+                            showConfirmButton: true
+                        });
+                    });
+                }
+            })
+    }
+    handleSubmit = async e => {
+        e.preventDefault();
+        const userid = window.location.search.split("&")[0].split("=")[1];
+        const cart_id = window.location.search.split("&")[1].split("=")[1];
+
         Swal.fire({
             title: "Are you sure you want to make a refund?",
             type: "question",
@@ -137,7 +227,7 @@ class PartialPayments extends React.Component {
                             confirmButtonText: "Okay"
                         });
                         if (response.status === 200) {
-                            this.setState({status: 'refunded'})
+                            this.setState({status: response.data.partialPayment.status})
                         }
                     })
                     .catch(error => {
@@ -150,113 +240,17 @@ class PartialPayments extends React.Component {
                     });
             }
         });
-      });
-  };
-
-  handleSubmit = async e => {
-    e.preventDefault();
-    const userid = window.location.search.split("&")[0].split("=")[1];
-    const cart_id = window.location.search.split("&")[1].split("=")[1];
-
-    Swal.fire({
-      title: "Are you sure you want to make a refund?",
-      type: "question",
-      confirmButtonColor: "#f66",
-      confirmButtonText: "Yes!",
-      cancelButtonText: "No!",
-      showCancelButton: true,
-      showConfirmButton: true,
-      showCloseButton: true
-    }).then(result => {
-      if (result.value) {
-        const data = this.state.formValues;
-        refundController
-          .handleCreateRefund(data)
-          .then(response => {
-            this.closeRefundFormModal();
-            Swal.fire({
-              title: "Refund made!",
-              type: "success",
-              timer: "30000",
-              showConfirmButton: true,
-              confirmButtonText: "Okay"
-            });
-              if (response.status === 200) {
-                  this.setState({status: response.data.partialPayment.status})
-              }
-          })
-          .catch(error => {
-            Swal.fire({
-              title: "Error while making refund!",
-              text: error,
-              type: "error",
-              showConfirmButton: true
-            });
-          });
-      }
-    });
-  };
+    };
 
     paymentMethod = () => {
         if (this.state.formValues.payment_type === "cheque") {
             return (
-                <div>
-                    <FieldWithElement nameCols={3} elementCols={9} name={"Location"}>
-                        <input
-                            type="text"
-                            className={"input-text"}
-                            placeholder="Enter Your Location"
-                            name={"cheque_location"}
-                            onChange={this.onChangeValue}
-                            value={this.state.formValues.chequeLocation}
-                        />
-                    </FieldWithElement>
-
-                    <FieldWithElement nameCols={3} elementCols={9} name={"Serial Number"}>
-                        <input
-                            type="text"
-                            className={"input-text"}
-                            placeholder="Enter Serial Number"
-                            name={"serial_number"}
-                            onChange={this.onChangeValue}
-                            value={this.state.formValues.serialNumber}
-                        />
-                    </FieldWithElement>
-
-                    <FieldWithElement nameCols={3} elementCols={9} name={"Bank Name"}>
-                        <input
-                            type="text"
-                            className={"input-text"}
-                            placeholder="Enter Your Bank Name"
-                            name={"bank_name"}
-                            onChange={this.onChangeValue}
-                            value={this.state.formValues.bank}
-                        />
-                    </FieldWithElement>
-
-                    <FieldWithElement nameCols={3} elementCols={9} name={"Branch Name"}>
-                        <input
-                            type="text"
-                            className={"input-text"}
-                            placeholder="Enter Your Branch Name"
-                            name={"branch_name"}
-                            onChange={this.onChangeValue}
-                            value={this.state.formValues.branch}
-                        />
-                    </FieldWithElement>
-
-                    <FieldWithElement nameCols={3} elementCols={9} name={"Issue Date"}>
-                        <input
-                            type="date"
-                            className={"input-text"}
-                            placeholder="Select Date"
-                            name={"cheque_date"}
-                            onChange={this.onChangeValue}
-                            value={this.state.formValues.issueDate}
-                        />
-                    </FieldWithElement>
-                    <div className="divider-h mb-5 mt-5"/>
-                </div>
+                <ChequeFields bankName={this.state.formValues.bank}
+                              serialNumber={this.state.formValues.serialNumber}
+                              branchName={this.state.formValues.branch}
+                              issueDate={this.state.formValues.issueDate}
+                              minDate={60}
+                              onChange={this.onChangeValue}/>
             );
         } else {
         }
@@ -352,7 +346,7 @@ class PartialPayments extends React.Component {
         );
     };
 
-    render()  {
+    render() {
         return (
             <div className="col-md-4 col-12">
                 <Modal
@@ -443,7 +437,7 @@ class PartialPayments extends React.Component {
                         >
                             Refund
                         </button>
-                    ) : (
+                    ) : (this.state.status === "cancelled") ? ("") : (
                         <button
                             id="view-invoice"
                             className="button-solid ml-4 mb-2 mt-4 pl-5 pr-5"
@@ -462,6 +456,17 @@ class PartialPayments extends React.Component {
                             View Invoice
                         </button>
                     </a>
+                    {this.state.status === "paid" ? (
+                    <a onClick={this.handleCancelReceipt} target="blank">
+                        <button
+                            id="view-invoice"
+                            className="button-solid ml-4 mb-2 mt-4 pl-5 pr-5"
+                            type="submit"
+                        >
+                            Cancel Receipt
+                        </button>
+                    </a>
+                    ) : ""}
                 </div>
 
             </div>

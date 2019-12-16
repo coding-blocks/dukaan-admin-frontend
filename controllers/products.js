@@ -109,14 +109,7 @@ const handleAddProduct = (queryParams) => {
  */
 const handleCalculatePrice = (formBody) => {
   let queryString = querystring.stringify(formBody);
-  let response = new Promise((resolve, reject) => {
-    axios.post("/api/v2/admin/products/calculate", queryString).then((res) => {
-      resolve(res);
-    }).catch((error) => {
-      reject(ErrorHandler.handle(error));
-    });
-  });
-  return response;
+  return  axios.post("/api/v2/admin/products/calculate", queryString);
 }
 
 
