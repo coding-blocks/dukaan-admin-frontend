@@ -6,7 +6,6 @@ import AddUser from "../components/AddUser";
 import CheckLogin from "../components/CheckLogin";
 import userController from "../controllers/users";
 import ErrorBoundary from "../components/ErrorBoundary";
-import swal from "sweetalert2";
 import AsyncSelect from "react-select/async";
 import ErrorHandler from "../helpers/ErrorHandler";
 
