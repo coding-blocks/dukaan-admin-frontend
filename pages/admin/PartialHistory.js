@@ -29,7 +29,6 @@ class PartialHistory extends React.Component {
             .handleGetPartialPurchases(userid, cart_id)
             .then(res => {
                 userController.handleGetUserById(userid).then(res2 => {
-                    console.log(res.data, "ppppp");
                     this.setState({
                         firstname: res2.data.firstname,
                         lastname: res2.data.lastname,
