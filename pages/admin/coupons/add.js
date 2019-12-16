@@ -29,7 +29,8 @@ class AddCoupon extends React.Component {
         left: 1,
         category: "special_discount",
         active: false,
-        extensions:[]
+        extensions:[],
+        max_discount: null
       },
     };
   }
@@ -302,6 +303,7 @@ class AddCoupon extends React.Component {
 
                     {this.state.queryParams.mode == "percentage" &&
                       /* Percentage */
+                            <div>
                       <FieldWithElement
                         name={"Percentage*"}
                         nameCols={3} elementCols={9} elementClassName={"pl-4"}>
@@ -315,6 +317,20 @@ class AddCoupon extends React.Component {
                           required
                         />
                       </FieldWithElement>
+
+                      <FieldWithElement
+                        name={"Max discount"}
+                        nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                        <input
+                          type="text"
+                          className={"input-text"}
+                          placeholder="Enter Max Discount Applicable"
+                          name="max_discount"
+                          value={this.state.queryParams.max_discount}
+                          onChange={this.handleQueryParamChange}
+                        />
+                      </FieldWithElement>
+                            </div>
                     }
 
                     {/* Total number of times a coupon can be used*/}
