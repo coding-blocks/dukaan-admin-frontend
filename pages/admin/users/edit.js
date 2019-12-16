@@ -130,7 +130,7 @@ class EditUser extends React.Component {
             whatsappNumber: this.state.primaryAddress ? this.state.primaryAddress.whatsapp_number : "",
             stateId: this.state.primaryAddress ? this.state.primaryAddress.stateId : "AP",
             countryId: this.state.primaryAddress ? this.state.primaryAddress.countryId : "AF",
-            address_id: this.state.primaryAddress ? `${this.state.primaryAddress.id }` : null
+            address_id: this.state.primaryAddress ? this.state.primaryAddress.id : null
         }
     }
 

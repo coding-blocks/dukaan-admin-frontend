@@ -1,5 +1,5 @@
 import React from 'react';
-import {withRouter} from 'next/router';
+import { withRouter } from 'next/router';
 import Head from '../../../components/head';
 import Layout from "../../../components/layout";
 import Loader from '../../../components/loader';
@@ -29,7 +29,8 @@ class AddCoupon extends React.Component {
                 left: 1,
                 category: "special_discount",
                 active: false,
-                extensions: []
+                extensions:[],
+                max_discount: null
             },
         };
     }
@@ -37,7 +38,7 @@ class AddCoupon extends React.Component {
     /**
      * Changes the value of the specified key in the queryParams object
      * in state.
-     * @param {SyntheticEvent} event – Handles an event from a form
+     * @param {SyntheticEvent} event – Handles an event from a form
      * @example
      *  <input
      *   type="text"
@@ -55,7 +56,7 @@ class AddCoupon extends React.Component {
         } else {
             newQueryParams[event.target.name] = event.target.value;
         }
-        if (event.target.name === 'organization_id') {
+        if(event.target.name === 'organization_id'){
             newQueryParams['organization_id'] = Number(event.target.value);
         }
         this.setState(prevState => ({
@@ -67,7 +68,7 @@ class AddCoupon extends React.Component {
      * Callback function for ProductsChooser component that updates
      * them in the state when ProductsChooser returns an array of
      * products added
-     * @param {array} products – Array of with the names of products
+     * @param {array} products – Array of with the names of products
      */
     handleProductsChange = (products) => {
         let queryParams = this.state.queryParams;
@@ -88,7 +89,7 @@ class AddCoupon extends React.Component {
 
     componentDidMount() {
         organizationController.getAllOrganizations().then((response) => {
-            if (response) {
+            if(response){
                 let oldQueryParams = this.state.queryParams;
                 oldQueryParams.organization_id = response.data[0].id
                 this.setState({
@@ -117,8 +118,8 @@ class AddCoupon extends React.Component {
             this.setState({
                 loading: true,
             });
+
             const toSubmit = this.state.queryParams;
-            toSubmit.organization_id = 1
             toSubmit['products'] = [...this.state.queryParams.products, ...this.state.queryParams.extensions]
             controller.handleAddCoupon(toSubmit).then((response) => {
                 this.setState({
@@ -154,18 +155,18 @@ class AddCoupon extends React.Component {
     }
 
     render() {
-        if (!this.state.queryParams.organization_id) {
+        if(!this.state.queryParams.organization_id){
             return <div>Loading...</div>
         }
         return (
             <div>
-                <Head title="Coding Blocks | Dukaan | Add Coupon"/>
-                <Layout/>
+                <Head title="Coding Blocks | Dukaan | Add Coupon" />
+                <Layout />
                 <CheckLogin>
                     <div className={"d-flex align-items-center justify-content-center"}>
                         <div className={"border-card coupon-card col-md-4 mt-5"}>
                             {this.state.loading &&
-                            <Loader/>
+                            <Loader />
                             }
                             {!this.state.loading &&
                             <form id="addCouponForm" onSubmit={(e) => e.preventDefault()}>
@@ -177,8 +178,7 @@ class AddCoupon extends React.Component {
                                     </div>
 
                                     {/* organization */}
-                                    <FieldWithElement name={"Organization"} nameCols={3} elementCols={9}
-                                                      elementClassName={"pl-4"}>
+                                    <FieldWithElement name={"Organization"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                                         <select
                                             id="organization_id"
                                             name="organization_id"
@@ -196,8 +196,7 @@ class AddCoupon extends React.Component {
                                     </FieldWithElement>
 
                                     {/* Code */}
-                                    <FieldWithElement name={"Code*"} nameCols={3} elementCols={9}
-                                                      elementClassName={"pl-4"}>
+                                    <FieldWithElement name={"Code*"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                                         <input
                                             type="text"
                                             id="code"
@@ -211,8 +210,7 @@ class AddCoupon extends React.Component {
                                     </FieldWithElement>
 
                                     {/* Generate Random Code */}
-                                    <FieldWithElement name={"Generate Code"} nameCols={3} elementCols={9}
-                                                      elementClassName={"pl-4"}>
+                                    <FieldWithElement name={"Generate Code"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                                         <button
                                             id="search"
                                             type={"button"}
@@ -223,8 +221,7 @@ class AddCoupon extends React.Component {
                                     </FieldWithElement>
 
                                     {/* Authority_code */}
-                                    <FieldWithElement name={"Description*"} nameCols={3} elementCols={9}
-                                                      elementClassName={"pl-4"}>
+                                    <FieldWithElement name={"Description*"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                                         <input
                                             type="text"
                                             className="input-text"
@@ -236,8 +233,7 @@ class AddCoupon extends React.Component {
                                         />
                                     </FieldWithElement>
                                     {/* Categories */}
-                                    <FieldWithElement name={"Category*"} nameCols={3} elementCols={9}
-                                                      elementClassName={"pl-4"}>
+                                    <FieldWithElement name={"Category*"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                                         <select
                                             id="category"
                                             name="category"
@@ -252,33 +248,30 @@ class AddCoupon extends React.Component {
                                     </FieldWithElement>
 
                                     {/* Products */}
-                                    <FieldWithElement name={"Products"} nameCols={3} elementCols={9}
-                                                      elementClassName={"pl-4"}>
+                                    <FieldWithElement name={"Products"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                                         <ProductsChooser
                                             productsCallback={this.handleProductsChange}
                                             multiple={true}
-                                            productType={'course'}
-                                            key={this.state.queryParams.organization_id}
-                                            organizationId={this.state.queryParams.organization_id}
+                                            productType = {'course'}
+                                            key = {this.state.queryParams.organization_id}
+                                            organizationId = {this.state.queryParams.organization_id}
                                         />
                                     </FieldWithElement>
 
 
                                     {/* Extensions */}
-                                    <FieldWithElement name={"Extensions"} nameCols={3} elementCols={9}
-                                                      elementClassName={"pl-4"}>
+                                    <FieldWithElement name={"Extensions"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                                         <ProductsChooser
                                             productsCallback={this.handleExtensionsChange}
                                             multiple={true}
-                                            productType={'extension'}
-                                            key={this.state.queryParams.organization_id}
-                                            organizationId={this.state.queryParams.organization_id}
+                                            productType = {'extension'}
+                                            key = {this.state.queryParams.organization_id}
+                                            organizationId = {this.state.queryParams.organization_id}
                                         />
                                     </FieldWithElement>
 
                                     {/* Mode */}
-                                    <FieldWithElement name={"Mode*"} nameCols={3} elementCols={9}
-                                                      elementClassName={"pl-4"}>
+                                    <FieldWithElement name={"Mode*"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                                         <select
                                             id="mode"
                                             name="mode"
@@ -310,24 +303,38 @@ class AddCoupon extends React.Component {
 
                                     {this.state.queryParams.mode == "percentage" &&
                                     /* Percentage */
-                                    <FieldWithElement
-                                        name={"Percentage*"}
-                                        nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                                        <input
-                                            type="text"
-                                            className={"input-text"}
-                                            placeholder="Enter Percentage"
-                                            name="percentage"
-                                            value={this.state.queryParams.percentage}
-                                            onChange={this.handleQueryParamChange}
-                                            required
-                                        />
-                                    </FieldWithElement>
+                                    <div>
+                                        <FieldWithElement
+                                            name={"Percentage*"}
+                                            nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                                            <input
+                                                type="text"
+                                                className={"input-text"}
+                                                placeholder="Enter Percentage"
+                                                name="percentage"
+                                                value={this.state.queryParams.percentage}
+                                                onChange={this.handleQueryParamChange}
+                                                required
+                                            />
+                                        </FieldWithElement>
+
+                                        <FieldWithElement
+                                            name={"Max discount"}
+                                            nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                                            <input
+                                                type="text"
+                                                className={"input-text"}
+                                                placeholder="Enter Max Discount Applicable"
+                                                name="max_discount"
+                                                value={this.state.queryParams.max_discount}
+                                                onChange={this.handleQueryParamChange}
+                                            />
+                                        </FieldWithElement>
+                                    </div>
                                     }
 
                                     {/* Total number of times a coupon can be used*/}
-                                    <FieldWithElement name={"How many times it can be used?*"} nameCols={6}
-                                                      elementCols={6} elementClassName={"pl-4"}>
+                                    <FieldWithElement name={"How many times it can be used?*"} nameCols={6} elementCols={6} elementClassName={"pl-4"}>
                                         <input
                                             type="number"
                                             className={"input-text"}
@@ -352,12 +359,11 @@ class AddCoupon extends React.Component {
                                                 type="checkbox"
                                                 onChange={this.handleQueryParamChange}
                                                 value={this.state.queryParams.allProducts}
-                                                name="allProducts"/>
+                                                name="allProducts" />
                                         </div>
                                     </div>
                                     {/* Min price */}
-                                    <FieldWithElement name={"Minimum Product Price?"} nameCols={6} elementCols={6}
-                                                      elementClassName={"pl-4"}>
+                                    <FieldWithElement name={"Minimum Product Price?"} nameCols={6} elementCols={6} elementClassName={"pl-4"}>
                                         <input
                                             type="number"
                                             className={"input-text"}
@@ -380,12 +386,11 @@ class AddCoupon extends React.Component {
                                                 type="checkbox"
                                                 onChange={this.handleQueryParamChange}
                                                 value={this.state.queryParams.allExtensions}
-                                                name="allExtensions"/>
+                                                name="allExtensions" />
                                         </div>
                                     </div>
                                     {/* Min price */}
-                                    <FieldWithElement name={"Minimum Extension Price?"} nameCols={6} elementCols={6}
-                                                      elementClassName={"pl-4"}>
+                                    <FieldWithElement name={"Minimum Extension Price?"} nameCols={6} elementCols={6} elementClassName={"pl-4"}>
                                         <input
                                             type="number"
                                             className={"input-text"}
@@ -408,7 +413,7 @@ class AddCoupon extends React.Component {
                                                 type="checkbox"
                                                 onChange={this.handleQueryParamChange}
                                                 value={this.state.queryParams.active}
-                                                name="active"/>
+                                                name="active" />
                                         </div>
 
                                     </div>

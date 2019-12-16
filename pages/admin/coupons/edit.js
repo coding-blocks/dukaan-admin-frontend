@@ -206,8 +206,9 @@ class EditCoupon extends React.Component {
                     </select>
                   </FieldWithElement>
 
-                  {/* Amount */}
-                  <FieldWithElement name={"Amount"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    {this.state.couponInfo.mode === "flat" &&
+
+                  (<FieldWithElement name={"Amount"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                     <input 
                       type="text" 
                       className="input-text"
@@ -219,8 +220,39 @@ class EditCoupon extends React.Component {
                       onChange={this.handleQueryParamChange}
                       required
                     />
+                  </FieldWithElement>)}
+
+                  {this.state.couponInfo.mode === "percentage" &&
+                          (<div>
+                  <FieldWithElement name={"Percentage"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    <input
+                      type="text"
+                      className="input-text"
+                      placeholder="Enter Amount"
+                      name="percentage"
+                      pattern="[0-9]{1,3}"
+                      title="Amount can only have 3 to 10 digit numbers"
+                      value={this.state.couponInfo.percentage}
+                      onChange={this.handleQueryParamChange}
+                      required
+                    />
                   </FieldWithElement>
 
+                  <FieldWithElement name={"Max Discount"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    <input
+                      type="text"
+                      className="input-text"
+                      placeholder="Enter Amount"
+                      name="max_discount"
+                      pattern="[0-9]{3,10}"
+                      title="Amount can only have 3 to 10 digit numbers"
+                      value={this.state.couponInfo.max_discount}
+                      onChange={this.handleQueryParamChange}
+                      required
+                    />
+                  </FieldWithElement>
+                              </div>)
+                  }
                   {/* Left */}
                   <FieldWithElement name={"Left"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                     <input 
