@@ -762,7 +762,11 @@ class NewPayment extends React.Component {
                                 pattern={"[0-9]{1,10}"}
                             />
                             <span className="red">
-                  Payment amount cannot be less than ₹ {this.state.selectedProduct ? formatter.paisaToRs(this.state.selectedProduct.emi_min_base) : 0}
+                  Payment amount cannot be less than ₹
+                                {this.state.selectedProduct
+                                    ? formatter.paisaToRs(this.state.selectedProduct.emi_min_base)
+                                    : 0
+                                } as per course minimum payable amount.
                 </span>
                         </FieldWithElement>
 
