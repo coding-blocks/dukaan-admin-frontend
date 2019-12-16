@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Price from "../Price";
 import {capturePaymentManual} from "../../controllers/dukaanTransactions"
+import Swal from "sweetalert2";
+import formatter from "../../helpers/formatter";
 
 class DukaanPaymentCard extends React.Component {
 
@@ -19,15 +21,41 @@ class DukaanPaymentCard extends React.Component {
 
 
     capturePaymentManual = () => {
-        capturePaymentManual({
-            razorpay_order_id: this.state.razorpayResponse.order_id,
-            razorpay_payment_id: this.state.razorpayResponse.id,
-            amount: this.state.razorpayResponse.amount.toString(),
-            txnId: this.state.razorpayPayment.transaction.id
-        }).then((response) => {
-            console.log('Response is', response)
-        }).catch((err) => {
-            console.log('Error is', err)
+        Swal.fire({
+            title: "Capture this payment?",
+            text: "This action cannot be reverted",
+            type: "question",
+            confirmButtonColor: "#f66",
+            confirmButtonText: "Capture",
+            cancelButtonText: "Cancel",
+            showCancelButton: true,
+            showConfirmButton: true,
+            showCloseButton: true
+        }).then(result => {
+            if (result.value) {
+                capturePaymentManual({
+                    razorpay_order_id: this.state.razorpayResponse.order_id,
+                    razorpay_payment_id: this.state.razorpayResponse.id,
+                    amount: this.state.razorpayResponse.amount.toString(),
+                    txnId: this.state.razorpayPayment.transaction.id
+                }).then((response) => {
+                    Swal.fire({
+                        title: "Payment captured successfully",
+                        type: "success",
+                        timer: "3000",
+                        showConfirmButton: true,
+                        confirmButtonText: "Okay"
+                    }).then(() => window.location.reload())
+                    console.log('Response is', response)
+                }).catch((err) => {
+                    Swal.fire({
+                        title: "Error while capturing payment",
+                        text: err,
+                        type: "error",
+                        showConfirmButton: true
+                    });
+                })
+            }
         })
     }
 
@@ -70,6 +98,15 @@ class DukaanPaymentCard extends React.Component {
                                 ) : (
                                     ""
                                 )}
+                                {this.state.razorpayResponse.status === "failed" ? (
+                                    <div style={{color: "#f34e4b", fontSize: "1.5rem"}}>
+                                        <strong>Failed</strong>
+                                        <i className="fa fa-times ml-2" aria-hidden="true"/>
+                                    </div>
+                                ) : (
+                                    ""
+                                )}
+
                             </div>
 
 
