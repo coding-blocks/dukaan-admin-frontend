@@ -456,6 +456,7 @@ class PartialPayments extends React.Component {
                             View Invoice
                         </button>
                     </a>
+                    {this.state.status === "paid" ? (
                     <a onClick={this.handleCancelReceipt} target="blank">
                         <button
                             id="view-invoice"
@@ -465,6 +466,7 @@ class PartialPayments extends React.Component {
                             Cancel Receipt
                         </button>
                     </a>
+                    ) : ""}
                 </div>
 
             </div>
