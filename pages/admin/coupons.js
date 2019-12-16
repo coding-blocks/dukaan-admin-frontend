@@ -375,6 +375,7 @@ class Coupons extends React.Component {
                           <th>Referrer Cashback</th>
                           <th>Mode</th>
                           <th>Amount</th>
+                          <th>Max Discount</th>
                           <th>Left</th>
                           <th>Products</th>
                           <th>Active</th>
@@ -415,6 +416,8 @@ class Coupons extends React.Component {
                             {coupon.mode == "percentage" &&
                               <td>{coupon.percentage}%</td>
                             }
+                            {(coupon.mode === "percentage") &&
+                            <td>{Formatter.formatCurrency(coupon.max_discount / 100)}</td>}
                             <td>{Formatter.format(coupon.left)}</td>
                             <td>{Formatter.format(coupon.products.length)}</td>
                             <td>
