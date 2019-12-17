@@ -42,6 +42,10 @@ class DukaanPayments extends React.Component {
 
     }
 
+    resetCurrentSearch = () => {
+        window.location.href = "/admin/payments"
+    }
+
     render() {
 
         return (<div>
@@ -51,7 +55,7 @@ class DukaanPayments extends React.Component {
                     <div className={"d-flex col-12 mt-4 ml-3 justify-content-center"}>
 
                         <div className="input-search w-75" style={{display: "inline-block"}}>
-                            <input id="razorpayPaymentId" value={this.state.razorpayPaymentId} type="text"
+                            <input autoComplete={"off"} id="razorpayPaymentId" value={this.state.razorpayPaymentId} type="text"
                                    placeholder="Enter razorpay payment ID" onChange={this.onChangeValue}/>
                         </div>
 
@@ -69,6 +73,16 @@ class DukaanPayments extends React.Component {
                             razorpayPayment={this.state.razorpayPayment}
                             razorpayResponse={this.state.razorpayResponse}
                         /> : <div/>}
+                    </div>
+
+                    <div className={"container"}>
+                        {
+                            this.state.razorpayPayment ?
+                                <button onClick={this.resetCurrentSearch} className="button-solid lg">Search
+                                    New</button> : <div>
+
+                                </div>
+                        }
                     </div>
 
 
