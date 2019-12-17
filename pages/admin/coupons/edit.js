@@ -246,7 +246,6 @@ class EditCoupon extends React.Component {
                       title="Amount can only have 3 to 10 digit numbers"
                       value={this.state.couponInfo.max_discount}
                       onChange={this.handleQueryParamChange}
-                      required
                     />
                   </FieldWithElement>
                               </div>)
