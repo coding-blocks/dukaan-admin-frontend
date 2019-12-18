@@ -10,8 +10,9 @@ class DukaanPaymentCard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            razorpayPayment: props.razorpayPayment,
-            razorpayResponse: props.razorpayResponse
+            paymentInvoice: props.paymentInvoice,
+            razorpayResponse: props.razorpayResponse,
+            razorpayPayment: props.razorpayPayment
         }
     }
 
@@ -70,13 +71,13 @@ class DukaanPaymentCard extends React.Component {
                                 <div className="img-desc col-md-8 col-12 mb-4 mb-md-0">
                                     <div className="col-md-3 col-4">
                                         <img className="round"
-                                             src={this.state.razorpayPayment.transaction.invoice.product.image_url} alt=""/>
+                                             src={this.state.paymentInvoice.product.image_url} alt=""/>
                                     </div>
                                     <div className="description justify-content-center">
                                         <div>
-                                            <h4>{this.state.razorpayPayment.transaction.invoice.product.name}</h4>
+                                            <h4>{this.state.paymentInvoice.product.name}</h4>
                                             <div
-                                                className="grey font-sm">{this.state.razorpayPayment.transaction.invoice.product.description}</div>
+                                                className="grey font-sm">{this.state.paymentInvoice.product.description}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -122,7 +123,7 @@ class DukaanPaymentCard extends React.Component {
                                     <div className="col-md-5 px-0 pt-2 mr-3">
                                         <div className={"row align-items-center"}>
                                             <div className={"pr-3"}>Payment Amount</div>
-                                            <Price amount={this.state.razorpayPayment.amount / 100}/>
+                                            <Price amount={this.state.razorpayResponse.amount / 100}/>
                                         </div>
 
                                     </div>

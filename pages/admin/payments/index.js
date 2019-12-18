@@ -3,6 +3,7 @@ import Head from "../../../components/head";
 import Layout from "../../../components/layout";
 import ErrorHandler from "../../../helpers/ErrorHandler";
 import DukaanPaymentCard from "../../../components/partialComponents/DukaanPaymentCard";
+import Swal from "sweetalert2";
 
 const {getTransactionByRazorpayPaymentId} = require("../../../controllers/dukaanTransactions");
 
@@ -12,6 +13,7 @@ class DukaanPayments extends React.Component {
         super(props)
         this.state = {
             razorpayPayment: null,
+            paymentInvoice: null,
             razorpayResponse: null,
             razorpayPaymentId: ""
 
@@ -28,14 +30,75 @@ class DukaanPayments extends React.Component {
         });
     };
 
+    showPaymentCannotBeCapturedError = () => {
+        Swal.fire({
+            title: "This payment cannot be captured here!",
+            text: "To capture this payment, contact dukaan dev team.",
+            type: "error",
+            showConfirmButton: true
+        });
+    }
+
     fetchDukaanPayments = () => {
         if (this.state.razorpayPaymentId) {
             getTransactionByRazorpayPaymentId(this.state.razorpayPaymentId).then((response) => {
-                this.setState({
-                    razorpayPayment: response.data.razorpayPayment,
-                    razorpayResponse: response.data.razorpayResponse
-                })
+                if (!response.data.razorpayPayment) {
+                    Swal.fire({
+                        title: "This payment cannot be found on dukaan server!",
+                        text: "To capture this payment, contact dukaan dev team.",
+                        type: "error",
+                        showConfirmButton: true
+                    });
+                    return;
+                }
+
+
+                // If the payment is a partial payment and no partial_payment object hash exists
+                if (response.data.razorpayPayment.transaction.partial_payment_id && !response.data.razorpayPayment.transaction.partial_payment) {
+                    this.showPaymentCannotBeCapturedError()
+                    return;
+                    // If the payment is not a partial payment and no invoice object on transaction hash exists
+                } else if (!response.data.razorpayPayment.transaction.partial_payment_id && !response.data.razorpayPayment.transaction.invoice) {
+                    this.showPaymentCannotBeCapturedError()
+                    return;
+
+                }
+
+                // If invoice amount does not match with the razorpay amount for non partial payment
+                if (!response.data.razorpayPayment.transaction.partial_payment_id &&
+                    response.data.razorpayPayment.transaction.invoice.amount
+                    !== response.data.razorpayResponse.amount) {
+                    this.showPaymentCannotBeCapturedError()
+                    return;
+
+                }
+
+                // If invoice amount for partial_payment  does not match with the razorpay amount
+                if (response.data.razorpayPayment.transaction.partial_payment_id &&
+                    response.data.razorpayPayment.transaction.partial_payment.partial_amount !== response.data.razorpayResponse.amount) {
+                    this.showPaymentCannotBeCapturedError()
+                    return;
+
+                }
+
+                if (response.data.razorpayPayment.transaction.partial_payment) {
+                    this.setState({
+                        razorpayPayment: response.data.razorpayPayment,
+                        paymentInvoice: response.data.razorpayPayment.transaction.partial_payment.invoice,
+                        razorpayResponse: response.data.razorpayResponse,
+                        isPartialPayment: true
+                    })
+                } else {
+                    this.setState({
+                        razorpayPayment: response.data.razorpayPayment,
+                        paymentInvoice: response.data.razorpayPayment.transaction.invoice,
+                        razorpayResponse: response.data.razorpayResponse,
+                        isPartialPayment: false
+                    })
+                }
+
             }).catch((err) => {
+                console.log('Error', err)
                 ErrorHandler.handle(err)
             })
         }
@@ -50,12 +113,15 @@ class DukaanPayments extends React.Component {
 
         return (<div>
             <div>
-                <Head title="System Transactions | Dukaan"/>
+                <Head>
+                    <title>{"System Transactions | Dukaan"}</title>
+                </Head>
                 <Layout>
                     <div className={"d-flex col-12 mt-4 ml-3 justify-content-center"}>
 
                         <div className="input-search w-75" style={{display: "inline-block"}}>
-                            <input autoComplete={"off"} id="razorpayPaymentId" value={this.state.razorpayPaymentId} type="text"
+                            <input autoComplete={"off"} id="razorpayPaymentId" value={this.state.razorpayPaymentId}
+                                   type="text"
                                    placeholder="Enter razorpay payment ID" onChange={this.onChangeValue}/>
                         </div>
 
@@ -68,23 +134,25 @@ class DukaanPayments extends React.Component {
                         </button>
                     </div>
 
-                    <div>
-                        {this.state.razorpayPayment ? <DukaanPaymentCard
-                            razorpayPayment={this.state.razorpayPayment}
-                            razorpayResponse={this.state.razorpayResponse}
-                        /> : <div/>}
-                    </div>
-
                     <div className={"container"}>
-                        {
-                            this.state.razorpayPayment ?
-                                <button onClick={this.resetCurrentSearch} className="button-solid lg">Search
-                                    New</button> : <div>
+                        <div>
+                            {this.state.paymentInvoice ? <DukaanPaymentCard
+                                paymentInvoice={this.state.paymentInvoice}
+                                razorpayResponse={this.state.razorpayResponse}
+                                razorpayPayment={this.state.razorpayPayment}
+                            /> : <div/>}
+                        </div>
 
-                                </div>
-                        }
+                        <div>
+                            {
+                                this.state.razorpayPayment ?
+                                    <button onClick={this.resetCurrentSearch} className="button-solid lg">Search
+                                        New</button> : <div>
+
+                                    </div>
+                            }
+                        </div>
                     </div>
-
 
                 </Layout>
             </div>
