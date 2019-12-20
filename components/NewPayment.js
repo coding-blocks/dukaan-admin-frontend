@@ -44,7 +44,7 @@ class NewPayment extends React.Component {
             selectedProduct: null,
             amountToPay: 0,
             selectedUser: props.selectedUser,
-            product_category: "",
+            product_center: "",
             coupon: "",
             paymentMode: "cash",
             useCredits: false,
@@ -68,7 +68,10 @@ class NewPayment extends React.Component {
         Promise.all([
             resourcesController.getStates(),
             productCategoriesController.handleGetAllProductCategories(),
-            resourcesController.getCenters()
+            resourcesController.getCenters({
+                is_offline: 1,
+                organization_id: 1
+            })
         ]).then(([states, productCategories, centers]) => {
             this.setState({
                 selectedUser: this.props.selectedUser,
@@ -267,13 +270,14 @@ class NewPayment extends React.Component {
     }
 
 
-    handleProductCategoryChange = e => {
+    handleProductCenterChange = e => {
         this.setState({
-            product_category: e.target.value,
+            product_center: e.target.value,
         });
         productsController.handleGetProducts({
-                product_category_id: e.target.value,
+                product_category_id: 2,
                 organization_id: 1,
+                center_id: this.state.product_center
             }, {
                 page: 1,
                 limit: 100
@@ -523,21 +527,21 @@ class NewPayment extends React.Component {
 
                         {/* Course category*/}
                         <FieldWithElement
-                            name={"Select course category"}
+                            name={"Select Purchase Center"}
                             nameCols={3}
                             elementCols={9}
                             elementClassName={"pl-4"}>
                             <select
-                                name="product_category"
+                                name="product_center"
                                 defaultValue={"select"}
-                                onChange={this.handleProductCategoryChange}
+                                onChange={this.handleProductCenterChange}
                                 required>
                                 <option value="select" disabled={true}>
                                     Select Category
                                 </option>
-                                {this.state.product_categories.map(category => (
-                                    <option value={category.id} key={category.id}>
-                                        {category.name}
+                                {this.state.centers.map(center => (
+                                    <option value={center.id} key={center.id}>
+                                        {center.name}
                                     </option>
                                 ))}
                             </select>

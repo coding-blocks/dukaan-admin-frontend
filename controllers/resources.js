@@ -4,6 +4,7 @@
 import "../config";
 import {axios} from "../DukaanAPI"
 import ErrorHandler from '../helpers/ErrorHandler';
+import * as querystring from "querystring";
 
 /**
  * Get the list of states
@@ -33,8 +34,8 @@ const getCountries = () => {
  * Get the list of centers
  * @return {Promise<Array>} response - Promise with centers
  */
-const getCenters = () => {
-    return axios.get(`/api/v2/admin/resources/centers`)
+const getCenters = (queryParams) => {
+    return axios.get(`/api/v2/admin/resources/centers?${querystring.stringify(queryParams)}`)
 }
 
 const getDemographicsCountriesGradYears = () => {
