@@ -67,18 +67,16 @@ class NewPayment extends React.Component {
     componentDidMount() {
         Promise.all([
             resourcesController.getStates(),
-            productCategoriesController.handleGetAllProductCategories(),
             resourcesController.getCenters({
                 is_offline: 1,
                 organization_id: 1
             })
-        ]).then(([states, productCategories, centers]) => {
+        ]).then(([states, centers]) => {
             this.setState({
                 selectedUser: this.props.selectedUser,
                 showOrders: this.props.showOrders,
                 centers: centers.data,
                 states: states.data,
-                product_categories: productCategories.data
             });
         }).then(() => {
             const dukaanToken = Cookies.get("dukaan-token");
@@ -277,7 +275,7 @@ class NewPayment extends React.Component {
         productsController.handleGetProducts({
                 product_category_id: 2,
                 organization_id: 1,
-                center_id: this.state.product_center
+                center_id: e.target.value
             }, {
                 page: 1,
                 limit: 100
@@ -537,7 +535,7 @@ class NewPayment extends React.Component {
                                 onChange={this.handleProductCenterChange}
                                 required>
                                 <option value="select" disabled={true}>
-                                    Select Category
+                                    Select Center
                                 </option>
                                 {this.state.centers.map(center => (
                                     <option value={center.id} key={center.id}>
