@@ -125,6 +125,14 @@ class DukaanPaymentCard extends React.Component {
                                             <div className={"pr-3"}>Payment Amount</div>
                                             <Price amount={this.state.razorpayResponse.amount / 100}/>
                                         </div>
+                                        {this.state.razorpayResponse.status === "captured" ? (
+                                            <div className={"row align-items-center"}>
+                                                <div className={"pr-3"}>Receipt Code</div>
+                                                <p>{this.state.razorpayPayment.transaction.receipt_code}</p>
+                                            </div>
+                                        ) : (
+                                            ""
+                                        )}
 
                                     </div>
                                 </div>
