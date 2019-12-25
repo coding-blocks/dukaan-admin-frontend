@@ -374,8 +374,7 @@ class Coupons extends React.Component {
                           <th>Category</th>
                           <th>Referrer Cashback</th>
                           <th>Mode</th>
-                          <th>Amount</th>
-                          <th>Max Discount</th>
+                          <th>Discount</th>
                           <th>Left</th>
                           <th>Products</th>
                           <th>Active</th>
@@ -388,17 +387,32 @@ class Coupons extends React.Component {
                           <tr key={coupon.id}>
                             <td>{coupon.code}</td>
                             <td>
-                              {coupon.category == "referral" &&
+                              {coupon.category === "referral" &&
                                 "Referral"
                               }
-                              {coupon.category == "campus_ambassador" &&
+                              {coupon.category === "campus_ambassador" &&
                                 "Campus Ambassador"
                               }
-                              {coupon.category == "campaign" &&
+                              {coupon.category === "campaign" &&
                                 "Campaign"
                               }
-                              {coupon.category == "special_discount" &&
+                              {coupon.category === "special_discount" &&
                                 "Special Discount"
+                              }
+                              {coupon.category === "telecounselors" &&
+                                "Telecounselors"
+                              }
+                              {coupon.category === "scholarship" &&
+                                "Scholarship"
+                              }
+                              {coupon.category === "all_time" &&
+                                "All Time"
+                              }
+                              {coupon.category === "extension" &&
+                              "Extension"
+                              }
+                              {coupon.category === "teaching_assistant" &&
+                              "Teaching Assistant"
                               }
                             </td>
                             <td>{Formatter.formatCurrency(coupon.referrer_cashback)}</td>
@@ -412,12 +426,8 @@ class Coupons extends React.Component {
                             </td>
                             {(coupon.mode == "flat") &&
                               <td>{Formatter.formatCurrency(coupon.amount)}</td>
+                                || (coupon.mode === "percentage") && <td>{coupon.percentage}%</td>
                             }
-                            {coupon.mode == "percentage" &&
-                              <td>{coupon.percentage}%</td>
-                            }
-                            {(coupon.mode === "percentage") &&
-                            <td>{Formatter.formatCurrency(coupon.max_discount / 100)}</td>}
                             <td>{Formatter.format(coupon.left)}</td>
                             <td>{Formatter.format(coupon.products.length)}</td>
                             <td>

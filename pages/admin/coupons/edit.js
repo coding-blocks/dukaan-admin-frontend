@@ -237,19 +237,6 @@ class EditCoupon extends React.Component {
                       required
                     />
                   </FieldWithElement>
-
-                  <FieldWithElement name={"Max Discount"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
-                    <input
-                      type="text"
-                      className="input-text"
-                      placeholder="Enter Amount"
-                      name="max_discount"
-                      pattern="[0-9]{3,10}"
-                      title="Amount can only have 3 to 10 digit numbers"
-                      value={this.state.couponInfo.max_discount}
-                      onChange={this.handleQueryParamChange}
-                    />
-                  </FieldWithElement>
                               </div>)
                   }
                   {/* Left */}
