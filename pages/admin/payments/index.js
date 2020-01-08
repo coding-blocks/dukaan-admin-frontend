@@ -30,9 +30,9 @@ class DukaanPayments extends React.Component {
         });
     };
 
-    showPaymentCannotBeCapturedError = () => {
+    showPaymentCannotBeCapturedError = (text  = '') => {
         Swal.fire({
-            title: "This payment cannot be captured here!",
+            title: `This payment cannot be captured here. ${text}`,
             text: "To capture this payment, contact dukaan dev team.",
             type: "error",
             showConfirmButton: true
@@ -55,11 +55,11 @@ class DukaanPayments extends React.Component {
 
                 // If the payment is a partial payment and no partial_payment object hash exists
                 if (response.data.razorpayPayment.transaction.partial_payment_id && !response.data.razorpayPayment.transaction.partial_payment) {
-                    this.showPaymentCannotBeCapturedError()
+                    this.showPaymentCannotBeCapturedError('Partial payment not found on dukaan.')
                     return;
                     // If the payment is not a partial payment and no invoice object on transaction hash exists
                 } else if (!response.data.razorpayPayment.transaction.partial_payment_id && !response.data.razorpayPayment.transaction.invoice) {
-                    this.showPaymentCannotBeCapturedError()
+                    this.showPaymentCannotBeCapturedError('Invoice not found on dukaan.')
                     return;
 
                 }
@@ -68,7 +68,7 @@ class DukaanPayments extends React.Component {
                 if (!response.data.razorpayPayment.transaction.partial_payment_id &&
                     response.data.razorpayPayment.transaction.invoice.amount
                     !== response.data.razorpayResponse.amount) {
-                    this.showPaymentCannotBeCapturedError()
+                    this.showPaymentCannotBeCapturedError('Amount for invoice does not match with razorpay.')
                     return;
 
                 }
@@ -76,7 +76,7 @@ class DukaanPayments extends React.Component {
                 // If invoice amount for partial_payment  does not match with the razorpay amount
                 if (response.data.razorpayPayment.transaction.partial_payment_id &&
                     response.data.razorpayPayment.transaction.partial_payment.partial_amount !== response.data.razorpayResponse.amount) {
-                    this.showPaymentCannotBeCapturedError()
+                    this.showPaymentCannotBeCapturedError('Amount for partial payment does not match with razorpay.')
                     return;
 
                 }
@@ -98,7 +98,6 @@ class DukaanPayments extends React.Component {
                 }
 
             }).catch((err) => {
-                console.log('Error', err)
                 ErrorHandler.handle(err)
             })
         }
