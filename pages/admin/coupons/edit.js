@@ -236,6 +236,19 @@ class EditCoupon extends React.Component {
                       onChange={this.handleQueryParamChange}
                       required
                     />
+                    <FieldWithElement
+                        name={"Max discount"}
+                        nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <input
+                          type="text"
+                          className={"input-text"}
+                          placeholder="Enter Max Discount Applicable"
+                          name="max_discount"
+                          value={this.state.couponInfo.max_discount}
+                          onChange={this.handleQueryParamChange}
+                      />
+                    </FieldWithElement>
+
                   </FieldWithElement>
                               </div>)
                   }
