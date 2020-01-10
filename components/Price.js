@@ -11,7 +11,7 @@ class Price extends React.Component {
   render() {
     return (
       <div className="price">
-        <div className={`money pt-2 pb-2 ${ this.props.className }`}>
+        <div className={`pt-2 pb-2 ${ this.props.className }`}>
           <span className="info red pr-3">{formatter.formatCurrency(this.props.amount)}</span>
         </div>
       </div>

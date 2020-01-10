@@ -128,9 +128,9 @@ class EditUser extends React.Component {
             landmark: this.state.primaryAddress ? this.state.primaryAddress.landmark : "",
             city: this.state.primaryAddress ? this.state.primaryAddress.city : "",
             whatsappNumber: this.state.primaryAddress ? this.state.primaryAddress.whatsapp_number : "",
-            stateId: this.state.primaryAddress ? this.state.primaryAddress.stateId : "AP",
-            countryId: this.state.primaryAddress ? this.state.primaryAddress.countryId : "AF",
-            address_id: this.state.primaryAddress ? this.state.primaryAddress.id : null
+            stateId: this.state.primaryAddress ? String(this.state.primaryAddress.stateId) : "DL",
+            countryId: this.state.primaryAddress ? String(this.state.primaryAddress.countryId) : "IN",
+            address_id: this.state.primaryAddress ? String(this.state.primaryAddress.id) : null
         }
     }
 
