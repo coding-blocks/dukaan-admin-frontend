@@ -55,6 +55,21 @@ class Layout extends React.Component {
               <ul className="nav-list">
                 {this.state.loggedIn && this.state.admin && (
                   <div>
+
+                    <li className="dropdown">
+                      <button className="dropbtn dropdown-toggle">
+                        Payments
+                        <i className="fa fa-caret-down pl-2" />
+                      </button>
+                      <div className="dropdown-content">
+                        <div className="flex-row justify-content-center">
+                          <Link href="/admin/payments">
+                            <a>Capture Manual</a>
+                          </Link>
+                        </div>
+                      </div>
+                    </li>
+
                     <li className="dropdown">
                       <button className="dropbtn dropdown-toggle">
                         Coupons

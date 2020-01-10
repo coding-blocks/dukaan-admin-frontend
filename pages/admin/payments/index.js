@@ -142,7 +142,7 @@ class DukaanPayments extends React.Component {
                             /> : <div/>}
                         </div>
 
-                        <div>
+                        <div className={"d-flex justify-content-center"}>
                             {
                                 this.state.razorpayPayment ?
                                     <button onClick={this.resetCurrentSearch} className="button-solid lg">Search
