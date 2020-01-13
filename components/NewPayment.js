@@ -67,7 +67,7 @@ class NewPayment extends React.Component {
     componentDidMount() {
         Promise.all([
             resourcesController.getStates(),
-            productCategoriesController.handleGetAllProductCategories(),
+            resourcesController.getCenters(),
             resourcesController.getCenters()
         ]).then(([states, productCategories, centers]) => {
             this.setState({
@@ -272,8 +272,9 @@ class NewPayment extends React.Component {
             product_category: e.target.value,
         });
         productsController.handleGetProducts({
-                product_category_id: e.target.value,
+                center_id : e.target.value,
                 organization_id: 1,
+                listed: true
             }, {
                 page: 1,
                 limit: 100

@@ -18,29 +18,36 @@ class CheckLogin extends React.Component {
 
   componentDidMount() {
     const dukaanToken = Cookies.get("dukaan-token");
-    if (dukaanToken) {
-      const userInfo = jwt.decode(dukaanToken);
-      if (userInfo && userInfo.data.oneauth_id) {
-        if (userInfo.data.role == "admin" || userInfo.data.role == "staff") {
-          this.setState({
-            loggedIn: true,
-            loading: false,
-            admin: true
-          });
-        } else {
-          this.setState({
-            loggedIn: true,
-            loading: false,
-            admin: false
-          });
-        }
+      if (dukaanToken) {
+          const userInfo = jwt.decode(dukaanToken);
+          if (userInfo && userInfo.data.oneauth_id) {
+              if (userInfo.data.role === "admin" || userInfo.data.role === "staff") {
+                  this.setState({
+                      loggedIn: true,
+                      loading: false,
+                      admin: true
+                  });
+              } else if (userInfo.data.role === 'finance_manager') {
+                  this.setState({
+                      loggedIn: true,
+                      loading: false,
+                      admin: false,
+                      finance_manager: true
+                  })
+              } else {
+                  this.setState({
+                      loggedIn: true,
+                      loading: false,
+                      admin: false
+                  });
+              }
+          } else {
+              this.setState({
+                  loggedIn: false,
+                  loading: false
+              });
+          }
       } else {
-        this.setState({
-          loggedIn: false,
-          loading: false
-        });
-      }
-    } else {
       this.setState({
         loggedIn: false,
         loading: false
@@ -79,7 +86,8 @@ class CheckLogin extends React.Component {
     } else if (
       this.state.loggedIn &&
       !this.state.loading &&
-      !this.state.admin
+      !this.state.admin &&
+     !this.state.finance_manager
     ) {
       return (
         <div>
@@ -91,7 +99,34 @@ class CheckLogin extends React.Component {
           </div>
         </div>
       );
-    } else {
+    } else if (
+        this.state.loggedIn &&
+        !this.state.loading &&
+        !this.state.admin &&
+        this.state.finance_manager
+    ) {
+        return (
+            <div>
+            <Head title={"Dukaan | Coding Blocks"} />
+            <Layout />
+            <div className={"not-logged-in"}>
+            <h2>Welcome to Dukaan!</h2>
+            <div class="row justify-content-center">
+             <div class="col-2">
+                <a href="/admin/report">
+                    <div className="button-solid lg">
+                     <button type="submit" className="pl-1">
+                          Find Report
+                     </button>
+                    </div>
+                </a>
+            </div>
+            </div>
+            </div>
+            </div>
+        )
+    }
+      else {
       return this.props.children;
     }
   }

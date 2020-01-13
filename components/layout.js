@@ -25,7 +25,8 @@ class Layout extends React.Component {
         center_id: userInfo.data.center_id,
         pic: userInfo.data.photo,
         loggedIn: true,
-        admin: userInfo.data.role !== "user"
+        admin: userInfo.data.role === "admin" || userInfo.data.role === "staff",
+        finance_manager: userInfo.data.role === "finance_manager"
       });
     }
   }
@@ -53,6 +54,16 @@ class Layout extends React.Component {
           <div className="dsp-none-sm justify-content-center">
             <div className="nav-right">
               <ul className="nav-list">
+                {this.state.loggedIn && (this.state.admin ||
+                    this.state.finance_manager || this.state.staff) && (
+                <div>
+                    <li>
+                        <Link href="/admin/report">
+                         <a> Report </a>
+                        </Link>
+                    </li>
+                 </div>
+                )}
                 {this.state.loggedIn && this.state.admin && (
                   <div>
                     <li className="dropdown">
