@@ -16,6 +16,16 @@ class DukaanPaymentCard extends React.Component {
         }
     }
 
+    static getDerivedStateFromProps(props, current_state) {
+        if (current_state.paymentInvoice !== props.paymentInvoice) {
+            return {
+                paymentInvoice: props.paymentInvoice,
+                razorpayResponse: props.razorpayResponse,
+                razorpayPayment: props.razorpayPayment
+            }
+        }
+        return null
+    }
 
     componentDidMount() {
     }

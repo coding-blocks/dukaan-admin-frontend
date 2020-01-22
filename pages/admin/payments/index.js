@@ -25,12 +25,19 @@ class DukaanPayments extends React.Component {
     }
 
     onChangeValue = e => {
+        if (!e.target.value) {
+            this.setState({
+                razorpayPayment: null,
+                paymentInvoice: null,
+                razorpayResponse: null,
+            });
+        }
         this.setState({
             razorpayPaymentId: e.target.value
         });
     };
 
-    showPaymentCannotBeCapturedError = (text  = '') => {
+    showPaymentCannotBeCapturedError = (text = '') => {
         Swal.fire({
             title: `This payment cannot be captured here. ${text}`,
             text: "To capture this payment, contact dukaan dev team.",
@@ -104,23 +111,18 @@ class DukaanPayments extends React.Component {
 
     }
 
-    resetCurrentSearch = () => {
-        window.location.href = "/admin/payments"
-    }
 
     render() {
 
         return (<div>
             <div>
-                <Head>
-                    <title>{"System Transactions | Dukaan"}</title>
-                </Head>
+                <Head title="System Transactions | Dukaan"></Head>
                 <Layout>
                     <div className={"d-flex col-12 mt-4 ml-3 justify-content-center"}>
 
                         <div className="input-search w-75" style={{display: "inline-block"}}>
                             <input autoComplete={"off"} id="razorpayPaymentId" value={this.state.razorpayPaymentId}
-                                   type="text"
+                                   type="search"
                                    placeholder="Enter razorpay payment ID" onChange={this.onChangeValue}/>
                         </div>
 
@@ -137,20 +139,12 @@ class DukaanPayments extends React.Component {
                         <div>
                             {this.state.paymentInvoice ? <DukaanPaymentCard
                                 paymentInvoice={this.state.paymentInvoice}
+                                key={this.state.razorpayPaymentId}
                                 razorpayResponse={this.state.razorpayResponse}
                                 razorpayPayment={this.state.razorpayPayment}
                             /> : <div/>}
                         </div>
 
-                        <div className={"d-flex justify-content-center"}>
-                            {
-                                this.state.razorpayPayment ?
-                                    <button onClick={this.resetCurrentSearch} className="button-solid lg">Search
-                                        New</button> : <div>
-
-                                    </div>
-                            }
-                        </div>
                     </div>
 
                 </Layout>
