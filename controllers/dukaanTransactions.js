@@ -9,7 +9,7 @@ const getTransactionByRazorpayPaymentId = (razorpayPaymentId) => {
 }
 
 const capturePaymentManual = (capturePayload) => {
-    return axios.post('/api/order/purchase', capturePayload)
+    return axios.post('/api/v2/admin/transactions/capture', capturePayload)
 }
 
 module.exports = {
