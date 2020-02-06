@@ -40,7 +40,6 @@ class RefundedOrders extends React.Component {
     refundController
       .handleGetRefundFromTxnId(this.props.txn_id)
       .then(res => {
-        console.log(res.data, "refund");
         this.setState({
           firstname: res.data.refunded_created_by.firstname,
           lastname: res.data.refunded_created_by.lastname,
