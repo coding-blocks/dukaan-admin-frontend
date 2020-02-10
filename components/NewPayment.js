@@ -36,7 +36,6 @@ class NewPayment extends React.Component {
 
         this.state = {
             states: [],
-            product_categories: [],
             products: [],
             centers: [],
 
@@ -44,7 +43,7 @@ class NewPayment extends React.Component {
             selectedProduct: null,
             amountToPay: 0,
             selectedUser: props.selectedUser,
-            product_category: "",
+            selected_center: "",
             coupon: "",
             paymentMode: "cash",
             useCredits: false,
@@ -67,23 +66,21 @@ class NewPayment extends React.Component {
     componentDidMount() {
         Promise.all([
             resourcesController.getStates(),
-            resourcesController.getCenters(),
-            resourcesController.getCenters()
-        ]).then(([states, productCategories, centers]) => {
+            resourcesController.getCentersByParams(1, true)
+        ]).then(([states, centers]) => {
             this.setState({
                 selectedUser: this.props.selectedUser,
                 showOrders: this.props.showOrders,
                 centers: centers.data,
                 states: states.data,
-                product_categories: productCategories.data
             });
         }).then(() => {
             const dukaanToken = Cookies.get("dukaan-token");
             if (dukaanToken) {
                 const userInfo = jwt.decode(dukaanToken);
-                this.setState({
-                    admin_center_id: userInfo.data.center_id,
-                });
+                let formValues = {...this.state.formValues}
+                formValues.paymentCenterId =  userInfo.data.center_id,
+                this.setState({formValues})
             }
         }).catch(error => {
             ErrorHandler.handle(error);
@@ -267,9 +264,9 @@ class NewPayment extends React.Component {
     }
 
 
-    handleProductCategoryChange = e => {
+    handleProductCenterChange = e => {
         this.setState({
-            product_category: e.target.value,
+            selected_center: e.target.value,
         });
         productsController.handleGetProducts({
                 center_id : e.target.value,
@@ -524,19 +521,19 @@ class NewPayment extends React.Component {
 
                         {/* Course category*/}
                         <FieldWithElement
-                            name={"Select course category"}
+                            name={"Center"}
                             nameCols={3}
                             elementCols={9}
                             elementClassName={"pl-4"}>
                             <select
-                                name="product_category"
+                                name="product_center"
                                 defaultValue={"select"}
-                                onChange={this.handleProductCategoryChange}
+                                onChange={this.handleProductCenterChange}
                                 required>
                                 <option value="select" disabled={true}>
-                                    Select Category
+                                    Choose a center
                                 </option>
-                                {this.state.product_categories.map(category => (
+                                {this.state.centers.map(category => (
                                     <option value={category.id} key={category.id}>
                                         {category.name}
                                     </option>
@@ -585,11 +582,9 @@ class NewPayment extends React.Component {
                             <select
                                 name="paymentCenterId"
                                 required
+                                value={this.state.formValues.paymentCenterId}
                                 defaultValue={"select"}
                                 onChange={this.onChangeValue}>
-                                <option value="select" disabled={true}>
-                                    Select Payment Center
-                                </option>
                                 {this.state.centers.map(center => {
                                     return (
                                         <option value={center.id} key={center.id}>

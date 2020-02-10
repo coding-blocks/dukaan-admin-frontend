@@ -33,8 +33,12 @@ const getCountries = () => {
  * Get the list of centers
  * @return {Promise<Array>} response - Promise with centers
  */
-const getCenters = () => {
+const getAllCenters = () => {
     return axios.get(`/api/v2/admin/resources/centers`)
+}
+
+const getCentersByParams = (organizationId, isOffline) => {
+    return axios.get(`/api/v2/admin/resources/centers?is_offline=${isOffline}&organization_id=${organizationId}`)
 }
 
 const getDemographicsCountriesGradYears = () => {
@@ -53,6 +57,7 @@ const getDemographicsCountriesGradYears = () => {
 module.exports = {
     getStates,
     getCountries,
-    getCenters,
-    getDemographicsCountriesGradYears
+    getAllCenters,
+    getDemographicsCountriesGradYears,
+    getCentersByParams
 };

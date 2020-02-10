@@ -38,7 +38,7 @@ class CompleteOrder extends React.Component {
     }
 
     componentDidMount() {
-        resourcesController.getCenters().then(res => {
+        resourcesController.getCentersByParams(1, true).then(res => {
             this.setState({
                 centers: res.data
             });

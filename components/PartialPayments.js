@@ -64,7 +64,7 @@ class PartialPayments extends React.Component {
     };
 
     componentDidMount() {
-        resourcesController.getCenters().then(centers => {
+        resourcesController.getCentersByParams(1, true).then(centers => {
             this.setState({
                 centers: centers.data
             });
@@ -457,15 +457,15 @@ class PartialPayments extends React.Component {
                         </button>
                     </a>
                     {this.state.status === "paid" ? (
-                    <a onClick={this.handleCancelReceipt} target="blank">
-                        <button
-                            id="view-invoice"
-                            className="button-solid ml-4 mb-2 mt-4 pl-5 pr-5"
-                            type="submit"
-                        >
-                            Cancel Receipt
-                        </button>
-                    </a>
+                        <a onClick={this.handleCancelReceipt} target="blank">
+                            <button
+                                id="view-invoice"
+                                className="button-solid ml-4 mb-2 mt-4 pl-5 pr-5"
+                                type="submit"
+                            >
+                                Cancel Receipt
+                            </button>
+                        </a>
                     ) : ""}
                 </div>
 
