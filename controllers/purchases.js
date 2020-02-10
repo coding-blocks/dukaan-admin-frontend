@@ -79,10 +79,15 @@ const getPurchaseByCartId = cartId => {
     return axios.get(`/api/v2/admin/purchases/${cartId}`)
 };
 
+const getReportUrl = () => {
+    return axios.get(`/api/v2/admin/purchases/report`)
+};
+
 module.exports = {
     handleGetPurchases,
     handleGetPartialPurchases,
     handleCreateNewPurchase,
     cancelReceipt,
-    getPurchaseByCartId
+    getPurchaseByCartId,
+    getReportUrl
 };
