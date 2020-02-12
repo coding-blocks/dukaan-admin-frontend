@@ -31,7 +31,7 @@ function PaymentInstallmentForm(props) {
     });
 
     useEffect(() => {
-        resourcesController.getCenters().then(res => {
+        resourcesController.getCentersByParams(1, true).then(res => {
             setCenters(res.data);
         }).catch(error => {
             ErrorHandler.handle(error)
