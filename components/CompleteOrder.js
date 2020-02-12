@@ -312,11 +312,15 @@ class CompleteOrder extends React.Component {
                                         <div>
                                             <div className="font-sm grey">
                                                 Payment Collected
-                                                By: {this.props.transaction[this.props.payment_type]['admin']['username']}
+                                                By: {
+                                                this.props.transaction[this.props.payment_type] ? this.props.transaction[this.props.payment_type]['admin']['username'] : ''
+                                            }
                                             </div>
                                             <div className="font-sm grey">
                                                 Payment
-                                                Center: {this.props.transaction[this.props.payment_type]['center']['name']}
+                                                Center: {
+                                                this.props.transaction[this.props.payment_type] ?  this.props.transaction[this.props.payment_type]['center']['name'] : ''
+                                            }
                                             </div>
                                         </div>
                                     )

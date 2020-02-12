@@ -34,7 +34,6 @@ class OrderDashBoard extends React.Component {
     }
 
 
-
     componentDidMount() {
         const search = window.location.search;
         const params = new URLSearchParams(search);
@@ -42,27 +41,28 @@ class OrderDashBoard extends React.Component {
         if (!userId) {
             window.location.href = '/'
         }
-        purchasesController.handleGetPurchases(userId).then((purchases) => {
-            return purchases
-        }).then((purchases) => {
-            return Promise.all([purchases, userController.handleGetUserById(userId)])
-        }).then(([purchases, userResponse]) => {
+
+        Promise.all([
+            purchasesController.handleGetPurchases(userId),
+            userController.handleGetUserById(userId),
+        ]).then(([purchases, userResponse, oneauthUserResponse]) => {
+            return Promise.all([
+                purchases,
+                userResponse,
+                userController.getUserByFromOneAuthByOneAuthId(userResponse.data.oneauth_id)
+            ])
+        }).then(([purchases, userResponse, oneauthUserResponse]) => {
             this.setState({
                 courseInfo: purchases.data,
                 selectedUser: userResponse.data,
                 newpayment: false,
-            })
-            return Promise.all([purchases, userResponse])
-        }).then(() => {
-            return userController.getUserByFromOneAuthByOneAuthId(this.state.selectedUser.oneauth_id)
-        }).then((oneauthResponse) => {
-            this.setState({
-                oneauthUserResponse: oneauthResponse.data,
-                primaryAddress: oneauthResponse.data.demographic.addresses ? filterPrimaryAddress(oneauthResponse.data.demographic.addresses) : null
+                oneauthUserResponse: oneauthUserResponse.data,
+                primaryAddress: oneauthUserResponse.data.demographic.addresses ? filterPrimaryAddress(oneauthUserResponse.data.demographic.addresses) : null
             })
         }).catch(error => {
             ErrorHandler.handle(error)
         });
+
     }
 
     toggleCompleteTab = () => {
@@ -152,16 +152,12 @@ class OrderDashBoard extends React.Component {
                     const date = moment(refundedOrder.created_at).format(
                         "MMMM Do YYYY,h:mm:ss a"
                     );
-                    const txn_arr = refundedOrder.cart.transactions.filter(
-                        transaction => transaction.status === "captured"
-                    );
-                    const txn_id = txn_arr[0].id;
 
                     return (
                         <RefundedOrders
                             key={refundedOrder.id}
-                            // TODO: this is the txnId used to get refund details
-                            txn_id={txn_id}
+                            txn_id={refundedOrder.cart.transactions[0].id}
+                            refund_txn_id = {refundedOrder.cart.transactions[0].refund_txn_id}
                             status={refundedOrder.status}
                             description={refundedOrder.product.description}
                             invoice_url={refundedOrder.invoice_link}
