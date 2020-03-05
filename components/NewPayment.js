@@ -65,7 +65,7 @@ class NewPayment extends React.Component {
     componentDidMount() {
         Promise.all([
             resourcesController.getCentersByParams(1, true)
-        ]).then(([states, centers]) => {
+        ]).then(([centers]) => {
             this.setState({
                 selectedUser: this.props.selectedUser,
                 showOrders: this.props.showOrders,
