@@ -71,12 +71,14 @@ class NewPayment extends React.Component {
                 showOrders: this.props.showOrders,
                 centers: centers.data,
             });
-        }).then(() => {
+            return centers.data
+        }).then((centers) => {
             const dukaanToken = Cookies.get("dukaan-token");
             if (dukaanToken) {
                 const userInfo = jwt.decode(dukaanToken);
                 let formValues = {...this.state.formValues}
-                formValues.paymentCenterId =  userInfo.data.center_id,
+                formValues.paymentCenterId =
+                    userInfo.data.center_id ? userInfo.data.center_id : centers[0].id,
                 this.setState({formValues})
             }
         }).catch(error => {
