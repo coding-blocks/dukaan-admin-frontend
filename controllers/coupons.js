@@ -34,32 +34,28 @@ const handleGetCoupons = (queryParams, pageInfo) => {
  * @return {Promise<string>} response – Returns if the request was
  *  successful or not
  */
-const handleEditCoupon = (queryParams) => {
+const handleEditCoupon = (queryParams, couponId) => {
 
     // Remove extra params from the request
     delete queryParams.created_at;
     delete queryParams.deleted_at;
     delete queryParams.updated_at;
-    delete queryParams.valid_end;
-    delete queryParams.valid_start;
+    delete queryParams.id
+    delete queryParams.total
 
     queryParams["categories"] = "1"
-
+    queryParams["percentage"] = queryParams["percentage"].toString()
     Object.keys(queryParams).forEach((key) => {
-        if (queryParams[key] == null) {
-            queryParams[key] = "";
-        }
-        if (typeof (queryParams[key]) == 'number' || typeof (queryParams[key]) == 'boolean') {
-            queryParams[key] = queryParams[key].toString();
-        }
+
         if (typeof (queryParams[key]) == 'array') {
             queryParams[key] = queryParams[key].map((p) => {
                 return p.toString();
             });
         }
     });
+
     let response = new Promise((resolve, reject) => {
-        axios.patch(`/api/v2/admin/coupons/` + queryParams.id, queryParams).then((r) => {
+        axios.patch(`/api/v2/admin/coupons/` + couponId, queryParams).then((r) => {
             resolve(r);
         }).catch((error) => {
             reject(ErrorHandler.handle(error));
