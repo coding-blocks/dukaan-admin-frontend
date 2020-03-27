@@ -35,7 +35,6 @@ class NewPayment extends React.Component {
         this.couponCannotClubbedRef = React.createRef();
 
         this.state = {
-            states: [],
             products: [],
             centers: [],
 
@@ -56,7 +55,7 @@ class NewPayment extends React.Component {
                 coupon: "",
                 paymentMode: "cash",
                 quantity: "1",
-                stateId: "AP",
+                stateId: props.primaryAddress.stateId,
                 oneauthId: "" + props.userid
             }
         };
@@ -65,21 +64,21 @@ class NewPayment extends React.Component {
 
     componentDidMount() {
         Promise.all([
-            resourcesController.getStates(),
             resourcesController.getCentersByParams(1, true)
-        ]).then(([states, centers]) => {
+        ]).then(([centers]) => {
             this.setState({
                 selectedUser: this.props.selectedUser,
                 showOrders: this.props.showOrders,
                 centers: centers.data,
-                states: states.data,
             });
-        }).then(() => {
+            return centers.data
+        }).then((centers) => {
             const dukaanToken = Cookies.get("dukaan-token");
             if (dukaanToken) {
                 const userInfo = jwt.decode(dukaanToken);
                 let formValues = {...this.state.formValues}
-                formValues.paymentCenterId =  userInfo.data.center_id,
+                formValues.paymentCenterId =
+                    userInfo.data.center_id ? userInfo.data.center_id : centers[0].id,
                 this.setState({formValues})
             }
         }).catch(error => {

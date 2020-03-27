@@ -1,5 +1,5 @@
 import React from 'react';
-import { withRouter } from 'next/router';
+import {withRouter} from 'next/router';
 import Head from '../../../components/head';
 import Layout from "../../../components/layout";
 import Loader from '../../../components/loader';
@@ -11,6 +11,8 @@ import Swal from 'sweetalert2';
 import ProductsChooser from "../../../components/ProductsChooser";
 import CheckLogin from "../../../components/CheckLogin";
 import ErrorHandler from "../../../helpers/ErrorHandler";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 class AddCoupon extends React.Component {
 
@@ -29,8 +31,10 @@ class AddCoupon extends React.Component {
                 left: 1,
                 category: "special_discount",
                 active: false,
-                extensions:[],
-                max_discount: null
+                extensions: [],
+                max_discount: null,
+                valid_start: new Date(),
+                valid_end: new Date().setMonth(new Date().getMonth() + 1)
             },
         };
     }
@@ -56,7 +60,7 @@ class AddCoupon extends React.Component {
         } else {
             newQueryParams[event.target.name] = event.target.value;
         }
-        if(event.target.name === 'organization_id'){
+        if (event.target.name === 'organization_id') {
             newQueryParams['organization_id'] = Number(event.target.value);
         }
         this.setState(prevState => ({
@@ -86,10 +90,21 @@ class AddCoupon extends React.Component {
         })
     }
 
+    setStartDate = (date) => {
+        const queryParams = {...this.state.queryParams}
+        queryParams.valid_start = date
+        this.setState({queryParams})
+    }
+
+    setEndDate = (date) => {
+        const queryParams = {...this.state.queryParams}
+        queryParams.valid_end = date
+        this.setState({queryParams})
+    }
 
     componentDidMount() {
         organizationController.getAllOrganizations().then((response) => {
-            if(response){
+            if (response) {
                 let oldQueryParams = this.state.queryParams;
                 oldQueryParams.organization_id = response.data[0].id
                 this.setState({
@@ -146,7 +161,6 @@ class AddCoupon extends React.Component {
 
 
     setRandomCouponCode = () => {
-        console.log('State at the moment is', this.state.queryParams)
         let newQueryParams = this.state.queryParams;
         newQueryParams.code = controller.generateRandomCouponCode()
         this.setState({
@@ -155,18 +169,18 @@ class AddCoupon extends React.Component {
     }
 
     render() {
-        if(!this.state.queryParams.organization_id){
+        if (!this.state.queryParams.organization_id) {
             return <div>Loading...</div>
         }
         return (
             <div>
-                <Head title="Coding Blocks | Dukaan | Add Coupon" />
-                <Layout />
+                <Head title="Coding Blocks | Dukaan | Add Coupon"/>
+                <Layout/>
                 <CheckLogin>
                     <div className={"d-flex align-items-center justify-content-center"}>
                         <div className={"border-card coupon-card col-md-4 mt-5"}>
                             {this.state.loading &&
-                            <Loader />
+                            <Loader/>
                             }
                             {!this.state.loading &&
                             <form id="addCouponForm" onSubmit={(e) => e.preventDefault()}>
@@ -178,7 +192,8 @@ class AddCoupon extends React.Component {
                                     </div>
 
                                     {/* organization */}
-                                    <FieldWithElement name={"Organization"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                                    <FieldWithElement name={"Organization"} nameCols={3} elementCols={9}
+                                                      elementClassName={"pl-4"}>
                                         <select
                                             id="organization_id"
                                             name="organization_id"
@@ -196,7 +211,8 @@ class AddCoupon extends React.Component {
                                     </FieldWithElement>
 
                                     {/* Code */}
-                                    <FieldWithElement name={"Code*"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                                    <FieldWithElement name={"Code*"} nameCols={3} elementCols={9}
+                                                      elementClassName={"pl-4"}>
                                         <input
                                             type="text"
                                             id="code"
@@ -210,7 +226,8 @@ class AddCoupon extends React.Component {
                                     </FieldWithElement>
 
                                     {/* Generate Random Code */}
-                                    <FieldWithElement name={"Generate Code"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                                    <FieldWithElement name={"Generate Code"} nameCols={3} elementCols={9}
+                                                      elementClassName={"pl-4"}>
                                         <button
                                             id="search"
                                             type={"button"}
@@ -221,7 +238,8 @@ class AddCoupon extends React.Component {
                                     </FieldWithElement>
 
                                     {/* Authority_code */}
-                                    <FieldWithElement name={"Description*"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                                    <FieldWithElement name={"Description*"} nameCols={3} elementCols={9}
+                                                      elementClassName={"pl-4"}>
                                         <input
                                             type="text"
                                             className="input-text"
@@ -233,7 +251,8 @@ class AddCoupon extends React.Component {
                                         />
                                     </FieldWithElement>
                                     {/* Categories */}
-                                    <FieldWithElement name={"Category*"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                                    <FieldWithElement name={"Category*"} nameCols={3} elementCols={9}
+                                                      elementClassName={"pl-4"}>
                                         <select
                                             id="category"
                                             name="category"
@@ -248,30 +267,64 @@ class AddCoupon extends React.Component {
                                     </FieldWithElement>
 
                                     {/* Products */}
-                                    <FieldWithElement name={"Products"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                                    <FieldWithElement name={"Products"} nameCols={3} elementCols={9}
+                                                      elementClassName={"pl-4"}>
                                         <ProductsChooser
                                             productsCallback={this.handleProductsChange}
                                             multiple={true}
-                                            productType = {'course'}
-                                            key = {this.state.queryParams.organization_id}
-                                            organizationId = {this.state.queryParams.organization_id}
+                                            productType={'course'}
+                                            key={this.state.queryParams.organization_id}
+                                            organizationId={this.state.queryParams.organization_id}
                                         />
                                     </FieldWithElement>
 
 
                                     {/* Extensions */}
-                                    <FieldWithElement name={"Extensions"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                                    <FieldWithElement name={"Extensions"} nameCols={3} elementCols={9}
+                                                      elementClassName={"pl-4"}>
                                         <ProductsChooser
                                             productsCallback={this.handleExtensionsChange}
                                             multiple={true}
-                                            productType = {'extension'}
-                                            key = {this.state.queryParams.organization_id}
-                                            organizationId = {this.state.queryParams.organization_id}
+                                            productType={'extension'}
+                                            key={this.state.queryParams.organization_id}
+                                            organizationId={this.state.queryParams.organization_id}
+                                        />
+                                    </FieldWithElement>
+
+
+                                    {/* Start Date */}
+                                    <FieldWithElement name={"Validity Start Date"} nameCols={3} elementCols={9}
+                                                      elementClassName={"pl-4"}>
+                                        <DatePicker
+                                            showTimeSelect
+                                            timeFormat="HH:mm:ss"
+                                            timeIntervals={60}
+                                            timeCaption="time"
+                                            minDate ={new Date()}
+                                            onChange={this.setStartDate}
+                                            dateFormat="MMMM d, yyyy h:mm aa"
+                                            selected={this.state.queryParams.valid_start}
+                                        />
+                                    </FieldWithElement>
+
+                                    {/* End Date */}
+                                    <FieldWithElement name={"Validity End Date"} nameCols={3} elementCols={9}
+                                                      elementClassName={"pl-4"}>
+                                        <DatePicker
+                                            showTimeSelect
+                                            timeFormat="HH:mm:ss"
+                                            timeIntervals={60}
+                                            minDate ={new Date()}
+                                            onChange={this.setEndDate}
+                                            timeCaption="time"
+                                            dateFormat="MMMM d, yyyy h:mm aa"
+                                            selected={this.state.queryParams.valid_end}
                                         />
                                     </FieldWithElement>
 
                                     {/* Mode */}
-                                    <FieldWithElement name={"Mode*"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                                    <FieldWithElement name={"Mode*"} nameCols={3} elementCols={9}
+                                                      elementClassName={"pl-4"}>
                                         <select
                                             id="mode"
                                             name="mode"
@@ -334,7 +387,8 @@ class AddCoupon extends React.Component {
                                     }
 
                                     {/* Total number of times a coupon can be used*/}
-                                    <FieldWithElement name={"How many times it can be used?*"} nameCols={6} elementCols={6} elementClassName={"pl-4"}>
+                                    <FieldWithElement name={"How many times it can be used?*"} nameCols={6}
+                                                      elementCols={6} elementClassName={"pl-4"}>
                                         <input
                                             type="number"
                                             className={"input-text"}
@@ -359,11 +413,12 @@ class AddCoupon extends React.Component {
                                                 type="checkbox"
                                                 onChange={this.handleQueryParamChange}
                                                 value={this.state.queryParams.allProducts}
-                                                name="allProducts" />
+                                                name="allProducts"/>
                                         </div>
                                     </div>
                                     {/* Min price */}
-                                    <FieldWithElement name={"Minimum Product Price?"} nameCols={6} elementCols={6} elementClassName={"pl-4"}>
+                                    <FieldWithElement name={"Minimum Product Price?"} nameCols={6} elementCols={6}
+                                                      elementClassName={"pl-4"}>
                                         <input
                                             type="number"
                                             className={"input-text"}
@@ -386,11 +441,12 @@ class AddCoupon extends React.Component {
                                                 type="checkbox"
                                                 onChange={this.handleQueryParamChange}
                                                 value={this.state.queryParams.allExtensions}
-                                                name="allExtensions" />
+                                                name="allExtensions"/>
                                         </div>
                                     </div>
                                     {/* Min price */}
-                                    <FieldWithElement name={"Minimum Extension Price?"} nameCols={6} elementCols={6} elementClassName={"pl-4"}>
+                                    <FieldWithElement name={"Minimum Extension Price?"} nameCols={6} elementCols={6}
+                                                      elementClassName={"pl-4"}>
                                         <input
                                             type="number"
                                             className={"input-text"}
@@ -413,7 +469,7 @@ class AddCoupon extends React.Component {
                                                 type="checkbox"
                                                 onChange={this.handleQueryParamChange}
                                                 value={this.state.queryParams.active}
-                                                name="active" />
+                                                name="active"/>
                                         </div>
 
                                     </div>
