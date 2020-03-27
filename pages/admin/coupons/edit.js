@@ -54,7 +54,6 @@ class EditCoupon extends React.Component {
      *  // Changes the value of this.state.queryParams.email
      */
     handleQueryParamChange = (event) => {
-        console.log('handleQueryParamChange')
         let newQueryParams = this.state.queryParams;
         newQueryParams[event.target.name] = event.target.value;
         this.setState((prevState) => ({
@@ -81,7 +80,6 @@ class EditCoupon extends React.Component {
     }
 
     setStartDate = (date) => {
-        console.log('setStartDate')
         const queryParams = this.state.queryParams
         queryParams.valid_start = date
         this.setState(() => ({
