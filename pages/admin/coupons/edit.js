@@ -4,8 +4,9 @@ import FieldWithElement from '../../../components/FieldWithElement';
 import controller from '../../../controllers/coupons';
 import "../../../styles/pages/admin/coupons.scss";
 import ProductsChooser from '../../../components/ProductsChooser';
-import Swal from 'sweetalert2';
-
+import DatePicker from "react-datepicker";
+import * as moment from 'moment'
+import "react-datepicker/dist/react-datepicker.css";
 class EditCoupon extends React.Component {
     constructor(props) {
         super(props);
@@ -76,6 +77,19 @@ class EditCoupon extends React.Component {
         return true;
     }
 
+    setStartDate = (date) => {
+        const queryParams = {...this.state.queryParams}
+        queryParams.valid_start = date
+        this.setState({queryParams})
+    }
+
+    setEndDate = (date) => {
+        const queryParams = {...this.state.queryParams}
+        queryParams.valid_end = date
+        this.setState({queryParams})
+    }
+
+
     /**
      * Method to handle saving of coupon
      */
@@ -94,7 +108,7 @@ class EditCoupon extends React.Component {
                     ...this.state.queryParams,
                     max_discount: this.state.couponInfo.max_discount ? this.state.couponInfo.max_discount : null
                 }
-                controller.handleEditCoupon(couponPayload).then((response) => {
+                controller.handleEditCoupon(couponPayload, this.state.queryParams.id).then((response) => {
                     if (response) {
                         this.setState({
                             loading: false,
@@ -217,7 +231,7 @@ class EditCoupon extends React.Component {
                                 (<FieldWithElement name={"Amount"} nameCols={3} elementCols={9}
                                                    elementClassName={"pl-4"}>
                                     <input
-                                        type="text"
+                                        type="number"
                                         className="input-text"
                                         placeholder="Enter Amount"
                                         name="amount"
@@ -234,7 +248,7 @@ class EditCoupon extends React.Component {
                                     <FieldWithElement name={"Percentage"} nameCols={3} elementCols={9}
                                                       elementClassName={"pl-4"}>
                                         <input
-                                            type="text"
+                                            type="number"
                                             className="input-text"
                                             placeholder="Enter Amount"
                                             name="percentage"
@@ -248,7 +262,7 @@ class EditCoupon extends React.Component {
                                             name={"Max discount"}
                                             nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className={"input-text"}
                                                 placeholder="Enter Max Discount Applicable"
                                                 name="max_discount"
@@ -263,7 +277,7 @@ class EditCoupon extends React.Component {
                                 {/* Left */}
                                 <FieldWithElement name={"Left"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                                     <input
-                                        type="text"
+                                        type="number"
                                         className="input-text"
                                         placeholder="Enter Left"
                                         name="left"
@@ -281,10 +295,43 @@ class EditCoupon extends React.Component {
                                     <ProductsChooser
                                         products={this.state.couponInfo.products}
                                         productsCallback={this.handleProductsChange}
+                                        productType = {'course'}
                                         organizationId={this.state.couponInfo.organization_id}
                                         multiple={true}
                                     />
                                 </FieldWithElement>
+
+
+                                {/* Start Date */}
+                                <FieldWithElement name={"Validity Start Date"} nameCols={3} elementCols={9}
+                                                  elementClassName={"pl-4"}>
+                                    <DatePicker
+                                        showTimeSelect
+                                        timeFormat="HH:mm:ss"
+                                        timeIntervals={60}
+                                        timeCaption="time"
+                                        minDate ={new Date()}
+                                        onChange={this.setStartDate}
+                                        dateFormat="MMMM d, yyyy h:mm aa"
+                                        selected={new Date(this.state.queryParams.valid_start)}
+                                    />
+                                </FieldWithElement>
+
+                                {/* End Date */}
+                                <FieldWithElement name={"Validity End Date"} nameCols={3} elementCols={9}
+                                                  elementClassName={"pl-4"}>
+                                    <DatePicker
+                                        showTimeSelect
+                                        timeFormat="HH:mm:ss"
+                                        timeIntervals={60}
+                                        minDate ={new Date()}
+                                        onChange={this.setEndDate}
+                                        timeCaption="time"
+                                        dateFormat="MMMM d, yyyy h:mm aa"
+                                        selected={new Date(this.state.queryParams.valid_end)}
+                                    />
+                                </FieldWithElement>
+
 
                                 {/* Active */}
                                 <FieldWithElement name={"Active"} nameCols={3} elementCols={9}

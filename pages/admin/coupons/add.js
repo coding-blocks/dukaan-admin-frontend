@@ -12,7 +12,6 @@ import ProductsChooser from "../../../components/ProductsChooser";
 import CheckLogin from "../../../components/CheckLogin";
 import ErrorHandler from "../../../helpers/ErrorHandler";
 import DatePicker from "react-datepicker";
-import * as moment from 'moment'
 import "react-datepicker/dist/react-datepicker.css";
 
 class AddCoupon extends React.Component {
