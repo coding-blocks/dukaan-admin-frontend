@@ -52,9 +52,10 @@ class EditCoupon extends React.Component {
      *  // Changes the value of this.state.queryParams.email
      */
     handleQueryParamChange = (event) => {
+        console.log('handleQueryParamChange')
         let newQueryParams = this.state.queryParams;
         newQueryParams[event.target.name] = event.target.value;
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             queryParams: newQueryParams
         }));
     };
@@ -78,15 +79,20 @@ class EditCoupon extends React.Component {
     }
 
     setStartDate = (date) => {
-        const queryParams = {...this.state.queryParams}
+        console.log('setStartDate')
+        const queryParams = this.state.queryParams
         queryParams.valid_start = date
-        this.setState({queryParams})
+        this.setState(() => ({
+            queryParams: queryParams
+        }))
     }
 
     setEndDate = (date) => {
-        const queryParams = {...this.state.queryParams}
+        const queryParams = this.state.queryParams
         queryParams.valid_end = date
-        this.setState({queryParams})
+        this.setState(() => ({
+            queryParams: queryParams
+        }))
     }
 
 
@@ -313,7 +319,7 @@ class EditCoupon extends React.Component {
                                         minDate ={new Date()}
                                         onChange={this.setStartDate}
                                         dateFormat="MMMM d, yyyy h:mm aa"
-                                        selected={new Date(this.state.queryParams.valid_start)}
+                                        selected={new Date(this.state.couponInfo.valid_start)}
                                     />
                                 </FieldWithElement>
 
@@ -328,7 +334,7 @@ class EditCoupon extends React.Component {
                                         onChange={this.setEndDate}
                                         timeCaption="time"
                                         dateFormat="MMMM d, yyyy h:mm aa"
-                                        selected={new Date(this.state.queryParams.valid_end)}
+                                        selected={new Date(this.state.couponInfo.valid_end)}
                                     />
                                 </FieldWithElement>
 
