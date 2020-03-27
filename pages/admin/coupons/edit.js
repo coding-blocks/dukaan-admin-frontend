@@ -319,7 +319,7 @@ class EditCoupon extends React.Component {
                                         minDate ={new Date()}
                                         onChange={this.setStartDate}
                                         dateFormat="MMMM d, yyyy h:mm aa"
-                                        selected={new Date(this.state.couponInfo.valid_start)}
+                                        selected={this.state.couponInfo.valid_start ? new DatePicker(this.state.couponInfo.valid_start): ''}
                                     />
                                 </FieldWithElement>
 
@@ -334,7 +334,7 @@ class EditCoupon extends React.Component {
                                         onChange={this.setEndDate}
                                         timeCaption="time"
                                         dateFormat="MMMM d, yyyy h:mm aa"
-                                        selected={new Date(this.state.couponInfo.valid_end)}
+                                        selected={this.state.couponInfo.valid_end ? new DatePicker(this.state.couponInfo.valid_end): ''}
                                     />
                                 </FieldWithElement>
 
