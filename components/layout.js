@@ -137,9 +137,7 @@ class Layout extends React.Component {
                     height={48}
                     align={"absmiddle"}
                   />
-                  <Link href="https://account.codingblocks.com">
-                    <a className="active name">Hi, {this.state.name}</a>
-                  </Link>
+                  <a href={config.oneauth.domain} className="active name">Hi, {this.state.name}</a>
                 </li>
                 {this.state.loggedIn && (
                   <li className="nav-items pointer">
