@@ -2,6 +2,13 @@ const withSass = require('@zeit/next-sass')
 const withCss = require('@zeit/next-css')
 const webpack = require('webpack')
 const {parsed: localEnv} = require('dotenv').config();
+const withSourceMaps = require('@zeit/next-source-maps');
+
+module.exports = withSourceMaps({
+    webpack(config, _options) {
+        return config;
+    }
+});
 
 module.exports = withCss(
     withSass({
