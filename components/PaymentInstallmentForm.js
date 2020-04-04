@@ -10,6 +10,7 @@ import ErrorHandler from '../helpers/ErrorHandler';
 import ChequeFields from "./partialComponents/ChequePaymentFields";
 import NeftFields from "./partialComponents/NeftPaymentFields";
 import SwipeFields from "./partialComponents/SwipePaymentFields";
+import Link from "next/link";
 
 
 function PaymentInstallmentForm(props) {
@@ -18,16 +19,16 @@ function PaymentInstallmentForm(props) {
         paymentMode: "cash",
         quantity: "1",
         oneauthId: props.oneauthId,
-        cartId: props.cart_id,
+        cartId: props.cartId,
         partialPayment: true
     });
 
     const [centers, setCenters] = useState([]);
 
-    const [id, setId] = useState([]);
+    const [userId, setUserId] = useState([]);
 
     useEffect(() => {
-        setId(props.id);
+        setUserId(props.userId);
     });
 
     useEffect(() => {
@@ -49,10 +50,10 @@ function PaymentInstallmentForm(props) {
             paymentMode: "cash",
             quantity: "1",
             oneauthId: props.oneauthId,
-            cartId: props.cart_id,
+            cartId: props.cartId,
             partialPayment: true
         });
-    }, [props.cart_id, props.oneauthId]);
+    }, [props.cartId, props.oneauthId]);
 
     /**
      * Custom Validations for the continue payment form
@@ -108,7 +109,7 @@ function PaymentInstallmentForm(props) {
                         confirmButtonText: "Okay"
                     });
 
-                    Router.push(`/admin/orders?id=${id}`);
+                    Router.push(`/admin/orders?id=${userId}`);
                 })
                 .catch(error => {
                     Swal.fire({
@@ -240,12 +241,20 @@ function PaymentInstallmentForm(props) {
 
                     <div className={"d-flex justify-content-center"}>
                         <button
-                            id="search"
                             className={"button-solid ml-4 mb-2 mt-4 pl-5 pr-5"}
                             onClick={handleSubmit}
                         >
                             Record Payment
                         </button>
+
+
+                        <Link href={`/admin/orders?id=${props.userId}`}>
+                            <button
+                                className={"button-solid ml-4 mb-2 mt-4 pl-5 pr-5"}>
+                                Back
+                            </button>
+                        </Link>
+
                     </div>
                 </form>
             </div>
