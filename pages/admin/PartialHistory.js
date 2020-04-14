@@ -6,81 +6,83 @@ import moment from "moment";
 import controller from "../../controllers/purchases";
 import userController from "../../controllers/users";
 import Link from "next/link";
+import ErrorHandler from "../../helpers/ErrorHandler";
 
 class PartialHistory extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            userid: "",
-            cart_id: "",
-            courseInfo: null
+            userId: "",
+            cartId: "",
+            partialPayments: null
         };
     }
 
     componentDidMount() {
-        const userid = window.location.search.split("&")[0].split("=")[1];
-        const cart_id = window.location.search.split("&")[1].split("=")[1];
-        this.setState({
-            userid,
-            cart_id
-        });
-        controller
-            .handleGetPartialPurchases(userid, cart_id)
-            .then(res => {
-                userController.handleGetUserById(userid).then(res2 => {
-                    this.setState({
-                        firstname: res2.data.firstname,
-                        lastname: res2.data.lastname,
-                        courseInfo: res.data.PartialPayments,
-                        mrp: res.data.amount,
-                        name: res.data.product.description,
-                        orderInActive : Boolean(res.data.PartialPayments
-                            .filter((p) => p.status === "partially_refunded" || p.status === "refunded").length)
-                    });
-                });
-            })
-            .catch(err => {
-                this.setState({
-                    courseInfo: null
-                });
+        const search = window.location.search;
+        const params = new URLSearchParams(search);
+        controller.handleGetPartialPurchase(
+            +params.get('userId'),
+            +params.get('cart_id')
+        ).then((payment) => {
+            return Promise.all([
+                payment,
+                userController.handleGetUserById(params.get('userId'))
+            ])
+        }).then(([payment, userDetails]) => {
+            this.setState({
+                userId: params.get('userId'),
+                cartId: params.get('cart_id'),
+                firstname: userDetails.data.firstname,
+                lastname: userDetails.data.lastname,
+                partialPayments: payment.data.PartialPayments,
+                mrp: payment.data.amount,
+                name: payment.data.product.description,
+                orderInActive: Boolean(payment.data.PartialPayments
+                    .filter((p) => p.status === "partially_refunded" || p.status === "refunded").length)
             });
+        }).catch((err) => {
+            ErrorHandler.handle(err)
+        });
     }
 
+    renderPartialPayments = () => {
+        if (this.state.partialPayments !== null) {
+            return this.state.partialPayments.map(PartialPayment => {
+                const date = moment(PartialPayment.created_at).format(
+                    "MMMM Do YYYY,h:mm:ss a"
+                );
+                const mode = PartialPayment.transactions[0].payment_type;
+                const center = mode !== 'razorpay' ? PartialPayment.transactions[0][mode].center.name : 'self';
+                return (
+                    <PartialPayments
+                        key={PartialPayment.id}
+                        date={date}
+                        Productname={this.state.name}
+                        userid={this.state.userid}
+                        fee={PartialPayment.fee / 100}
+                        tax_collected={PartialPayment.tax_collected / 100}
+                        status={PartialPayment.status}
+                        partial_amount={PartialPayment.partial_amount / 100}
+                        partial_invoice_link={PartialPayment.partial_invoice_link}
+                        id={PartialPayment.id}
+                        name={`${PartialPayment.user.firstname}  ${
+                            PartialPayment.user.lastname
+                        }`}
+                        mode={mode}
+                        mrp={this.state.mrp / 100}
+                        center={center}
+                        txn_id={PartialPayment.transactions[0].id}
+                        cart_id={PartialPayment.transactions[0].cart_id}
+                    />
+                );
+            });
+        }
+    };
+
     render() {
-        const partial = () => {
-            if (this.state.courseInfo !== null) {
-                return this.state.courseInfo.map(PartialPayment => {
-                    const date = moment(PartialPayment.created_at).format(
-                        "MMMM Do YYYY,h:mm:ss a"
-                    );
-                    const mode = PartialPayment.transactions[0].payment_type;
-                    const center = mode !== 'razorpay' ? PartialPayment.transactions[0][mode].center.name : 'self';
-                    return (
-                        <PartialPayments
-                            key={PartialPayment.id}
-                            date={date}
-                            Productname={this.state.name}
-                            userid={this.state.userid}
-                            fee={PartialPayment.fee / 100}
-                            tax_collected={PartialPayment.tax_collected / 100}
-                            status={PartialPayment.status}
-                            partial_amount={PartialPayment.partial_amount / 100}
-                            partial_invoice_link={PartialPayment.partial_invoice_link}
-                            id={PartialPayment.id}
-                            name={`${PartialPayment.user.firstname}  ${
-                                PartialPayment.user.lastname
-                            }`}
-                            mode={mode}
-                            mrp={this.state.mrp / 100}
-                            center={center}
-                            txn_id={PartialPayment.transactions[0].id}
-                            cart_id={PartialPayment.transactions[0].cart_id}
-                        />
-                    );
-                });
-            }
-        };
+
         return (
             <div>
                 <Head title="Partial Payments | Dukaan"/>
@@ -89,7 +91,7 @@ class PartialHistory extends React.Component {
                 <div className="container">
                     <div>
                         <div className={"row mt-3 ml-1"}>
-                            <Link href={`/admin/orders?id=${this.state.userid}`}>
+                            <Link href={`/admin/orders?id=${this.state.userId}`}>
                                 <i className="fas fa-arrow-left pointer" style={{"fontSize": "30px"}}/>
                             </Link>
                             <div className={"ml-4"}>
@@ -107,23 +109,23 @@ class PartialHistory extends React.Component {
                             </div>
                         </div>
                         {this.state.orderInActive ? "" : (
-                        <Link
-                            href={{
-                                pathname: `/admin/paymentInstallment`,
-                                query: {
-                                    cartId: this.state.cart_id,
-                                }
-                            }}>
-                            <button
-                                className="button-solid lg"
-                                style={{marginLeft: "10vh"}}>
-                                Make New Installment
-                            </button>
-                        </Link>
+                            <Link
+                                href={{
+                                    pathname: `/admin/paymentInstallment`,
+                                    query: {
+                                        cartId: this.state.cartId,
+                                    }
+                                }}>
+                                <button
+                                    className="button-solid lg"
+                                    style={{marginLeft: "10vh"}}>
+                                    Make New Installment
+                                </button>
+                            </Link>
                         )}
 
                     </div>
-                    <div className="item-heading row">{partial()}</div>
+                    <div className="item-heading row">{this.renderPartialPayments()}</div>
                 </div>
             </div>
         );

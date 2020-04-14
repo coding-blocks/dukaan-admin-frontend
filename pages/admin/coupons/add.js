@@ -274,7 +274,7 @@ class AddCoupon extends React.Component {
                                             multiple={true}
                                             productType={'course'}
                                             key={this.state.queryParams.organization_id}
-                                            organizationId={this.state.queryParams.organization_id}
+                                            organization_id={this.state.queryParams.organization_id}
                                         />
                                     </FieldWithElement>
 
@@ -287,7 +287,7 @@ class AddCoupon extends React.Component {
                                             multiple={true}
                                             productType={'extension'}
                                             key={this.state.queryParams.organization_id}
-                                            organizationId={this.state.queryParams.organization_id}
+                                            organization_id={this.state.queryParams.organization_id}
                                         />
                                     </FieldWithElement>
 

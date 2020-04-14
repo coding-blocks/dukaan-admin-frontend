@@ -12,10 +12,8 @@ import purchasesController from "../controllers/purchases";
 import resourcesController from "../controllers/resources";
 import productsController from "../controllers/products";
 import couponController from "../controllers/coupons";
-import productCategoriesController from "../controllers/productcategories";
 import ChequeFields from "./partialComponents/ChequePaymentFields";
 import SwipeFields from "./partialComponents/SwipePaymentFields";
-import {Formik} from "formik";
 import ErrorHandler from "../helpers/ErrorHandler";
 import NeftFields from "./partialComponents/NeftPaymentFields";
 
@@ -756,7 +754,7 @@ class NewPayment extends React.Component {
                                 value={this.state.userAmountInput}
                                 pattern={"[0-9]{1,10}"}
                             />
-                            <span className="red">
+                            <span className="green">
                   Payment amount cannot be less than ₹
                                 {this.state.selectedProduct
                                     ? formatter.paisaToRs(this.state.selectedProduct.emi_min_base)

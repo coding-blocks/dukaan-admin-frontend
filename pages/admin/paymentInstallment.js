@@ -44,9 +44,9 @@ class PaymentInstallment extends React.Component {
                 <Layout/>
                 <div className={"d-flex justify-content-center mt-5"}>
                     <PaymentInstallmentForm
-                        id={this.state.purchase.cart.buyer_id}
+                        userId={this.state.purchase.cart.buyer_id}
                         oneauthId={this.state.purchase.cart.buyer.oneauth_id}
-                        cart_id={this.state.purchase.cart_id}
+                        cartId={this.state.purchase.cart_id}
                         amountLeft={this.state.purchase.amountLeft / 100}
                         minBase={this.state.purchase.product.emi_min_base}
                     />

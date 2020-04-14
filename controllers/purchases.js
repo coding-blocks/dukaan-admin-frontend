@@ -30,18 +30,8 @@ const handleGetPurchases = userId => {
  * @param {int} cartId - Cart ID
  * @return {Promise<Array>} response – Promise with the response
  */
-const handleGetPartialPurchases = (userId, cartId) => {
-    let response = new Promise((resolve, reject) => {
-        axios
-            .get(`/api/v2/admin/purchases/partial?userId=${userId}&cartId=${cartId}`)
-            .then(res => {
-                resolve(res);
-            })
-            .catch(err => {
-                reject(ErrorHandler.handle(err));
-            });
-    });
-    return response;
+const handleGetPartialPurchase = (userId, cartId) => {
+    return axios.get(`/api/v2/admin/purchases/partial?userId=${userId}&cartId=${cartId}`)
 };
 
 const cancelReceipt = (userId, cartId, txnId, comment) => {
@@ -85,7 +75,7 @@ const getReportUrl = () => {
 
 module.exports = {
     handleGetPurchases,
-    handleGetPartialPurchases,
+    handleGetPartialPurchase,
     handleCreateNewPurchase,
     cancelReceipt,
     getPurchaseByCartId,
