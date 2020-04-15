@@ -306,7 +306,7 @@ class EditCoupon extends React.Component {
                                             products={this.state.couponInfo.products}
                                             productsCallback={this.handleProductsChange}
                                             productType={'course'}
-                                            organizationId={this.state.couponInfo.organization_id}
+                                            organization_id={this.state.couponInfo.organization_id}
                                             multiple={true}
                                         />
                                     </FieldWithElement>
