@@ -247,6 +247,7 @@ class Coupons extends React.Component {
                     productsCallback={this.handleProductsChange}
                     all={true}
                     multiple={false}
+                    productType = {'course'}
                     organization_id={1}
                   />
                 </FieldWithElement>
