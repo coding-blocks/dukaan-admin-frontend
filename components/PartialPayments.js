@@ -53,7 +53,7 @@ class PartialPayments extends React.Component {
             refundDetail: {},
             formValues: {
                 txn_id: props.txn_id,
-                user_id: props.userid,
+                user_id: props.user_id,
                 cart_id: props.cart_id
             },
             status: this.props.status
@@ -109,8 +109,8 @@ class PartialPayments extends React.Component {
             .handleGetRefundFromTxnId(this.props.txn_id)
             .then(res => {
                 this.setState({
-                    firstname: res.data.refunded_created_by.firstname,
-                    lastname: res.data.refunded_created_by.lastname,
+                    firstname: res.data.refund_created_by.firstname,
+                    lastname: res.data.refund_created_by.lastname,
                     refundDetail: res.data,
                     showRefundDetailModal: true
                 });
@@ -172,31 +172,30 @@ class PartialPayments extends React.Component {
                     return 'You need to write the reason for cancelling the receipt.'
                 }
             }
-        })
-            .then((result) => {
-                if (result.value) {
-                    purchasesController.cancelReceipt(this.state.formValues.user_id,
-                        this.state.formValues.cart_id, this.state.formValues.txn_id,
-                        result.value)
-                        .then((res) => {
-                            Swal.fire({
-                                title: "Receipt successfully cancelled",
-                                type: "success",
-                                timer: "3000",
-                                showConfirmButton: true,
-                                confirmButtonText: "Okay"
-                            })
-                                .then(() => window.location.reload())
-                        }).catch(err => {
+        }).then((result) => {
+            if (result.value) {
+                purchasesController.cancelReceipt(this.state.formValues.user_id,
+                    this.state.formValues.cart_id, this.state.formValues.txn_id,
+                    result.value)
+                    .then((res) => {
                         Swal.fire({
-                            title: "Error while cancelling receipt",
-                            text: err,
-                            type: "error",
-                            showConfirmButton: true
-                        });
+                            title: "Receipt successfully cancelled",
+                            type: "success",
+                            timer: "3000",
+                            showConfirmButton: true,
+                            confirmButtonText: "Okay"
+                        })
+                            .then(() => window.location.reload())
+                    }).catch(err => {
+                    Swal.fire({
+                        title: "Error while cancelling receipt",
+                        text: err,
+                        type: "error",
+                        showConfirmButton: true
                     });
-                }
-            })
+                });
+            }
+        })
     }
     handleSubmit = async e => {
         e.preventDefault();
@@ -261,7 +260,7 @@ class PartialPayments extends React.Component {
             <div>
                 <p>Partial Amount Paid: ₹ {this.props.partial_amount}</p>
                 <p>Paid On: {this.props.date}</p>
-                <p>Payment Collected By: {this.props.name}</p>
+                <p>Payment Collected By: {this.props.payment_collected_by}</p>
                 <p>Payment Center: {this.props.center}</p>
 
                 <FieldWithElement
@@ -425,7 +424,7 @@ class PartialPayments extends React.Component {
                     <p>Fee: ₹ {this.props.fee}</p>
                     <p>Tax Paid: ₹ {this.props.tax_collected}</p>
                     <p>Paid On: {this.props.date}</p>
-                    <p>Payment Collected By: {this.props.name}</p>
+                    <p>Payment Collected By: {this.props.payment_collected_by}</p>
                     <p>Payment Center: {this.props.center}</p>
                     <p>Payment Status: {this.props.status}</p>
                     {this.state.status === "paid" ? (

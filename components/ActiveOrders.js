@@ -79,7 +79,7 @@ class ActiveOrders extends React.Component {
                             <button
                                 className="button-solid lg"
                                 style={{marginLeft: "10vh"}}>
-                                Continue
+                                Make Installment
                             </button>
                         </Link>
                     </div>

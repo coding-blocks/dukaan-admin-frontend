@@ -34,11 +34,12 @@ class PartialHistory extends React.Component {
             this.setState({
                 userId: params.get('userId'),
                 cartId: params.get('cart_id'),
+                userDetails: userDetails.data,
                 firstname: userDetails.data.firstname,
                 lastname: userDetails.data.lastname,
                 partialPayments: payment.data.PartialPayments,
                 mrp: payment.data.amount,
-                name: payment.data.product.description,
+                productDescription: payment.data.product.description,
                 isPaymentPartiallyPending: payment.data.status === 'partial'
             });
         }).catch((err) => {
@@ -58,15 +59,15 @@ class PartialHistory extends React.Component {
                     <PartialPayments
                         key={PartialPayment.id}
                         date={date}
-                        Productname={this.state.name}
-                        userid={this.state.userid}
+                        product_name={this.state.productDescription}
+                        user_id={this.state.userId}
                         fee={PartialPayment.fee / 100}
                         tax_collected={PartialPayment.tax_collected / 100}
                         status={PartialPayment.status}
                         partial_amount={PartialPayment.partial_amount / 100}
                         partial_invoice_link={PartialPayment.partial_invoice_link}
                         id={PartialPayment.id}
-                        name={`${PartialPayment.user.firstname}  ${
+                        payment_collected_by={`${PartialPayment.user.firstname}  ${
                             PartialPayment.user.lastname
                         }`}
                         mode={mode}
@@ -97,7 +98,7 @@ class PartialHistory extends React.Component {
                                 <h3 className="mb-2">List of Payment Installments made for this purchase</h3>
                                 <div className="font-sm no-gutters">
                                     <div>
-                                        <strong>{this.state.name}</strong>
+                                        <strong>{this.state.productDescription}</strong>
                                     </div>
                                     <strong>Order Total: </strong> ₹ {this.state.mrp / 100}
                                     <div>
@@ -121,7 +122,7 @@ class PartialHistory extends React.Component {
                                     Make New Installment
                                 </button>
                             </Link>
-                        ): <div/>}
+                        ) : <div/>}
 
                     </div>
                     <div className="item-heading row">{this.renderPartialPayments()}</div>
