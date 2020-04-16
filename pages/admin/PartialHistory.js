@@ -39,8 +39,7 @@ class PartialHistory extends React.Component {
                 partialPayments: payment.data.PartialPayments,
                 mrp: payment.data.amount,
                 name: payment.data.product.description,
-                orderInActive: Boolean(payment.data.PartialPayments
-                    .filter((p) => p.status === "partially_refunded" || p.status === "refunded").length)
+                isPaymentPartiallyPending: payment.data.status === 'partial'
             });
         }).catch((err) => {
             ErrorHandler.handle(err)
@@ -108,7 +107,7 @@ class PartialHistory extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        {this.state.orderInActive ? "" : (
+                        {this.state.isPaymentPartiallyPending ? (
                             <Link
                                 href={{
                                     pathname: `/admin/paymentInstallment`,
@@ -122,7 +121,7 @@ class PartialHistory extends React.Component {
                                     Make New Installment
                                 </button>
                             </Link>
-                        )}
+                        ): <div/>}
 
                     </div>
                     <div className="item-heading row">{this.renderPartialPayments()}</div>
