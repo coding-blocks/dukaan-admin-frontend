@@ -103,6 +103,26 @@ class CompleteOrder extends React.Component {
     }
 
     handleSubmit = async e => {
+
+        if (!this.state.formValues.center_id) {
+            Swal.fire({
+                title: "Error",
+                text: "Choose payment center",
+                type: "info",
+                showConfirmButton: true
+            })
+            return
+        }
+
+        if (!this.state.formValues.amount) {
+            Swal.fire({
+                title: "Error",
+                text: "Amount is required",
+                type: "info",
+                showConfirmButton: true
+            })
+            return
+        }
         e.preventDefault();
         this.setState({
             showModal: false
@@ -119,24 +139,23 @@ class CompleteOrder extends React.Component {
         }).then(result => {
             if (result.value) {
                 const data = this.state.formValues;
-                refundController
-                    .handleCreateRefund(data)
-                    .then(res => {
-                        Swal.fire({
-                            title: "Refund has been completed!",
-                            type: "success",
-                            timer: 3000,
-                            showConfirmButton: true,
-                            confirmButtonText: "Okay"
-                        });
+                refundController.handleCreateRefund(data).then(res => {
+                    Swal.fire({
+                        title: "Refund has been completed!",
+                        type: "success",
+                        timer: 3000,
+                        showConfirmButton: true,
+                        confirmButtonText: "Okay"
+                    }).then(() => {
+                        window.location.reload()
                     })
-                    .catch(error => {
-                        Swal.fire({
-                            title: "Error while making a refund!",
-                            type: "error",
-                            text: error
-                        });
+                }).catch(error => {
+                    Swal.fire({
+                        title: "Error while making a refund!",
+                        type: "error",
+                        text: error
                     });
+                });
             }
         });
     };
@@ -183,9 +202,6 @@ class CompleteOrder extends React.Component {
                                 elementClassName={"pl-4"}
                             >
                                 <select name="payment_type" onChange={this.onChangeValue}>
-                                    <option value="undisclosed" selected>
-                                        Select Payment Mode
-                                    </option>
                                     <option value="credits">CREDITS</option>
                                     <option value="cheque">CHEQUE</option>
                                     {this.razorpayOption()}
@@ -202,7 +218,7 @@ class CompleteOrder extends React.Component {
                                 elementClassName={"pl-4"}
                             >
                                 <select name="center_id" onChange={this.onChangeValue}>
-                                    <option value="undisclosed" selected>
+                                    <option value="undisclosed" selected required>
                                         Select Payment Center
                                     </option>
                                     {this.state.centers.map(center => {
@@ -226,6 +242,7 @@ class CompleteOrder extends React.Component {
 
                             <FieldWithElement nameCols={3} elementCols={9} name={"Amount"}>
                                 <input
+                                    required
                                     type="text"
                                     className={"input-text"}
                                     placeholder="Enter amount"
@@ -319,7 +336,7 @@ class CompleteOrder extends React.Component {
                                             <div className="font-sm grey">
                                                 Payment
                                                 Center: {
-                                                this.props.transaction[this.props.payment_type] ?  this.props.transaction[this.props.payment_type]['center']['name'] : ''
+                                                this.props.transaction[this.props.payment_type] ? this.props.transaction[this.props.payment_type]['center']['name'] : ''
                                             }
                                             </div>
                                         </div>
