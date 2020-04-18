@@ -61,6 +61,27 @@ function PaymentInstallmentForm(props) {
      *  if the form passed validation
      */
     const customValidations = () => {
+
+        if (!formValues.paymentCenterId) {
+            Swal.fire({
+                title: "Error",
+                text: "Enter payment center",
+                type: "info",
+                showConfirmButton: true
+            })
+            return false
+        }
+
+        if (!formValues.partialAmount) {
+            Swal.fire({
+                title: "Error",
+                text: "Enter payment amount",
+                type: "info",
+                showConfirmButton: true
+            })
+            return false
+        }
+
         if (!document.getElementById("continue_payment_form").checkValidity()) {
             document.getElementById("continue_payment_form").reportValidity();
             return false;

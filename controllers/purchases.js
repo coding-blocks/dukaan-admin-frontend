@@ -36,17 +36,7 @@ const handleGetPartialPurchase = (userId, cartId) => {
 
 const cancelReceipt = (userId, cartId, txnId, comment) => {
     const formBody = {userId: userId, cartId: cartId, transactionId: txnId, comment: comment}
-    let response = new Promise((resolve, reject) => {
-        axios
-            .post(`/api/v2/admin/purchases/cancel`, formBody)
-            .then(res => {
-                resolve(res);
-            })
-            .catch(err => {
-                reject(ErrorHandler.handle(err));
-            });
-    });
-    return response;
+    return axios.post(`/api/v2/admin/purchases/cancel`, formBody)
 };
 /**
  * Add a new purchase
