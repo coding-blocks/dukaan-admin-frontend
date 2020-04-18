@@ -162,6 +162,34 @@ class PartialPayment extends React.Component {
         })
     }
     handleSubmit = async e => {
+
+        if (!this.state.formValues.payment_type) {
+            Swal.fire({
+                title: "Error",
+                text: "Choose payment type",
+                type: "info",
+                showConfirmButton: true
+            })
+            return
+        }
+        if (!this.state.formValues.center_id) {
+            Swal.fire({
+                title: "Error",
+                text: "Choose payment center",
+                type: "info",
+                showConfirmButton: true
+            })
+            return
+        }
+        if (!this.state.formValues.amount) {
+            Swal.fire({
+                title: "Error",
+                text: "Amount is required",
+                type: "info",
+                showConfirmButton: true
+            })
+            return
+        }
         e.preventDefault();
 
         Swal.fire({
@@ -277,7 +305,7 @@ class PartialPayment extends React.Component {
 
                 <FieldWithElement nameCols={3} elementCols={9} name={"Amount"}>
                     <input
-                        type="text"
+                        type="number"
                         className={"input-text"}
                         placeholder="Enter Amount"
                         name={"amount"}
