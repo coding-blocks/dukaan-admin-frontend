@@ -7,6 +7,7 @@ import CheckLogin from "../../../components/CheckLogin";
 import * as controller from '../../../controllers/v2/couponsV2'
 import ErrorHandler from "../../../helpers/ErrorHandler";
 import "../../../styles/pages/admin/coupons2.scss";
+import Swal from 'sweetalert2';
 
 
 class AddCoupons extends React.Component {

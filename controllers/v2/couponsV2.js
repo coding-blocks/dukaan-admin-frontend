@@ -1,27 +1,12 @@
 import {axios} from "../../DukaanAPI";
-import ErrorHandler from "../../helpers/ErrorHandler";
 import organizationController from '../organizations';
 
 const fetchAllCouponCategories = () => {
-	let response = new Promise((resolve, reject) => {
-	    axios.get(`/api/v2/admin/couponsv2/categories`).then((response) => {
-	        resolve(response)
-	      }).catch((error) => {
-	      reject(ErrorHandler.handle(error));
-	      })
-	    })
-  	return response
+	return axios.get(`/api/v2/admin/couponsv2/categories`)
 }
 
 const fetchOrganizations = () => {
-	let response = new Promise((resolve, reject) => {
-	    organizationController.getAllOrganizations().then((response) => {
-	        resolve(response)
-	    }).catch((error) => {
-	      reject(ErrorHandler.handle(error));
-	    })
-	})
-	return response
+	return organizationController.getAllOrganizations()
 }
 
 const fetchAddCouponData = () => {
@@ -41,25 +26,11 @@ const generateRandomCouponCode = () => {
 }
 
 const fetchSubCategories = (data) => {
-	let response = new Promise((resolve, reject) => {
-   		axios.get(`/api/v2/admin/couponsv2/subCategories`, {params: data}).then((response) => {
-   			resolve(response)
-   		}).catch((error) => {
-	      reject(ErrorHandler.handle(error));
-   		})
-   	})
-    return response
+	return axios.get(`/api/v2/admin/couponsv2/subCategories`, {params: data})
 }
 
 const fetchSubCategoryRules = (data) => {
-	let response = new Promise((resolve, reject) => {
-   		axios.get(`/api/v2/admin/couponsv2/subCategory/rules`, {params: data}).then((response) => {
-   			resolve(response)
-   		}).catch((error) => {
-	      reject(ErrorHandler.handle(error));
-   		})
-   	})
-    return response
+	return axios.get(`/api/v2/admin/couponsv2/subCategory/rules`, {params: data})
 }
 
 
