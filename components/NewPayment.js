@@ -38,19 +38,21 @@ class NewPayment extends React.Component {
 
 
             selectedProduct: null,
+            productMrp: 0,
             amountToPay: 0,
+            discount: 0,
+            tax: 0,
+            creditsApplied: 0,
             selectedUser: props.selectedUser,
             selected_center: "",
             coupon: "",
             paymentMode: "cash",
             useCredits: false,
             useCoupon: false,
-            totalAppliedCredits: 0,
             userAmountInput: "",
 
             formValues: {
                 comments: "",
-                coupon: "",
                 paymentMode: "cash",
                 quantity: "1",
                 stateId: props.primaryAddress.stateId,
@@ -77,7 +79,7 @@ class NewPayment extends React.Component {
                 let formValues = {...this.state.formValues}
                 formValues.paymentCenterId =
                     userInfo.data.center_id ? userInfo.data.center_id : centers[0].id,
-                this.setState({formValues})
+                    this.setState({formValues})
             }
         }).catch(error => {
             ErrorHandler.handle(error);
@@ -112,6 +114,9 @@ class NewPayment extends React.Component {
                     this.calculateAmountToPay().then((response) => {
                         this.setState({
                             amountToPay: formatter.paisaToRs(response.data.amount),
+                            discount: formatter.paisaToRs(response.data.discount),
+                            tax: formatter.paisaToRs(response.data.tax),
+                            creditsApplied: formatter.paisaToRs(response.data.creditsApplied)
                         })
                         this.setCouponAppliedUI()
                         this.showCreditClubbingInvalid()
@@ -123,6 +128,9 @@ class NewPayment extends React.Component {
                     this.calculateAmountToPay().then((response) => {
                         this.setState({
                             amountToPay: formatter.paisaToRs(response.data.amount),
+                            discount: formatter.paisaToRs(response.data.discount),
+                            tax: formatter.paisaToRs(response.data.tax),
+                            creditsApplied: formatter.paisaToRs(response.data.creditsApplied)
                         })
                         this.setCouponAppliedUI()
                     })
@@ -154,6 +162,9 @@ class NewPayment extends React.Component {
                 this.calculateAmountToPay().then((response) => {
                     this.setState({
                         amountToPay: formatter.paisaToRs(response.data.amount),
+                        discount: formatter.paisaToRs(response.data.discount),
+                        tax: formatter.paisaToRs(response.data.tax),
+                        creditsApplied: formatter.paisaToRs(response.data.creditsApplied)
                     })
                 })
                 this.removeCouponAppliedUI()
@@ -172,7 +183,10 @@ class NewPayment extends React.Component {
                 this.calculateAmountToPay().then((res) => {
                     this.setState({
                         amountToPay: formatter.paisaToRs(res.data.amount),
-                        totalAppliedCredits: res.data.creditsApplied
+                        creditsApplied: formatter.paisaToRs(res.data.creditsApplied),
+                        discount: formatter.paisaToRs(res.data.discount),
+                        tax: formatter.paisaToRs(res.data.tax),
+
                     })
                 })
             });
@@ -199,7 +213,10 @@ class NewPayment extends React.Component {
                 })
                 this.calculateAmountToPay().then((res) => {
                     this.setState({
-                        amountToPay: formatter.paisaToRs(res.data.amount)
+                        amountToPay: formatter.paisaToRs(res.data.amount),
+                        creditsApplied: formatter.paisaToRs(res.data.creditsApplied),
+                        discount: formatter.paisaToRs(res.data.discount),
+                        tax: formatter.paisaToRs(res.data.tax),
                     }, () => {
                         this.removeCreditsAppliedUI()
                         this.removeCouponAppliedUI()
@@ -266,7 +283,7 @@ class NewPayment extends React.Component {
             selected_center: e.target.value,
         });
         productsController.handleGetProducts({
-                center_id : e.target.value,
+                center_id: e.target.value,
                 organization_id: 1,
                 listed: true
             }, {
@@ -281,15 +298,23 @@ class NewPayment extends React.Component {
                 }, () => {
                     this.calculateAmountToPay().then((res) => {
                         this.setState({
-                            amountToPay: formatter.paisaToRs(res.data.amount)
+                            amountToPay: formatter.paisaToRs(res.data.amount),
+                            discount: formatter.paisaToRs(res.data.discount),
+                            productMrp: this.state.selectedProduct.mrp,
+                            creditsApplied: formatter.paisaToRs(res.data.creditsApplied),
+                            tax: formatter.paisaToRs(res.data.tax)
                         })
                     })
                 });
             } else {
                 this.setState({
                     products: [],
+                    productMrp: 0,
                     selectedProduct: {},
-                    amountToPay: 0
+                    amountToPay: 0,
+                    tax: 0,
+                    discount: 0,
+                    creditsApplied: 0
                 }, () => {
                 });
             }
@@ -306,6 +331,10 @@ class NewPayment extends React.Component {
             this.calculateAmountToPay().then((res) => {
                 this.setState({
                     amountToPay: formatter.paisaToRs(res.data.amount),
+                    productMrp: this.state.selectedProduct.mrp,
+                    discount: formatter.paisaToRs(res.data.discount),
+                    tax: formatter.paisaToRs(res.data.tax),
+                    creditsApplied: formatter.paisaToRs(res.data.creditsApplied),
                 })
             })
             this.removeCouponAppliedUI();
@@ -428,7 +457,7 @@ class NewPayment extends React.Component {
         }).then((result) => {
             if (result.value) {
                 const purchasePayload = {
-                    coupon: this.state.coupon,
+                    coupon: this.state.useCoupon ? this.state.coupon : "",
                     useCredits: this.state.useCredits,
                     partialAmount: this.state.userAmountInput,
                     partialPayment: true,
@@ -454,7 +483,7 @@ class NewPayment extends React.Component {
         }).then(result => {
             if (result.value) {
                 const purchasePayload = {
-                    coupon: this.state.coupon,
+                    coupon: this.state.useCoupon ? this.state.coupon : "",
                     useCredits: this.state.useCredits,
                     productId: this.state.selectedProduct.id,
                     ...this.state.formValues
@@ -681,7 +710,7 @@ class NewPayment extends React.Component {
                                 <div className={"row align-items-center"} style={{display: 'none'}}
                                      ref={this.creditsRemoveRef}>
                                     <div>
-                                        <p className={"green"}>{`₹ ${this.state.totalAppliedCredits / 100} Credits Applied`}</p>
+                                        <p className={"green"}>{`₹ ${this.state.creditsApplied} Credits Applied`}</p>
                                     </div>
 
                                     <div>
@@ -713,8 +742,39 @@ class NewPayment extends React.Component {
                         <FieldWithElement
                             className="red"
                             nameCols={3}
-                            elementCols={4}
-                            name={"Total Amount (Rs.) = (Price - Discount - Credits) + Tax :"}>
+                            elementCols={1}
+                            name={"Product MRP"}>
+                            <Price amount={this.state.productMrp}/>
+                        </FieldWithElement>
+
+                        <FieldWithElement
+                            className="red"
+                            nameCols={3}
+                            elementCols={1}
+                            name={"Discount (-)"}>
+                            <Price amount={this.state.discount}/>
+                        </FieldWithElement>
+
+                        <FieldWithElement
+                            className="red"
+                            nameCols={3}
+                            elementCols={1}
+                            name={"Credits (-)"}>
+                            <Price amount={this.state.creditsApplied}/>
+                        </FieldWithElement>
+
+                        <FieldWithElement
+                            className="red"
+                            nameCols={3}
+                            elementCols={1}
+                            name={"Taxes (+)"}>
+                            <Price amount={this.state.tax}/>
+                        </FieldWithElement>
+                        <FieldWithElement
+                            className="red"
+                            nameCols={3}
+                            elementCols={1}
+                            name={"Total"}>
                             <Price amount={this.state.amountToPay}/>
                         </FieldWithElement>
 
