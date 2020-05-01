@@ -267,7 +267,7 @@ class AddCoupon extends React.Component {
                                     </FieldWithElement>
 
                                     {/* Products */}
-                                    <FieldWithElement name={"Course Products"} nameCols={3} elementCols={9}
+                                    <FieldWithElement name={"Course/Premium/Lite Products"} nameCols={3} elementCols={9}
                                                       elementClassName={"pl-4"}>
                                         <ProductsChooser
                                             productsCallback={this.handleProductsChange}
@@ -278,32 +278,9 @@ class AddCoupon extends React.Component {
                                         />
                                     </FieldWithElement>
 
-                                    {/* Products */}
-                                    <FieldWithElement name={"Premium Products"} nameCols={3} elementCols={9}
-                                                      elementClassName={"pl-4"}>
-                                        <ProductsChooser
-                                            productsCallback={this.handleProductsChange}
-                                            multiple={true}
-                                            productType={'PREMIUM'}
-                                            key={this.state.queryParams.organization_id}
-                                            organization_id={this.state.queryParams.organization_id}
-                                        />
-                                    </FieldWithElement>
-
-                                    {/* Products */}
-                                    <FieldWithElement name={"Lite Products"} nameCols={3} elementCols={9}
-                                                      elementClassName={"pl-4"}>
-                                        <ProductsChooser
-                                            productsCallback={this.handleProductsChange}
-                                            multiple={true}
-                                            productType={'LITE'}
-                                            key={this.state.queryParams.organization_id}
-                        e                    organization_id={this.state.queryParams.organization_id}
-                                        />
-                                    </FieldWithElement>
 
                                     {/* Extensions */}
-                                    <FieldWithElement name={"Extensions"} nameCols={3} elementCols={9}
+                                    <FieldWithElement name={"Extension Products"} nameCols={3} elementCols={9}
                                                       elementClassName={"pl-4"}>
                                         <ProductsChooser
                                             productsCallback={this.handleExtensionsChange}
