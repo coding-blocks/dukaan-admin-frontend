@@ -8,6 +8,7 @@ import * as controller from '../../../controllers/v2/couponsV2'
 import ErrorHandler from "../../../helpers/ErrorHandler";
 import "../../../styles/pages/admin/coupons2.scss";
 import Swal from 'sweetalert2';
+import ProductInfo from "../../../components/ProductInfo";
 
 
 class AddCoupons extends React.Component {
@@ -53,8 +54,9 @@ class AddCoupons extends React.Component {
 
     handleCategoryChange = (event) => {
         this.fillSubCategories({category: event.target.value})
+        // console.log('Here is the catagory function',event.target.value);
         return event.target.value
-    }
+    };
 
     fillSubCategoryRules = (data) => {
         controller.fetchSubCategoryRules(data).then((subCategoryRules) => {
@@ -67,7 +69,8 @@ class AddCoupons extends React.Component {
     }
 
     handleSubCategoryChange = (event, category) => {
-        this.fillSubCategoryRules({id: 1, category: category})
+        this.fillSubCategoryRules({id: 1, category: category});
+        console.log('here is the subcatagory',event.target.value);
         return event.target.value
     }
 
@@ -87,7 +90,7 @@ class AddCoupons extends React.Component {
                                        handleSubCategoryChange={this.handleSubCategoryChange}/>
                     </div>
                     <div className={"col-md-6 pull-right"}>
-
+                        <ProductInfo/>
                     </div>
                 </div>
                 </CheckLogin>
