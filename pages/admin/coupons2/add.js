@@ -19,7 +19,24 @@ class AddCoupons extends React.Component {
             organizations: [],
             categories: [],
             subCategories: [],
-            subCategoryRules: []
+            subCategoryRules: [],
+            productDetails:[
+                {
+                    type:'product',
+                    productList:['ISJV2342','ISJV2342','ISJV2342','ISJV2342','ISJV2342','ISJV2342','ISJV2342'],
+                    applicaleRule:false
+                },
+                {
+                    type:'extension',
+                    productList:['ISJV234E','ISJV234E','ISJV234E','ISJV234E','ISJV234E','ISJV234E'],
+                    applicaleRule:true
+                },
+                {
+                    type:'book',
+                    productList:['ISJV234B','ISJV234B','ISJV234B'],
+                    applicaleRule:true
+                }
+            ]
         }
     }
 
@@ -90,7 +107,7 @@ class AddCoupons extends React.Component {
                                        handleSubCategoryChange={this.handleSubCategoryChange}/>
                     </div>
                     <div className={"col-md-6 pull-right"}>
-                        <ProductInfo/>
+                        <ProductInfo productDetail={this.state.productDetails} />
                     </div>
                 </div>
                 </CheckLogin>

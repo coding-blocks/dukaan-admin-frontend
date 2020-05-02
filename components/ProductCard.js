@@ -1,18 +1,21 @@
 import React from 'react';
-import PillsList from "./PillsList";
+import ChipList from "./ChipList";
 import Status from './Status';
 
-function ProductCard(props){
+function ProductCard({detail}){
+
+    const title = detail.type;
+
     return(
         <div>
             <div className="row no-gutters justify-content-between align-items-center px-md-5 px-4">
-                <h4 className="bold flex-1">Applicable {props.title}</h4>
+                <h5 className="bold flex-1">Applicable {title}</h5>
                 <a href="#">
-                    <h5>+ Add {props.title}</h5>
+                    <h6>+ Add {title}</h6>
                 </a>
             </div>
-            <Status title={props.title} />
-            <PillsList/>
+            <Status title={title} tollTip = {detail.applicaleRule} />
+            <ChipList productList = {detail.productList} />
         </div>
     )
 }
