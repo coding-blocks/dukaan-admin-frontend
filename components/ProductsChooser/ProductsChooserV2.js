@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import SearchInput from "./SearchInput";
-import productsController from '../../controllers/products'
 import {getProductTypeById} from '../../controllers/productTypes'
 import ErrorHandler from "../../helpers/ErrorHandler";
 
@@ -11,7 +10,9 @@ class ProductsChooserV2 extends React.Component {
     constructor() {
         super();
         this.state = {
-            productType: null
+            productType: null,
+            productSearchResults: null,
+            selectedProducts: null
         }
     }
 
@@ -27,19 +28,15 @@ class ProductsChooserV2 extends React.Component {
     }
 
 
-    onSearchInputChange = (event) => {
-        productsController.searchProducts({
-            organization_id: this.props.organizationId,
-            product_type_id: this.props.productTypeId,
-            name: event.target.value
-        }).then((results) => {
-            console.log(results)
-        }).catch((err) => {
-            console.log(err)
+    onSearchResult = (searchResults) => {
+        this.setState({
+            productsSearchResults: searchResults
         })
     }
 
+
     render() {
+        //TODO Handle network failure at componentDidMount
         if (!this.state.productType) {
             return (<div>Loading ...</div>)
         }
@@ -48,13 +45,16 @@ class ProductsChooserV2 extends React.Component {
                 <div className={"d-flex mt-1 pt-3 pb-1"}>
                     <div className={"col mb-5"}>
                         <h2>Add {this.state.productType.name} Products</h2>
-                        <SearchInput onChange={this.onSearchInputChange}/>
+                        <SearchInput
+                            organizationId={this.props.organizationId}
+                            productTypeId={this.props.productTypeId}
+                            onSearchResult={this.onSearchResult}
+                        />
                     </div>
                 </div>
             </div>
         );
     }
-
 
 }
 
