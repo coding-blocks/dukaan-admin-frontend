@@ -4,11 +4,18 @@ import PropTypes from 'prop-types';
 
 function ToolTip({title}) {
     return (
-        <div className="bg-grey my-4 py-4 px-md-5 px-4">
-            <div className="orange tool-tip"><InfoOutlinedIcon fontSize='large' className="mr-3"></InfoOutlinedIcon>
-                <h5 className="tool-tip-title">
-                    This coupon is applicable on all the {title}
-                </h5>
+        <div className="bg-grey my-4 py-2 px-md-5 px-2">
+            <div className="orange">
+                <div className={"row"}>
+                    <div className={"mt-2"}>
+                        <InfoOutlinedIcon fontSize='large' className="mr-3"/>
+                    </div>
+                    <div>
+                        <p>
+                            This coupon is applicable on all the {title}
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     )
