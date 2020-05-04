@@ -53,7 +53,6 @@ class NewPayment extends React.Component {
 
             formValues: {
                 comments: "",
-                coupon: "",
                 paymentMode: "cash",
                 quantity: "1",
                 stateId: props.primaryAddress.stateId,
@@ -458,7 +457,7 @@ class NewPayment extends React.Component {
         }).then((result) => {
             if (result.value) {
                 const purchasePayload = {
-                    coupon: this.state.coupon,
+                    coupon: this.state.useCoupon ? this.state.coupon : "",
                     useCredits: this.state.useCredits,
                     partialAmount: this.state.userAmountInput,
                     partialPayment: true,
@@ -484,7 +483,7 @@ class NewPayment extends React.Component {
         }).then(result => {
             if (result.value) {
                 const purchasePayload = {
-                    coupon: this.state.coupon,
+                    coupon: this.state.useCoupon ? this.state.coupon : "",
                     useCredits: this.state.useCredits,
                     productId: this.state.selectedProduct.id,
                     ...this.state.formValues

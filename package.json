@@ -27,8 +27,6 @@
     "frontend"
   ],
   "dependencies": {
-    "@material-ui/core": "^4.9.12",
-    "@material-ui/icons": "^4.9.1",
     "@sentry/browser": "^5.6.3",
     "@syncfusion/ej2-react-dropdowns": "^17.2.39",
     "@syncfusion/ej2-react-grids": "^17.2.39",

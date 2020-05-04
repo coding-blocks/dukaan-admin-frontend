@@ -267,7 +267,7 @@ class AddCoupon extends React.Component {
                                     </FieldWithElement>
 
                                     {/* Products */}
-                                    <FieldWithElement name={"Products"} nameCols={3} elementCols={9}
+                                    <FieldWithElement name={"Course/Premium/Lite Products"} nameCols={3} elementCols={9}
                                                       elementClassName={"pl-4"}>
                                         <ProductsChooser
                                             productsCallback={this.handleProductsChange}
@@ -280,7 +280,7 @@ class AddCoupon extends React.Component {
 
 
                                     {/* Extensions */}
-                                    <FieldWithElement name={"Extensions"} nameCols={3} elementCols={9}
+                                    <FieldWithElement name={"Extension Products"} nameCols={3} elementCols={9}
                                                       elementClassName={"pl-4"}>
                                         <ProductsChooser
                                             productsCallback={this.handleExtensionsChange}
