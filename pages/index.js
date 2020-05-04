@@ -93,6 +93,7 @@ class Home extends React.Component {
 
     render() {
         return (
+
             <ErrorBoundary>
                 <CheckLogin>
                     <div>
