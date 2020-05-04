@@ -22,7 +22,7 @@ function ProductApplicabilityInfo({productDetails}) {
 }
 
 ProductApplicabilityInfo.prototype = {
-    productDetails:PropTypes.object
-};
+    productDetails:PropTypes.array
+}
 
 export default ProductApplicabilityInfo;

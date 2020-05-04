@@ -22,9 +22,9 @@ function ChipList({productList, limit}) {
     )
 }
 
-ChipList.propTypes = {
+ChipList.prototype = {
     limit:PropTypes.number,
     productList:PropTypes.array
-};
+}
 
 export default ChipList;

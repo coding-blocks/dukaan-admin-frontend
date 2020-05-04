@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 function ProductCard({detail}){
 
-    const title = detail.type;
+    const title = detail.type
 
     return(
         <div>
@@ -15,8 +15,7 @@ function ProductCard({detail}){
                     <h6 className="orange" >+ Add {title}</h6>
                 </a>
             </div>
-            { detail.applicaleRule ? <ToolTip title={title}/> : false}
-            { !detail.applicaleRule ? <ChipList productList = {detail.productList} limit = {6} /> : false}
+            { detail.applicaleRule ? <ToolTip title={title}/> : <ChipList productList = {detail.productList} limit = {6} /> }
 
             <a href="#">
                 <div className="font-mds orange mt-3 px-md-6 px-5">View all</div>
@@ -27,6 +26,6 @@ function ProductCard({detail}){
 
 ProductCard.prototype = {
     detail:PropTypes.object
-};
+}
 
 export default ProductCard;

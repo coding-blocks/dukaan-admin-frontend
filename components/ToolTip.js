@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 function ToolTip({title}) {
     return (
         <div className="bg-grey my-4 py-4 px-md-5 px-4">
-            <div className="orange tool-tip"><InfoOutlinedIcon fontSize='large' className="mr-1"></InfoOutlinedIcon>
+            <div className="orange tool-tip"><InfoOutlinedIcon fontSize='large' className="mr-3"></InfoOutlinedIcon>
                 <h5 className="tool-tip-title">
                     This coupon is applicable on all the {title}
                 </h5>
@@ -16,6 +16,6 @@ function ToolTip({title}) {
 
 ToolTip.prototype = {
     title: PropTypes.string
-};
+}
 
 export default ToolTip;
