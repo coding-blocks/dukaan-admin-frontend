@@ -73,7 +73,7 @@ class AddCoupons extends React.Component {
         this.fillSubCategories({category: event.target.value})
         // console.log('Here is the catagory function',event.target.value);
         return event.target.value
-    };
+    }
 
     fillSubCategoryRules = (data) => {
         controller.fetchSubCategoryRules(data).then((subCategoryRules) => {
@@ -86,8 +86,7 @@ class AddCoupons extends React.Component {
     }
 
     handleSubCategoryChange = (event, category) => {
-        this.fillSubCategoryRules({id: 1, category: category});
-        console.log('here is the subcatagory',event.target.value);
+        this.fillSubCategoryRules({id: 1, category: category})
         return event.target.value
     }
 
