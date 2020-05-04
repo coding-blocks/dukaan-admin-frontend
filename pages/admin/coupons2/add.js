@@ -8,7 +8,7 @@ import * as controller from '../../../controllers/v2/couponsV2'
 import ErrorHandler from "../../../helpers/ErrorHandler";
 import "../../../styles/pages/admin/coupons2.scss";
 import Swal from 'sweetalert2';
-import ProductInfo from "../../../components/ProductInfo";
+import ProductApplicabilityInfo from "../../../components/ProductApplicabilityInfo";
 
 
 class AddCoupons extends React.Component {
@@ -107,7 +107,7 @@ class AddCoupons extends React.Component {
                                        handleSubCategoryChange={this.handleSubCategoryChange}/>
                     </div>
                     <div className={"col-md-6 pull-right"}>
-                        <ProductInfo productDetail={this.state.productDetails} />
+                        <ProductApplicabilityInfo productDetails={this.state.productDetails} />
                     </div>
                 </div>
                 </CheckLogin>
