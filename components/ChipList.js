@@ -1,7 +1,7 @@
 import React from 'react';
 import Chip from "@material-ui/core/Chip";
-import PropTypes from "prop-types";
 import Divider from '@material-ui/core/Divider';
+import PropTypes from 'prop-types';
 
 function ChipList({productList, limit}) {
     return (
@@ -22,7 +22,7 @@ function ChipList({productList, limit}) {
     )
 }
 
-ChipList.prototype = {
+ChipList.propTypes = {
     limit:PropTypes.number,
     productList:PropTypes.array
 }

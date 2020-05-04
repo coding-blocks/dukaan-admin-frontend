@@ -21,7 +21,7 @@ function ProductApplicabilityInfo({productDetails}) {
     )
 }
 
-ProductApplicabilityInfo.prototype = {
+ProductApplicabilityInfo.propTypes = {
     productDetails:PropTypes.array
 }
 

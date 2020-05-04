@@ -14,7 +14,7 @@ function ToolTip({title}) {
     )
 }
 
-ToolTip.prototype = {
+ToolTip.propTypes = {
     title: PropTypes.string
 }
 

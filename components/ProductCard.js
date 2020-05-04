@@ -24,7 +24,7 @@ function ProductCard({detail}){
     )
 }
 
-ProductCard.prototype = {
+ProductCard.propTypes = {
     detail:PropTypes.object
 }
 
