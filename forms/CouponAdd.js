@@ -2,12 +2,49 @@ import React from 'react'
 import FieldWithElement from '../components/FieldWithElement';
 import DatePicker from "react-datepicker";
 import {Formik} from 'formik';
-import * as controller from '../controllers/v2/couponsV2'
 import ErrorHandler from "../helpers/ErrorHandler";
+import * as controller from '../controllers/v2/couponsV2'
+import userController from "../controllers/users";
 import Swal from "sweetalert2";
+import AsyncSelect from "react-select/async";
+import * as Yup from 'yup';
 import "react-datepicker/dist/react-datepicker.css";
 
-const	FormikContext = React.createContext({});
+
+const addCouponSchema = Yup.object().shape({
+	authority_doc: Yup.string()
+	    .required('Description is required'),
+	code: Yup.string()
+	    .required('Code is required'),
+	category: Yup.string()
+	    .required('Category is required'),
+	sub_category: Yup.number()
+		.typeError('Sub Category is required')
+	    .required('Sub Category is required'),
+	organization_id: Yup.number()
+	    .required('Organization is required'),
+	mode: Yup.string()
+		.required('Mode is required'),
+	amount: Yup.number().when('mode', {
+			is: (val) => val == "flat",
+			then: Yup.number().required('Discount is required'),
+			otherwise: Yup.number().notRequired()
+		}),
+	percentage: Yup.number().when('mode', {
+			is: (val) => val == "percentage",
+			then: Yup.number().required('Percentage is required'),
+			otherwise: Yup.number().notRequired()
+		}),
+	applicable_all_users: Yup.boolean()
+		.required("Field is required."),
+	user_id: Yup.number().when('applicable_all_users', {
+			is: (val) => val == false,
+			then: Yup.number()
+				.typeError('User is required')
+				.required('User is required'),
+			otherwise: Yup.number().nullable().notRequired()
+		}),
+});
 
 
 class AddCouponForm extends React.Component {
@@ -19,6 +56,66 @@ class AddCouponForm extends React.Component {
 	setRandomCouponCode = (event) => {
         return controller.generateRandomCouponCode()
 	}
+
+	mapResponseToResults = (response) => {
+        return response.map(user => ({
+            value: user.email,
+            label: `Email: ${user.email} Username: ${user.username}`,
+            user_id: `${user.id}`
+        }));
+    };
+
+	loadOptions = (inputValue, callback) => {
+        if (inputValue) {
+            userController.handleGetUserByEmailOrPhone("email", inputValue).then((response) => {
+                callback(this.mapResponseToResults(response.data));
+            }).catch((error) => {
+                ErrorHandler.handle(error)
+                callback([]);
+            })
+        }
+    };
+
+    renameKeys = (keysMap, obj) => Object
+        .keys(obj)
+        .reduce((acc, key) => ({
+            ...acc,
+            ...{[keysMap[key] || key]: obj[key]}
+        }), {});
+
+    submitFormShowingSweetAlert = (formValues) => {
+        Swal.fire({
+            title: "Create new coupon?",
+            html: `Code: ${formValues.code}<br/>Category : ${
+                formValues.category
+            } `,
+            confirmButtonColor: "#f66",
+            confirmButtonText: "Yes!",
+            cancelButtonText: "No!",
+            showCancelButton: true,
+            showConfirmButton: true,
+            showCloseButton: true
+        }).then((result) => {
+        	console.log(formValues)
+            if (result.value) {
+                controller.handleAddCoupon(formValues).then(res => {
+                    Swal.fire({
+                        title: "Coupon added!",
+                        type: "success",
+                        timer: "3000",
+                        showConfirmButton: true,
+                        confirmButtonText: "Okay"
+                    });
+                }).catch(error => {
+                    Swal.fire({
+                        title: "Error while adding coupon!",
+                        type: "error",
+                        text: error
+                    });
+                });
+            }
+        });
+    }
 
     render() {
         return (
@@ -35,44 +132,13 @@ class AddCouponForm extends React.Component {
 			                category: "",
 			                sub_category: null,
 			                active: false,
-			                applicable_all_user: false,
+			                applicable_all_users: true,
 			                max_discount: null,
 			                user_id: null,
-			                valid_start: new Date(),
+			                valid_start: Date.now(),
 			                valid_end: new Date().setMonth(new Date().getMonth() + 1)
                         }}
-                        validate={(values) => {
-                            let errors = {};
-                            if (!values.authority_doc) {
-                                errors.email = 'Description is required';
-                            } 
-                            if (!values.code) {
-                                errors.firstName = 'Code is Required';
-                            }
-                            if (!values.organization_id) {
-                                errors.streetAddress = 'Organization is Required';
-                            }
-                            if (!values.category) {
-                                errors.landmark = 'category is Required';
-                            }
-                            if (!values.sub_category) {
-                                errors.city = 'Sub Category is Required';
-                            }
-                            if (!values.valid_start) {
-                                errors.username = 'Start Date is Required';
-                            }
-                            if (!values.valid_end) {
-                                errors.lastName = 'End Date is required';
-                            }
-                            if (!values.mode) {
-                                errors.lastName = 'Mode is required';
-                            }
-                            if (!values.max_discount) {
-                                errors.lastName = 'Discount is required';
-                            }
-                            
-                            return errors;
-                        }}
+                        validationSchema={addCouponSchema}
                         onSubmit={(values, {setSubmitting}) => {
                             const keysMap = {
                                 authority_doc: 'authority_doc',
@@ -84,7 +150,7 @@ class AddCouponForm extends React.Component {
                                 category: 'category',
                                 sub_category: 'sub_category',
                                 active: 'active',
-                                applicable_all_user: 'applicable_all_user',
+                                applicable_all_users: 'applicable_all_users',
                                 max_discount: 'max_discount',
                                 user_id: 'user_id',
                                 valid_start: 'valid_start',
@@ -101,11 +167,10 @@ class AddCouponForm extends React.Component {
                               handleBlur,
                               handleSubmit,
                               isSubmitting,
-                              setFieldValue,
-                              getFieldValue
+                              setFieldValue
                           }) => (
 
-                          		<form id="addCouponForm" onSubmit={(e) => e.preventDefault()}>
+                          	<form id="add_coupon_form" onSubmit={handleSubmit}>
 			                    <div className={"add-coupon-card"}>
 			                        {/* organization */}
 			                        <FieldWithElement name={"Organization"} nameCols={3} elementCols={9}
@@ -130,7 +195,7 @@ class AddCouponForm extends React.Component {
 			                        {/* Code */}
 			                        <FieldWithElement name={"Code*"} nameCols={3} elementCols={9}
 			                                        elementClassName={"pl-4"}  errorColor={'tomato'}
-                                    				errors={errors.username}>
+                                    				errors={touched.code && errors.code}>
 			                            <input
 			                                type="text"
 			                                id="code"
@@ -138,10 +203,11 @@ class AddCouponForm extends React.Component {
 			                                placeholder="Enter Code"
 			                                name="code"
 			                                value={values.code}
+			                                onBlur={handleBlur}
 			                                onChange={handleChange}
 			                                required
 			                            />
-			                            <span id="random_coupon" className="red pull-right mt-1"
+			                            <span id="random_coupon" className="red pull-right mt-4"
 			                                            onClick={() => setFieldValue("code", this.setRandomCouponCode())}>
 			                            	Generate Random Code
 			                            </span>
@@ -149,7 +215,8 @@ class AddCouponForm extends React.Component {
 
 			                        {/* Authority_code */}
 			                        <FieldWithElement name={"Description*"} nameCols={3} elementCols={9}
-			                                          elementClassName={"pl-4"}>
+			                                          elementClassName={"pl-4"} errors={touched.authority_doc && errors.authority_doc}  
+			                                          errorColor={'tomato'}>
 			                            <textarea
 			                                type="text"
 			                                className="input-textarea"
@@ -157,6 +224,7 @@ class AddCouponForm extends React.Component {
 			                                name="authority_doc"
 			                                rows="4"
 			                                value={values.authority_doc}
+			                                onBlur={handleBlur}
 			                                onChange={handleChange}
 			                                required
 			                            />
@@ -164,10 +232,12 @@ class AddCouponForm extends React.Component {
 
 			                        {/* Categories */}
 			                        <FieldWithElement name={"Category"} nameCols={3} elementCols={9}
-			                                          elementClassName={"pl-4"}>
+			                                          elementClassName={"pl-4"} errorColor={'tomato'}
+                                    				errors={touched.category && errors.category}>
 			                            <select
 			                                id="category"
 			                                name="category"
+			                                onBlur={handleBlur}
 			                                onChange={() => setFieldValue("category", this.props.handleCategoryChange(event))}
 			                                value={values.category}>
 			                                {
@@ -183,12 +253,16 @@ class AddCouponForm extends React.Component {
 
 			                         {/* Sub Categories */}
 			                        <FieldWithElement name={"Sub Category"} nameCols={3} elementCols={9}
-			                                          elementClassName={"pl-4"}>
+			                                          elementClassName={"pl-4"} errorColor={'tomato'}
+                                    				errors={touched.sub_category && errors.sub_category}>
 			                            <select
 			                                id="sub_category"
 			                                name="sub_category"
+			                                onBlur={handleBlur}
 			                                onChange={() => setFieldValue("sub_category", this.props.handleSubCategoryChange(event, values.category))}
 			                            	required>
+				                            
+				                            <option value="" key="">Select </option>
 			                            	{
 			                                    this.props.data.subCategories.map((subcategory) => {
 			                                        return (
@@ -217,7 +291,7 @@ class AddCouponForm extends React.Component {
 
 			                        {/* End Date */}
 			                        <FieldWithElement name={"End Date"} nameCols={3} elementCols={9}
-			                                          elementClassName={"pl-4"}>
+			                                        elementClassName={"pl-4"}>
 			                            <DatePicker
 			                                showTimeSelect
 			                                timeFormat="HH:mm:ss"
@@ -232,12 +306,15 @@ class AddCouponForm extends React.Component {
 
 			                        {/* Mode */}
 			                        <FieldWithElement name={"Mode*"} nameCols={3} elementCols={9}
-			                                          elementClassName={"pl-4"}>
+			                                        elementClassName={"pl-4"} errorColor={'tomato'}
+                                    				errors={touched.mode && errors.mode}>
 			                            <select
 			                                id="mode"
 			                                name="mode"
+    			                            onBlur={handleBlur}
 			                                onChange={handleChange}
 			                                value={values.mode}
+			                                required
 			                                >
 			                                <option value="flat">Flat</option>
 			                                <option value="percentage">Percentage</option>
@@ -248,12 +325,14 @@ class AddCouponForm extends React.Component {
 			                        /* Amount */
 			                        <FieldWithElement
 			                            name={"Discount*"}
-			                            nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+			                            nameCols={3} elementCols={9} elementClassName={"pl-4"} 
+			                            errorColor={'tomato'} errors={touched.amount && errors.amount}>
 			                            <input
 			                                type="number"
 			                                className={"input-text"}
 			                                placeholder="Enter discount value"
 			                                name="amount"
+			                                onBlur={handleBlur}
 			                                onChange={handleChange}
 			                                value={values.amount}
 			                            />
@@ -265,12 +344,14 @@ class AddCouponForm extends React.Component {
 			                        <div>
 			                            <FieldWithElement
 			                                name={"Percentage*"}
-			                                nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+			                                nameCols={3} elementCols={9} elementClassName={"pl-4"}
+			                                errorColor={'tomato'} errors={touched.percentage && errors.percentage}>
 			                                <input
-			                                    type="text"
+			                                    type="number"
 			                                    className={"input-text"}
 			                                    placeholder="Enter Percentage"
 			                                    name="percentage"
+			                                    onBlur={handleBlur}
 			                                    onChange={handleChange}
 			                                    value={values.percentage}
 			                                />
@@ -280,10 +361,11 @@ class AddCouponForm extends React.Component {
 			                                name={"Max discount"}
 			                                nameCols={3} elementCols={9} elementClassName={"pl-4"}>
 			                                <input
-			                                    type="text"
+			                                    type="number"
 			                                    className={"input-text"}
 			                                    placeholder="Enter Max Discount Applicable"
 			                                    name="max_discount"
+			                                    onBlur={handleBlur}
 			                                    onChange={handleChange}
 			                                    value={values.max_discount}
 			                                />
@@ -314,27 +396,42 @@ class AddCouponForm extends React.Component {
 				                        </div>
 				                        <div className={"col-md-6"}>
 				                            <input
-				                            	name="applicable_all_user"
+				                            	name="applicable_all_users"
 				                                className={"ml-4 mt-3"}
 				                                type="checkbox"
-			                                	onChange={() => setFieldValue("applicable_all_user", !values.applicable_all_user )}
-				                                values={values.applicable_all_user}
-				                                name="applicable_all_user"/>
+				                                checked={values.applicable_all_users}
+			                                	onChange={() => setFieldValue("applicable_all_users", !values.applicable_all_users )}
+				                                values={values.applicable_all_users}/>
 				                        </div>
 				                    </div>
 
-				                   {/* Users field if appicable_all_users- false */}
 
+			                        {!values.applicable_all_users &&
+			                        /* User */
+			                        <FieldWithElement name={"User*"} nameCols={3} elementCols={9}
+			                                          elementClassName={"pl-4"} errorColor={'tomato'} 
+			                                          errors={touched.user_id && errors.user_id}>
+			                            <AsyncSelect
+			                            	name="user_id"
+	                                        cacheOptions
+	                                        defaultOptions
+	                                        placeholder="Start typing email to get suggestions"
+	                                        loadOptions={this.loadOptions}
+	                                        onBlur={handleBlur}
+	                                        onChange={(opt) => setFieldValue("user_id", parseInt(opt.user_id))}
+	                                        />
+			                        </FieldWithElement>        
+			                        }
 
 				                   <div className={"d-flex justify-content-center"}>
                                         <button
                                             id="submit_btn"
+                                            type="submit"
                                             className={"button-solid ml-4 mb-2 mt-4 pl-5 pr-5"}
                                         >
-                                            Add
+                                            Add Coupon
                                         </button>
                                     </div>
-
 			                    </div>
 			                </form>
                         )}

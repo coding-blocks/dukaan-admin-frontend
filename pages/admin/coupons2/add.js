@@ -7,7 +7,7 @@ import CheckLogin from "../../../components/CheckLogin";
 import * as controller from '../../../controllers/v2/couponsV2'
 import ErrorHandler from "../../../helpers/ErrorHandler";
 import "../../../styles/pages/admin/coupons2.scss";
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2'; 
 import ProductApplicabilityInfo from "../../../components/ProductApplicabilityInfo";
 
 
@@ -19,24 +19,7 @@ class AddCoupons extends React.Component {
             organizations: [],
             categories: [],
             subCategories: [],
-            subCategoryRules: [],
-            productDetails:[
-                {
-                    type:'product',
-                    productList:['ISJV2342','ISJV2342','ISJV2342','ISJV2342','ISJV2342','ISJV2342','ISJV2342'],
-                    applicaleRule:false
-                },
-                {
-                    type:'extension',
-                    productList:['ISJV234E','ISJV234E','ISJV234E','ISJV234E','ISJV234E','ISJV234E'],
-                    applicaleRule:true
-                },
-                {
-                    type:'book',
-                    productList:['ISJV234B','ISJV234B','ISJV234B'],
-                    applicaleRule:true
-                }
-            ]
+            subCategoryRules: []
         }
     }
 
@@ -71,23 +54,22 @@ class AddCoupons extends React.Component {
 
     handleCategoryChange = (event) => {
         this.fillSubCategories({category: event.target.value})
-        // console.log('Here is the catagory function',event.target.value);
         return event.target.value
     }
 
     fillSubCategoryRules = (data) => {
         controller.fetchSubCategoryRules(data).then((subCategoryRules) => {
-           this.setState({
-               subCategoryRules: subCategoryRules.data
-           })
+            this.setState({
+                subCategoryRules: subCategoryRules.data,
+            })
         }).catch((error) => {
             ErrorHandler.handle(error)
         })
     }
 
     handleSubCategoryChange = (event, category) => {
-        this.fillSubCategoryRules({id: 1, category: category})
-        return event.target.value
+        this.fillSubCategoryRules({id: event.target.value, category: category})
+        return parseInt(event.target.value)
     }
 
     render() {
@@ -102,11 +84,16 @@ class AddCoupons extends React.Component {
                         <h2 className={"title"}>Add Coupon</h2>
                     </div>
                     <div className={"col-md-6 pull-left"}>
+                        {/* Coupon Form */}
                         <AddCouponForm data={this.state} handleCategoryChange={this.handleCategoryChange}
                                        handleSubCategoryChange={this.handleSubCategoryChange}/>
+                        }
                     </div>
                     <div className={"col-md-6 pull-right"}>
-                        <ProductApplicabilityInfo productDetails={this.state.productDetails} />
+                        {/* Product applicability pane */}
+                        {this.state.subCategoryRules.length > 0 &&
+                            <ProductApplicabilityInfo productDetails={this.state.subCategoryRules} />
+                        }
                     </div>
                 </div>
                 </CheckLogin>
