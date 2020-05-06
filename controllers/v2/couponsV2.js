@@ -1,6 +1,9 @@
+
 import {axios} from "../../DukaanAPI";
 import organizationController from '../organizations';
 import ErrorHandler from '../../helpers/ErrorHandler';
+
+const querystring = require('querystring');
 
 const fetchAllCouponCategories = () => {
 	return axios.get(`/api/v2/admin/couponsv2/categories`)
@@ -35,7 +38,6 @@ const fetchSubCategoryRules = (data) => {
 }
 
 const handleAddCoupon = (data) => {
-    console.log(data)
     const response = new Promise((resolve, reject) => {
         axios.post(`/api/v2/admin/couponsv2`, data).then(r => {
             resolve(r);
@@ -47,11 +49,43 @@ const handleAddCoupon = (data) => {
     return response;
 }
 
+const handleGetCoupons = (queryParams, pageInfo) => {
+    let query = querystring.stringify(queryParams);
+    let response = new Promise((resolve, reject) => {
+        axios.get(`/api/v2/admin/couponsv2?page=` + pageInfo.page + `&limit=` + pageInfo.limit + `&` + query).then((r) => {
+            let data = {
+                results: r.data.coupons,
+                products: r.data.products,
+                pagesInfo: r.data.pagesInfo
+            }
+            resolve(data);
+        }).catch((error) => {
+            reject(ErrorHandler.handle(error));
+        });
+    });
+
+    return response;
+
+};
+
+const handleDeleteCoupon = (id) => {
+    let response = new Promise((resolve, reject) => {
+        axios.delete(`/api/v2/admin/couponsv2/` + id).then((response) => {
+            resolve(response);
+        }).catch((error) => {
+            reject(ErrorHandler.handle(error));
+        });
+    });
+    return response;
+}
+
 
 export {
     fetchAddCouponData,
     generateRandomCouponCode,
     fetchSubCategories,
     fetchSubCategoryRules,
-    handleAddCoupon
+    handleAddCoupon,
+    handleGetCoupons,
+    handleDeleteCoupon
 }
