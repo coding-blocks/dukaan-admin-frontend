@@ -20,6 +20,32 @@ const fetchAddCouponData = () => {
     ])
 }
 
+const fetchSubCategoryId = (data) => {
+    return axios.get(`/api/v2/admin/couponsv2/subCategoryId`, {params: data})
+}
+
+const fetchCouponUser = (data) => {
+    return axios.get(`/api/v2/admin/couponsv2/couponUser`, {params: data})
+}
+
+
+const fetchEditCouponData = (data) => {
+    return fetchSubCategoryId({category: data.category, coupon_id: data.id})
+    .then((response) => {
+        const categoryRulesData = {
+            category: data.category,
+            id: response.data
+        }
+        return Promise.all([
+                response,
+                fetchSubCategoryRules(categoryRulesData),
+                fetchSubCategories({category: data.category}),
+                fetchOrganizations(),
+                fetchCouponUser({id: data.id})
+            ])
+    })
+}
+
 const generateRandomCouponCode = () => {
 	let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -45,7 +71,6 @@ const handleAddCoupon = (data) => {
             reject(ErrorHandler.handle(error));
         });
     });
-
     return response;
 }
 
@@ -68,6 +93,18 @@ const handleGetCoupons = (queryParams, pageInfo) => {
 
 };
 
+
+const handleEditCoupon = (queryParams, couponId) => {
+    let response = new Promise((resolve, reject) => {
+        axios.patch(`/api/v2/admin/couponsV2/` + couponId, queryParams).then((r) => {
+            resolve(r);
+        }).catch((error) => {
+            reject(ErrorHandler.handle(error));
+        });
+    });
+    return response;
+};
+
 const handleDeleteCoupon = (id) => {
     let response = new Promise((resolve, reject) => {
         axios.delete(`/api/v2/admin/couponsv2/` + id).then((response) => {
@@ -87,5 +124,7 @@ export {
     fetchSubCategoryRules,
     handleAddCoupon,
     handleGetCoupons,
-    handleDeleteCoupon
+    handleEditCoupon,
+    handleDeleteCoupon,
+    fetchEditCouponData
 }

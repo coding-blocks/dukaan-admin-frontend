@@ -1,12 +1,13 @@
 import React from 'react';
 import Head from "../../components/head";
 import Layout from "../../components/layout";
+import Router from 'next/router';
 import "../../styles/pages/admin/coupons.scss";
 import FieldWithElement from '../../components/FieldWithElement';
 import Loader from '../../components/loader';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import EditCoupon from "./coupons/edit";
+import EditCoupon from "./coupons2/edit";
 import Pagination from "../../components/Pagination";
 import CheckLogin from "../../components/CheckLogin";
 import ProductsChooser from '../../components/ProductsChooser';
@@ -135,6 +136,7 @@ class Coupons extends React.Component {
       }
     });
   }
+
 
   /**
    * Callback function for ProductsChooser component that updates
@@ -382,6 +384,11 @@ class Coupons extends React.Component {
                             <td>
                               <button
                                 className={"button-solid btn btn-default"}
+                                onClick={() => Router.push({
+                                    pathname: '/admin/coupons2/edit',
+                                    query: coupon,
+                                  }, `/admin/coupons2/edit/${coupon.id}`)
+                                }
                                 >
                                 Edit
                                 </button>
