@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import SearchInput from "./SearchInput";
 import {getProductTypeById} from '../../controllers/productTypes'
 import ErrorHandler from "../../helpers/ErrorHandler";
-
+import Button from "@material-ui/core/Button";
 
 
 class ProductsChooserV2 extends React.Component {
@@ -12,7 +12,6 @@ class ProductsChooserV2 extends React.Component {
         super();
         this.state = {
             productType: null,
-            productSearchResults: [],
             selectedProducts: []
         }
     }
@@ -29,9 +28,9 @@ class ProductsChooserV2 extends React.Component {
     }
 
 
-    onSearchResult = (searchResults) => {
+    onProductsSelected = (selectedProducts) => {
         this.setState({
-            productSearchResults: searchResults
+            selectedProducts
         })
     }
 
@@ -44,12 +43,21 @@ class ProductsChooserV2 extends React.Component {
         return (
             <div>
                 <div className={"d-flex mt-1 pt-3 pb-1"}>
-                    <div className={"col mb-5"}>
-                        <h2>Search {this.state.productType.name} Products</h2>
-                        <SearchInput
-                            organizationId={this.props.organizationId}
-                            productTypeId={this.props.productTypeId}/>
+                    <div>
+                        <div className={"col mb-5"}>
+                            <h2>Search {this.state.productType.name} Products</h2>
+                            <SearchInput
+                                organizationId={this.props.organizationId}
+                                onProductsSelected={this.onProductsSelected}
+                                productTypeId={this.props.productTypeId}/>
+                        </div>
+                        <div>
+                            <Button variant="outlined" color="primary">
+                                Save Changes
+                            </Button>
+                        </div>
                     </div>
+
                 </div>
             </div>
         );

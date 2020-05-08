@@ -11,7 +11,6 @@ class SearchInput extends React.Component {
         super(props);
         this.state = {
             productSearchResults: [],
-            searchText: '',
             selectedProducts: []
         }
 
@@ -40,7 +39,7 @@ class SearchInput extends React.Component {
         this.setState({
             selectedProducts: values
         }, () => {
-            this.props.onSearchResult(this.state.productSearchResults)
+            this.props.onProductsSelected(this.state.selectedProducts)
         });
     }
 
@@ -51,9 +50,7 @@ class SearchInput extends React.Component {
                     multiple
                     autoComplete={true}
                     fullWidth={false}
-                    size={'medium'}
                     onChange={this.handleChange}
-                    value={this.state.selectedProduct}
                     getOptionLabel={(option) => option.name}
                     id="tags-standard"
                     options={this.state.productSearchResults}
