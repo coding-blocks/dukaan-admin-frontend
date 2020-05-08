@@ -1,11 +1,19 @@
 import React from 'react'
 import productsController from "../../controllers/products";
 import ErrorHandler from "../../helpers/ErrorHandler";
+import {Autocomplete} from '@material-ui/lab';
+import TextField from '@material-ui/core/TextField';
+import PropTypes from "prop-types";
 
 class SearchInput extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            productSearchResults: [],
+            searchText: '',
+            selectedProducts: []
+        }
 
     }
 
@@ -19,7 +27,7 @@ class SearchInput extends React.Component {
                 this.setState({
                     productSearchResults: response.data
                 })
-                this.props.onSearchResult(this.state.productSearchResults)
+
             }).catch((err) => {
                 ErrorHandler.handle(err)
             })
@@ -28,19 +36,46 @@ class SearchInput extends React.Component {
     }
 
 
+    handleChange = (event, values) => {
+        this.setState({
+            selectedProducts: values
+        }, () => {
+            this.props.onSearchResult(this.state.productSearchResults)
+        });
+    }
+
     render() {
         return (
             <div>
-                <div>
-                    <input type={'text'} onChange={this.onSearchInputChange}/>
-                </div>
+                <Autocomplete
+                    multiple
+                    autoComplete={true}
+                    fullWidth={false}
+                    size={'medium'}
+                    onChange={this.handleChange}
+                    value={this.state.selectedProduct}
+                    getOptionLabel={(option) => option.name}
+                    id="tags-standard"
+                    options={this.state.productSearchResults}
+
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            onChange={this.onSearchInputChange}
+                            variant="standard"
+                            label="Products"
+                            placeholder="Start typing to see suggestions..."
+                        />
+                    )}
+                />
             </div>
         )
     }
 }
 
 SearchInput.propType = {
-
+    productTypeId: PropTypes.number,
+    organizationId: PropTypes.number
 }
 
 export default SearchInput;

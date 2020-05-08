@@ -5,14 +5,15 @@ import {getProductTypeById} from '../../controllers/productTypes'
 import ErrorHandler from "../../helpers/ErrorHandler";
 
 
+
 class ProductsChooserV2 extends React.Component {
 
     constructor() {
         super();
         this.state = {
             productType: null,
-            productSearchResults: null,
-            selectedProducts: null
+            productSearchResults: [],
+            selectedProducts: []
         }
     }
 
@@ -30,7 +31,7 @@ class ProductsChooserV2 extends React.Component {
 
     onSearchResult = (searchResults) => {
         this.setState({
-            productsSearchResults: searchResults
+            productSearchResults: searchResults
         })
     }
 
@@ -44,12 +45,10 @@ class ProductsChooserV2 extends React.Component {
             <div>
                 <div className={"d-flex mt-1 pt-3 pb-1"}>
                     <div className={"col mb-5"}>
-                        <h2>Add {this.state.productType.name} Products</h2>
+                        <h2>Search {this.state.productType.name} Products</h2>
                         <SearchInput
                             organizationId={this.props.organizationId}
-                            productTypeId={this.props.productTypeId}
-                            onSearchResult={this.onSearchResult}
-                        />
+                            productTypeId={this.props.productTypeId}/>
                     </div>
                 </div>
             </div>
