@@ -361,7 +361,7 @@ class AddCoupon extends React.Component {
                                             name={"Percentage*"}
                                             nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className={"input-text"}
                                                 placeholder="Enter Percentage"
                                                 name="percentage"
@@ -375,7 +375,7 @@ class AddCoupon extends React.Component {
                                             name={"Max discount"}
                                             nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className={"input-text"}
                                                 placeholder="Enter Max Discount Applicable"
                                                 name="max_discount"

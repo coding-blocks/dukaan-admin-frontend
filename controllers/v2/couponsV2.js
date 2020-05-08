@@ -81,6 +81,7 @@ const handleDeleteCoupon = (id) => {
 
 
 export {
+    fetchAllCouponCategories,
     fetchAddCouponData,
     generateRandomCouponCode,
     fetchSubCategories,
