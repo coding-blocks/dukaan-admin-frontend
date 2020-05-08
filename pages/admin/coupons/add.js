@@ -33,6 +33,8 @@ class AddCoupon extends React.Component {
                 active: false,
                 extensions: [],
                 max_discount: null,
+                percentage:'',
+                amount:'',
                 valid_start: new Date(),
                 valid_end: new Date().setMonth(new Date().getMonth() + 1)
             },
@@ -63,8 +65,10 @@ class AddCoupon extends React.Component {
             }
 
             newQueryParams[event.target.name] = event.target.value;
+
         } else if (event.target.name === "max_discount" || event.target.name === "amount") {
             if (Number(event.target.value) > 100000 || Number(event.target.value) < 0) {
+                console.log(event.target.value)
                 return;
             }
 
