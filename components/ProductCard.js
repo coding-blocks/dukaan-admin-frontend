@@ -7,7 +7,11 @@ import PropTypes from 'prop-types';
 
 function ProductCard({detail}){
 
-    const title = detail.type
+    const title = detail.name
+    let productList
+    if (!detail.applicable_all){
+        productList = detail.products.map((p) => p.name)
+    }
 
     return(
         <div>
@@ -20,7 +24,7 @@ function ProductCard({detail}){
                         Add {title}
                     </Button>
             </div>
-            { detail.applicableAll ? <ToolTip title={title}/> : <ChipList productList = {detail.productList} limit = {6} /> }
+            { detail.applicable_all ? <ToolTip title={title}/> : <ChipList productList = {productList} limit = {6} /> }
 
                 <div className="font-mds orange mt-3 px-md-6 px-5">
                     <Button

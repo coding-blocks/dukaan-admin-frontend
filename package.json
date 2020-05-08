@@ -54,7 +54,8 @@
     "react-select": "^3.0.4",
     "react-spinners": "^0.6.1",
     "sweetalert2": "^8.13.0",
-    "sweetalert2-react-content": "^1.1.0"
+    "sweetalert2-react-content": "^1.1.0",
+    "yup": "^0.28.5"
   },
   "bugs": {
     "url": "https://github.com/coding-blocks/dukaan-admin-frontend"

@@ -1,8 +1,9 @@
 import React from 'react'
 import {withRouter} from 'next/router';
+import Loader from '../../../components/loader';
 import Head from '../../../components/head';
 import Layout from "../../../components/layout";
-import AddCouponForm from "../../../forms/CouponAdd";
+import EditCouponForm from "../../../forms/CouponEdit";
 import CheckLogin from "../../../components/CheckLogin";
 import * as controller from '../../../controllers/v2/couponsV2'
 import ErrorHandler from "../../../helpers/ErrorHandler";
@@ -11,26 +12,36 @@ import Swal from 'sweetalert2';
 import ProductApplicabilityInfo from "../../../components/ProductApplicabilityInfo";
 
 
-class AddCoupons extends React.Component {
+class EditCoupon extends React.Component { 
 
     constructor(props) {
         super(props);
         this.state = {
-            organizations: [],
-            categories: [],
+            loaded: false,
+            organizations:[],
+        	sub_category: null,
             subCategories: [],
-            subCategoryRules: []
+            subCategoryRules: [],
+            user_id: null,
+            coupon_user:null,
+            coupon: this.props.router.query
         }
     }
 
-  
    componentDidMount() {
-        // This should only contain single function that
-        // should fetch every data required for this component.
-        controller.fetchAddCouponData().then(([categories,organizations]) => {
+        controller.fetchEditCouponData(this.props.router.query).then(([subCategoryId, subCategoryRules, subCategories, organizations, couponUser]) => {
             this.setState({
-                organizations: organizations.data,
-                categories: categories.data
+            	sub_category: subCategoryId.data,
+            	subCategoryRules: subCategoryRules.data,
+            	subCategories: subCategories.data,
+            	organizations: organizations.data,
+            	user_id: couponUser.data.id,
+            	coupon_user: {
+            			value: couponUser.data.user.email,
+			            label: `Email: ${couponUser.data.user.email} Username: ${couponUser.data.user.username}`,
+			            user_id: `${couponUser.data.user.id}`
+            	},
+            	loaded: true
             })
         }).catch(error => {
             ErrorHandler.handle(error)
@@ -40,21 +51,6 @@ class AddCoupons extends React.Component {
                 text: error
             });
         });
-    }
-
-    fillSubCategories = (data) => {
-        controller.fetchSubCategories(data).then((subCategories) => {
-           this.setState({
-               subCategories: subCategories.data
-           })
-        }).catch((error) => {
-            ErrorHandler.handle(error)
-        })
-    };
-
-    handleCategoryChange = (event) => {
-        this.fillSubCategories({category: event.target.value})
-        return event.target.value
     }
 
     fillSubCategoryRules = (data) => {
@@ -75,19 +71,19 @@ class AddCoupons extends React.Component {
     render() {
         return (
             <div>
-                <Head title="Coding Blocks | Dukaan | Add Coupon"/>
+                <Head title="Coding Blocks | Dukaan | Edit Coupon"/>
                 <Layout/>
                 <CheckLogin>
                 <div className={"col-md-12"}>
                     {/* Title */}
                     <div className={"d-flex justify-content-center mt-1 pt-3 pb-1"}>
-                        <h2 className={"title"}>Add Coupon</h2>
+                        <h2 className={"title"}>Edit Coupon</h2>
                     </div>
-                    <div className={"col-md-6 pull-left"}>
-                        {/* Coupon Form */}
-                        <AddCouponForm data={this.state} handleCategoryChange={this.handleCategoryChange}
-                                       handleSubCategoryChange={this.handleSubCategoryChange}/>
-                    </div>
+	                {this.state.loaded &&
+	                    <div className={"col-md-6 pull-left"}>
+	                   	    <EditCouponForm data={this.state} handleSubCategoryChange={this.handleSubCategoryChange}/>
+	                    </div>
+	                }
                     <div className={"col-md-6 pull-right"}>
                         {/* Product applicability pane */}
                         {this.state.subCategoryRules.length > 0 &&
@@ -101,4 +97,4 @@ class AddCoupons extends React.Component {
     }
 }
 
-export default withRouter(AddCoupons)
+export default withRouter(EditCoupon)
