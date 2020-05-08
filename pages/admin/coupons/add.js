@@ -57,9 +57,22 @@ class AddCoupon extends React.Component {
             || event.target.name === 'allExtensions'
             || event.target.name === 'active') {
             newQueryParams[event.target.name] = event.target.checked;
+        } else if (event.target.name === "percentage") {
+            if (Number(event.target.value) > 100 || Number(event.target.value) < 0) {
+                return;
+            }
+
+            newQueryParams[event.target.name] = event.target.value;
+        } else if (event.target.name === "max_discount" || event.target.name === "amount") {
+            if (Number(event.target.value) > 100000 || Number(event.target.value) < 0) {
+                return;
+            }
+
+            newQueryParams[event.target.name] = event.target.value;
         } else {
             newQueryParams[event.target.name] = event.target.value;
         }
+
         if (event.target.name === 'organization_id') {
             newQueryParams['organization_id'] = Number(event.target.value);
         }
@@ -300,7 +313,7 @@ class AddCoupon extends React.Component {
                                             timeFormat="HH:mm:ss"
                                             timeIntervals={60}
                                             timeCaption="time"
-                                            minDate ={new Date()}
+                                            minDate={new Date()}
                                             onChange={this.setStartDate}
                                             dateFormat="MMMM d, yyyy h:mm aa"
                                             selected={this.state.queryParams.valid_start}
@@ -314,7 +327,7 @@ class AddCoupon extends React.Component {
                                             showTimeSelect
                                             timeFormat="HH:mm:ss"
                                             timeIntervals={60}
-                                            minDate ={new Date()}
+                                            minDate={new Date()}
                                             onChange={this.setEndDate}
                                             timeCaption="time"
                                             dateFormat="MMMM d, yyyy h:mm aa"
@@ -347,6 +360,7 @@ class AddCoupon extends React.Component {
                                             className={"input-text"}
                                             placeholder="Enter discount value"
                                             name="amount"
+                                            value={this.state.queryParams.amount}
                                             onChange={this.handleQueryParamChange}
                                             title="Discount can only have 3 to 10 digit numbers"
                                             required
@@ -361,8 +375,10 @@ class AddCoupon extends React.Component {
                                             name={"Percentage*"}
                                             nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className={"input-text"}
+                                                max={100}
+                                                min={0}
                                                 placeholder="Enter Percentage"
                                                 name="percentage"
                                                 value={this.state.queryParams.percentage}
@@ -375,7 +391,9 @@ class AddCoupon extends React.Component {
                                             name={"Max discount"}
                                             nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                                             <input
-                                                type="text"
+                                                type="number"
+                                                max={100}
+                                                min={0}
                                                 className={"input-text"}
                                                 placeholder="Enter Max Discount Applicable"
                                                 name="max_discount"

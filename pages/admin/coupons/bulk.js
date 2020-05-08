@@ -51,9 +51,25 @@ class AddBulkCoupons extends React.Component {
             || event.target.name === 'allExtensions'
             || event.target.name === 'active') {
             newQueryParams[event.target.name] = event.target.checked;
-        } else {
+        }
+        else if(event.target.name==="percentage"){
+            if(Number(event.target.value) > 100 || Number(event.target.value) < 0){
+                return;
+            }
+
             newQueryParams[event.target.name] = event.target.value;
         }
+        else if(event.target.name==="amount"){
+            if(Number(event.target.value) > 100000 || Number(event.target.value) < 0){
+                return;
+            }
+
+            newQueryParams[event.target.name] = event.target.value;
+        }
+        else {
+            newQueryParams[event.target.name] = event.target.value;
+        }
+
         if(event.target.name === 'organization_id'){
           newQueryParams['organization_id'] = Number(event.target.value);
         }
@@ -173,7 +189,7 @@ class AddBulkCoupons extends React.Component {
                         className="input-text"
                         placeholder="Enter Code"
                         name="number_of_coupons"
-                        defaultValue={this.state.queryParams.number_of_coupons}
+                        value={this.state.queryParams.number_of_coupons}
                         onChange={this.handleQueryParamChange}
                         required
                       />
@@ -185,7 +201,7 @@ class AddBulkCoupons extends React.Component {
                         className="input-text"
                         placeholder="Enter Length of code"
                         name="code_length"
-                        defaultValue={this.state.queryParams.code_length}
+                        value={this.state.queryParams.code_length}
                         onChange={this.handleQueryParamChange}
                         required
                       />
@@ -200,7 +216,7 @@ class AddBulkCoupons extends React.Component {
                         className="input-text"
                         placeholder="Enter text to prepend"
                         name="starts_with"
-                        defaultValue={this.state.queryParams.starts_with}
+                        value={this.state.queryParams.starts_with}
                         onChange={this.handleQueryParamChange}
                       />
                     </FieldWithElement>
@@ -211,7 +227,7 @@ class AddBulkCoupons extends React.Component {
                         className="input-text"
                         placeholder="Enter text to append"
                         name="ends_with"
-                        defaultValue={this.state.queryParams.ends_with}
+                        value={this.state.queryParams.ends_with}
                         onChange={this.handleQueryParamChange}
                       />
                     </FieldWithElement>
@@ -223,7 +239,7 @@ class AddBulkCoupons extends React.Component {
                         className="input-text"
                         placeholder="Enter Description"
                         name="authority_doc"
-                        defaultValue={this.state.queryParams.authority_doc}
+                        value={this.state.queryParams.authority_doc}
                         onChange={this.handleQueryParamChange}
                         required
                       />
@@ -258,7 +274,7 @@ class AddBulkCoupons extends React.Component {
                         id="mode"
                         name="mode"
                         onChange={this.handleQueryParamChange}
-                        defaultValue={this.state.queryParams.mode}
+                        value={this.state.queryParams.mode}
                         required
                       >
                         <option value="flat">Flat</option>
@@ -276,6 +292,7 @@ class AddBulkCoupons extends React.Component {
                           className={"input-text"}
                           placeholder="Enter discount value"
                           name="amount"
+                          value={this.state.queryParams.amount}
                           onChange={this.handleQueryParamChange}
                           title="Discount can only have 3 to 10 digit numbers"
                           required
@@ -289,11 +306,13 @@ class AddBulkCoupons extends React.Component {
                         name={"Percentage"}
                         nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                         <input
-                          type="text"
+                          type="number"
                           className={"input-text"}
+                          min={0}
+                          max={100}
                           placeholder="Enter Percentage"
                           name="percentage"
-                          defaultValue={this.state.queryParams.percentage}
+                          value={this.state.queryParams.percentage}
                           onChange={this.handleQueryParamChange}
                           required
                         />
@@ -308,7 +327,7 @@ class AddBulkCoupons extends React.Component {
                         placeholder="Enter Left"
                         name="left"
                         onChange={this.handleQueryParamChange}
-                        defaultValue={this.state.queryParams.left}
+                        value={this.state.queryParams.left}
                         min={1}
                         title="Left can only have numbers"
                         required
@@ -325,7 +344,7 @@ class AddBulkCoupons extends React.Component {
                         className={"ml-4 mt-3"}
                         type="checkbox"
                         onChange={this.handleQueryParamChange}
-                        defaultValue={this.state.queryParams.allProducts}
+                        value={this.state.queryParams.allProducts}
                         name="allProducts" />
                       </div>
                       </div>
@@ -337,7 +356,7 @@ class AddBulkCoupons extends React.Component {
                         placeholder="Min product price"
                         name="minProductPrice"
                         onChange={this.handleQueryParamChange}
-                        defaultValue={this.state.queryParams.minProductPrice}
+                        value={this.state.queryParams.minProductPrice}
                         title="minProductPrice can only have numbers"
                       />
                     </FieldWithElement>
@@ -352,7 +371,7 @@ class AddBulkCoupons extends React.Component {
                         className={"ml-4 mt-3"}
                         type="checkbox"
                         onChange={this.handleQueryParamChange}
-                        defaultValue={this.state.queryParams.allExtensions}
+                        value={this.state.queryParams.allExtensions}
                         name="allExtensions" />
                       </div>
                       </div>
@@ -364,7 +383,7 @@ class AddBulkCoupons extends React.Component {
                         placeholder="Min extension price"
                         name="minExtensionPrice"
                         onChange={this.handleQueryParamChange}
-                        defaultValue={this.state.queryParams.minExtensionPrice}
+                        value={this.state.queryParams.minExtensionPrice}
                         title="minExtensionPrice can only have numbers"
                       />
                     </FieldWithElement>
@@ -379,7 +398,7 @@ class AddBulkCoupons extends React.Component {
                         className={"ml-4 mt-3"}
                         type="checkbox"
                         onChange={this.handleQueryParamChange}
-                        defaultValue={this.state.queryParams.active}
+                        value={this.state.queryParams.active}
                         name="active" />
                       </div>
 
