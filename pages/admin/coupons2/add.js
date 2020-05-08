@@ -24,17 +24,17 @@ class AddCoupons extends React.Component {
                 {
                     type:'product',
                     productList:['ISJV2342','ISJV2342','ISJV2342','ISJV2342','ISJV2342','ISJV2342','ISJV2342'],
-                    applicaleRule:false
+                    applicableAll:false
                 },
                 {
                     type:'extension',
                     productList:['ISJV234E','ISJV234E','ISJV234E','ISJV234E','ISJV234E','ISJV234E'],
-                    applicaleRule:true
+                    applicableAll:true
                 },
                 {
                     type:'book',
                     productList:['ISJV234B','ISJV234B','ISJV234B'],
-                    applicaleRule:true
+                    applicableAll:true
                 }
             ]
         }

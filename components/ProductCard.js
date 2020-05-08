@@ -20,7 +20,7 @@ function ProductCard({detail}){
                         Add {title}
                     </Button>
             </div>
-            { detail.applicaleRule ? <ToolTip title={title}/> : <ChipList productList = {detail.productList} limit = {6} /> }
+            { detail.applicableAll ? <ToolTip title={title}/> : <ChipList productList = {detail.productList} limit = {6} /> }
 
                 <div className="font-mds orange mt-3 px-md-6 px-5">
                     <Button
