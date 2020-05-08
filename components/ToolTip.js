@@ -12,7 +12,7 @@ function ToolTip({title}) {
                     </div>
                     <div>
                         <p>
-                            This coupon is applicable on all the {title}
+                            {title}
                         </p>
                     </div>
                 </div>

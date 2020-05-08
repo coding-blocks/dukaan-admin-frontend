@@ -3,41 +3,46 @@ import ChipList from "./ChipList";
 import ToolTip from './ToolTip';
 import Button from "@material-ui/core/Button"
 import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
 import PropTypes from 'prop-types';
 
-function ProductCard({detail}){
+function ProductCard({detail: productType}) {
 
-    const title = detail.name
-    let productList
-    if (!detail.applicable_all){
-        productList = detail.products.map((p) => p.name)
+    let productList = []
+    if (!productType.applicable_all) {
+        productList = productType.products.map((p) => p.name)
     }
+    const ButtonText = productList.length > 0 ? 'Edit' : 'Add'
 
-    return(
+    return (
         <div>
             <div className="row no-gutters justify-content-between align-items-center px-md-5 px-4 card-title">
-                <h5 className="bold flex-1">Applicable {title}</h5>
+                <h5 className="bold flex-1">Applicable {productType.name}</h5>
+                {!productType.applicable_all ?
                     <Button
                         color="primary"
-                        startIcon={<AddIcon />}
-                    >
-                        Add {title}
+                        startIcon={ButtonText === 'Add' ? <AddIcon/> : <EditIcon/>}>
+                        {`${ButtonText} ${productType.name}`}
                     </Button>
+                    : <div/>
+                }
             </div>
-            { detail.applicable_all ? <ToolTip title={title}/> : <ChipList productList = {productList} limit = {6} /> }
+            {productType.applicable_all ?
+                <ToolTip title={`This coupon is applicable on all ${productType.name} products`}/>
+                : <ChipList productList={productList} limit={6}/>}
 
-                <div className="font-mds orange mt-3 px-md-6 px-5">
-                    <Button
-                        color="primary">
-                        View all {title}
-                    </Button>
-                </div>
+            <div className="font-mds orange mt-3 px-md-6 px-5">
+                <Button
+                    color="primary">
+                    View all {productType.name}
+                </Button>
+            </div>
         </div>
     )
 }
 
 ProductCard.propTypes = {
-    detail:PropTypes.object
+    detail: PropTypes.object
 }
 
 export default ProductCard;
