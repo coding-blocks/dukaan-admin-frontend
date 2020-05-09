@@ -32,7 +32,7 @@ class AddCoupon extends React.Component {
                 category: "special_discount",
                 active: false,
                 extensions: [],
-                max_discount: null,
+                max_discount: '',
                 percentage:'',
                 amount:'',
                 valid_start: new Date(),
@@ -41,7 +41,7 @@ class AddCoupon extends React.Component {
         };
     }
 
-    /**
+    /*
      * Changes the value of the specified key in the queryParams object
      * in state.
      * @param {SyntheticEvent} event – Handles an event from a form
@@ -54,6 +54,7 @@ class AddCoupon extends React.Component {
      *  // Changes the value of this.state.queryParams.email
      */
     handleQueryParamChange = (event) => {
+        console.log('percenage -> ',event.target.name)
         let newQueryParams = this.state.queryParams;
         if (event.target.name === 'allProducts'
             || event.target.name === 'allExtensions'
@@ -63,7 +64,7 @@ class AddCoupon extends React.Component {
             if (Number(event.target.value) > 100 || Number(event.target.value) < 0) {
                 return;
             }
-
+            console.log('If Ran')
             newQueryParams[event.target.name] = event.target.value;
 
         } else if (event.target.name === "max_discount" || event.target.name === "amount") {
@@ -153,6 +154,13 @@ class AddCoupon extends React.Component {
 
             const toSubmit = this.state.queryParams;
             toSubmit['products'] = [...this.state.queryParams.products, ...this.state.queryParams.extensions]
+            toSubmit['amount' ] === '' ? delete toSubmit.amount: (toSubmit['amount'] = +toSubmit['amount'])
+            if(toSubmit['mode'] === 'flat'){
+                delete toSubmit['percentage']
+                delete toSubmit.max_discount
+            }else if(toSubmit['mode'] === 'percentage'){
+                delete toSubmit.amount
+            }
             controller.handleAddCoupon(toSubmit).then((response) => {
                 this.setState({
                     loading: false

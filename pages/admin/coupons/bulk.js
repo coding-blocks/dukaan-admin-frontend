@@ -117,10 +117,19 @@ class AddBulkCoupons extends React.Component {
         if (!document.getElementById("addCouponForm").checkValidity()) {
             document.getElementById("addCouponForm").reportValidity();
         } else {
+
+            const toSubmit = this.state.queryParams;
+            toSubmit['amount' ] === '' ? delete toSubmit.amount: (toSubmit['amount'] = +toSubmit['amount'])
+            if(toSubmit['mode'] === 'flat'){
+                delete toSubmit.percentage
+            }else if(toSubmit['mode'] === 'percentage'){
+                delete toSubmit.amount
+            }
+
             this.setState({
                 loading: true
             });
-            controller.handleAddBulkCoupons(this.state.queryParams).then((response) => {
+            controller.handleAddBulkCoupons(toSubmit).then((response) => {
                 window.open(response)
                 this.setState({
                     loading: false
