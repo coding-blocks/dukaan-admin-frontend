@@ -154,6 +154,9 @@ class AddBulkCoupons extends React.Component {
     }
 
     render() {
+        if (!this.state.queryParams.organization_id) {
+            return <div>Loading...</div>
+        }
         return (
             <div>
                 <Head title="Coding Blocks | Dukaan | Add Coupon"/>
@@ -281,6 +284,9 @@ class AddBulkCoupons extends React.Component {
                                         <ProductsChooser
                                             productsCallback={this.handleProductsChange}
                                             multiple={true}
+                                            key={this.state.queryParams.organization_id}
+                                            organization_id={this.state.queryParams.organization_id}
+                                            productType={'course'}
                                         />
                                     </FieldWithElement>
 
