@@ -246,7 +246,7 @@ class AddBulkCoupons extends React.Component {
                                     </FieldWithElement>
 
                                     {/* Authority_code */}
-                                    <FieldWithElement name={"Description"} nameCols={3} elementCols={9}
+                                    <FieldWithElement name={"Description*"} nameCols={3} elementCols={9}
                                                       elementClassName={"pl-4"}>
                                         <input
                                             type="text"
