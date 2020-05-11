@@ -4,6 +4,9 @@ import ErrorHandler from "../../helpers/ErrorHandler";
 import {Autocomplete} from '@material-ui/lab';
 import TextField from '@material-ui/core/TextField';
 import PropTypes from "prop-types";
+import Checkbox from "@material-ui/core/Checkbox";
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
 
 class SearchInput extends React.Component {
 
@@ -49,17 +52,34 @@ class SearchInput extends React.Component {
                 <Autocomplete
                     multiple
                     autoComplete={true}
-                    fullWidth={false}
+                    fullWidth={true}
                     onChange={this.handleChange}
                     getOptionLabel={(option) => option.name}
                     id="tags-standard"
+                    disableCloseOnSelect
+                    value={this.state.selectedProducts}
+                    filterSelectedOptions={true}
+                    getOptionSelected={(option, value) => {
+                        return option.name === value.name
+                    }}
                     options={this.state.productSearchResults}
-
+                    renderOption={(option, {selected}) => (
+                        <React.Fragment>
+                            <Checkbox
+                                icon={<CheckBoxOutlineBlankIcon fontSize="small"/>}
+                                checkedIcon={<CheckBoxIcon fontSize="small"/>}
+                                style={{marginRight: 8}}
+                                checked={selected}
+                            />
+                            {option.name}
+                        </React.Fragment>
+                    )}
+                    style={{width: 800}}
                     renderInput={(params) => (
                         <TextField
                             {...params}
                             onChange={this.onSearchInputChange}
-                            variant="standard"
+                            variant="outlined"
                             label="Products"
                             placeholder="Start typing to see suggestions..."
                         />

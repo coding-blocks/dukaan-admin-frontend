@@ -185,7 +185,10 @@ class AddCouponForm extends React.Component {
 			                            <select
 			                                id="organization_id"
 			                                name="organization_id"
-			                                onChange={handleChange}
+			                                onChange={(e) => {
+                                                handleChange(e)
+                                                this.props.onOrganizationChange(e)
+                                            }}
 	                                        value={values.organization_id}
 			                                required>
 			                                {

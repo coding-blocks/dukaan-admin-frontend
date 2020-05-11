@@ -25,10 +25,6 @@ class AddCoupons extends React.Component {
             subCategories: [],
             subCategoryRules: [],
 
-            currentCategory: '',
-            currentSubCategory: '',
-            currentOrganizationId: '',
-
             modalOpen: false,
             modalProductTypeId: '',
             modalOrganizationId: ''
@@ -42,7 +38,8 @@ class AddCoupons extends React.Component {
         controller.fetchAddCouponData().then(([categories, organizations]) => {
             this.setState({
                 organizations: organizations.data,
-                categories: categories.data
+                categories: categories.data,
+                modalOrganizationId: organizations.data[0].id
             })
         }).catch(error => {
             ErrorHandler.handle(error)
@@ -54,9 +51,9 @@ class AddCoupons extends React.Component {
         });
     }
 
-    onOrganizationChange = (organizationId) => {
+    onOrganizationChange = (event) => {
         this.setState({
-            currentOrganizationId: organizationId
+            modalOrganizationId: event.target.value
         })
     }
 
@@ -137,6 +134,9 @@ class AddCoupons extends React.Component {
 
                         <div>
                             <Dialog
+                                title="Dialog"
+                                modal = {true}
+                                maxWidth={"xl"}
                                 open={this.state.modalOpen}
                                 onClose={this.handleClose}
                                 aria-labelledby="simple-modal-title"

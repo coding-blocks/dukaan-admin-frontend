@@ -42,10 +42,10 @@ class ProductsChooserV2 extends React.Component {
         }
         return (
             <div>
-                <div className={"d-flex mt-1 pt-3 pb-1"}>
-                    <div>
+                <div className={"col-md-5 mt-5 mb-5"}>
+
                         <div className={"col mb-5"}>
-                            <h2>Search {this.state.productType.name} Products</h2>
+                            <p>Search {this.state.productType.name} Products</p>
                             <SearchInput
                                 organizationId={this.props.organizationId}
                                 onProductsSelected={this.onProductsSelected}
@@ -56,7 +56,7 @@ class ProductsChooserV2 extends React.Component {
                                 Save Changes
                             </Button>
                         </div>
-                    </div>
+
 
                 </div>
             </div>

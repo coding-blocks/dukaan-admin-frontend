@@ -13,6 +13,8 @@ function ProductCard({detail: productType, handleModifyProducts}) {
         productList = productType.products.map((p) => p.product_type_name)
     }
     const ButtonText = productList.length > 0 ? 'Edit' : 'Add'
+    const addIcon = <AddIcon/>
+    const editIcon = <EditIcon/>
 
     return (
         <div>
@@ -24,7 +26,7 @@ function ProductCard({detail: productType, handleModifyProducts}) {
                             handleModifyProducts(productType.product_type_id)
                         }}
                         color="primary"
-                        startIcon={ButtonText === 'Add' ? <AddIcon/> : <EditIcon/>}>
+                        startIcon={ButtonText === 'Add' ? addIcon : editIcon }>
                         {`${ButtonText} ${productType.product_type_name}`}
                     </Button>
                     : <div/>
