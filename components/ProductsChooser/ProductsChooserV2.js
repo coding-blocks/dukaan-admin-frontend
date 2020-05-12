@@ -4,6 +4,7 @@ import SearchInput from "./SearchInput";
 import {getProductTypeById} from '../../controllers/productTypes'
 import ErrorHandler from "../../helpers/ErrorHandler";
 import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 
 class ProductsChooserV2 extends React.Component {
@@ -43,7 +44,7 @@ class ProductsChooserV2 extends React.Component {
     render() {
         //TODO Handle network failure at componentDidMount
         if (!this.state.productType) {
-            return (<div>Loading ...</div>)
+            return <CircularProgress />
         }
         return (
             <div>

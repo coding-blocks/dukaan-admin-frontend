@@ -79,7 +79,7 @@ class SearchInput extends React.Component {
                                 style={{marginRight: 8}}
                                 checked={selected}
                             />
-                            {option.name}
+                            {option.description}
                         </React.Fragment>
                     )}
                     style={{width: 800}}
