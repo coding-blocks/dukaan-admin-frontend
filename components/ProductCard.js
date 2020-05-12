@@ -6,11 +6,11 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import PropTypes from 'prop-types';
 
-function ProductCard({detail: productType, handleModifyProducts}) {
+function ProductCard({detail: productType, handleModifyProducts, products}) {
 
     let productList = []
-    if (productType.productList && !productType.applicable_all) {
-        productList = productType.products.map((p) => p.product_type_name)
+    if (products && !productType.applicable_all) {
+        productList = products.map((p) => p.name)
     }
     const ButtonText = productList.length > 0 ? 'Edit' : 'Add'
     const addIcon = <AddIcon/>
@@ -26,7 +26,7 @@ function ProductCard({detail: productType, handleModifyProducts}) {
                             handleModifyProducts(productType.product_type_id)
                         }}
                         color="primary"
-                        startIcon={ButtonText === 'Add' ? addIcon : editIcon }>
+                        startIcon={ButtonText === 'Add' ? addIcon : editIcon}>
                         {`${ButtonText} ${productType.product_type_name}`}
                     </Button>
                     : <div/>

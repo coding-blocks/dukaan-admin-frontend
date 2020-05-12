@@ -130,6 +130,7 @@ class AddCoupons extends React.Component {
                             {/* Product applicability pane */}
                             {this.state.subCategoryRules.length > 0 &&
                             <ProductApplicabilityInfo productDetails={this.state.subCategoryRules}
+                                                      couponProducts={this.state.couponProducts}
                                                       handleModifyProducts={this.handleOpenModal}
                             />
                             }
