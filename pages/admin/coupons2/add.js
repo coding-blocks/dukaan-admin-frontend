@@ -8,12 +8,8 @@ import * as controller from '../../../controllers/v2/couponsV2'
 import ErrorHandler from "../../../helpers/ErrorHandler";
 import "../../../styles/pages/admin/coupons2.scss";
 import Swal from 'sweetalert2';
-import Dialog from '@material-ui/core/Dialog';
-import Button from '@material-ui/core/Button';
-import DialogContent from '@material-ui/core/DialogContent';
 import ProductApplicabilityInfo from "../../../components/ProductApplicabilityInfo";
-
-import ProductsChooserV2 from "../../../components/ProductsChooser/ProductsChooserV2";
+import ChooserModal from "../../../components/ProductsChooser/ChooserModal";
 
 
 class AddCoupons extends React.Component {
@@ -28,7 +24,9 @@ class AddCoupons extends React.Component {
 
             modalOpen: false,
             modalProductTypeId: '',
-            modalOrganizationId: ''
+            modalOrganizationId: '',
+
+            couponProducts: {}
         }
     }
 
@@ -88,21 +86,26 @@ class AddCoupons extends React.Component {
         return parseInt(event.target.value)
     }
 
-    handleOpen = (productTypeId) => {
+    handleOpenModal = (productTypeId) => {
         this.setState({
             modalOpen: true,
             modalProductTypeId: productTypeId
         })
     }
 
-    handleClose = () => {
+    handleCloseModal = () => {
         this.setState({
             modalOpen: false
         })
     }
 
-    handleAddProduct = (productTypeId) => {
-        this.handleOpen(productTypeId)
+
+    onProductsSelected = (productTypeId, products) => {
+        const newCouponProducts = this.state.couponProducts
+        newCouponProducts[productTypeId] = products
+        this.setState({
+            couponProducts: newCouponProducts
+        })
     }
 
     render() {
@@ -127,30 +130,21 @@ class AddCoupons extends React.Component {
                             {/* Product applicability pane */}
                             {this.state.subCategoryRules.length > 0 &&
                             <ProductApplicabilityInfo productDetails={this.state.subCategoryRules}
-                                                      handleModifyProducts={this.handleAddProduct}
-                                                      showModal={this.handleOpen}
+                                                      handleModifyProducts={this.handleOpenModal}
                             />
                             }
                         </div>
 
-                        <div>
-                            <Dialog
-                                title="Dialog"
-                                modal = {true}
-                                maxWidth={"xl"}
-                                open={this.state.modalOpen}
-                                onClose={this.handleClose}
-                                aria-labelledby="simple-modal-title"
-                                aria-describedby="simple-modal-description">
-                                <DialogContent>
-                                    {<ProductsChooserV2
-                                        organizationId={this.state.modalOrganizationId}
-                                        productTypeId={this.state.modalProductTypeId}
-                                    />}
-                                </DialogContent>
-                            </Dialog>
-                        </div>
 
+                        <div>
+                            <ChooserModal
+                                modalOpen={this.state.modalOpen}
+                                handleCloseModal={this.handleCloseModal}
+                                onProductsSelected={this.onProductsSelected}
+                                organizationId={this.state.modalOrganizationId}
+                                productTypeId={this.state.modalProductTypeId}/>
+
+                        </div>
 
                     </div>
                 </CheckLogin>

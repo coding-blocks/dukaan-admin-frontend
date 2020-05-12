@@ -12,7 +12,6 @@ function ProductApplicabilityInfo({productDetails, handleModifyProducts}) {
                             key={productDetail.product_type_id}>
                             <div className="border-card px-0 py-6">
                                 <ProductCard detail={productDetail}
-
                                              handleModifyProducts={handleModifyProducts}/>
                             </div>
                             <br/>

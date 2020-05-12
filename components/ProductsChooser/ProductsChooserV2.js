@@ -8,13 +8,14 @@ import Button from "@material-ui/core/Button";
 
 class ProductsChooserV2 extends React.Component {
 
-    constructor() {
+    constructor(props) {
         super();
         this.state = {
             productType: null,
             selectedProducts: []
         }
     }
+
 
 
     componentDidMount() {
@@ -34,6 +35,10 @@ class ProductsChooserV2 extends React.Component {
         })
     }
 
+    onSaveChangeClicked = () => {
+        this.props.onProductsSelected(this.props.productTypeId, this.state.selectedProducts)
+    }
+
 
     render() {
         //TODO Handle network failure at componentDidMount
@@ -50,7 +55,9 @@ class ProductsChooserV2 extends React.Component {
                         onProductsSelected={this.onProductsSelected}
                         productTypeId={this.props.productTypeId}/>
                     <div className={"mt-5"}>
-                        <Button variant="outlined" color="primary">
+                        <Button variant="outlined" color="primary"
+                                onClick={this.onSaveChangeClicked}
+                        >
                             Save Changes
                         </Button>
                     </div>
@@ -64,7 +71,8 @@ class ProductsChooserV2 extends React.Component {
 
 ProductsChooserV2.propTypes = {
     productTypeId: PropTypes.number.isRequired,
-    organizationId: PropTypes.number.isRequired
+    organizationId: PropTypes.number.isRequired,
+    onProductsSelected: PropTypes.func
 }
 
 export default ProductsChooserV2
