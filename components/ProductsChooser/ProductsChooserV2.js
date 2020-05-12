@@ -42,21 +42,18 @@ class ProductsChooserV2 extends React.Component {
         }
         return (
             <div>
-                <div className={"col-md-5 mt-5 mb-5"}>
+                <div className={"col-md-5 mb-3"}>
 
-                        <div className={"col mb-5"}>
-                            <p>Search {this.state.productType.name} Products</p>
-                            <SearchInput
-                                organizationId={this.props.organizationId}
-                                onProductsSelected={this.onProductsSelected}
-                                productTypeId={this.props.productTypeId}/>
-                        </div>
-                        <div>
-                            <Button variant="outlined" color="primary">
-                                Save Changes
-                            </Button>
-                        </div>
-
+                    <h6 className="mb-3 title">Search {this.state.productType.name} Products</h6>
+                    <SearchInput
+                        organizationId={this.props.organizationId}
+                        onProductsSelected={this.onProductsSelected}
+                        productTypeId={this.props.productTypeId}/>
+                    <div className={"mt-5"}>
+                        <Button variant="outlined" color="primary">
+                            Save Changes
+                        </Button>
+                    </div>
 
                 </div>
             </div>
@@ -66,8 +63,8 @@ class ProductsChooserV2 extends React.Component {
 }
 
 ProductsChooserV2.propTypes = {
-    productTypeId: PropTypes.number,
-    organizationId: PropTypes.number
+    productTypeId: PropTypes.number.isRequired,
+    organizationId: PropTypes.number.isRequired
 }
 
 export default ProductsChooserV2

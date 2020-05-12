@@ -10,6 +10,7 @@ import "../../../styles/pages/admin/coupons2.scss";
 import Swal from 'sweetalert2';
 import Dialog from '@material-ui/core/Dialog';
 import Button from '@material-ui/core/Button';
+import DialogContent from '@material-ui/core/DialogContent';
 import ProductApplicabilityInfo from "../../../components/ProductApplicabilityInfo";
 
 import ProductsChooserV2 from "../../../components/ProductsChooser/ProductsChooserV2";
@@ -141,10 +142,12 @@ class AddCoupons extends React.Component {
                                 onClose={this.handleClose}
                                 aria-labelledby="simple-modal-title"
                                 aria-describedby="simple-modal-description">
-                                {<ProductsChooserV2
-                                    organizationId={this.state.modalOrganizationId}
-                                    productTypeId={this.state.modalProductTypeId}
-                                />}
+                                <DialogContent>
+                                    {<ProductsChooserV2
+                                        organizationId={this.state.modalOrganizationId}
+                                        productTypeId={this.state.modalProductTypeId}
+                                    />}
+                                </DialogContent>
                             </Dialog>
                         </div>
 

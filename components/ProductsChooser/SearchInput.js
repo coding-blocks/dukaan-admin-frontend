@@ -26,6 +26,7 @@ class SearchInput extends React.Component {
                 product_type_id: this.props.productTypeId,
                 name: event.target.value
             }).then((response) => {
+
                 this.setState({
                     productSearchResults: response.data
                 })
@@ -54,10 +55,10 @@ class SearchInput extends React.Component {
                     autoComplete={true}
                     fullWidth={true}
                     onChange={this.handleChange}
+                    value={this.state.selectedProducts}
                     getOptionLabel={(option) => option.name}
                     id="tags-standard"
                     disableCloseOnSelect
-                    value={this.state.selectedProducts}
                     filterSelectedOptions={true}
                     getOptionSelected={(option, value) => {
                         return option.name === value.name
@@ -91,8 +92,8 @@ class SearchInput extends React.Component {
 }
 
 SearchInput.propType = {
-    productTypeId: PropTypes.number,
-    organizationId: PropTypes.number
+    productTypeId: PropTypes.number.isRequired,
+    organizationId: PropTypes.number.isRequired
 }
 
 export default SearchInput;
