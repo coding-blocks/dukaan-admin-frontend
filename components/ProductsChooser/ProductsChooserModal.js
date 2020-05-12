@@ -5,13 +5,13 @@ import ProductsChooserV2 from "./ProductsChooserV2";
 import PropTypes from "prop-types";
 
 
-const ChooserModal = (props) => {
+const ProductsChooserModal = (props) => {
     return (
         <Dialog
             title="Dialog"
             modal={true}
             maxWidth={"xl"}
-            open={props.modalOpen}
+            open={props.isModalOpen}
             onClose={props.handleCloseModal}
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description">
@@ -28,11 +28,11 @@ const ChooserModal = (props) => {
     )
 }
 
-ChooserModal.propTypes = {
+ProductsChooserModal.propTypes = {
     productTypeId: PropTypes.number.isRequired,
     organizationId: PropTypes.number.isRequired,
-    modalOpen: PropTypes.bool.isRequired,
+    isModalOpen: PropTypes.bool.isRequired,
     onProductsSelected: PropTypes.func.isRequired,
     handleCloseModal: PropTypes.func.isRequired
 }
-export default ChooserModal
+export default ProductsChooserModal

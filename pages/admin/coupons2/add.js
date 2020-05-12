@@ -9,7 +9,7 @@ import ErrorHandler from "../../../helpers/ErrorHandler";
 import "../../../styles/pages/admin/coupons2.scss";
 import Swal from 'sweetalert2';
 import ProductApplicabilityInfo from "../../../components/ProductApplicabilityInfo";
-import ChooserModal from "../../../components/ProductsChooser/ChooserModal";
+import ProductsChooserModal from "../../../components/ProductsChooser/ProductsChooserModal";
 
 
 class AddCoupons extends React.Component {
@@ -22,7 +22,7 @@ class AddCoupons extends React.Component {
             subCategories: [],
             subCategoryRules: [],
 
-            modalOpen: false,
+            isModalOpen: false,
             modalProductTypeId: '',
             modalOrganizationId: '',
 
@@ -88,14 +88,14 @@ class AddCoupons extends React.Component {
 
     handleOpenModal = (productTypeId) => {
         this.setState({
-            modalOpen: true,
+            isModalOpen: true,
             modalProductTypeId: productTypeId
         })
     }
 
     handleCloseModal = () => {
         this.setState({
-            modalOpen: false
+            isModalOpen: false
         })
     }
 
@@ -137,15 +137,20 @@ class AddCoupons extends React.Component {
                         </div>
 
 
-                        <div>
-                            <ChooserModal
-                                modalOpen={this.state.modalOpen}
-                                handleCloseModal={this.handleCloseModal}
-                                onProductsSelected={this.onProductsSelected}
-                                organizationId={this.state.modalOrganizationId}
-                                productTypeId={this.state.modalProductTypeId}/>
-
-                        </div>
+                        {
+                            this.state.modalProductTypeId &&
+                            this.state.modalOrganizationId ?
+                                <div>
+                                    <ProductsChooserModal
+                                        isModalOpen={this.state.isModalOpen}
+                                        handleCloseModal={this.handleCloseModal}
+                                        onProductsSelected={this.onProductsSelected}
+                                        organizationId={this.state.modalOrganizationId}
+                                        productTypeId={this.state.modalProductTypeId}/>
+                                </div>
+                                :
+                                <div></div>
+                        }
 
                     </div>
                 </CheckLogin>
