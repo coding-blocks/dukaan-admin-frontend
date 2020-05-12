@@ -142,6 +142,9 @@ class AddCoupons extends React.Component {
                             this.state.modalOrganizationId ?
                                 <div>
                                     <ProductsChooserModal
+                                        preFilledProducts={
+                                            this.state.couponProducts[this.state.modalProductTypeId]
+                                        }
                                         isModalOpen={this.state.isModalOpen}
                                         handleCloseModal={this.handleCloseModal}
                                         onProductsSelected={this.onProductsSelected}
@@ -149,7 +152,7 @@ class AddCoupons extends React.Component {
                                         productTypeId={this.state.modalProductTypeId}/>
                                 </div>
                                 :
-                                <div></div>
+                                <div/>
                         }
 
                     </div>

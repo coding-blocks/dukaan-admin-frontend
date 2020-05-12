@@ -51,6 +51,7 @@ class ProductsChooserV2 extends React.Component {
 
                     <h6 className="mb-3 title">Search {this.state.productType.name} Products</h6>
                     <SearchInput
+                        preFilledProducts={this.props.preFilledProducts}
                         organizationId={this.props.organizationId}
                         onProductsSelected={this.onProductsSelected}
                         productTypeId={this.props.productTypeId}/>

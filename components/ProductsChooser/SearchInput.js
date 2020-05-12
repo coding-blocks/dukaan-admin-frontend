@@ -14,9 +14,16 @@ class SearchInput extends React.Component {
         super(props);
         this.state = {
             productSearchResults: [],
-            selectedProducts: []
+            selectedProducts: props.preFilledProducts ? props.preFilledProducts : []
         }
 
+    }
+
+    componentDidMount() {
+        this.props.preFilledProducts ?
+            this.props.onProductsSelected(
+                this.props.preFilledProducts
+            ) : this.props.onProductsSelected([])
     }
 
     onSearchInputChange = (event) => {

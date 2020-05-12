@@ -17,6 +17,7 @@ const ProductsChooserModal = (props) => {
             aria-describedby="simple-modal-description">
             <DialogContent>
                 <ProductsChooserV2
+                    preFilledProducts={props.preFilledProducts}
                     onProductsSelected={(productTypeId, selectedProducts) => {
                         props.onProductsSelected(productTypeId, selectedProducts)
                         props.handleCloseModal()
@@ -29,6 +30,7 @@ const ProductsChooserModal = (props) => {
 }
 
 ProductsChooserModal.propTypes = {
+    preFilledProducts: PropTypes.any,
     productTypeId: PropTypes.number.isRequired,
     organizationId: PropTypes.number.isRequired,
     isModalOpen: PropTypes.bool.isRequired,
