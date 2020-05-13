@@ -126,5 +126,6 @@ export {
     handleGetCoupons,
     handleEditCoupon,
     handleDeleteCoupon,
-    fetchEditCouponData
+    fetchEditCouponData,
+    fetchAllCouponCategories
 }

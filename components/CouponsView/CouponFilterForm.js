@@ -1,0 +1,220 @@
+import React from 'react'
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+import * as controller from '../../controllers/v2/couponsV2'
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import ErrorHandler from "../../helpers/ErrorHandler";
+
+
+class CouponFilterForm extends React.Component {
+
+    constructor(props) {
+        super()
+        this.state = {
+            categories: [],
+            subCategories: [],
+            filterParams: {
+                code: '',
+                subCategoryId: '',
+                amount: '',
+                active: true,
+                mode: '',
+                category: ''
+            }
+        }
+    }
+
+
+    componentDidMount() {
+        controller.fetchAllCouponCategories().then((response) => {
+            this.setState({
+                categories: response.data
+            })
+        })
+
+    }
+
+    fillSubCategories = (data) => {
+        controller.fetchSubCategories(data).then((subCategories) => {
+            this.setState({
+                subCategories: subCategories.data
+            })
+        }).catch((error) => {
+            ErrorHandler.handle(error)
+        })
+    };
+
+    handleCategoryChange = (event) => {
+        this.setState({
+            filterParams: {
+                ...this.state.filterParams,
+                category: event.target.value
+            }
+        }, () => {
+            this.fillSubCategories({category: event.target.value})
+        });
+
+    }
+
+
+    onFormInputChange = (event) => {
+        const value = event.target.value;
+        this.setState({
+            filterParams: {
+                ...this.state.filterParams,
+                [event.target.name]: value
+            }
+        });
+    }
+
+    onSetFiltersClicked = () => {
+        this.props.onFiltersSet(this.state.filterParams)
+    }
+
+
+    render() {
+        if (!this.state.categories) {
+            return <CircularProgress/>
+        }
+        return (
+
+            <div className={"d-flex col-7 mt-2"}>
+
+                <div className={"border-card coupon-card"}>
+                    {/* Title */}
+                    <div className={"d-flex justify-content-center mt-1 mb-3 pb-3"}>
+                        <h2 className={"title"}>
+                            Search Filters
+                        </h2>
+                    </div>
+
+                    <div className={"ml-5"}>
+                        <form noValidate autoComplete="off">
+                            {/* Code */}
+                            <TextField
+                                className={"mb-4"} id="outlined-basic" label="Code" type={"string"}
+                                name={"code"} value={this.state.filterParams.code}
+                                onChange={this.onFormInputChange} variant="outlined"/>
+
+                            {/* Category */}
+                            <FormControl variant="outlined" size={"medium"}
+                                         fullWidth={true} className={"mb-4"}>
+                                <InputLabel id="coupon-category">Category</InputLabel>
+                                <Select
+                                    value={this.state.filterParams.category}
+                                    onChange={this.handleCategoryChange}
+                                    label="Category">
+                                    <MenuItem value="All Categories">
+                                        <em>All Categories</em>
+                                    </MenuItem>
+                                    {
+                                        this.state.categories.map((category) => {
+                                            return (
+                                                <MenuItem
+                                                    key={category}
+                                                    value={category}>{
+                                                    category.split('_').join(' ')
+                                                }</MenuItem>
+                                            )
+                                        })
+                                    }
+                                </Select>
+                            </FormControl>
+
+                            {/* Sub Category */}
+                            <FormControl variant="outlined" size={"medium"}
+                                         fullWidth={true} className={"mb-4"}>
+                                <InputLabel id="coupon-sub-category">Sub Category</InputLabel>
+                                <Select
+                                    value={this.state.filterParams.subCategoryId}
+                                    label="Sub Category">
+                                    name={"subCategoryId"}
+                                    onChange={this.onFormInputChange}
+                                    <MenuItem value="All Sub Categories">
+                                        <em>All Sub Categories</em>
+                                    </MenuItem>
+                                    {
+                                        this.state.subCategories.map((subCategory) => {
+                                            return (
+                                                <MenuItem
+                                                    key={subCategory.id}
+                                                    value={subCategory.id}>{
+                                                    subCategory.name
+                                                }</MenuItem>
+                                            )
+                                        })
+                                    }
+                                </Select>
+                            </FormControl>
+
+
+                            {/* Discount Mode */}
+                            <FormControl variant="outlined" size={"medium"}
+                                         fullWidth={true} className={"mb-4"}>
+                                <InputLabel id="coupon-mode">Discount Mode</InputLabel>
+                                <Select
+                                    value={this.state.filterParams.mode}
+                                    onChange={this.onFormInputChange}
+                                    name={"mode"}
+                                    label="Discount Mode">
+                                    <MenuItem value="">
+                                        <em>All</em>
+                                    </MenuItem>
+                                    <MenuItem value="flat">
+                                        <em>Flat</em>
+                                    </MenuItem>
+                                    <MenuItem value="percentage">
+                                        <em>Percentage</em>
+                                    </MenuItem>
+                                </Select>
+                            </FormControl>
+
+
+                            {/* Amount */}
+                            <TextField
+                                id="outlined-basic" className={"mb-4"} label="Amount" type={"number"}
+                                name={"amount"} inputProps={{
+                                max: 99999,
+                            }}
+                                value={this.state.filterParams.amount}
+                                onChange={this.onFormInputChange} variant="outlined"/>
+
+
+                            {/* Active */}
+                            <FormControlLabel
+                                className={"mb-4"}
+                                control={
+                                    <Switch checked={this.state.filterParams.active}
+                                            onChange={this.onFormInputChange}
+                                            name="active"
+                                    />}
+                                label="Show Inactive"
+                            />
+
+                            <div className={"mt-1"}>
+
+                                <Button
+                                    id="search" size="medium" variant="outlined" color="primary"
+                                    onClick={this.onSetFiltersClicked}>
+                                    Set Filters
+                                </Button>
+                            </div>
+
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+        )
+    }
+}
+
+
+export default CouponFilterForm
