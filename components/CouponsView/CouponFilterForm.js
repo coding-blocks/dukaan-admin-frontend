@@ -94,7 +94,7 @@ class CouponFilterForm extends React.Component {
                         </h2>
                     </div>
 
-                    <div className={"ml-5"}>
+                    <div>
                         <form noValidate autoComplete="off">
                             {/* Code */}
                             <TextField

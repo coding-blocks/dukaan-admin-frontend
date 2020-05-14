@@ -1,4 +1,3 @@
-
 import {axios} from "../../DukaanAPI";
 import organizationController from '../organizations';
 import ErrorHandler from '../../helpers/ErrorHandler';
@@ -6,11 +5,11 @@ import ErrorHandler from '../../helpers/ErrorHandler';
 const querystring = require('querystring');
 
 const fetchAllCouponCategories = () => {
-	return axios.get(`/api/v2/admin/couponsv2/categories`)
+    return axios.get(`/api/v2/admin/couponsv2/categories`)
 }
 
 const fetchOrganizations = () => {
-	return organizationController.getAllOrganizations()
+    return organizationController.getAllOrganizations()
 }
 
 const fetchAddCouponData = () => {
@@ -31,23 +30,23 @@ const fetchCouponUser = (data) => {
 
 const fetchEditCouponData = (data) => {
     return fetchSubCategoryId({category: data.category, coupon_id: data.id})
-    .then((response) => {
-        const categoryRulesData = {
-            category: data.category,
-            id: response.data
-        }
-        return Promise.all([
+        .then((response) => {
+            const categoryRulesData = {
+                category: data.category,
+                id: response.data
+            }
+            return Promise.all([
                 response,
                 fetchSubCategoryRules(categoryRulesData),
                 fetchSubCategories({category: data.category}),
                 fetchOrganizations(),
                 fetchCouponUser({id: data.id})
             ])
-    })
+        })
 }
 
 const generateRandomCouponCode = () => {
-	let result = '';
+    let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     for (let i = 0; i < 10; i++) {
         result += characters.charAt(Math.floor(Math.random() * characters.length));
@@ -56,11 +55,11 @@ const generateRandomCouponCode = () => {
 }
 
 const fetchSubCategories = (data) => {
-	return axios.get(`/api/v2/admin/couponsv2/subCategories`, {params: data})
+    return axios.get(`/api/v2/admin/couponsv2/subCategories`, {params: data})
 }
 
 const fetchSubCategoryRules = (data) => {
-	return axios.get(`/api/v2/admin/couponsv2/subCategory/rules`, {params: data})
+    return axios.get(`/api/v2/admin/couponsv2/subCategory/rules`, {params: data})
 }
 
 const handleAddCoupon = (data) => {
@@ -93,6 +92,9 @@ const handleGetCoupons = (queryParams, pageInfo) => {
 
 };
 
+const searchCoupons = (queryParams, pagination) => {
+    return axios.get(`/api/v2/admin/couponsv2?page=${pagination.currentPage}&limit=${pagination.rowsPerPage}`)
+}
 
 const handleEditCoupon = (queryParams, couponId) => {
     let response = new Promise((resolve, reject) => {
@@ -127,5 +129,6 @@ export {
     handleEditCoupon,
     handleDeleteCoupon,
     fetchEditCouponData,
-    fetchAllCouponCategories
+    fetchAllCouponCategories,
+    searchCoupons
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import {withRouter} from 'next/router';
+import Router, {withRouter} from 'next/router';
 import Head from "../../../components/head";
 import Layout from "../../../components/layout";
 import CheckLogin from "../../../components/CheckLogin";
@@ -8,6 +8,11 @@ import ProductApplicabilityInfo from "../../../components/ProductApplicabilityIn
 import ProductsChooserModal from "../../../components/ProductsChooser/ProductsChooserModal";
 import CouponFilterForm from "../../../components/CouponsView/CouponFilterForm";
 import CouponsTable from "../../../components/CouponsView/CouponsTable";
+import FieldWithElement from "../../../components/FieldWithElement";
+import ProductsChooser from "../../../components/ProductsChooser";
+import Formatter from "../../../helpers/formatter";
+import Pagination from "../../../components/Pagination";
+import Loader from "../../../components/loader";
 
 class CouponsSearch extends React.Component {
 
@@ -33,27 +38,20 @@ class CouponsSearch extends React.Component {
                 <Head title="Coding Blocks | Dukaan | Coupon"/>
                 <Layout/>
                 <CheckLogin>
-                    <div className={"col-md-12"}>
 
-                        <div className={"col-md-6 pull-left"}>
-                            {/* Coupon Filter Form */}
+                    <div className={"d-flex align-items-center mr-5 pr-5 mt-5"}>
+                        <div className={"d-flex col-4"}>
                             <CouponFilterForm
                                 onFiltersSet={this.onFiltersSet}
                             />
-
                         </div>
-                        <div className={"col-md-6 pull-right"}>
-                            {/* Coupon Results Table */}
 
-                            {this.state.filterParams ?
 
-                                <CouponsTable
-                                    filterParams={this.state.filterParams}/>
-
-                                : <div/>
-                            }
-
+                        <div className={"d-flex col-md-8"}>
+                            <CouponsTable
+                                filterParams={this.state.filterParams}/>
                         </div>
+
                     </div>
                 </CheckLogin>
             </div>
