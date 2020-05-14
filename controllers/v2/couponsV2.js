@@ -24,10 +24,13 @@ const fetchSubCategoryId = (data) => {
     return axios.get(`/api/v2/admin/couponsv2/subCategoryId`, {params: data})
 }
 
-const fetchCouponUser = (data) => {
-    return axios.get(`/api/v2/admin/couponsv2/couponUser`, {params: data})
+const fetchCouponUsers = (data) => {
+    return axios.get(`/api/v2/admin/couponsv2/couponUsers`, {params: data})
 }
 
+const fetchCouponProducts = (data) => {
+    return axios.get(`/api/v2/admin/couponsv2/couponProducts`, {params: data})
+}
 
 const fetchEditCouponData = (data) => {
     return fetchSubCategoryId({category: data.category, coupon_id: data.id})
@@ -38,10 +41,12 @@ const fetchEditCouponData = (data) => {
         }
         return Promise.all([
                 response,
+                fetchAllCouponCategories(),
                 fetchSubCategoryRules(categoryRulesData),
                 fetchSubCategories({category: data.category}),
                 fetchOrganizations(),
-                fetchCouponUser({id: data.id})
+                fetchCouponProducts({id: data.id}),
+                // fetchCouponUsers({id: data.id})
             ])
     })
 }

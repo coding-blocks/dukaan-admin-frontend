@@ -2,7 +2,7 @@ import React from 'react'
 import {withRouter} from 'next/router';
 import Head from '../../../components/head';
 import Layout from "../../../components/layout";
-import AddCouponForm from "../../../forms/CouponAdd";
+import CouponForm from "../../../forms/Coupon";
 import CheckLogin from "../../../components/CheckLogin";
 import * as controller from '../../../controllers/v2/couponsV2'
 import ErrorHandler from "../../../helpers/ErrorHandler";
@@ -21,12 +21,11 @@ class AddCoupons extends React.Component {
             categories: [],
             subCategories: [],
             subCategoryRules: [],
-
             isModalOpen: false,
             modalProductTypeId: '',
             modalOrganizationId: '',
-
-            couponProducts: {}
+            couponProducts: {},
+            isAddMode:true,
         }
     }
 
@@ -121,7 +120,7 @@ class AddCoupons extends React.Component {
                         </div>
                         <div className={"col-md-6 pull-left"}>
                             {/* Coupon Form */}
-                            <AddCouponForm data={this.state}
+                            <CouponForm data={this.state}
                                            handleCategoryChange={this.handleCategoryChange}
                                            onOrganizationChange={this.onOrganizationChange}
                                            handleSubCategoryChange={this.handleSubCategoryChange}/>

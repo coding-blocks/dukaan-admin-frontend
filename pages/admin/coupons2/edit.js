@@ -3,46 +3,64 @@ import {withRouter} from 'next/router';
 import Loader from '../../../components/loader';
 import Head from '../../../components/head';
 import Layout from "../../../components/layout";
-import EditCouponForm from "../../../forms/CouponEdit";
+import CouponForm from "../../../forms/Coupon";
 import CheckLogin from "../../../components/CheckLogin";
 import * as controller from '../../../controllers/v2/couponsV2'
 import ErrorHandler from "../../../helpers/ErrorHandler";
 import "../../../styles/pages/admin/coupons2.scss";
 import Swal from 'sweetalert2'; 
 import ProductApplicabilityInfo from "../../../components/ProductApplicabilityInfo";
+import ProductsChooserModal from "../../../components/ProductsChooser/ProductsChooserModal";
 
-
-class EditCoupon extends React.Component { 
+class EditCoupons extends React.Component { 
 
     constructor(props) {
         super(props);
         this.state = {
             loaded: false,
             organizations:[],
-        	sub_category: null,
+        	sub_category_id: null,
+            categories: [],
             subCategories: [],
             subCategoryRules: [],
-            user_id: null,
-            coupon_user:null,
-            coupon: this.props.router.query
+            coupon: this.props.router.query,
+
+            isModalOpen: false,
+            modalProductTypeId: '',
+            modalOrganizationId: '',
+            couponProducts: {},
+            isAddMode:false
         }
     }
 
+    fillcouponProducts = (couponProducts) => {
+        const products = couponProducts.map(p => p.product)
+        const groupBy = (array, key) => {
+            return array.reduce((result, currentValue) => {
+                (result[currentValue[key]] = result[currentValue[key]] || []).push(
+                  currentValue
+                );
+                return result;
+            }, {}); 
+        };
+        const productsGroupedByType = groupBy(products, 'product_type_id');
+        this.setState({
+            couponProducts: productsGroupedByType
+        })
+    }
+
    componentDidMount() {
-        controller.fetchEditCouponData(this.props.router.query).then(([subCategoryId, subCategoryRules, subCategories, organizations, couponUser]) => {
+        controller.fetchEditCouponData(this.props.router.query)
+        .then(([subCategoryId, categories, subCategoryRules, subCategories, organizations, couponProducts]) => {
             this.setState({
-            	sub_category: subCategoryId.data,
+            	sub_category_id: subCategoryId.data,
+                categories: categories.data,
             	subCategoryRules: subCategoryRules.data,
             	subCategories: subCategories.data,
             	organizations: organizations.data,
-            	user_id: couponUser.data.id,
-            	coupon_user: {
-            			value: couponUser.data.user.email,
-			            label: `Email: ${couponUser.data.user.email} Username: ${couponUser.data.user.username}`,
-			            user_id: `${couponUser.data.user.id}`
-            	},
             	loaded: true
             })
+            this.fillcouponProducts(couponProducts.data)
         }).catch(error => {
             ErrorHandler.handle(error)
             Swal.fire({
@@ -81,13 +99,15 @@ class EditCoupon extends React.Component {
                     </div>
 	                {this.state.loaded &&
 	                    <div className={"col-md-6 pull-left"}>
-	                   	    <EditCouponForm data={this.state} handleSubCategoryChange={this.handleSubCategoryChange}/>
+	                   	    <CouponForm data={this.state} handleSubCategoryChange={this.handleSubCategoryChange}/>
 	                    </div>
 	                }
                     <div className={"col-md-6 pull-right"}>
                         {/* Product applicability pane */}
                         {this.state.subCategoryRules.length > 0 &&
-                            <ProductApplicabilityInfo productDetails={this.state.subCategoryRules} />
+                            <ProductApplicabilityInfo productDetails={this.state.subCategoryRules}
+                                                      couponProducts={this.state.couponProducts}
+                                                      handleModifyProducts={this.handleOpenModal} />
                         }
                     </div>
                 </div>
@@ -97,4 +117,4 @@ class EditCoupon extends React.Component {
     }
 }
 
-export default withRouter(EditCoupon)
+export default withRouter(EditCoupons)
