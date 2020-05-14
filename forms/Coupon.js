@@ -33,13 +33,13 @@ const couponSchema = Yup.object().shape({
 				.required('Discount is required'),
 			otherwise: Yup.number().nullable().notRequired()
 		}),
-	// percentage: Yup.number().when('mode', {
-	// 		is: (val) => val == "percentage",
-	// 		then: Yup.number()
-	// 		.typeError('Percentage is required')
-	// 		.required('Percentage is required'),
-	// 		otherwise: Yup.number().nullable().notRequired()
-		// }),
+	percentage: Yup.number().when('mode', {
+			is: (val) => val == "percentage",
+			then: Yup.number()
+			.typeError('Percentage is required')
+			.required('Percentage is required'),
+			otherwise: Yup.number().nullable().notRequired()
+		}),
 	applicable_all_users: Yup.boolean()
 		.required("Field is required."),
 	// oneauth_ids: Yup.number().when('applicable_all_users', {
