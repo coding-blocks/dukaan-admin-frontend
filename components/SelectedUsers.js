@@ -4,7 +4,6 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import UsersChooserModal from "./UsersChooserModal";
 
-// SelectedUsers
 class SelectedUsers extends React.Component {
     constructor(props) {
         super(props);

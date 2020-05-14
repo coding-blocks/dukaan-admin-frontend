@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import AsyncSelect from "react-select/async";
 import * as Yup from 'yup';
 import "react-datepicker/dist/react-datepicker.css";
+import SelectedUsers from "../components/SelectedUsers";
 
 
 const couponSchema = Yup.object().shape({
@@ -77,7 +78,14 @@ class CouponForm extends React.Component {
 
 	constructor(props) {
 		super(props)
+        this.state = {
+            couponUsers: []
+        }
 	}
+
+    onUserSelected = (newCouponUsers) => {
+        this.setState({couponUsers: newCouponUsers})
+    }
 
 	setRandomCouponCode = (event) => {
         return controller.generateRandomCouponCode()
@@ -457,22 +465,31 @@ class CouponForm extends React.Component {
 				                    </div>
 
 
-			                        {!values.applicable_all_users &&
-			                        /* User */
-			                        <FieldWithElement name={"User*"} nameCols={3} elementCols={9}
-			                                          elementClassName={"pl-4"} errorColor={'tomato'} 
-			                                          errors={touched.oneauth_ids && errors.oneauth_ids}>
-			                            <AsyncSelect
-			                            	name="oneauth_ids"
-	                                        cacheOptions
-	                                        defaultOptions
-	                                        placeholder="Start typing email to get suggestions"
-	                                        loadOptions={this.loadOptions}
-	                                        onBlur={handleBlur}
-	                                        onChange={(opt) => setFieldValue("oneauth_ids", parseInt(opt.user_id))}
-	                                        />
-			                        </FieldWithElement>        
-			                        }
+			                        {/*{!values.applicable_all_users &&*/}
+			                        {/*<FieldWithElement name={"User*"} nameCols={3} elementCols={9}*/}
+			                        {/*                  elementClassName={"pl-4"} errorColor={'tomato'} */}
+			                        {/*                  errors={touched.oneauth_ids && errors.oneauth_ids}>*/}
+			                        {/*    <AsyncSelect*/}
+			                        {/*    	name="oneauth_ids"*/}
+	                                {/*        cacheOptions*/}
+	                                {/*        defaultOptions*/}
+	                                {/*        placeholder="Start typing email to get suggestions"*/}
+	                                {/*        loadOptions={this.loadOptions}*/}
+	                                {/*        onBlur={handleBlur}*/}
+	                                {/*        onChange={(opt) => setFieldValue("oneauth_ids", parseInt(opt.user_id))}*/}
+	                                {/*        />*/}
+			                        {/*</FieldWithElement>        */}
+			                        {/*}*/}
+
+                                    {!values.applicable_all_users &&
+                                    <FieldWithElement name="User*" nameCols={3} elementCols={9}
+                                                      elementClassName={"pl-4"} errorColor={'tomato'}>
+                                        <SelectedUsers
+                                            preFilledUsers={this.state.couponUsers}
+                                            onUsersSelected={this.onUserSelected}
+                                        />
+
+                                    </FieldWithElement>}
 
 				                   <div className={"d-flex justify-content-center"}>
                                         <button
