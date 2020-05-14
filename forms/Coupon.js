@@ -1,4 +1,5 @@
-import React from 'react'
+// import React from 'react'
+import React, { useEffect, useState } from 'react';
 import FieldWithElement from '../components/FieldWithElement';
 import DatePicker from "react-datepicker";
 import {Formik} from 'formik';
@@ -11,12 +12,14 @@ import * as Yup from 'yup';
 import "react-datepicker/dist/react-datepicker.css";
 
 
-const editCouponSchema = Yup.object().shape({
+const couponSchema = Yup.object().shape({
 	authority_doc: Yup.string()
 	    .required('Description is required'),
 	code: Yup.string()
 	    .required('Code is required'),
-	sub_category: Yup.number()
+	category: Yup.string()
+	    .required('Category is required'),
+	sub_category_id: Yup.number()
 		.typeError('Sub Category is required')
 	    .required('Sub Category is required'),
 	organization_id: Yup.number()
@@ -28,36 +31,52 @@ const editCouponSchema = Yup.object().shape({
 			then: Yup.number()
 				.typeError('Discount is required')
 				.required('Discount is required'),
-			otherwise: Yup.number().notRequired()
+			otherwise: Yup.number().nullable().notRequired()
 		}),
 	percentage: Yup.number().when('mode', {
 			is: (val) => val == "percentage",
 			then: Yup.number()
-				.typeError('Percentage is required')
-				.required('Percentage is required'),
+			.typeError('Percentage is required')
+			.required('Percentage is required'),
 			otherwise: Yup.number().nullable().notRequired()
 		}),
 	applicable_all_users: Yup.boolean()
 		.required("Field is required."),
-	user_id: Yup.number().when('applicable_all_users', {
-			is: (val) => val == false,
-			then: Yup.number()
-				.typeError('User is required')
-				.required('User is required'),
-			otherwise: Yup.number().nullable().notRequired()
-		}),
+	// oneauth_ids: Yup.number().when('applicable_all_users', {
+	// 		is: (val) => val == false,
+	// 		then: Yup.array()
+	// 			.of(Yup.number())
+	// 			.typeError('User is required')
+	// 			.required('User is required'),
+	// 		otherwise: Yup.number().nullable().notRequired()
+	// 	}),
+
 });
 
+const initialValues = {
+	authority_doc: "",
+    code: "",
+    organization_id: 1,
+    type: "online",
+    mode: "flat",
+    left: 1,
+    category: "",
+    sub_category_id: null,
+    active: false,
+    applicable_all_users: true,
+    max_discount: null,
+    percentage: null,
+    amount: null,
+    oneauth_ids: [],
+    valid_start: Date.now(),
+    valid_end: new Date().setMonth(new Date().getMonth() + 1)
+}
 
-class EditCouponForm extends React.Component {
+
+class CouponForm extends React.Component {
 
 	constructor(props) {
 		super(props)
-		console.log(props)
-		this.state = {
-            couponInfo: props.coupon,
-            errorMessage: ''
-        };
 	}
 
 	setRandomCouponCode = (event) => {
@@ -83,14 +102,80 @@ class EditCouponForm extends React.Component {
         }
     };
 
-    renameKeys = (keysMap, obj) => Object
-        .keys(obj)
-        .reduce((acc, key) => ({
-            ...acc,
-            ...{[keysMap[key] || key]: obj[key]}
-        }), {});
+    makeEditCouponContext = () => {
+		return {
+			authority_doc: this.props.data.coupon.authority_doc,
+		    code: this.props.data.coupon.code,
+		    organization_id: this.props.data.coupon.organization_id,
+		    type: this.props.data.coupon.type,
+		    mode: this.props.data.coupon.mode,
+		    left: parseInt(this.props.data.coupon.left),
+		    category: this.props.data.coupon.category,
+		    sub_category_id: parseInt(this.props.data.sub_category_id),
+		    active: JSON.parse(this.props.data.coupon.active),
+		    applicable_all_users: JSON.parse(this.props.data.coupon.applicable_all_users),
+		    max_discount: parseInt(this.props.data.coupon.max_discount),
+		    percentage: parseInt(this.props.data.coupon.percentage),
+		    amount: parseInt(this.props.data.coupon.amount),
+		    oneauth_ids: [],
+		    valid_start: new Date(this.props.data.coupon.valid_start),
+		    valid_end: new Date(this.props.data.coupon.valid_end)
+		}
+	}
 
-    submitFormShowingSweetAlert = (formValues) => {
+    getCouponProductIds = (couponProducts) => {
+    	const products = Object.values(couponProducts).flat()
+    	return products.map(p => p.id)
+    }
+
+    onSubmit = (fields) => {
+        if (this.props.data.isAddMode) {
+            this.submitAddFormShowingSweetAlert(fields);
+        } else {
+            this.submitEditFormShowingSweetAlert(fields);
+        }
+    }
+
+    submitAddFormShowingSweetAlert = (formValues) => {
+    	const couponProducts = this.props.data.couponProducts
+    	if (couponProducts) {
+    		const productIds = this.getCouponProductIds(couponProducts)
+    		formValues.product_ids = productIds
+    	}
+
+        Swal.fire({
+            title: "Create new coupon?",
+            html: `Code: ${formValues.code}<br/>Category : ${
+                formValues.category
+            } `,
+            confirmButtonColor: "#f66",
+            confirmButtonText: "Yes!",
+            cancelButtonText: "No!",
+            showCancelButton: true,
+            showConfirmButton: true,
+            showCloseButton: true
+        }).then((result) => {
+            if (result.value) {
+                controller.handleAddCoupon(formValues).then(res => {
+                    Swal.fire({
+                        title: "Coupon added!",
+                        type: "success",
+                        timer: "3000",
+                        showConfirmButton: true,
+                        confirmButtonText: "Okay"
+                    });
+                }).catch(error => {
+                    Swal.fire({
+                        title: "Error while adding coupon!",
+                        type: "error",
+                        text: error
+                    });
+                });
+            }
+        });
+    }
+
+    submitEditFormShowingSweetAlert = (formValues) => {
         Swal.fire({
             title: "Save coupon?",
             html: `Code: ${formValues.code}<br/>Category : ${
@@ -122,79 +207,33 @@ class EditCouponForm extends React.Component {
             }
         });
     }
-	
+
     render() {
         return (
             <div>
             	<div className={"border-card coupon-card col-md-9 offset-2 mt-5 mb-5"}>
-	            	<Formik
-	            		initialValues={{
-	            			organization_id: this.props.data.coupon.organization_id,
-                            authority_doc: this.props.data.coupon.authority_doc,
-			                code: this.props.data.coupon.code,
-			                type: this.props.data.coupon.type,
-			                mode: this.props.data.coupon.mode,
-			                left: parseInt(this.props.data.coupon.left),
-			                category: this.props.data.coupon.category,
-			                sub_category: this.props.data.sub_category,
-			                active: JSON.parse(this.props.data.coupon.active),
-			                amount: parseInt(this.props.data.coupon.amount),
-			                applicable_all_users: JSON.parse(this.props.data.coupon.applicable_all_users),
-			                max_discount: parseInt(this.props.data.coupon.max_discount),
-			                percentage: parseInt(this.props.data.coupon.percentage),
-			                user_id: this.props.data.user_id,
-			                valid_start: this.props.data.coupon.valid_start,
-			                valid_end: this.props.data.coupon.valid_end,
-                        }}
-                        validationSchema={editCouponSchema}
-                        onSubmit={(values, {setSubmitting}) => {
-                            const keysMap = {
-                            	organization_id: 'organization_id',
-                                authority_doc: 'authority_doc',
-                                code: 'code',
-                                type: 'type',
-                                mode: 'mode',
-                                left: 'left',
-                                category: 'category',
-                                sub_category: 'sub_category',
-                                active: 'active',
-                                amount: 'amount',
-                                applicable_all_users: 'applicable_all_users',
-                                max_discount: 'max_discount',
-                                percentage: 'percentage',
-                                user_id: 'user_id',
-                                valid_start: 'valid_start',
-                                valid_end: 'valid_end'
-                            };
-                            this.submitFormShowingSweetAlert(this.renameKeys(keysMap, values))
-	                        }}
-	                    >
-                        {({
-                              values,
-                              errors,
-                              touched,
-                              handleChange,
-                              handleBlur,
-                              handleSubmit,
-                              isSubmitting,
-                              setFieldValue
-                          }) => (
+	            	<Formik initialValues={ this.props.data.isAddMode ? initialValues : this.makeEditCouponContext() } validationSchema={couponSchema} 
+                        	onSubmit={this.onSubmit}>
+                        {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting, setFieldValue }) => (
 
-                          	<form id="add_coupon_form" onSubmit={handleSubmit}>
-			                    <div className={"add-coupon-card"}>
-			                    	{/* organization */}
+                          	<form onSubmit={handleSubmit}>
+			                    <div className={"coupon-card"}>
+			                        {/* organization */}
 			                        <FieldWithElement name={"Organization"} nameCols={3} elementCols={9}
 			                                          elementClassName={"pl-4"}>
 			                            <select
 			                                id="organization_id"
 			                                name="organization_id"
-			                                onChange={handleChange}
+			                                onChange={(e) => {
+                                                handleChange(e)
+                                                this.props.onOrganizationChange(e)
+                                            }}
 	                                        value={values.organization_id}
 			                                required>
 			                                {
 			                                    this.props.data.organizations.map((organization) => {
 			                                        return (
-			                                            <option value={Number(organization.id)} key={organization.id} selected={Number(values.organization_id) == Number(organization.id)}>
+			                                            <option value={Number(organization.id)} key={organization.id}>
 			                                                {organization.name}
 			                                            </option>)
 			                                    })
@@ -217,7 +256,7 @@ class EditCouponForm extends React.Component {
 			                                onChange={handleChange}
 			                                required
 			                            />
-			                            <span id="random_coupon" className="red pull-right mt-4"
+			                            <span id="random_coupon" className="red pull-right mt-2"
 			                                            onClick={() => setFieldValue("code", this.setRandomCouponCode())}>
 			                            	Generate Random Code
 			                            </span>
@@ -242,19 +281,23 @@ class EditCouponForm extends React.Component {
 
 			                        {/* Categories */}
 			                        <FieldWithElement name={"Category"} nameCols={3} elementCols={9}
-			                                          elementClassName={"pl-4 abbb"}  errorColor={'tomato'}
+			                                          elementClassName={"pl-4"} errorColor={'tomato'}
                                     				errors={touched.category && errors.category}>
 			                            <select
 			                                id="category"
 			                                name="category"
-			                                class="edit_category"
 			                                onBlur={handleBlur}
+			                                onChange={() => setFieldValue("category", this.props.handleCategoryChange(event))}
 			                                value={values.category}
-			                                disabled>
+			                                className={this.props.data.isAddMode ? "category" : "edit_category"}
+			                                disabled={!this.props.data.isAddMode}>
 			                                {
-	                                            <option value={values.category}>
-	                                                {values.category}
-	                                            </option>
+			                                    this.props.data.categories.map((category) => {
+			                                        return (
+			                                            <option value={category} key={category}>
+			                                                {category}
+			                                            </option>)
+			                                    })
 			                                }
 			                            </select>
 			                        </FieldWithElement>
@@ -262,20 +305,19 @@ class EditCouponForm extends React.Component {
 			                         {/* Sub Categories */}
 			                        <FieldWithElement name={"Sub Category"} nameCols={3} elementCols={9}
 			                                          elementClassName={"pl-4"} errorColor={'tomato'}
-                                    				errors={touched.sub_category && errors.sub_category}>
+                                    				errors={touched.sub_category_id && errors.sub_category_id}>
 			                            <select
-			                                id="sub_category"
-			                                name="sub_category"
+			                                id="sub_category_id"
+			                                name="sub_category_id"
 			                                onBlur={handleBlur}
-			                                onChange={() => setFieldValue("sub_category", this.props.handleSubCategoryChange(event, values.category))}
-			                            	value={values.sub_category}
+			                                onChange={() => setFieldValue("sub_category_id", this.props.handleSubCategoryChange(event, values.category))}
+				                            value={values.sub_category_id}
 			                            	required>
-				                            
 				                            <option value="" key="">Select </option>
 			                            	{
 			                                    this.props.data.subCategories.map((subcategory) => {
 			                                        return (
-				                                        <option value={Number(subcategory.id)} key={subcategory.id} selected={Number(values.sub_category) == Number(subcategory.id)}>
+				                                        <option value={Number(subcategory.id)} key={Number(subcategory.id)}>
 				                                            {subcategory.name}
 				                                        </option>)
 			                                    })
@@ -294,7 +336,7 @@ class EditCouponForm extends React.Component {
 			                                minDate ={new Date()}
 			                                onChange={date => setFieldValue('valid_start', date)}
 			                                dateFormat="MMMM d, yyyy h:mm aa"
-			                                selected={values.valid_start ? new Date(values.valid_start) : new Date()}
+			                                selected={values.valid_start}
 			                            />
 			                        </FieldWithElement>
 
@@ -309,7 +351,7 @@ class EditCouponForm extends React.Component {
 			                                onChange={date => setFieldValue('valid_end', date)}
 			                                timeCaption="time"
 			                                dateFormat="MMMM d, yyyy h:mm aa"
-                                            selected={values.valid_end ? new Date(values.valid_end) : new Date()}
+			                                selected={values.valid_end}
 			                            />
 			                        </FieldWithElement>
 
@@ -410,23 +452,24 @@ class EditCouponForm extends React.Component {
 				                                type="checkbox"
 				                                checked={values.applicable_all_users}
 			                                	onChange={() => setFieldValue("applicable_all_users", !values.applicable_all_users )}
-				                                value={values.applicable_all_users}
-				                                />
+				                                value={values.applicable_all_users}/>
 				                        </div>
 				                    </div>
-				                    {!values.applicable_all_users &&
+
+
+			                        {!values.applicable_all_users &&
 			                        /* User */
 			                        <FieldWithElement name={"User*"} nameCols={3} elementCols={9}
 			                                          elementClassName={"pl-4"} errorColor={'tomato'} 
-			                                          errors={touched.user_id && errors.user_id}>
+			                                          errors={touched.oneauth_ids && errors.oneauth_ids}>
 			                            <AsyncSelect
-			                            	name="user_id"
+			                            	name="oneauth_ids"
 	                                        cacheOptions
 	                                        defaultOptions
 	                                        placeholder="Start typing email to get suggestions"
 	                                        loadOptions={this.loadOptions}
 	                                        onBlur={handleBlur}
-	                                        onChange={(opt) => setFieldValue("user_id", parseInt(opt.user_id))}
+	                                        onChange={(opt) => setFieldValue("oneauth_ids", parseInt(opt.user_id))}
 	                                        />
 			                        </FieldWithElement>        
 			                        }
@@ -450,4 +493,4 @@ class EditCouponForm extends React.Component {
     }
 }
 
-export default EditCouponForm
+export default CouponForm
