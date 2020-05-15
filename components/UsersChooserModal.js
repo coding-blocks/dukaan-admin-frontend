@@ -9,6 +9,7 @@ import UsersChooser from "./UsersChooser";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from '@material-ui/icons/Close';
 import Divider from '@material-ui/core/Divider';
+import PropTypes from "prop-types";
 
 function UsersChooserModal(props) {
 
@@ -33,7 +34,7 @@ function UsersChooserModal(props) {
 
                     <UsersChooser
                         preFilledUsers={props.preFilledUsers}
-                        handleNewSelectedUser={props.handleNewSelectedUser}
+                        onUsersSelected={props.onUsersSelected}
                     />
 
                 </DialogContent>
@@ -48,3 +49,11 @@ function UsersChooserModal(props) {
 }
 
 export default UsersChooserModal
+
+UsersChooserModal.propTypes = {
+    preFilledUsers:PropTypes.any,
+    isModalOpen: PropTypes.bool.isRequired,
+    onUsersSelected:PropTypes.func.isRequired,
+    handleModalClose:PropTypes.func.isRequired,
+    handleOnSaveChanges:PropTypes.func.isRequired
+}

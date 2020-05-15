@@ -3,14 +3,23 @@ import userController from "../controllers/users";
 import ErrorHandler from "../helpers/ErrorHandler";
 import {Autocomplete} from '@material-ui/lab';
 import TextField from '@material-ui/core/TextField';
+import PropTypes from "prop-types";
+import SelectedUsers from "./SelectedUsers";
 
 class UsersChooser extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedUsers: this.props.preFilledUsers ? this.props.preFilledUsers : [],
+            selectedUsers: this.props.preFilledUsers,
             usersSearchResult: []
         }
+    }
+
+    componentDidMount() {
+        this.props.preFilledUsers ?
+            this.props.onUsersSelected(
+                this.props.preFilledUsers
+            ) : this.props.onUsersSelected([])
     }
 
     onSearchInputChange = (event) => {
@@ -27,9 +36,9 @@ class UsersChooser extends React.Component {
     handleChange = (event, values) => {
         this.setState({
             selectedUsers: values,
-            usersSearchResult:[]
+            usersSearchResult: []
         }, () => {
-            this.props.handleNewSelectedUser(this.state.selectedUsers)
+            this.props.onUsersSelected(this.state.selectedUsers)
         })
     }
 
@@ -66,3 +75,8 @@ class UsersChooser extends React.Component {
 }
 
 export default UsersChooser
+
+UsersChooser.propTypes = {
+    preFilledUsers: PropTypes.any,
+    onUsersSelected: PropTypes.func.isRequired
+}

@@ -3,13 +3,15 @@ import Button from "@material-ui/core/Button"
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import UsersChooserModal from "./UsersChooserModal";
+import PropTypes from "prop-types";
+
 
 class SelectedUsers extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             isModalOpen: false,
-            selectedUsers: this.props.preFilledUsers ? this.props.preFilledUsers : []
+            selectedUsers: this.props.preFilledUsers
         }
     }
 
@@ -21,8 +23,8 @@ class SelectedUsers extends React.Component {
         this.setState({isModalOpen: false})
     }
 
-    handleNewSelectedUser = (newSelectedUsers) => {
-        this.setState({selectedUsers: newSelectedUsers})
+    onUsersSelected = (selectedUsers) => {
+        this.setState({selectedUsers})
     }
 
     handleOnSaveChanges = () => {
@@ -36,9 +38,9 @@ class SelectedUsers extends React.Component {
         const editIcon = <EditIcon fontSize={"small"}/>
 
         return (
-            <div style={{paddingTop:'10px',paddingLeft:'10px'}} >
+            <div style={{paddingTop: '10px', paddingLeft: '10px'}}>
                 <strong>{this.props.preFilledUsers.length} Users Selected</strong>
-                <Button style={{float:'right',padding:'0'}}
+                <Button style={{float: 'right', padding: '0'}}
                         variant="outlined"
                         size={"small"}
                         startIcon={ButtonText === 'Add' ? addIcon : editIcon}
@@ -51,7 +53,7 @@ class SelectedUsers extends React.Component {
                     preFilledUsers={this.state.selectedUsers}
                     isModalOpen={this.state.isModalOpen}
                     handleModalClose={this.handleModalClose}
-                    handleNewSelectedUser={this.handleNewSelectedUser}
+                    onUsersSelected={this.onUsersSelected}
                     handleOnSaveChanges={this.handleOnSaveChanges}
                 />
 
@@ -61,3 +63,8 @@ class SelectedUsers extends React.Component {
 }
 
 export default SelectedUsers
+
+SelectedUsers.propTypes={
+    preFilledUsers:PropTypes.any,
+    onUsersSelected:PropTypes.func.isRequired
+}
