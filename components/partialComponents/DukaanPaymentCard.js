@@ -143,6 +143,17 @@ class DukaanPaymentCard extends React.Component {
                                         ) : (
                                             ""
                                         )}
+                                        {
+                                            this.state.razorpayPayment?.transaction?.invoice?.invoice_link ?
+                                                <div className={"row align-items-center"}>
+                                                    <div className={"pr-3"}>Receipt PDF</div>
+                                                    <a href={this.state.razorpayPayment?.transaction?.invoice?.invoice_link} target="blank">
+                                                        <button className="button-solid">View Invoice</button>
+                                                    </a>
+                                                </div>
+                                                : <div/>
+
+                                        }
 
                                     </div>
                                 </div>
