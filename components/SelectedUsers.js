@@ -11,7 +11,7 @@ class SelectedUsers extends React.Component {
         super(props);
         this.state = {
             isModalOpen: false,
-            selectedUsers: []
+            selectedUsers: this.props.preFilledUsers ? this.props.preFilledUsers : [],
         }
     }
 
@@ -64,7 +64,7 @@ class SelectedUsers extends React.Component {
 
 export default SelectedUsers
 
-SelectedUsers.propTypes={
-    preFilledUsers:PropTypes.any,
-    onUsersSelected:PropTypes.func.isRequired
+SelectedUsers.propTypes = {
+    preFilledUsers: PropTypes.any,
+    onUsersSelected: PropTypes.func.isRequired
 }

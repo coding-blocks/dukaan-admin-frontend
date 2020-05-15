@@ -444,7 +444,10 @@ class CouponForm extends React.Component {
                                                 className={"ml-4 mt-3"}
                                                 type="checkbox"
                                                 checked={values.applicable_all_users}
-                                                onChange={() => setFieldValue("applicable_all_users", !values.applicable_all_users)}
+                                                onChange={() => {
+                                                    setFieldValue("applicable_all_users", !values.applicable_all_users)
+                                                    this.setState({couponUsers:[]})
+                                                }}
                                                 value={values.applicable_all_users}/>
                                         </div>
                                     </div>
