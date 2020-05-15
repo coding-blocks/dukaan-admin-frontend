@@ -43,15 +43,6 @@ const couponSchema = Yup.object().shape({
     }),
     applicable_all_users: Yup.boolean()
         .required("Field is required."),
-    // oneauth_ids: Yup.number().when('applicable_all_users', {
-    // 		is: (val) => val == false,
-    // 		then: Yup.array()
-    // 			.of(Yup.number())
-    // 			.typeError('User is required')
-    // 			.required('User is required'),
-    // 		otherwise: Yup.number().nullable().notRequired()
-    // 	}),
-
 });
 
 const initialValues = {
@@ -68,7 +59,6 @@ const initialValues = {
     max_discount: null,
     percentage: null,
     amount: null,
-    oneauth_ids: [],
     valid_start: Date.now(),
     valid_end: new Date().setMonth(new Date().getMonth() + 1)
 }
@@ -79,7 +69,7 @@ class CouponForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            couponUsers: []
+            couponUsers: this.props.data.couponUsers
         }
     }
 
@@ -107,15 +97,34 @@ class CouponForm extends React.Component {
             max_discount: parseInt(this.props.data.coupon.max_discount),
             percentage: parseInt(this.props.data.coupon.percentage),
             amount: parseInt(this.props.data.coupon.amount),
-            oneauth_ids: [],
             valid_start: new Date(this.props.data.coupon.valid_start),
             valid_end: new Date(this.props.data.coupon.valid_end)
         }
     }
 
-    getCouponProductIds = (couponProducts) => {
-        const products = Object.values(couponProducts).flat()
+    getCouponProductIds = () => {
+        const couponProductsWithProuctTypeId = this.props.data.couponProducts
+        const products = Object.values(couponProductsWithProuctTypeId).flat()
         return products.map(p => p.id)
+    }
+
+    getUserOneauthIds = () => {
+        const couponUsers = this.state.couponUsers
+        return couponUsers.map(u => u.oneauth_id)
+    }
+
+    handleCouponUserValidity = (applicable_all_users) => {
+        const oneauthIds = this.getUserOneauthIds() 
+        if (!oneauthIds.length && !applicable_all_users) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please choose coupon users!',
+                confirmButtonColor: '#f66',
+            })
+            return false
+        }
+        return true
     }
 
     onSubmit = (fields) => {
@@ -127,11 +136,13 @@ class CouponForm extends React.Component {
     }
 
     submitAddFormShowingSweetAlert = (formValues) => {
-        const couponProducts = this.props.data.couponProducts
-        if (couponProducts) {
-            const productIds = this.getCouponProductIds(couponProducts)
-            formValues.product_ids = productIds
+        if (!this.handleCouponUserValidity(formValues.applicable_all_users)) {
+            return 
         }
+        const productIds = this.getCouponProductIds()
+        formValues.product_ids = productIds
+        const oneauthIds = this.getUserOneauthIds()
+        formValues.oneauth_ids = oneauthIds
 
         Swal.fire({
             title: "Create new coupon?",
@@ -166,6 +177,14 @@ class CouponForm extends React.Component {
     }
 
     submitEditFormShowingSweetAlert = (formValues) => {
+        if (!this.handleCouponUserValidity(formValues.applicable_all_users)) {
+            return 
+        }
+        const oneauthIds = this.getUserOneauthIds()
+        formValues.oneauth_ids = oneauthIds
+        const productIds = this.getCouponProductIds()
+        formValues.product_ids = productIds
+
         Swal.fire({
             title: "Save coupon?",
             html: `Code: ${formValues.code}<br/>Category : ${

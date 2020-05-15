@@ -46,7 +46,7 @@ const fetchEditCouponData = (data) => {
                 fetchSubCategories({category: data.category}),
                 fetchOrganizations(),
                 fetchCouponProducts({id: data.id}),
-                // fetchCouponUsers({id: data.id})
+                fetchCouponUsers({id: data.id})
             ])
     })
 }
