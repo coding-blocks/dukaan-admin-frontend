@@ -11,7 +11,7 @@ class SelectedUsers extends React.Component {
         super(props);
         this.state = {
             isModalOpen: false,
-            selectedUsers: this.props.preFilledUsers
+            selectedUsers: []
         }
     }
 

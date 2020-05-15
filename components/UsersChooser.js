@@ -4,13 +4,12 @@ import ErrorHandler from "../helpers/ErrorHandler";
 import {Autocomplete} from '@material-ui/lab';
 import TextField from '@material-ui/core/TextField';
 import PropTypes from "prop-types";
-import SelectedUsers from "./SelectedUsers";
 
 class UsersChooser extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedUsers: this.props.preFilledUsers,
+            selectedUsers: this.props.preFilledUsers ? this.props.preFilledUsers : [],
             usersSearchResult: []
         }
     }

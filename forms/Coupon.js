@@ -91,24 +91,6 @@ class CouponForm extends React.Component {
         return controller.generateRandomCouponCode()
     }
 
-    mapResponseToResults = (response) => {
-        return response.map(user => ({
-            value: user.email,
-            label: `Email: ${user.email} Username: ${user.username}`,
-            user_id: `${user.id}`
-        }));
-    };
-
-    loadOptions = (inputValue, callback) => {
-        if (inputValue) {
-            userController.handleGetUserByEmailOrPhone("email", inputValue).then((response) => {
-                callback(this.mapResponseToResults(response.data));
-            }).catch((error) => {
-                ErrorHandler.handle(error)
-                callback([]);
-            })
-        }
-    };
 
     makeEditCouponContext = () => {
         return {
