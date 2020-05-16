@@ -313,7 +313,7 @@ class CouponForm extends React.Component {
                                                 this.props.data.categories.map((category) => {
                                                     return (
                                                         <option value={category} key={category}>
-                                                            {category}
+                                                            {category.split('_').join(' ')}
                                                         </option>)
                                                 })
                                             }

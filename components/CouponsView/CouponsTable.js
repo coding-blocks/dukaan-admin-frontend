@@ -11,7 +11,17 @@ import Paper from '@material-ui/core/Paper';
 import * as controller from "../../controllers/v2/couponsV2";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import TablePagination from "@material-ui/core/TablePagination";
+import { withStyles } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
+import Swal from 'sweetalert2';
+
+
+const PaginationTheme = withStyles({
+  actions: {
+      color: "red",
+      backgroundColor: 'white',
+  }
+})(TablePagination);
 
 class CouponsTable extends React.Component {
 
@@ -21,12 +31,20 @@ class CouponsTable extends React.Component {
             coupons: [],
             rowsPerPage: 10,
             currentPage: 0,
-            filterParams: props.filterParams
+            totalPages:0,
         }
     }
 
+    resetPageInfo = () => {
+        this.setState({
+            rowsPerPage: 10,
+            currentPage: 0,
+            totalPages:0,
+        })
+    }
+
     fillTable = () => {
-        controller.searchCoupons(undefined, {
+        controller.searchCoupons(this.props.filterParams, {
             rowsPerPage: this.state.rowsPerPage,
             currentPage: this.state.currentPage,
         }).then((response) => {
@@ -34,7 +52,16 @@ class CouponsTable extends React.Component {
                 coupons: response.data.coupons,
                 totalPages: response.data.pagesInfo.pageCount
             })
-        })
+        }).catch((error) => {
+          Swal.fire({
+            type: 'error',
+            title: 'Error while fetching coupons!',
+            text: error
+          });
+          this.setState({
+            loading: false
+          });
+        });
     }
 
     componentDidMount() {
@@ -58,6 +85,47 @@ class CouponsTable extends React.Component {
         }, () => {
             this.fillTable()
         })
+    }
+
+    handleDeleteCoupon = (coupon) => {
+        Swal.fire({
+          title: "Are you sure you want to delete coupon – " + coupon.code + " ?",
+          type: 'question',
+          confirmButtonColor: '#f66',
+          confirmButtonText: "Yes, delete!",
+          cancelButtonText: "No, stop!",
+          showCancelButton: true,
+          showConfirmButton: true,
+          showCloseButton: true
+        }).then((result) => {
+          if (result.value) {
+            // Confirmation passed, delete coupon.
+            controller.handleDeleteCoupon(coupon.id).then((response) => {
+              // Remove the coupon from the table.
+              let coupons = this.state.coupons;
+              let couponIndex = this.state.coupons.indexOf(coupon);
+              coupons.splice(couponIndex, 1);
+              this.setState({
+                coupons: coupons
+              });
+              // Show that the job is done
+              Swal.fire({
+                title: 'Coupon ' + coupon.code + ' Deleted!',
+                type: "info",
+                timer: '1500',
+                showConfirmButton: true,
+                confirmButtonText: "Okay"
+              });
+            }).catch((error) => {
+              Swal.fire({
+                title: "Error while deleting coupon!",
+                html: "Error: " + error,
+                type: "error",
+                showConfirmButton: true
+              });
+            });
+          }
+        });
     }
 
     render() {
@@ -128,10 +196,10 @@ class CouponsTable extends React.Component {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <TablePagination
-                        rowsPerPageOptions={[5, 10]}
+                    <PaginationTheme
+                        rowsPerPageOptions={[10]}
                         component="div"
-                        count={-1}
+                        count={this.state.totalPages}
                         rowsPerPage={this.state.rowsPerPage}
                         page={this.state.currentPage}
                         onChangePage={this.handleChangePage}

@@ -3,7 +3,6 @@ import Router, {withRouter} from 'next/router';
 import Head from "../../../components/head";
 import Layout from "../../../components/layout";
 import CheckLogin from "../../../components/CheckLogin";
-import AddCouponForm from "../../../forms/CouponAdd";
 import ProductApplicabilityInfo from "../../../components/ProductApplicabilityInfo";
 import ProductsChooserModal from "../../../components/ProductsChooser/ProductsChooserModal";
 import CouponFilterForm from "../../../components/CouponsView/CouponFilterForm";
@@ -18,19 +17,21 @@ import "../../../styles/pages/admin/coupons2.scss";
 
 class CouponsSearch extends React.Component {
 
-
     constructor() {
         super();
+        this.couponTable = React.createRef();
         this.state = {
             filterParams: null
         }
     }
 
 
-    onFiltersSet = (filterParams) => {
+    onSearchBtnClick = (filterParams) => {
         this.setState({
             filterParams
-        })
+        }, () => {
+            this.couponTable.current.fillTable();
+        });
     }
 
     render() {
@@ -42,13 +43,14 @@ class CouponsSearch extends React.Component {
                     <div className={"col-md-12"}>
                             <div className={"col-md-4 pull-left"}>
                                 <CouponFilterForm
-                                    onFiltersSet={this.onFiltersSet}
+                                    onSearchBtnClick={this.onSearchBtnClick}
                                 />
                             </div>
 
                             <div className={"col-md-8 pull-right"}>
                                 <CouponsTable
-                                    filterParams={this.state.filterParams}/>
+                                    filterParams={this.state.filterParams}
+                                    ref={this.couponTable}/>
                             </div>
 
                     </div>

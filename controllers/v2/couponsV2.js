@@ -78,27 +78,9 @@ const handleAddCoupon = (data) => {
     return response;
 }
 
-const handleGetCoupons = (queryParams, pageInfo) => {
-    let query = querystring.stringify(queryParams);
-    let response = new Promise((resolve, reject) => {
-        axios.get(`/api/v2/admin/couponsv2?page=` + pageInfo.page + `&limit=` + pageInfo.limit + `&` + query).then((r) => {
-            let data = {
-                results: r.data.coupons,
-                products: r.data.products,
-                pagesInfo: r.data.pagesInfo
-            }
-            resolve(data);
-        }).catch((error) => {
-            reject(ErrorHandler.handle(error));
-        });
-    });
-
-    return response;
-
-};
-
 const searchCoupons = (queryParams, pagination) => {
-    return axios.get(`/api/v2/admin/couponsv2?page=${pagination.currentPage}&limit=${pagination.rowsPerPage}`)
+    let query = querystring.stringify(queryParams);
+    return  axios.get(`/api/v2/admin/couponsv2?page=` + pagination.currentPage + `&limit=` + pagination.rowsPerPage + `&` +query)
 }
 
 const handleEditCoupon = (queryParams, couponId) => {
@@ -113,14 +95,7 @@ const handleEditCoupon = (queryParams, couponId) => {
 };
 
 const handleDeleteCoupon = (id) => {
-    let response = new Promise((resolve, reject) => {
-        axios.delete(`/api/v2/admin/couponsv2/` + id).then((response) => {
-            resolve(response);
-        }).catch((error) => {
-            reject(ErrorHandler.handle(error));
-        });
-    });
-    return response;
+    return axios.delete(`/api/v2/admin/couponsv2/` + id)
 }
 
 
@@ -130,7 +105,6 @@ export {
     fetchSubCategories,
     fetchSubCategoryRules,
     handleAddCoupon,
-    handleGetCoupons,
     handleEditCoupon,
     handleDeleteCoupon,
     fetchEditCouponData,
