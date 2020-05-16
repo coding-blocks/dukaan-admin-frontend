@@ -13,6 +13,8 @@ import ProductsChooser from "../../../components/ProductsChooser";
 import Formatter from "../../../helpers/formatter";
 import Pagination from "../../../components/Pagination";
 import Loader from "../../../components/loader";
+import "../../../styles/pages/admin/coupons2.scss";
+
 
 class CouponsSearch extends React.Component {
 
@@ -22,7 +24,6 @@ class CouponsSearch extends React.Component {
         this.state = {
             filterParams: null
         }
-
     }
 
 
@@ -38,19 +39,17 @@ class CouponsSearch extends React.Component {
                 <Head title="Coding Blocks | Dukaan | Coupon"/>
                 <Layout/>
                 <CheckLogin>
+                    <div className={"col-md-12"}>
+                            <div className={"col-md-4 pull-left"}>
+                                <CouponFilterForm
+                                    onFiltersSet={this.onFiltersSet}
+                                />
+                            </div>
 
-                    <div className={"d-flex align-items-center mr-5 pr-5 mt-5"}>
-                        <div className={"d-flex col-4"}>
-                            <CouponFilterForm
-                                onFiltersSet={this.onFiltersSet}
-                            />
-                        </div>
-
-
-                        <div className={"d-flex col-md-8"}>
-                            <CouponsTable
-                                filterParams={this.state.filterParams}/>
-                        </div>
+                            <div className={"col-md-8 pull-right"}>
+                                <CouponsTable
+                                    filterParams={this.state.filterParams}/>
+                            </div>
 
                     </div>
                 </CheckLogin>

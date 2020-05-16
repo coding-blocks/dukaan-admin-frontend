@@ -2,6 +2,7 @@ import React from 'react'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Grid from "@material-ui/core/Grid";
 import Switch from '@material-ui/core/Switch';
 import * as controller from '../../controllers/v2/couponsV2'
 import FormControl from "@material-ui/core/FormControl";
@@ -59,22 +60,61 @@ class CouponFilterForm extends React.Component {
         }, () => {
             this.fillSubCategories({category: event.target.value})
         });
-
     }
-
 
     onFormInputChange = (event) => {
         const value = event.target.value;
         this.setState({
             filterParams: {
                 ...this.state.filterParams,
-                [event.target.name]: value
+                [event.target.name]: (event.target.name === 'active' ? !JSON.parse(event.target.value) : value)
             }
         });
     }
 
     onSetFiltersClicked = () => {
         this.props.onFiltersSet(this.state.filterParams)
+    }
+
+    handleDeleteCoupon = (coupon) => {
+        Swal.fire({
+          title: "Are you sure you want to delete coupon – " + coupon.code + " ?",
+          type: 'question',
+          confirmButtonColor: '#f66',
+          confirmButtonText: "Yes, delete!",
+          cancelButtonText: "No, stop!",
+          showCancelButton: true,
+          showConfirmButton: true,
+          showCloseButton: true
+        }).then((result) => {
+          if (result.value) {
+            // Confirmation passed, delete coupon.
+            controller.handleDeleteCoupon(coupon.id).then((response) => {
+              // Remove the coupon from the table.
+              let coupons = this.state.results;
+              let couponIndex = this.state.results.indexOf(coupon);
+              coupons.splice(couponIndex, 1);
+              this.setState({
+                results: coupons
+              });
+              // Show that the job is done
+              Swal.fire({
+                title: 'Coupon ' + coupon.code + ' Deleted!',
+                type: "info",
+                timer: '1500',
+                showConfirmButton: true,
+                confirmButtonText: "Okay"
+              });
+            }).catch((error) => {
+              Swal.fire({
+                title: "Error while deleting coupon!",
+                html: "Error: " + error,
+                type: "error",
+                showConfirmButton: true
+              });
+            });
+          }
+        });
     }
 
 
@@ -84,13 +124,13 @@ class CouponFilterForm extends React.Component {
         }
         return (
 
-            <div className={"d-flex col-7 mt-2"}>
+            <div className={"d-flex col-md-8 offset-2 mt-5"}>
 
                 <div className={"border-card coupon-card"}>
                     {/* Title */}
                     <div className={"d-flex justify-content-center mt-1 mb-3 pb-3"}>
                         <h2 className={"title"}>
-                            Search Filters
+                            Search Coupons
                         </h2>
                     </div>
 
@@ -99,7 +139,7 @@ class CouponFilterForm extends React.Component {
                             {/* Code */}
                             <TextField
                                 className={"mb-4"} id="outlined-basic" label="Code" type={"string"}
-                                name={"code"} value={this.state.filterParams.code}
+                                fullWidth={true} name={"code"} value={this.state.filterParams.code}
                                 onChange={this.onFormInputChange} variant="outlined"/>
 
                             {/* Category */}
@@ -179,7 +219,7 @@ class CouponFilterForm extends React.Component {
                             {/* Amount */}
                             <TextField
                                 id="outlined-basic" className={"mb-4"} label="Amount" type={"number"}
-                                name={"amount"} inputProps={{
+                                name={"amount"} fullWidth={true} inputProps={{
                                 max: 99999,
                             }}
                                 value={this.state.filterParams.amount}
@@ -192,19 +232,20 @@ class CouponFilterForm extends React.Component {
                                 control={
                                     <Switch checked={this.state.filterParams.active}
                                             onChange={this.onFormInputChange}
+                                            value={this.state.filterParams.active}
                                             name="active"
                                     />}
                                 label="Show Inactive"
                             />
 
-                            <div className={"mt-1"}>
-
+                            <Grid container justify="center">
                                 <Button
-                                    id="search" size="medium" variant="outlined" color="primary"
-                                    onClick={this.onSetFiltersClicked}>
-                                    Set Filters
+                                    id="search" size="medium" variant="outlined" className="btn-solid"
+                                    style={{background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)" , color: 'white', border: 0,
+                                        borderRadius: 3, boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)'}} onClick={this.onSetFiltersClicked}>
+                                    Search
                                 </Button>
-                            </div>
+                            </Grid>
 
                         </form>
                     </div>
