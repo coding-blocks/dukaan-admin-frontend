@@ -43,6 +43,8 @@ const couponSchema = Yup.object().shape({
     }),
     applicable_all_users: Yup.boolean()
         .required("Field is required."),
+    active: Yup.boolean()
+        .required("Field is required.")
 });
 
 const initialValues = {
@@ -77,7 +79,7 @@ class CouponForm extends React.Component {
         this.setState({couponUsers})
     }
 
-    setRandomCouponCode = (event) => {
+    setRandomCouponCode = () => {
         return controller.generateRandomCouponCode()
     }
 
@@ -239,7 +241,7 @@ class CouponForm extends React.Component {
                                                 this.props.onOrganizationChange(e)
                                             }}
                                             value={values.organization_id}
-                                            className={this.props.data.isEditMode ? "edit_organization" : "organization"}
+                                            className={this.props.data.isEditMode ? "edit-organization" : "organization"}
                                             disabled={this.props.data.isEditMode}
                                             required>
                                             {
@@ -259,21 +261,22 @@ class CouponForm extends React.Component {
                                                       errors={touched.code && errors.code}>
                                         <input
                                             type="text"
-                                            id="code"
                                             className="input-text"
+                                            id={this.props.data.isEditMode ? "edit-code" : "code"}
                                             placeholder="Enter Code"
                                             name="code"
                                             value={values.code}
                                             onBlur={handleBlur}
                                             onChange={handleChange}
-                                            className={this.props.data.isEditMode ? "edit_code" : "code"}
                                             disabled={this.props.data.isEditMode}
-                                            required
-                                        />
-                                        <span id="random_coupon" className="red pull-right mt-2"
-                                              onClick={() => setFieldValue("code", this.setRandomCouponCode())}>
-			                            	Generate Random Code
-			                            </span>
+                                            required/>
+
+                                        {!this.props.data.isEditMode &&
+                                            <span id="random_coupon" className="red pull-right mt-2"
+                                                  onClick={() => setFieldValue("code", this.setRandomCouponCode())}>
+    			                            	Generate Random Code
+    			                            </span>
+                                        }
                                     </FieldWithElement>
 
                                     {/* Authority_code */}
@@ -304,7 +307,7 @@ class CouponForm extends React.Component {
                                             onBlur={handleBlur}
                                             onChange={() => setFieldValue("category", this.props.handleCategoryChange(event))}
                                             value={values.category}
-                                            className={this.props.data.isEditMode ? "edit_category" : "category"}
+                                            className={this.props.data.isEditMode ? "edit-category" : "category"}
                                             disabled={this.props.data.isEditMode}>
                                             {
                                                 this.props.data.categories.map((category) => {
@@ -456,12 +459,29 @@ class CouponForm extends React.Component {
                                         />
                                     </FieldWithElement>
 
+                                    {/* Active */}
+                                    <div className={"mt-3 row d-flex"}>
+                                        <div className={"col-md-6"}>
+                                            <span className="text">Activate</span>
+                                        </div>
+                                        <div className={"col-md-6"}>
+                                            <input
+                                                name="active"
+                                                className={"ml-4 mt-3"}
+                                                type="checkbox"
+                                                checked={values.active}
+                                                value={values.active}
+                                                onChange={() => {setFieldValue("active", !values.active)}}/>
+                                        </div>
+
+                                    </div>
+
                                     {/* All User */}
                                     <div className={"mt-3 row d-flex"}>
                                         <div className={"col-md-6"}>
                                             <span className="text">Applicable for All Users?</span>
                                         </div>
-                                        <div className={"col-md-6"}>
+                                        <div className={"col-md-6"}> 
                                             <input
                                                 name="applicable_all_users"
                                                 className={"ml-4 mt-3"}
