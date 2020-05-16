@@ -56,7 +56,7 @@ class Auth extends React.Component {
                     <h3 align={"center"}>
                         {this.state.errorMessage}<br/>
                         Please try logging in here by <a href="/login" className={"red"}>clicking here</a>, or contact
-                        the dev team for assistance.
+                        the team for assistance.
                     </h3>
                 </div>
                 }
