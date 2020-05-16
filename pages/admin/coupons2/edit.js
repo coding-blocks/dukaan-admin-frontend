@@ -30,7 +30,7 @@ class EditCoupons extends React.Component {
             modalOrganizationId: '',
             couponProducts: {},
             couponUsers:[],
-            isAddMode:false
+            isEditMode:true
         }
     }
 

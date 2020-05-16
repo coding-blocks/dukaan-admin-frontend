@@ -26,7 +26,7 @@ class AddCoupons extends React.Component {
             modalOrganizationId: '',
             couponProducts: {},
             couponUsers:[],
-            isAddMode:true,
+            isEditMode:false,
         }
     }
 

@@ -128,10 +128,10 @@ class CouponForm extends React.Component {
     }
 
     onSubmit = (fields) => {
-        if (this.props.data.isAddMode) {
-            this.submitAddFormShowingSweetAlert(fields);
-        } else {
+        if (this.props.data.isEditMode) {
             this.submitEditFormShowingSweetAlert(fields);
+        } else {
+            this.submitAddFormShowingSweetAlert(fields);
         }
     }
 
@@ -221,7 +221,7 @@ class CouponForm extends React.Component {
         return (
             <div>
                 <div className={"border-card coupon-card col-md-9 offset-2 mt-5 mb-5"}>
-                    <Formik initialValues={this.props.data.isAddMode ? initialValues : this.makeEditCouponContext()}
+                    <Formik initialValues={this.props.data.isEditMode ? this.makeEditCouponContext() : initialValues}
                             validationSchema={couponSchema}
                             onSubmit={this.onSubmit}>
                         {({values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting, setFieldValue}) => (
@@ -239,6 +239,8 @@ class CouponForm extends React.Component {
                                                 this.props.onOrganizationChange(e)
                                             }}
                                             value={values.organization_id}
+                                            className={this.props.data.isEditMode ? "edit_organization" : "organization"}
+                                            disabled={this.props.data.isEditMode}
                                             required>
                                             {
                                                 this.props.data.organizations.map((organization) => {
@@ -264,6 +266,8 @@ class CouponForm extends React.Component {
                                             value={values.code}
                                             onBlur={handleBlur}
                                             onChange={handleChange}
+                                            className={this.props.data.isEditMode ? "edit_code" : "code"}
+                                            disabled={this.props.data.isEditMode}
                                             required
                                         />
                                         <span id="random_coupon" className="red pull-right mt-2"
@@ -300,8 +304,8 @@ class CouponForm extends React.Component {
                                             onBlur={handleBlur}
                                             onChange={() => setFieldValue("category", this.props.handleCategoryChange(event))}
                                             value={values.category}
-                                            className={this.props.data.isAddMode ? "category" : "edit_category"}
-                                            disabled={!this.props.data.isAddMode}>
+                                            className={this.props.data.isEditMode ? "edit_category" : "category"}
+                                            disabled={this.props.data.isEditMode}>
                                             {
                                                 this.props.data.categories.map((category) => {
                                                     return (
