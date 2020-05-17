@@ -29,7 +29,8 @@ class EditCoupons extends React.Component {
             modalProductTypeId: '',
             modalOrganizationId: '',
             couponProducts: {},
-            isAddMode:false
+            couponUsers:[],
+            isEditMode:true
         }
     }
 
@@ -51,13 +52,15 @@ class EditCoupons extends React.Component {
 
    componentDidMount() {
         controller.fetchEditCouponData(this.props.router.query)
-        .then(([subCategoryId, categories, subCategoryRules, subCategories, organizations, couponProducts]) => {
+        .then(([subCategoryId, categories, subCategoryRules, subCategories, organizations, couponProducts, couponUsers]) => {
             this.setState({
             	sub_category_id: subCategoryId.data,
                 categories: categories.data,
             	subCategoryRules: subCategoryRules.data,
             	subCategories: subCategories.data,
             	organizations: organizations.data,
+                modalOrganizationId: organizations.data[0].id,
+                couponUsers: couponUsers.data.map(u => u.user),
             	loaded: true
             })
             this.fillcouponProducts(couponProducts.data)
@@ -86,6 +89,27 @@ class EditCoupons extends React.Component {
         return parseInt(event.target.value)
     }
 
+    handleOpenModal = (productTypeId) => {
+        this.setState({
+            isModalOpen: true,
+            modalProductTypeId: productTypeId
+        })
+    }
+
+    handleCloseModal = () => {
+        this.setState({
+            isModalOpen: false
+        })
+    }
+
+    onProductsSelected = (productTypeId, products) => {
+        const newCouponProducts = this.state.couponProducts
+        newCouponProducts[productTypeId] = products
+        this.setState({
+            couponProducts: newCouponProducts
+        })
+    }
+
     render() {
         return (
             <div>
@@ -107,9 +131,28 @@ class EditCoupons extends React.Component {
                         {this.state.subCategoryRules.length > 0 &&
                             <ProductApplicabilityInfo productDetails={this.state.subCategoryRules}
                                                       couponProducts={this.state.couponProducts}
-                                                      handleModifyProducts={this.handleOpenModal} />
+                                                      handleModifyProducts={this.handleOpenModal}
+                            />
                         }
                     </div>
+
+                    { this.state.loaded && 
+                        this.state.modalProductTypeId &&
+                        this.state.modalOrganizationId ?
+                            <div>
+                                <ProductsChooserModal
+                                    preFilledProducts={
+                                        this.state.couponProducts[this.state.modalProductTypeId]
+                                    }
+                                    isModalOpen={this.state.isModalOpen}
+                                    handleCloseModal={this.handleCloseModal}
+                                    onProductsSelected={this.onProductsSelected}
+                                    organizationId={this.state.modalOrganizationId}
+                                    productTypeId={this.state.modalProductTypeId}/>
+                            </div>
+                            :
+                            <div/>
+                    }
                 </div>
                 </CheckLogin>
             </div>

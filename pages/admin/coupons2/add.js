@@ -10,7 +10,6 @@ import "../../../styles/pages/admin/coupons2.scss";
 import Swal from 'sweetalert2';
 import ProductApplicabilityInfo from "../../../components/ProductApplicabilityInfo";
 import ProductsChooserModal from "../../../components/ProductsChooser/ProductsChooserModal";
-import ConfirmationDialog from "../../../components/ConfirmationDialog";
 
 
 class AddCoupons extends React.Component {
@@ -26,28 +25,11 @@ class AddCoupons extends React.Component {
             modalProductTypeId: '',
             modalOrganizationId: '',
             couponProducts: {},
-            isAddMode: true,
-
-            isConfirmModalOpen: false,
+            couponUsers:[],
+            isEditMode:false,
         }
     }
 
-    onUnsavedChanges = () => {
-        this.setState({isConfirmModalOpen: true})
-    }
-
-    onAgree = () => {
-        this.setState({
-            isConfirmModalOpen: false,
-            couponProducts: {},
-        })
-    }
-
-    onDisagree = () => {
-        this.setState({
-            isConfirmModalOpen: false,
-        })
-    }
 
     componentDidMount() {
         // This should only contain single function that
@@ -140,10 +122,9 @@ class AddCoupons extends React.Component {
                         <div className={"col-md-6 pull-left"}>
                             {/* Coupon Form */}
                             <CouponForm data={this.state}
-                                        onUnsavedChanges={this.onUnsavedChanges}
-                                        handleCategoryChange={this.handleCategoryChange}
-                                        onOrganizationChange={this.onOrganizationChange}
-                                        handleSubCategoryChange={this.handleSubCategoryChange}/>
+                                           handleCategoryChange={this.handleCategoryChange}
+                                           onOrganizationChange={this.onOrganizationChange}
+                                           handleSubCategoryChange={this.handleSubCategoryChange}/>
                         </div>
                         <div className={"col-md-6 pull-right"}>
                             {/* Product applicability pane */}
@@ -173,9 +154,6 @@ class AddCoupons extends React.Component {
                                 :
                                 <div/>
                         }
-
-                        <ConfirmationDialog isOpen={this.state.isConfirmModalOpen} onDisagree={this.onDisagree}
-                                            onAgree={this.onAgree}/>
 
                     </div>
                 </CheckLogin>

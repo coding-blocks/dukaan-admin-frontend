@@ -43,15 +43,8 @@ const couponSchema = Yup.object().shape({
     }),
     applicable_all_users: Yup.boolean()
         .required("Field is required."),
-    // oneauth_ids: Yup.number().when('applicable_all_users', {
-    // 		is: (val) => val == false,
-    // 		then: Yup.array()
-    // 			.of(Yup.number())
-    // 			.typeError('User is required')
-    // 			.required('User is required'),
-    // 		otherwise: Yup.number().nullable().notRequired()
-    // 	}),
-
+    active: Yup.boolean()
+        .required("Field is required.")
 });
 
 const initialValues = {
@@ -68,7 +61,6 @@ const initialValues = {
     max_discount: null,
     percentage: null,
     amount: null,
-    oneauth_ids: [],
     valid_start: Date.now(),
     valid_end: new Date().setMonth(new Date().getMonth() + 1)
 }
@@ -79,7 +71,7 @@ class CouponForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            couponUsers: []
+            couponUsers: this.props.data.couponUsers
         }
     }
 
@@ -87,7 +79,7 @@ class CouponForm extends React.Component {
         this.setState({couponUsers})
     }
 
-    setRandomCouponCode = (event) => {
+    setRandomCouponCode = () => {
         return controller.generateRandomCouponCode()
     }
 
@@ -107,31 +99,52 @@ class CouponForm extends React.Component {
             max_discount: parseInt(this.props.data.coupon.max_discount),
             percentage: parseInt(this.props.data.coupon.percentage),
             amount: parseInt(this.props.data.coupon.amount),
-            oneauth_ids: [],
             valid_start: new Date(this.props.data.coupon.valid_start),
             valid_end: new Date(this.props.data.coupon.valid_end)
         }
     }
 
-    getCouponProductIds = (couponProducts) => {
-        const products = Object.values(couponProducts).flat()
+    getCouponProductIds = () => {
+        const couponProductsWithProuctTypeId = this.props.data.couponProducts
+        const products = Object.values(couponProductsWithProuctTypeId).flat()
         return products.map(p => p.id)
     }
 
+    getUserOneauthIds = () => {
+        const couponUsers = this.state.couponUsers
+        return couponUsers.map(u => u.oneauth_id)
+    }
+
+    handleCouponUserValidity = (applicable_all_users) => {
+        const oneauthIds = this.getUserOneauthIds() 
+        if (!oneauthIds.length && !applicable_all_users) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please choose coupon users!',
+                confirmButtonColor: '#f66',
+            })
+            return false
+        }
+        return true
+    }
+
     onSubmit = (fields) => {
-        if (this.props.data.isAddMode) {
-            this.submitAddFormShowingSweetAlert(fields);
-        } else {
+        if (this.props.data.isEditMode) {
             this.submitEditFormShowingSweetAlert(fields);
+        } else {
+            this.submitAddFormShowingSweetAlert(fields);
         }
     }
 
     submitAddFormShowingSweetAlert = (formValues) => {
-        const couponProducts = this.props.data.couponProducts
-        if (couponProducts) {
-            const productIds = this.getCouponProductIds(couponProducts)
-            formValues.product_ids = productIds
+        if (!this.handleCouponUserValidity(formValues.applicable_all_users)) {
+            return 
         }
+        const productIds = this.getCouponProductIds()
+        formValues.product_ids = productIds
+        const oneauthIds = this.getUserOneauthIds()
+        formValues.oneauth_ids = oneauthIds
 
         Swal.fire({
             title: "Create new coupon?",
@@ -166,6 +179,14 @@ class CouponForm extends React.Component {
     }
 
     submitEditFormShowingSweetAlert = (formValues) => {
+        if (!this.handleCouponUserValidity(formValues.applicable_all_users)) {
+            return 
+        }
+        const oneauthIds = this.getUserOneauthIds()
+        formValues.oneauth_ids = oneauthIds
+        const productIds = this.getCouponProductIds()
+        formValues.product_ids = productIds
+
         Swal.fire({
             title: "Save coupon?",
             html: `Code: ${formValues.code}<br/>Category : ${
@@ -202,7 +223,7 @@ class CouponForm extends React.Component {
         return (
             <div>
                 <div className={"border-card coupon-card col-md-9 offset-2 mt-5 mb-5"}>
-                    <Formik initialValues={this.props.data.isAddMode ? initialValues : this.makeEditCouponContext()}
+                    <Formik initialValues={this.props.data.isEditMode ? this.makeEditCouponContext() : initialValues}
                             validationSchema={couponSchema}
                             onSubmit={this.onSubmit}>
                         {({values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting, setFieldValue}) => (
@@ -226,6 +247,8 @@ class CouponForm extends React.Component {
                                                 this.props.onOrganizationChange(e)
                                             }}
                                             value={values.organization_id}
+                                            className={this.props.data.isEditMode ? "edit-organization" : "organization"}
+                                            disabled={this.props.data.isEditMode}
                                             required>
                                             {
                                                 this.props.data.organizations.map((organization) => {
@@ -244,19 +267,22 @@ class CouponForm extends React.Component {
                                                       errors={touched.code && errors.code}>
                                         <input
                                             type="text"
-                                            id="code"
                                             className="input-text"
+                                            id={this.props.data.isEditMode ? "edit-code" : "code"}
                                             placeholder="Enter Code"
                                             name="code"
                                             value={values.code}
                                             onBlur={handleBlur}
                                             onChange={handleChange}
-                                            required
-                                        />
-                                        <span id="random_coupon" className="red pull-right mt-2"
-                                              onClick={() => setFieldValue("code", this.setRandomCouponCode())}>
-			                            	Generate Random Code
-			                            </span>
+                                            disabled={this.props.data.isEditMode}
+                                            required/>
+
+                                        {!this.props.data.isEditMode &&
+                                            <span id="random_coupon" className="red pull-right mt-2"
+                                                  onClick={() => setFieldValue("code", this.setRandomCouponCode())}>
+    			                            	Generate Random Code
+    			                            </span>
+                                        }
                                     </FieldWithElement>
 
                                     {/* Authority_code */}
@@ -289,13 +315,13 @@ class CouponForm extends React.Component {
                                                 setFieldValue("category", this.props.handleCategoryChange(event))
                                             }}
                                             value={values.category}
-                                            className={this.props.data.isAddMode ? "category" : "edit_category"}
-                                            disabled={!this.props.data.isAddMode}>
+                                            className={this.props.data.isEditMode ? "edit-category" : "category"}
+                                            disabled={this.props.data.isEditMode}>
                                             {
                                                 this.props.data.categories.map((category) => {
                                                     return (
                                                         <option value={category} key={category}>
-                                                            {category}
+                                                            {category.split('_').join(' ')}
                                                         </option>)
                                                 })
                                             }
@@ -443,12 +469,29 @@ class CouponForm extends React.Component {
                                         />
                                     </FieldWithElement>
 
+                                    {/* Active */}
+                                    <div className={"mt-3 row d-flex"}>
+                                        <div className={"col-md-6"}>
+                                            <span className="text">Activate</span>
+                                        </div>
+                                        <div className={"col-md-6"}>
+                                            <input
+                                                name="active"
+                                                className={"ml-4 mt-3"}
+                                                type="checkbox"
+                                                checked={values.active}
+                                                value={values.active}
+                                                onChange={() => {setFieldValue("active", !values.active)}}/>
+                                        </div>
+
+                                    </div>
+
                                     {/* All User */}
                                     <div className={"mt-3 row d-flex"}>
                                         <div className={"col-md-6"}>
                                             <span className="text">Applicable for All Users?</span>
                                         </div>
-                                        <div className={"col-md-6"}>
+                                        <div className={"col-md-6"}> 
                                             <input
                                                 name="applicable_all_users"
                                                 className={"ml-4 mt-3"}
