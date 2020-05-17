@@ -216,6 +216,12 @@ class CouponForm extends React.Component {
                                             id="organization_id"
                                             name="organization_id"
                                             onChange={(e) => {
+
+                                                if (Object.keys(this.props.data.couponProducts).length !== 0) {
+                                                    this.props.onUnsavedChanges()
+                                                    return;
+                                                }
+
                                                 handleChange(e)
                                                 this.props.onOrganizationChange(e)
                                             }}
@@ -279,7 +285,9 @@ class CouponForm extends React.Component {
                                             id="category"
                                             name="category"
                                             onBlur={handleBlur}
-                                            onChange={() => setFieldValue("category", this.props.handleCategoryChange(event))}
+                                            onChange={() => {
+                                                setFieldValue("category", this.props.handleCategoryChange(event))
+                                            }}
                                             value={values.category}
                                             className={this.props.data.isAddMode ? "category" : "edit_category"}
                                             disabled={!this.props.data.isAddMode}>
@@ -302,7 +310,9 @@ class CouponForm extends React.Component {
                                             id="sub_category_id"
                                             name="sub_category_id"
                                             onBlur={handleBlur}
-                                            onChange={() => setFieldValue("sub_category_id", this.props.handleSubCategoryChange(event, values.category))}
+                                            onChange={() => {
+                                                setFieldValue("sub_category_id", this.props.handleSubCategoryChange(event, values.category))
+                                            }}
                                             value={values.sub_category_id}
                                             required>
                                             <option value="" key="">Select</option>
@@ -446,7 +456,7 @@ class CouponForm extends React.Component {
                                                 checked={values.applicable_all_users}
                                                 onChange={() => {
                                                     setFieldValue("applicable_all_users", !values.applicable_all_users)
-                                                    this.setState({couponUsers:[]})
+                                                    this.setState({couponUsers: []})
                                                 }}
                                                 value={values.applicable_all_users}/>
                                         </div>
