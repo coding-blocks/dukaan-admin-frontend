@@ -6,12 +6,14 @@ import PropTypes from 'prop-types';
 function ChipList({productList, limit}) {
     return (
         <div>
-            <Divider />
+            <Divider/>
             <div className="my-4 py-2 row no-gutters px-md-5 px-4">
-                {productList.slice(0, limit).map((pill) => {
-                    return (<div className="mb-4 mr-4 normal chip">
+                {productList.slice(0, limit).map((product) => {
+                    return (<div className="mb-4 mr-4 normal chip"
+                                 key={product}
+                    >
                         <Chip
-                            label={pill}
+                            label={product}
                             variant="outlined"
                         />
                     </div>)
@@ -23,8 +25,8 @@ function ChipList({productList, limit}) {
 }
 
 ChipList.propTypes = {
-    limit:PropTypes.number,
-    productList:PropTypes.array
+    limit: PropTypes.number,
+    productList: PropTypes.array
 }
 
 export default ChipList;

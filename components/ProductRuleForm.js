@@ -29,7 +29,7 @@ function ProductRuleForm({rule, onSaveChange}) {
                     return (
                         <div className="mt-3 row">
                             <div className="col-md-9">
-                                <span className={"text"}> Applicable on all {rule.name.toUpperCase()} ?</span>
+                                <span className={"text"}> Applicable on all {rule.product_type_name.toUpperCase()} ?</span>
                             </div>
                             <div className="element col-md-3" style={{display: 'flex'}}>
                                 <FormControlLabel

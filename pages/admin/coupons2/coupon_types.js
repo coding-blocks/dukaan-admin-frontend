@@ -57,7 +57,7 @@ class AddCouponTypes extends React.Component {
 
     handleSubCategoryChange = (event) => {
         controller.fetchSubCategoryRules({id: event.target.value, category: this.state.category}).then((response) => {
-            // console.log(response)
+            console.log(response.data)
             this.setState({
                 subCategoryRules: response.data,
                 formView: true,
@@ -74,12 +74,28 @@ class AddCouponTypes extends React.Component {
     onSaveChange = (newRule) => {
         this.setState({
             subCategoryRules: newRule
+        },()=> {
+
+            console.log('Inside the call Back Function')
+            //TODO
+            //Rename to subcategoty ID
+            const data = {
+                category: this.state.category,
+                id: Number(this.state.subCategory),
+                rules: this.state.subCategoryRules.map(({product_type_id,applicable_all}) => {
+                    return {
+                        product_type_id,
+                        applicable_all
+                    }
+                })
+            }
+            controller.editSubCategory(data)
         })
 
-        console.log(this.state.subCategoryRules)
+        // console.log(this.state.subCategoryRules)
     }
 
-    onAdd = (newSubCategory, newSubCategoryRules) =>{
+    onAdd = (newSubCategory, newSubCategoryRules) => {
         console.log(newSubCategory)
         console.log(newSubCategoryRules)
 
@@ -108,7 +124,7 @@ class AddCouponTypes extends React.Component {
                         </div>
                     </div>
 
-                    <AddNewRules categories={this.state.categories} onAdd = {this.onAdd} />
+                    <AddNewRules categories={this.state.categories} onAdd={this.onAdd}/>
 
                 </div>
             </div>
