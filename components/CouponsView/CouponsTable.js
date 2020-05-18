@@ -197,7 +197,7 @@ class CouponsTable extends React.Component {
                         </Table>
                     </TableContainer>
                     <PaginationTheme
-                        rowsPerPageOptions={[10]}
+                        rowsPerPageOptions={[5,10]}
                         component="div"
                         count={this.state.totalPages}
                         rowsPerPage={this.state.rowsPerPage}

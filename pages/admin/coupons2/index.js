@@ -29,7 +29,8 @@ class CouponsSearch extends React.Component {
     onSearchBtnClick = (filterParams) => {
         this.setState({
             filterParams
-        }, () => {
+        }, async () => {
+            await this.couponTable.current.resetPageInfo();
             this.couponTable.current.fillTable();
         });
     }
