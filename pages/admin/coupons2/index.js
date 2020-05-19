@@ -21,7 +21,9 @@ class CouponsSearch extends React.Component {
         super();
         this.couponTable = React.createRef();
         this.state = {
-            filterParams: null
+            filterParams: {
+                active:true
+            }
         }
     }
 
