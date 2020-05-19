@@ -99,12 +99,7 @@ const handleDeleteCoupon = (id) => {
 }
 
 const editSubCategory = (data) =>{
-    return axios.put(`/api/v2/admin/couponsv2/subCategory/rules`,data).then((response)=>{
-        console.log("Success!")
-    }).catch((error)=>{
-        console.log('Failure!')
-    })
-    // NOT HERE
+    return axios.put(`/api/v2/admin/couponsv2/subCategory/rules`,data)
 }
 
 const getProductTypes = () =>{

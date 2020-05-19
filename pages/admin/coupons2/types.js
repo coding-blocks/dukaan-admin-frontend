@@ -19,15 +19,14 @@ import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import AddNewRules from "../../../components/AddNewRules";
 
-class AddCouponTypes extends React.Component {
+class CouponTypes extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            organizations: [],
             categories: [],
             subCategories: [],
             subCategoryRules: [],
-            formView: false,
+            isFormVisible: false,
             category: '',
             subCategory: ''
         }
@@ -57,10 +56,9 @@ class AddCouponTypes extends React.Component {
 
     handleSubCategoryChange = (event) => {
         controller.fetchSubCategoryRules({id: event.target.value, category: this.state.category}).then((response) => {
-            console.log(response.data)
             this.setState({
                 subCategoryRules: response.data,
-                formView: true,
+                isFormVisible: true,
                 subCategory: event.target.value
             })
 
@@ -85,7 +83,12 @@ class AddCouponTypes extends React.Component {
                     }
                 })
             }
-            controller.editSubCategory(data)
+
+            controller.editSubCategory(data).then((response)=>{
+                console.log("Success!")
+            }).catch((error)=>{
+                console.log('Failure!')
+            })
         })
     }
 
@@ -105,7 +108,7 @@ class AddCouponTypes extends React.Component {
                                         handleSubCategoryChange={this.handleSubCategoryChange}/>
 
                             <div className="offset-1 pr-1 pl-1" style={{minWidth: '400px'}}>
-                                {this.state.formView ? <ProductRuleForm rule={this.state.subCategoryRules}
+                                {this.state.isFormVisible ? <ProductRuleForm rule={this.state.subCategoryRules}
                                                                         onSaveChange={this.onSaveChange}/> :
                                     <div></div>}
                             </div>
@@ -120,4 +123,4 @@ class AddCouponTypes extends React.Component {
     }
 }
 
-export default AddCouponTypes;
+export default CouponTypes;

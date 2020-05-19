@@ -14,8 +14,8 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
-import {KeyboardDateTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
+// import {KeyboardDateTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
+// import DateFnsUtils from "@date-io/date-fns";
 import {addSubCategoryRules, getProductTypes} from "../controllers/v2/couponsV2";
 import {error} from "next/dist/build/output/log";
 import ErrorHandler from "../helpers/ErrorHandler";
@@ -64,12 +64,6 @@ class AddNewRules extends React.Component {
             console.log("Failure!")
         })
 
-        this.setState({
-            open: false,
-            category:'',
-            subCategory:'',
-            description:''
-        })
     }
 
     render() {
@@ -161,11 +155,11 @@ class AddNewRules extends React.Component {
                                 {this.state.subCategoryRules.map((rule) => {
                                     return (
                                         <div className="mt-3 row">
-                                            <div className="col-md-9">
+                                            <div className="col-md-9" style={{display:'flex',alignItems:'center'}} >
                                                 <span
                                                     className={"text"}> Applicable on all {rule.name.toUpperCase()} ?</span>
                                             </div>
-                                            <div className="element col-md-3" style={{display: 'flex'}}>
+                                            <div className="element col-md-3">
                                                 <FormControlLabel
                                                     key={rule.id}
                                                     value={rule.applicable_all}
