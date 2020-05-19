@@ -54,31 +54,31 @@ function CouponEdit(props) {
                 </FormControl>
             </div>
 
-            <div className="mt-4 mb-4 pr-1 pl-1">
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <KeyboardDateTimePicker
-                        value={startDate}
-                        onChange={handleStartDateChange}
-                        label="Start Date"
-                        onError={console.log}
-                        minDate={new Date("2018-01-01T00:00")}
-                        format="yyyy/MM/dd hh:mm a"
-                    />
-                </MuiPickersUtilsProvider>
-            </div>
+            {/*<div className="mt-4 mb-4 pr-1 pl-1">*/}
+            {/*    <MuiPickersUtilsProvider utils={DateFnsUtils}>*/}
+            {/*        <KeyboardDateTimePicker*/}
+            {/*            value={startDate}*/}
+            {/*            onChange={handleStartDateChange}*/}
+            {/*            label="Start Date"*/}
+            {/*            onError={console.log}*/}
+            {/*            minDate={new Date("2018-01-01T00:00")}*/}
+            {/*            format="yyyy/MM/dd hh:mm a"*/}
+            {/*        />*/}
+            {/*    </MuiPickersUtilsProvider>*/}
+            {/*</div>*/}
 
-            <div className="mt-4 mb-4 pr-1 pl-1">
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <KeyboardDateTimePicker
-                        value={endDate}
-                        onChange={handleEndDateChange}
-                        label="End Date"
-                        onError={console.log}
-                        minDate={new Date("2018-01-01T00:00")}
-                        format="yyyy/MM/dd hh:mm a"
-                    />
-                </MuiPickersUtilsProvider>
-            </div>
+            {/*<div className="mt-4 mb-4 pr-1 pl-1">*/}
+            {/*    <MuiPickersUtilsProvider utils={DateFnsUtils}>*/}
+            {/*        <KeyboardDateTimePicker*/}
+            {/*            value={endDate}*/}
+            {/*            onChange={handleEndDateChange}*/}
+            {/*            label="End Date"*/}
+            {/*            onError={console.log}*/}
+            {/*            minDate={new Date("2018-01-01T00:00")}*/}
+            {/*            format="yyyy/MM/dd hh:mm a"*/}
+            {/*        />*/}
+            {/*    </MuiPickersUtilsProvider>*/}
+            {/*</div>*/}
 
         </div>
     );

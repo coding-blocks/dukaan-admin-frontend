@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Switch from '@material-ui/core/Switch';
@@ -10,6 +10,10 @@ function ProductRuleForm({rule, onSaveChange}) {
     const [rules, setRules] = useState(rule)
     const [editButton, setEditButton] = useState(false)
 
+    useEffect(()=>{
+        setRules(rule)
+    },[rule])
+
     const handleClick = (event) => {
         setEditButton(false)
         onSaveChange(rules)
@@ -17,21 +21,22 @@ function ProductRuleForm({rule, onSaveChange}) {
 
     return (
         <div>
-            <div style={{ padding:'10px', display: "flex", justifyContent: 'flex-end'}}>
-                <Button color="primary" disabled={editButton} onClick={()=>setEditButton(true)}
-                        startIcon={<EditIcon fontSize="small" />}
+            <div style={{display: "flex", justifyContent: 'flex-end'}}>
+                <Button variant="outlined" disabled={editButton} onClick={()=>setEditButton(true)}
+                        startIcon={<EditIcon fontSize="large" />}
                 >
                     Edit
                 </Button>
             </div>
-            <div className="pb-3">
+
+            <div className={"pb-3"}>
                 {rules.map((rule) => {
                     return (
-                        <div className="mt-3 row">
-                            <div className="col-md-9">
+                        <div className="mt-3 row" key={rule.id}>
+                            <div className="col-md-9" style={{display:'flex',alignItems:'center'}} >
                                 <span className={"text"}> Applicable on all {rule.product_type_name.toUpperCase()} ?</span>
                             </div>
-                            <div className="element col-md-3" style={{display: 'flex'}}>
+                            <div className="col-md-3">
                                 <FormControlLabel
                                     key={rule.id}
                                     value={rule.applicable_all}

@@ -99,15 +99,20 @@ const handleDeleteCoupon = (id) => {
 }
 
 const editSubCategory = (data) =>{
-
-    console.log('Inside the edit API')
-    console.log(data)
     return axios.put(`/api/v2/admin/couponsv2/subCategory/rules`,data).then((response)=>{
-        console.log(response.data)
         console.log("Success!")
-    }).then((error)=>{
+    }).catch((error)=>{
         console.log('Failure!')
     })
+    // NOT HERE
+}
+
+const getProductTypes = () =>{
+    return axios.get(`/api/v2/admin/product_types`)
+}
+
+const addSubCategoryRules = (data) =>{
+    return axios.post(`/api/v2/admin/couponsv2/subCategory`,data)
 }
 
 export {
@@ -121,5 +126,7 @@ export {
     handleDeleteCoupon,
     fetchEditCouponData,
     searchCoupons,
-    editSubCategory
+    editSubCategory,
+    getProductTypes,
+    addSubCategoryRules
 }

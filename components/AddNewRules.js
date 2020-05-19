@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -16,6 +16,9 @@ import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import {KeyboardDateTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
+import {addSubCategoryRules, getProductTypes} from "../controllers/v2/couponsV2";
+import {error} from "next/dist/build/output/log";
+import ErrorHandler from "../helpers/ErrorHandler";
 
 class AddNewRules extends React.Component {
     constructor(props) {
@@ -27,29 +30,46 @@ class AddNewRules extends React.Component {
             open: false,
             startDate: new Date("2020-03-07T03:53"),
             endDate: new Date("2020-05-07T12:23"),
-            subCategoryRules: [
-                {
-                    product_type_id: 1,
-                    applicable_all: false,
-                    name: 'course'
-                },
-                {
-                    product_type_id: 2,
-                    applicable_all: false,
-                    name: 'book'
-                },
-                {
-                    product_type_id: 3,
-                    applicable_all: false,
-                    name: 'extension'
-                }
-            ]
+            description:'',
+            subCategoryRules: []
         }
     }
 
+    // TODO
+    // product types
+    componentDidMount(){
+        getProductTypes().then((response)=>{
+            this.setState({subCategoryRules:response.data})
+        }).catch((error)=>{
+            ErrorHandler.handle(error)
+        })
+    }
+
     onSubmitAdd = () => {
-        this.props.onAdd(this.state.subCategory, this.state.subCategoryRules)
-        this.setState({open: false})
+        const data = {
+            category:this.state.category,
+            name:this.state.subCategory,
+            description: this.state.description,
+            rules:this.state.subCategoryRules.map(({id,applicable_all})=>{
+                return {
+                    product_type_id:id,
+                    applicable_all: applicable_all==undefined ? false : applicable_all
+                }
+            })
+        }
+
+        addSubCategoryRules(data).then((response)=>{
+            console.log("Success!") // add Sweet Alert
+        }).catch((error)=>{
+            console.log("Failure!")
+        })
+
+        this.setState({
+            open: false,
+            category:'',
+            subCategory:'',
+            description:''
+        })
     }
 
     render() {
@@ -60,7 +80,7 @@ class AddNewRules extends React.Component {
                         <AddIcon/>
                     </Fab>
                 </div>
-                <Dialog open={this.state.open}>
+                <Dialog open={this.state.open} onClose={() => this.setState({open: false})} >
                     <DialogTitle>Add New Subcategory</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
@@ -87,41 +107,54 @@ class AddNewRules extends React.Component {
                             </FormControl>
 
                             <TextField
+                                required
                                 autoFocus
                                 margin="dense"
-                                id="name"
+                                id="subCategory"
                                 label="Sub-Category"
                                 fullWidth
                                 value={this.state.subCategory}
                                 onChange={(e) => this.setState({subCategory: e.target.value})}
                             />
+
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="description"
+                                label="Description"
+                                fullWidth
+                                value={this.state.description}
+                                onChange={(e) => this.setState({description: e.target.value})}
+                            />
+
                         </div>
 
-                        <div className="mt-4 mb-4 pr-1 pl-1">
-                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                <KeyboardDateTimePicker
-                                    value={this.state.startDate}
-                                    onChange={(date) => this.setState({startDate: date})}
-                                    label="Start Date"
-                                    onError={console.log}
-                                    minDate={new Date("2018-01-01T00:00")}
-                                    format="yyyy/MM/dd hh:mm a"
-                                />
-                            </MuiPickersUtilsProvider>
-                        </div>
+                        {/*<div className="mt-4 mb-4 pr-1 pl-1">*/}
+                        {/*    <MuiPickersUtilsProvider utils={DateFnsUtils}>*/}
+                        {/*        <KeyboardDateTimePicker*/}
+                        {/*            value={this.state.startDate}*/}
+                        {/*            onChange={(date) => this.setState({startDate: date})}*/}
+                        {/*            label="Start Date"*/}
+                        {/*            onError={console.log}*/}
+                        {/*            minDate={new Date("2018-01-01T00:00")}*/}
+                        {/*            format="yyyy/MM/dd hh:mm a"*/}
+                        {/*        />*/}
+                        {/*    </MuiPickersUtilsProvider>*/}
+                        {/*</div>*/}
 
-                        <div className="mt-4 mb-4 pr-1 pl-1">
-                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                <KeyboardDateTimePicker
-                                    value={this.state.endDate}
-                                    onChange={(date) => this.setState({endDate: date})}
-                                    label="End Date"
-                                    onError={console.log}
-                                    minDate={new Date("2018-01-01T00:00")}
-                                    format="yyyy/MM/dd hh:mm a"
-                                />
-                            </MuiPickersUtilsProvider>
-                        </div>
+                        {/*<div className="mt-4 mb-4 pr-1 pl-1">*/}
+                        {/*    <MuiPickersUtilsProvider utils={DateFnsUtils}>*/}
+                        {/*        <KeyboardDateTimePicker*/}
+                        {/*            value={this.state.endDate}*/}
+                        {/*            onChange={(date) => this.setState({endDate: date})}*/}
+                        {/*            label="End Date"*/}
+                        {/*            onError={console.log}*/}
+                        {/*            minDate={new Date("2018-01-01T00:00")}*/}
+                        {/*            format="yyyy/MM/dd hh:mm a"*/}
+                        {/*        />*/}
+                        {/*    </MuiPickersUtilsProvider>*/}
+                        {/*</div>*/}
 
                         <div>
                             <div className="pb-3">
@@ -143,7 +176,7 @@ class AddNewRules extends React.Component {
                                                     onChange={() => {
                                                         this.setState(prevState => ({
                                                             subCategoryRules: prevState.subCategoryRules.map(
-                                                                obj => (obj.product_type_id === rule.product_type_id ? Object.assign(obj, {applicable_all: !rule.applicable_all}) : obj)
+                                                                obj => (obj.id === rule.id ? Object.assign(obj, {applicable_all: !rule.applicable_all}) : obj)
                                                             )
                                                         }))
                                                     }}
