@@ -27,6 +27,9 @@
     "frontend"
   ],
   "dependencies": {
+    "@material-ui/core": "^4.9.13",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.52",
     "@sentry/browser": "^5.6.3",
     "@syncfusion/ej2-react-dropdowns": "^17.2.39",
     "@syncfusion/ej2-react-grids": "^17.2.39",
@@ -42,6 +45,8 @@
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.24.0",
     "next": "^9.3.2",
+    "prop-types": "^15.7.2",
+    "query-string": "^6.12.1",
     "react": "^16.8.6",
     "react-datepicker": "^2.14.1",
     "react-dom": "^16.8.6",
@@ -49,7 +54,8 @@
     "react-select": "^3.0.4",
     "react-spinners": "^0.6.1",
     "sweetalert2": "^8.13.0",
-    "sweetalert2-react-content": "^1.1.0"
+    "sweetalert2-react-content": "^1.1.0",
+    "yup": "^0.28.5"
   },
   "bugs": {
     "url": "https://github.com/coding-blocks/dukaan-admin-frontend"

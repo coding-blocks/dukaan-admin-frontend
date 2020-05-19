@@ -15,4 +15,4 @@ const capturePaymentManual = (capturePayload) => {
 module.exports = {
     getTransactionByRazorpayPaymentId,
     capturePaymentManual
-};
+}

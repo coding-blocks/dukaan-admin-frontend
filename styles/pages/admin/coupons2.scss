@@ -1,0 +1,31 @@
+@import "../global.scss";
+
+#random_coupon {
+  font-size: 12pt;
+  cursor: pointer;
+}
+
+.input-textarea {
+  border-radius: 10px;
+  font-size: 13pt !important;
+}
+
+.edit-category, .edit-organization, #edit-code {
+	cursor: not-allowed;
+}
+
+.orange{
+  color:#f2734c;
+}
+
+.card-title{
+  padding-bottom:15px;
+}
+
+.tool-tip{
+  display: flex;
+}
+
+.tool-tip-title{
+  padding-top: 5px;
+}
