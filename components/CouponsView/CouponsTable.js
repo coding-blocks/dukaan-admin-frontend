@@ -29,6 +29,7 @@ class CouponsTable extends React.Component {
         super(props);
         this.state = {
             coupons: [],
+            totalCoupons: 0,
             rowsPerPage: 10,
             currentPage: 0,
             totalPages:0,
@@ -50,6 +51,7 @@ class CouponsTable extends React.Component {
         }).then((response) => {
             this.setState({
                 coupons: response.data.coupons,
+                totalCoupons: response.data.totalCoupons,
                 totalPages: response.data.pagesInfo.pageCount
             })
         }).catch((error) => {
@@ -199,7 +201,7 @@ class CouponsTable extends React.Component {
                     <PaginationTheme
                         rowsPerPageOptions={[5,10]}
                         component="div"
-                        count={this.state.totalPages}
+                        count={this.state.totalCoupons}
                         rowsPerPage={this.state.rowsPerPage}
                         page={this.state.currentPage}
                         onChangePage={this.handleChangePage}
