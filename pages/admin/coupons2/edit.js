@@ -51,7 +51,7 @@ class EditCoupons extends React.Component {
     }
 
    componentDidMount() {
-        controller.fetchEditCouponData(this.props.router.query)
+        controller.fetchEditCouponData(this.state.coupon)
         .then(([subCategoryId, categories, subCategoryRules, subCategories, organizations, couponProducts, couponUsers]) => {
             this.setState({
             	sub_category_id: subCategoryId.data,

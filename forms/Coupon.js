@@ -116,7 +116,7 @@ class CouponForm extends React.Component {
     }
 
     handleCouponUserValidity = (applicable_all_users) => {
-        const oneauthIds = this.getUserOneauthIds() 
+        const oneauthIds = this.getUserOneauthIds()
         if (!oneauthIds.length && !applicable_all_users) {
             Swal.fire({
                 icon: 'error',
@@ -139,7 +139,7 @@ class CouponForm extends React.Component {
 
     submitAddFormShowingSweetAlert = (formValues) => {
         if (!this.handleCouponUserValidity(formValues.applicable_all_users)) {
-            return 
+            return
         }
         const productIds = this.getCouponProductIds()
         formValues.product_ids = productIds
@@ -180,7 +180,7 @@ class CouponForm extends React.Component {
 
     submitEditFormShowingSweetAlert = (formValues) => {
         if (!this.handleCouponUserValidity(formValues.applicable_all_users)) {
-            return 
+            return
         }
         const oneauthIds = this.getUserOneauthIds()
         formValues.oneauth_ids = oneauthIds
@@ -272,8 +272,8 @@ class CouponForm extends React.Component {
                                             required/>
 
                                         {!this.props.data.isEditMode &&
-                                            <span id="random_coupon" className="red pull-right mt-2"
-                                                  onClick={() => setFieldValue("code", this.setRandomCouponCode())}>
+                                        <span id="random_coupon" className="red pull-right mt-2"
+                                              onClick={() => setFieldValue("code", this.setRandomCouponCode())}>
     			                            	Generate Random Code
     			                            </span>
                                         }
@@ -330,7 +330,8 @@ class CouponForm extends React.Component {
                                             onBlur={handleBlur}
                                             onChange={() => setFieldValue("sub_category_id", this.props.handleSubCategoryChange(event, values.category))}
                                             value={values.sub_category_id}
-                                            required>
+                                            required
+                                            disabled={this.props.data.isEditMode}>
                                             <option value="" key="">Select</option>
                                             {
                                                 this.props.data.subCategories.map((subcategory) => {
@@ -413,7 +414,7 @@ class CouponForm extends React.Component {
                                     /* Percentage */
                                     <div>
                                         <FieldWithElement
-                                            name={"Percentage*"}
+                                            name={"Percentage (%)*"}
                                             nameCols={3} elementCols={9} elementClassName={"pl-4"}
                                             errorColor={'tomato'} errors={touched.percentage && errors.percentage}>
                                             <input
@@ -471,7 +472,9 @@ class CouponForm extends React.Component {
                                                 type="checkbox"
                                                 checked={values.active}
                                                 value={values.active}
-                                                onChange={() => {setFieldValue("active", !values.active)}}/>
+                                                onChange={() => {
+                                                    setFieldValue("active", !values.active)
+                                                }}/>
                                         </div>
 
                                     </div>
@@ -481,7 +484,7 @@ class CouponForm extends React.Component {
                                         <div className={"col-md-6"}>
                                             <span className="text">Applicable for All Users?</span>
                                         </div>
-                                        <div className={"col-md-6"}> 
+                                        <div className={"col-md-6"}>
                                             <input
                                                 name="applicable_all_users"
                                                 className={"ml-4 mt-3"}
@@ -489,7 +492,7 @@ class CouponForm extends React.Component {
                                                 checked={values.applicable_all_users}
                                                 onChange={() => {
                                                     setFieldValue("applicable_all_users", !values.applicable_all_users)
-                                                    this.setState({couponUsers:[]})
+                                                    this.setState({couponUsers: []})
                                                 }}
                                                 value={values.applicable_all_users}/>
                                         </div>
