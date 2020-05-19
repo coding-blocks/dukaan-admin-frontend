@@ -11,6 +11,7 @@ import AsyncSelect from "react-select/async";
 import * as Yup from 'yup';
 import "react-datepicker/dist/react-datepicker.css";
 import SelectedUsers from "../components/SelectedUsers";
+import config from "../config";
 
 
 const couponSchema = Yup.object().shape({
@@ -161,11 +162,13 @@ class CouponForm extends React.Component {
             if (result.value) {
                 controller.handleAddCoupon(formValues).then(res => {
                     Swal.fire({
-                        title: "Coupon added!",
+                        title: `Coupon ${res.data.code} added!`,
                         type: "success",
                         timer: "3000",
                         showConfirmButton: true,
                         confirmButtonText: "Okay"
+                    }).then(() =>{
+                        window.location = `${config.domain}/admin/coupons2`;
                     });
                 }).catch(error => {
                     Swal.fire({
@@ -202,11 +205,13 @@ class CouponForm extends React.Component {
             if (result.value) {
                 controller.handleEditCoupon(formValues, this.props.data.coupon.id).then(res => {
                     Swal.fire({
-                        title: "Coupon updated!",
+                        title: `Coupon ${res.data.code} updated!`,
                         type: "success",
                         timer: "3000",
                         showConfirmButton: true,
                         confirmButtonText: "Okay"
+                    }).then(() =>{
+                        window.location = `${config.domain}/admin/coupons2`;
                     });
                 }).catch(error => {
                     Swal.fire({
