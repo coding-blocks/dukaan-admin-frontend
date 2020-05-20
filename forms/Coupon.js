@@ -335,6 +335,7 @@ class CouponForm extends React.Component {
                                             onBlur={handleBlur}
                                             onChange={() => setFieldValue("sub_category_id", this.props.handleSubCategoryChange(event, values.category))}
                                             value={values.sub_category_id}
+                                            className={this.props.data.isEditMode ? "edit-subcategory" : "subcategory"}
                                             required
                                             disabled={this.props.data.isEditMode}>
                                             <option value="" key="">Select</option>
