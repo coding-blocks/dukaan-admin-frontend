@@ -84,6 +84,14 @@ const searchCoupons = (queryParams, pagination) => {
 }
 
 const handleEditCoupon = (queryParams, couponId) => {
+
+    if (queryParams.mode === 'flat') {
+        delete queryParams.percentage
+        delete queryParams.max_discount
+    }  else {
+        delete queryParams.amount
+    }
+    
     let response = new Promise((resolve, reject) => {
         axios.patch(`/api/v2/admin/couponsV2/` + couponId, queryParams).then((r) => {
             resolve(r);
