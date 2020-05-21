@@ -63,7 +63,9 @@ class SearchInput extends React.Component {
                     fullWidth={true}
                     onChange={this.handleChange}
                     value={this.state.selectedProducts}
-                    getOptionLabel={(option) => option.name}
+                    getOptionLabel={(option) => {
+                        return `${option.name} @ ₹${option.mrp/100}`
+                    }}
                     id="tags-standard"
                     disableCloseOnSelect
                     filterSelectedOptions={true}
