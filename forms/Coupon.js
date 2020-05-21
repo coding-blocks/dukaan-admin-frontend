@@ -28,6 +28,8 @@ const couponSchema = Yup.object().shape({
         .required('Organization is required'),
     mode: Yup.string()
         .required('Mode is required'),
+    left: Yup.number()
+        .required('Field is required'),
     amount: Yup.number().when('mode', {
         is: (val) => val == "flat",
         then: Yup.number()
@@ -63,7 +65,7 @@ const initialValues = {
     percentage: null,
     amount: null,
     valid_start: Date.now(),
-    valid_end: new Date().setMonth(new Date().getMonth() + 1)
+    valid_end: new Date().setFullYear(new Date().getFullYear() + 1)
 }
 
 
@@ -168,7 +170,7 @@ class CouponForm extends React.Component {
                         showConfirmButton: true,
                         confirmButtonText: "Okay"
                     }).then(() =>{
-                        window.location = `${config.domain}/admin/coupons2`;
+                        window.location = `${config.domain}admin/coupons2`;
                     });
                 }).catch(error => {
                     Swal.fire({
@@ -211,7 +213,7 @@ class CouponForm extends React.Component {
                         showConfirmButton: true,
                         confirmButtonText: "Okay"
                     }).then(() =>{
-                        window.location = `${config.domain}/admin/coupons2`;
+                        window.location = `${config.domain}admin/coupons2`;
                     });
                 }).catch(error => {
                     Swal.fire({
@@ -231,7 +233,7 @@ class CouponForm extends React.Component {
                     <Formik initialValues={this.props.data.isEditMode ? this.makeEditCouponContext() : initialValues}
                             validationSchema={couponSchema}
                             onSubmit={this.onSubmit}>
-                        {({values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting, setFieldValue}) => (
+                        {({values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting, setFieldValue, setFieldTouched}) => (
 
                             <form onSubmit={handleSubmit}>
                                 <div className={"coupon-card"}>
@@ -247,8 +249,7 @@ class CouponForm extends React.Component {
                                             }}
                                             value={values.organization_id}
                                             className={this.props.data.isEditMode ? "edit-organization" : "organization"}
-                                            disabled={this.props.data.isEditMode}
-                                            required>
+                                            disabled={this.props.data.isEditMode}>
                                             {
                                                 this.props.data.organizations.map((organization) => {
                                                     return (
@@ -273,11 +274,10 @@ class CouponForm extends React.Component {
                                             value={values.code}
                                             onBlur={handleBlur}
                                             onChange={handleChange}
-                                            disabled={this.props.data.isEditMode}
-                                            required/>
+                                            disabled={this.props.data.isEditMode}/>
 
                                         {!this.props.data.isEditMode &&
-                                        <span id="random_coupon" className="red pull-right mt-2"
+                                        <span id="random_coupon" className="red pull-right mt-2 ml-2"
                                               onClick={() => setFieldValue("code", this.setRandomCouponCode())}>
     			                            	Generate Random Code
     			                            </span>
@@ -298,7 +298,6 @@ class CouponForm extends React.Component {
                                             value={values.authority_doc}
                                             onBlur={handleBlur}
                                             onChange={handleChange}
-                                            required
                                         />
                                     </FieldWithElement>
 
@@ -310,10 +309,15 @@ class CouponForm extends React.Component {
                                             id="category"
                                             name="category"
                                             onBlur={handleBlur}
-                                            onChange={() => setFieldValue("category", this.props.handleCategoryChange(event))}
+                                            onChange={() => {
+                                                setFieldValue("category", this.props.handleCategoryChange(event))
+                                                setFieldValue("sub_category_id", this.props.resetSubCategoryRules())
+                                                setFieldTouched("sub_category_id", false)
+                                             }}
                                             value={values.category}
                                             className={this.props.data.isEditMode ? "edit-category" : "category"}
                                             disabled={this.props.data.isEditMode}>
+                                            <option value="" key="">Select</option>
                                             {
                                                 this.props.data.categories.map((category) => {
                                                     return (
@@ -335,7 +339,7 @@ class CouponForm extends React.Component {
                                             onBlur={handleBlur}
                                             onChange={() => setFieldValue("sub_category_id", this.props.handleSubCategoryChange(event, values.category))}
                                             value={values.sub_category_id}
-                                            required
+                                            className={this.props.data.isEditMode ? "edit-subcategory" : "subcategory"}
                                             disabled={this.props.data.isEditMode}>
                                             <option value="" key="">Select</option>
                                             {
@@ -350,35 +354,43 @@ class CouponForm extends React.Component {
                                         </select>
                                     </FieldWithElement>
 
-                                    {/* Start Date */}
-                                    <FieldWithElement name={"Start Date"} nameCols={3} elementCols={9}
-                                                      elementClassName={"pl-4"}>
-                                        <DatePicker
-                                            showTimeSelect
-                                            timeFormat="HH:mm:ss"
-                                            timeIntervals={60}
-                                            timeCaption="time"
-                                            minDate={new Date()}
-                                            onChange={date => setFieldValue('valid_start', date)}
-                                            dateFormat="MMMM d, yyyy h:mm aa"
-                                            selected={values.valid_start}
-                                        />
-                                    </FieldWithElement>
+                                    { values.category !== "referral" && values.category !== "campus_ambassador" &&
+                                      values.category !== "telecounselor" &&
 
-                                    {/* End Date */}
-                                    <FieldWithElement name={"End Date"} nameCols={3} elementCols={9}
-                                                      elementClassName={"pl-4"}>
-                                        <DatePicker
-                                            showTimeSelect
-                                            timeFormat="HH:mm:ss"
-                                            timeIntervals={60}
-                                            minDate={new Date()}
-                                            onChange={date => setFieldValue('valid_end', date)}
-                                            timeCaption="time"
-                                            dateFormat="MMMM d, yyyy h:mm aa"
-                                            selected={values.valid_end}
-                                        />
-                                    </FieldWithElement>
+                                    <div>
+                                        {/* Start Date */}
+                                        <FieldWithElement name={"Start Date"} nameCols={3} elementCols={9}
+                                                          elementClassName={"pl-4"}>
+                                            <DatePicker
+                                                showTimeSelect
+                                                timeFormat="HH:mm:ss"
+                                                timeIntervals={60}
+                                                timeCaption="time"
+                                                minDate={new Date()}
+                                                onChange={date => setFieldValue('valid_start', date)}
+                                                dateFormat="MMMM d, yyyy h:mm aa"
+                                                selected={values.valid_start}
+                                            />
+                                        </FieldWithElement>
+
+                                        {/* End Date */}
+                                        <FieldWithElement name={"End Date"} nameCols={3} elementCols={9}
+                                                          elementClassName={"pl-4"}>
+                                            <DatePicker
+                                                showTimeSelect
+                                                timeFormat="HH:mm:ss"
+                                                timeIntervals={60}
+                                                minDate={new Date()}
+                                                onChange={date => setFieldValue('valid_end', date)}
+                                                timeCaption="time"
+                                                dateFormat="MMMM d, yyyy h:mm aa"
+                                                selected={values.valid_end}
+                                            />
+                                        </FieldWithElement>
+
+                                        </div>
+                                        }
+
 
                                     {/* Mode */}
                                     <FieldWithElement name={"Mode*"} nameCols={3} elementCols={9}
@@ -388,12 +400,18 @@ class CouponForm extends React.Component {
                                             id="mode"
                                             name="mode"
                                             onBlur={handleBlur}
-                                            onChange={handleChange}
-                                            value={values.mode}
-                                            required
-                                        >
-                                            <option value="flat">Flat</option>
-                                            <option value="percentage">Percentage</option>
+                                            onChange={() => {
+                                                setFieldValue("mode", event.target.value)
+                                                setFieldValue("amount", null)
+                                                setFieldTouched("amount", false)
+                                                setFieldValue("percentage", null)
+                                                setFieldTouched("percentage", false)
+                                                setFieldValue("max_discount", null)
+                                                setFieldTouched("max_discount", false)
+                                             }}
+                                            value={values.mode}>
+                                                <option value="flat">Flat</option>
+                                                <option value="percentage">Percentage</option>
                                         </select>
                                     </FieldWithElement>
 
@@ -408,6 +426,7 @@ class CouponForm extends React.Component {
                                             className={"input-text"}
                                             placeholder="Enter discount value"
                                             name="amount"
+                                            min="1"
                                             onBlur={handleBlur}
                                             onChange={handleChange}
                                             value={values.amount}
@@ -427,6 +446,8 @@ class CouponForm extends React.Component {
                                                 className={"input-text"}
                                                 placeholder="Enter Percentage"
                                                 name="percentage"
+                                                min="1"
+                                                max="100"
                                                 onBlur={handleBlur}
                                                 onChange={handleChange}
                                                 value={values.percentage}
@@ -441,6 +462,7 @@ class CouponForm extends React.Component {
                                                 className={"input-text"}
                                                 placeholder="Enter Max Discount Applicable"
                                                 name="max_discount"
+                                                min="0"
                                                 onBlur={handleBlur}
                                                 onChange={handleChange}
                                                 value={values.max_discount}
@@ -451,7 +473,8 @@ class CouponForm extends React.Component {
 
                                     {/* Total number of times a coupon can be used*/}
                                     <FieldWithElement name={"How many times it can be used?*"} nameCols={6}
-                                                      elementCols={6} elementClassName={"pl-4"}>
+                                                      elementCols={6} elementClassName={"pl-4"} errorColor={'tomato'} 
+                                                      errors={touched.left && errors.left}>
                                         <input
                                             type="number"
                                             className={"input-text"}
@@ -461,7 +484,6 @@ class CouponForm extends React.Component {
                                             value={values.left}
                                             min={1}
                                             title="Left can only have numbers"
-                                            required
                                         />
                                     </FieldWithElement>
 
