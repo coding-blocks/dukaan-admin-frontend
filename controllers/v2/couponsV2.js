@@ -106,6 +106,10 @@ const handleDeleteCoupon = (id) => {
     return axios.delete(`/api/v2/admin/couponsv2/` + id)
 }
 
+const getCoupon = (id) => {
+    return axios.get(`/api/v2/admin/couponsv2/` + id)
+}
+
 
 export {
     fetchAddCouponData,
@@ -117,5 +121,6 @@ export {
     handleDeleteCoupon,
     fetchEditCouponData,
     fetchAllCouponCategories,
-    searchCoupons
+    searchCoupons,
+    getCoupon
 }

@@ -1,18 +1,29 @@
+import {axios} from "../../../../DukaanAPI";
 import React from 'react'
 import {withRouter} from 'next/router';
-import Loader from '../../../components/loader';
-import Head from '../../../components/head';
-import Layout from "../../../components/layout";
-import CouponForm from "../../../forms/Coupon";
-import CheckLogin from "../../../components/CheckLogin";
-import * as controller from '../../../controllers/v2/couponsV2'
-import ErrorHandler from "../../../helpers/ErrorHandler";
-import "../../../styles/pages/admin/coupons2.scss";
+import Loader from '../../../../components/loader';
+import Head from '../../../../components/head';
+import Layout from "../../../../components/layout";
+import CouponForm from "../../../../forms/Coupon";
+import CheckLogin from "../../../../components/CheckLogin";
+import * as controller from '../../../../controllers/v2/couponsV2'
+import ErrorHandler from "../../../../helpers/ErrorHandler";
+import "../../../../styles/pages/admin/coupons2.scss";
 import Swal from 'sweetalert2'; 
-import ProductApplicabilityInfo from "../../../components/ProductApplicabilityInfo";
-import ProductsChooserModal from "../../../components/ProductsChooser/ProductsChooserModal";
+import ProductApplicabilityInfo from "../../../../components/ProductApplicabilityInfo";
+import ProductsChooserModal from "../../../../components/ProductsChooser/ProductsChooserModal";
 
 class EditCoupons extends React.Component { 
+
+    static async getInitialProps(ctx) {
+        const cId = ctx.query.cId
+        const response = await axios({
+            method: 'get',
+            url: `/api/v2/admin/couponsv2/` + cId,
+            headers: ctx.req ? { cookie: ctx.req.headers.cookie } : undefined
+          })
+        return { coupon: response.data }
+    }
 
     constructor(props) {
         super(props);
@@ -23,7 +34,7 @@ class EditCoupons extends React.Component {
             categories: [],
             subCategories: [],
             subCategoryRules: [],
-            coupon: this.props.router.query,
+            coupon: this.props.coupon,
 
             isModalOpen: false,
             modalProductTypeId: '',
@@ -50,8 +61,8 @@ class EditCoupons extends React.Component {
         })
     }
 
-   componentDidMount() {
-        controller.fetchEditCouponData(this.state.coupon)
+    componentDidMount() {
+        controller.fetchEditCouponData(this.props.coupon)
         .then(([subCategoryId, categories, subCategoryRules, subCategories, organizations, couponProducts, couponUsers]) => {
             this.setState({
             	sub_category_id: subCategoryId.data,
@@ -111,6 +122,7 @@ class EditCoupons extends React.Component {
     }
 
     render() {
+     
         return (
             <div>
                 <Head title="Coding Blocks | Dukaan | Edit Coupon"/>
