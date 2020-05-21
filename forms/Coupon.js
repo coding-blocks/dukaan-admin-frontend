@@ -409,6 +409,7 @@ class CouponForm extends React.Component {
                                             className={"input-text"}
                                             placeholder="Enter discount value"
                                             name="amount"
+                                            min="1"
                                             onBlur={handleBlur}
                                             onChange={handleChange}
                                             value={values.amount}
@@ -428,6 +429,8 @@ class CouponForm extends React.Component {
                                                 className={"input-text"}
                                                 placeholder="Enter Percentage"
                                                 name="percentage"
+                                                min="1"
+                                                max="100"
                                                 onBlur={handleBlur}
                                                 onChange={handleChange}
                                                 value={values.percentage}
@@ -442,6 +445,7 @@ class CouponForm extends React.Component {
                                                 className={"input-text"}
                                                 placeholder="Enter Max Discount Applicable"
                                                 name="max_discount"
+                                                min="0"
                                                 onBlur={handleBlur}
                                                 onChange={handleChange}
                                                 value={values.max_discount}
