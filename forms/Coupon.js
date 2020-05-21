@@ -65,7 +65,7 @@ const initialValues = {
     percentage: null,
     amount: null,
     valid_start: Date.now(),
-    valid_end: new Date().setMonth(new Date().getMonth() + 1)
+    valid_end: new Date().setFullYear(new Date().getFullYear() + 1)
 }
 
 
@@ -309,10 +309,15 @@ class CouponForm extends React.Component {
                                             id="category"
                                             name="category"
                                             onBlur={handleBlur}
-                                            onChange={() => setFieldValue("category", this.props.handleCategoryChange(event))}
+                                            onChange={() => {
+                                                setFieldValue("category", this.props.handleCategoryChange(event))
+                                                setFieldValue("sub_category_id", this.props.resetSubCategoryRules())
+                                                setFieldTouched("sub_category_id", false)
+                                             }}
                                             value={values.category}
                                             className={this.props.data.isEditMode ? "edit-category" : "category"}
                                             disabled={this.props.data.isEditMode}>
+                                            <option value="" key="">Select</option>
                                             {
                                                 this.props.data.categories.map((category) => {
                                                     return (
@@ -349,35 +354,43 @@ class CouponForm extends React.Component {
                                         </select>
                                     </FieldWithElement>
 
-                                    {/* Start Date */}
-                                    <FieldWithElement name={"Start Date"} nameCols={3} elementCols={9}
-                                                      elementClassName={"pl-4"}>
-                                        <DatePicker
-                                            showTimeSelect
-                                            timeFormat="HH:mm:ss"
-                                            timeIntervals={60}
-                                            timeCaption="time"
-                                            minDate={new Date()}
-                                            onChange={date => setFieldValue('valid_start', date)}
-                                            dateFormat="MMMM d, yyyy h:mm aa"
-                                            selected={values.valid_start}
-                                        />
-                                    </FieldWithElement>
+                                    { values.category !== "referral" && values.category !== "campus_ambassador" &&
+                                      values.category !== "telecounselor" &&
 
-                                    {/* End Date */}
-                                    <FieldWithElement name={"End Date"} nameCols={3} elementCols={9}
-                                                      elementClassName={"pl-4"}>
-                                        <DatePicker
-                                            showTimeSelect
-                                            timeFormat="HH:mm:ss"
-                                            timeIntervals={60}
-                                            minDate={new Date()}
-                                            onChange={date => setFieldValue('valid_end', date)}
-                                            timeCaption="time"
-                                            dateFormat="MMMM d, yyyy h:mm aa"
-                                            selected={values.valid_end}
-                                        />
-                                    </FieldWithElement>
+                                    <div>
+                                        {/* Start Date */}
+                                        <FieldWithElement name={"Start Date"} nameCols={3} elementCols={9}
+                                                          elementClassName={"pl-4"}>
+                                            <DatePicker
+                                                showTimeSelect
+                                                timeFormat="HH:mm:ss"
+                                                timeIntervals={60}
+                                                timeCaption="time"
+                                                minDate={new Date()}
+                                                onChange={date => setFieldValue('valid_start', date)}
+                                                dateFormat="MMMM d, yyyy h:mm aa"
+                                                selected={values.valid_start}
+                                            />
+                                        </FieldWithElement>
+
+                                        {/* End Date */}
+                                        <FieldWithElement name={"End Date"} nameCols={3} elementCols={9}
+                                                          elementClassName={"pl-4"}>
+                                            <DatePicker
+                                                showTimeSelect
+                                                timeFormat="HH:mm:ss"
+                                                timeIntervals={60}
+                                                minDate={new Date()}
+                                                onChange={date => setFieldValue('valid_end', date)}
+                                                timeCaption="time"
+                                                dateFormat="MMMM d, yyyy h:mm aa"
+                                                selected={values.valid_end}
+                                            />
+                                        </FieldWithElement>
+
+                                        </div>
+                                        }
+
 
                                     {/* Mode */}
                                     <FieldWithElement name={"Mode*"} nameCols={3} elementCols={9}
