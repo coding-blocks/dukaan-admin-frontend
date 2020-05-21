@@ -71,6 +71,13 @@ class AddCoupons extends React.Component {
         return event.target.value
     }
 
+    resetSubCategoryRules = () => {
+        this.setState({
+            subCategoryRules: []
+        })
+        return ""
+    }
+
     fillSubCategoryRules = (data) => {
         controller.fetchSubCategoryRules(data).then((subCategoryRules) => {
             this.setState({
@@ -124,7 +131,9 @@ class AddCoupons extends React.Component {
                             <CouponForm data={this.state}
                                            handleCategoryChange={this.handleCategoryChange}
                                            onOrganizationChange={this.onOrganizationChange}
-                                           handleSubCategoryChange={this.handleSubCategoryChange}/>
+                                           handleSubCategoryChange={this.handleSubCategoryChange}
+                                           resetSubCategoryRules={this.resetSubCategoryRules}
+                                           />
                         </div>
                         <div className={"col-md-6 pull-right"}>
                             {/* Product applicability pane */}
