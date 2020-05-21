@@ -14,11 +14,18 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+import Alert from '@material-ui/lab/Alert';
 // import {KeyboardDateTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 // import DateFnsUtils from "@date-io/date-fns";
 import {addSubCategoryRules, getProductTypes} from "../controllers/v2/couponsV2";
 import {error} from "next/dist/build/output/log";
 import ErrorHandler from "../helpers/ErrorHandler";
+
+// function Alert(props) {
+//     return <MuiAlert elevation={6} variant="filled" {...props} />;
+// }
 
 class AddNewRules extends React.Component {
     constructor(props) {
@@ -30,40 +37,51 @@ class AddNewRules extends React.Component {
             open: false,
             startDate: new Date("2020-03-07T03:53"),
             endDate: new Date("2020-05-07T12:23"),
-            description:'',
-            subCategoryRules: []
+            description: '',
+            subCategoryRules: [],
+            isSuccess: false,
+            isFailure: false
         }
     }
 
     // TODO
     // product types
-    componentDidMount(){
-        getProductTypes().then((response)=>{
-            this.setState({subCategoryRules:response.data})
-        }).catch((error)=>{
+    componentDidMount() {
+        getProductTypes().then((response) => {
+            this.setState({subCategoryRules: response.data})
+        }).catch((error) => {
             ErrorHandler.handle(error)
         })
     }
 
     onSubmitAdd = () => {
         const data = {
-            category:this.state.category,
-            name:this.state.subCategory,
+            category: this.state.category,
+            name: this.state.subCategory,
             description: this.state.description,
-            rules:this.state.subCategoryRules.map(({id,applicable_all})=>{
+            rules: this.state.subCategoryRules.map(({id, applicable_all}) => {
                 return {
-                    product_type_id:id,
-                    applicable_all: applicable_all==undefined ? false : applicable_all
+                    product_type_id: id,
+                    applicable_all: applicable_all == undefined ? false : applicable_all
                 }
             })
         }
 
-        addSubCategoryRules(data).then((response)=>{
+        addSubCategoryRules(data).then((response) => {
             console.log("Success!") // add Sweet Alert
-        }).catch((error)=>{
+            this.setState({isSuccess: true})
+        }).catch((error) => {
             console.log("Failure!")
+            this.setState({isFailure:true})
         })
 
+    }
+
+    handleSnackBarClose = () => {
+        this.setState({
+            isSuccess: false,
+            isFailure: false
+        })
     }
 
     render() {
@@ -74,7 +92,20 @@ class AddNewRules extends React.Component {
                         <AddIcon/>
                     </Fab>
                 </div>
-                <Dialog open={this.state.open} onClose={() => this.setState({open: false})} >
+
+                <Snackbar open={this.state.isSuccess} autoHideDuration={3000} onClose={this.handleSnackBarClose}>
+                    <Alert onClose={this.handleSnackBarClose} severity="success" variant="filled">
+                        New Sub-Category Added!
+                    </Alert>
+                </Snackbar>
+
+                <Snackbar open={this.state.isFailure} autoHideDuration={2000} onClose={this.handleSnackBarClose}>
+                    <Alert onClose={this.handleSnackBarClose} severity='error' variant="filled">
+                        Invalid Input!
+                    </Alert>
+                </Snackbar>
+
+                <Dialog open={this.state.open} onClose={() => this.setState({open: false})}>
                     <DialogTitle>Add New Subcategory</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
@@ -155,7 +186,7 @@ class AddNewRules extends React.Component {
                                 {this.state.subCategoryRules.map((rule) => {
                                     return (
                                         <div className="mt-3 row">
-                                            <div className="col-md-9" style={{display:'flex',alignItems:'center'}} >
+                                            <div className="col-md-9" style={{display: 'flex', alignItems: 'center'}}>
                                                 <span
                                                     className={"text"}> Applicable on all {rule.name.toUpperCase()} ?</span>
                                             </div>
