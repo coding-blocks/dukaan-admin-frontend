@@ -17,7 +17,7 @@ class EditCoupons extends React.Component {
 
     static async getInitialProps(ctx) {
         const cId = ctx.query.cId
-         const response = await axios({
+        const response = await axios({
             method: 'get',
             url: `/api/v2/admin/couponsv2/` + cId,
             headers: ctx.req ? { cookie: ctx.req.headers.cookie } : undefined
