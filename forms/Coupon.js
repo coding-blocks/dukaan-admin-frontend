@@ -32,18 +32,20 @@ const couponSchema = Yup.object().shape({
         .required('Field is required'),
     amount: Yup.number().when('mode', {
         is: (val) => val == "flat",
-        then: Yup.number()
+        then: Yup.number().min(1)
             .typeError('Discount is required')
             .required('Discount is required'),
         otherwise: Yup.number().nullable().notRequired()
     }),
     percentage: Yup.number().when('mode', {
         is: (val) => val == "percentage",
-        then: Yup.number()
+        then: Yup.number().min(1).max(100)
             .typeError('Percentage is required')
             .required('Percentage is required'),
         otherwise: Yup.number().nullable().notRequired()
     }),
+    max_discount: Yup.number().min(1)
+            .nullable().notRequired(),
     applicable_all_users: Yup.boolean()
         .required("Field is required."),
     active: Yup.boolean()
@@ -426,7 +428,6 @@ class CouponForm extends React.Component {
                                             className={"input-text"}
                                             placeholder="Enter discount value"
                                             name="amount"
-                                            min="1"
                                             onBlur={handleBlur}
                                             onChange={handleChange}
                                             value={values.amount}
@@ -446,8 +447,6 @@ class CouponForm extends React.Component {
                                                 className={"input-text"}
                                                 placeholder="Enter Percentage"
                                                 name="percentage"
-                                                min="1"
-                                                max="100"
                                                 onBlur={handleBlur}
                                                 onChange={handleChange}
                                                 value={values.percentage}
@@ -455,14 +454,14 @@ class CouponForm extends React.Component {
                                         </FieldWithElement>
 
                                         <FieldWithElement
-                                            name={"Max discount"}
-                                            nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                                            name={"Max discount"} nameCols={3} elementCols={9} 
+                                            elementClassName={"pl-4"} errorColor={'tomato'} 
+                                            errors={touched.max_discount && errors.max_discount}>
                                             <input
                                                 type="number"
                                                 className={"input-text"}
                                                 placeholder="Enter Max Discount Applicable"
                                                 name="max_discount"
-                                                min="1"
                                                 onBlur={handleBlur}
                                                 onChange={handleChange}
                                                 value={values.max_discount}
