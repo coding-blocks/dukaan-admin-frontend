@@ -44,8 +44,12 @@ const couponSchema = Yup.object().shape({
             .required('Percentage is required'),
         otherwise: Yup.number().nullable().notRequired()
     }),
-    max_discount: Yup.number().min(1)
+    max_discount: Yup.number().when('mode', {
+        is: (val) => val == "percentage",
+        then: Yup.number().min(1)
             .nullable().notRequired(),
+        otherwise: Yup.number().nullable().notRequired()
+    }),
     applicable_all_users: Yup.boolean()
         .required("Field is required."),
     active: Yup.boolean()
