@@ -111,7 +111,6 @@ const addSubCategoryRules = (data) =>{
 }
 
 export {
-    fetchAllCouponCategories,
     fetchAddCouponData,
     generateRandomCouponCode,
     fetchSubCategories,
@@ -120,6 +119,7 @@ export {
     handleEditCoupon,
     handleDeleteCoupon,
     fetchEditCouponData,
+    fetchAllCouponCategories,
     searchCoupons,
     editSubCategory,
     getProductTypes,

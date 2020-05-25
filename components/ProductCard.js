@@ -36,12 +36,15 @@ function ProductCard({detail: productType, handleModifyProducts, products}) {
                 <ToolTip title={`This coupon is applicable on all ${productType.product_type_name} products`}/>
                 : <ChipList productList={productList} limit={6}/>}
 
-            <div className="font-mds orange mt-3 px-md-6 px-5">
-                <Button
-                    color="primary">
-                    View all {productType.product_type_name}
-                </Button>
-            </div>
+            {!productType.applicable_all ?
+                <div className="font-mds orange mt-3 px-md-6 px-5">
+                    <Button
+                        color="primary">
+                        View all {productType.product_type_name}
+                    </Button>
+                </div>
+                : <div/>
+            }
         </div>
     )
 }

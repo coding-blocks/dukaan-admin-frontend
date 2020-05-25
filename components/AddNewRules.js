@@ -22,10 +22,8 @@ import Alert from '@material-ui/lab/Alert';
 import {addSubCategoryRules, getProductTypes} from "../controllers/v2/couponsV2";
 import {error} from "next/dist/build/output/log";
 import ErrorHandler from "../helpers/ErrorHandler";
+import {Formik,Form,Field} from "formik";
 
-// function Alert(props) {
-//     return <MuiAlert elevation={6} variant="filled" {...props} />;
-// }
 
 class AddNewRules extends React.Component {
     constructor(props) {
@@ -72,7 +70,7 @@ class AddNewRules extends React.Component {
             this.setState({isSuccess: true})
         }).catch((error) => {
             console.log("Failure!")
-            this.setState({isFailure:true})
+            this.setState({isFailure: true})
         })
 
     }
@@ -80,7 +78,8 @@ class AddNewRules extends React.Component {
     handleSnackBarClose = () => {
         this.setState({
             isSuccess: false,
-            isFailure: false
+        },()=>{
+            window.location.reload()
         })
     }
 
@@ -99,7 +98,7 @@ class AddNewRules extends React.Component {
                     </Alert>
                 </Snackbar>
 
-                <Snackbar open={this.state.isFailure} autoHideDuration={2000} onClose={this.handleSnackBarClose}>
+                <Snackbar open={this.state.isFailure} autoHideDuration={3000} onClose={this.handleSnackBarClose}>
                     <Alert onClose={this.handleSnackBarClose} severity='error' variant="filled">
                         Invalid Input!
                     </Alert>
@@ -107,124 +106,106 @@ class AddNewRules extends React.Component {
 
                 <Dialog open={this.state.open} onClose={() => this.setState({open: false})}>
                     <DialogTitle>Add New Subcategory</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            Select category and input subcategory
-                        </DialogContentText>
-                        <div>
-                            <FormControl required variant="filled" style={{minWidth: '220px'}}>
-                                <InputLabel id="category-input-required">Category</InputLabel>
-                                <Select
-                                    value={this.state.category}
-                                    onChange={(e) => this.setState({category: e.target.value})}
-                                    inputProps={{
-                                        id: "category-input-required"
-                                    }}
-                                >
-                                    {this.props.categories.map((category, index) => {
+
+
+
+                        <DialogContent>
+                            <DialogContentText>
+                                Select category and input subcategory
+                            </DialogContentText>
+                            <div>
+                                <FormControl required variant="filled" style={{minWidth: '220px'}}
+                                             onBlur={() => console.log('Selector!')}>
+                                    <InputLabel id="category-input-required">Category</InputLabel>
+                                    <Select
+                                        value={this.state.category}
+                                        onChange={(e) => this.setState({category: e.target.value})}
+                                        inputProps={{
+                                            id: "category-input-required"
+                                        }}
+                                    >
+                                        {this.props.categories.map((category, index) => {
+                                            return (
+                                                <MenuItem value={category} key={index}>
+                                                    {category}
+                                                </MenuItem>
+                                            )
+                                        })}
+                                    </Select>
+                                </FormControl>
+
+                                <TextField
+                                    required
+                                    autoFocus
+                                    margin="dense"
+                                    id="description"
+                                    label="Description"
+                                    fullWidth
+                                    value={this.state.description}
+                                    onChange={(e) => this.setState({description: e.target.value})}
+                                />
+
+                                <TextField
+                                    error={true}
+                                    required
+                                    autoFocus
+                                    margin="dense"
+                                    id="subCategory"
+                                    label="Sub-Category"
+                                    fullWidth
+                                    value={this.state.subCategory}
+                                    onChange={(e) => this.setState({subCategory: e.target.value})}
+                                />
+                            </div>
+
+                            <div>
+                                <div className="pb-3">
+                                    {this.state.subCategoryRules.map((rule) => {
                                         return (
-                                            <MenuItem value={category} key={index}>
-                                                {category}
-                                            </MenuItem>
-                                        )
-                                    })}
-                                </Select>
-                            </FormControl>
-
-                            <TextField
-                                required
-                                autoFocus
-                                margin="dense"
-                                id="subCategory"
-                                label="Sub-Category"
-                                fullWidth
-                                value={this.state.subCategory}
-                                onChange={(e) => this.setState({subCategory: e.target.value})}
-                            />
-
-                            <TextField
-                                required
-                                autoFocus
-                                margin="dense"
-                                id="description"
-                                label="Description"
-                                fullWidth
-                                value={this.state.description}
-                                onChange={(e) => this.setState({description: e.target.value})}
-                            />
-
-                        </div>
-
-                        {/*<div className="mt-4 mb-4 pr-1 pl-1">*/}
-                        {/*    <MuiPickersUtilsProvider utils={DateFnsUtils}>*/}
-                        {/*        <KeyboardDateTimePicker*/}
-                        {/*            value={this.state.startDate}*/}
-                        {/*            onChange={(date) => this.setState({startDate: date})}*/}
-                        {/*            label="Start Date"*/}
-                        {/*            onError={console.log}*/}
-                        {/*            minDate={new Date("2018-01-01T00:00")}*/}
-                        {/*            format="yyyy/MM/dd hh:mm a"*/}
-                        {/*        />*/}
-                        {/*    </MuiPickersUtilsProvider>*/}
-                        {/*</div>*/}
-
-                        {/*<div className="mt-4 mb-4 pr-1 pl-1">*/}
-                        {/*    <MuiPickersUtilsProvider utils={DateFnsUtils}>*/}
-                        {/*        <KeyboardDateTimePicker*/}
-                        {/*            value={this.state.endDate}*/}
-                        {/*            onChange={(date) => this.setState({endDate: date})}*/}
-                        {/*            label="End Date"*/}
-                        {/*            onError={console.log}*/}
-                        {/*            minDate={new Date("2018-01-01T00:00")}*/}
-                        {/*            format="yyyy/MM/dd hh:mm a"*/}
-                        {/*        />*/}
-                        {/*    </MuiPickersUtilsProvider>*/}
-                        {/*</div>*/}
-
-                        <div>
-                            <div className="pb-3">
-                                {this.state.subCategoryRules.map((rule) => {
-                                    return (
-                                        <div className="mt-3 row">
-                                            <div className="col-md-9" style={{display: 'flex', alignItems: 'center'}}>
+                                            <div className="mt-3 row" key={rule.id}>
+                                                <div className="col-md-9"
+                                                     style={{display: 'flex', alignItems: 'center'}}>
                                                 <span
                                                     className={"text"}> Applicable on all {rule.name.toUpperCase()} ?</span>
+                                                </div>
+                                                <div className="element col-md-3">
+                                                    <FormControlLabel
+                                                        key={rule.id}
+                                                        value={rule.applicable_all}
+                                                        control={<Switch color="primary"/>}
+                                                        label={rule.applicable_all ? "YES" : "NO"}
+                                                        labelPlacement="end"
+                                                        checked={rule.applicable_all}
+                                                        onChange={() => {
+                                                            this.setState(prevState => ({
+                                                                subCategoryRules: prevState.subCategoryRules.map(
+                                                                    obj => (obj.id === rule.id ? Object.assign(obj, {applicable_all: !rule.applicable_all}) : obj)
+                                                                )
+                                                            }))
+                                                        }}
+                                                    />
+                                                </div>
                                             </div>
-                                            <div className="element col-md-3">
-                                                <FormControlLabel
-                                                    key={rule.id}
-                                                    value={rule.applicable_all}
-                                                    control={<Switch color="primary"/>}
-                                                    label={rule.applicable_all ? "YES" : "NO"}
-                                                    labelPlacement="end"
-                                                    checked={rule.applicable_all}
-                                                    onChange={() => {
-                                                        this.setState(prevState => ({
-                                                            subCategoryRules: prevState.subCategoryRules.map(
-                                                                obj => (obj.id === rule.id ? Object.assign(obj, {applicable_all: !rule.applicable_all}) : obj)
-                                                            )
-                                                        }))
-                                                    }}
-                                                />
-                                            </div>
-                                        </div>
-                                    )
-                                })}
+                                        )
+                                    })}
+                                </div>
                             </div>
+
+                        </DialogContent>
+
+                        <div>
+                            <DialogActions>
+                                <Button onClick={() => this.setState({open: false})} color="primary">
+                                    Cancel
+                                </Button>
+                                <Button onClick={this.onSubmitAdd} color="primary">
+                                    Add
+                                </Button>
+                            </DialogActions>
                         </div>
 
-                    </DialogContent>
 
-                    <div>
-                        <DialogActions>
-                            <Button onClick={() => this.setState({open: false})} color="primary">
-                                Cancel
-                            </Button>
-                            <Button onClick={this.onSubmitAdd} color="primary">
-                                Add
-                            </Button>
-                        </DialogActions>
-                    </div>
+
                 </Dialog>
             </div>
         )
@@ -232,3 +213,29 @@ class AddNewRules extends React.Component {
 }
 
 export default AddNewRules;
+
+// <div className="mt-4 mb-4 pr-1 pl-1">
+//     <MuiPickersUtilsProvider utils={DateFnsUtils}>
+//         <KeyboardDateTimePicker
+//             value={this.state.startDate}
+//             onChange={(date) => this.setState({startDate: date})}
+//             label="Start Date"
+//             onError={console.log}
+//             minDate={new Date("2018-01-01T00:00")}
+//             format="yyyy/MM/dd hh:mm a"
+//         />
+//     </MuiPickersUtilsProvider>
+// </div>
+//
+// <div className="mt-4 mb-4 pr-1 pl-1">
+//     <MuiPickersUtilsProvider utils={DateFnsUtils}>
+//     <KeyboardDateTimePicker
+// value={this.state.endDate}
+// onChange={(date) => this.setState({endDate: date})}
+// label="End Date"
+// onError={console.log}
+// minDate={new Date("2018-01-01T00:00")}
+// format="yyyy/MM/dd hh:mm a"
+//     />
+//     </MuiPickersUtilsProvider>
+// </div>

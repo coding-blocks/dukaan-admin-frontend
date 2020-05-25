@@ -18,6 +18,7 @@ import CouponEdit from "../../../components/CouponEdit";
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import AddNewRules from "../../../components/AddNewRules";
+import TestingComponent from "../../../components/TestingComponent";
 
 class CouponTypes extends React.Component {
     constructor(props) {
@@ -115,7 +116,8 @@ class CouponTypes extends React.Component {
                         </div>
                     </div>
 
-                    <AddNewRules categories={this.state.categories}/>
+                    {/*<AddNewRules categories={this.state.categories}/>*/}
+                    <TestingComponent categories={this.state.categories} />
 
                 </div>
             </div>
