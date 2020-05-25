@@ -17,8 +17,6 @@ import AddIcon from '@material-ui/icons/Add';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Alert from '@material-ui/lab/Alert';
-// import {KeyboardDateTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
-// import DateFnsUtils from "@date-io/date-fns";
 import {addSubCategoryRules, getProductTypes} from "../controllers/v2/couponsV2";
 import {error} from "next/dist/build/output/log";
 import ErrorHandler from "../helpers/ErrorHandler";
@@ -63,7 +61,7 @@ class AddNewRules extends React.Component {
         })
     }
 
-    onSubmitAdd = (values,{resetForm}) => {
+    onSubmitAdd = (values) => {
         const data = {
             category: values.category,
             name: values.subCategory,
@@ -78,7 +76,6 @@ class AddNewRules extends React.Component {
 
         addSubCategoryRules(data).then((response) => {
             this.setState({isSuccess: true})
-            resetForm()
         }).catch((error) => {
             this.setState({isFailure: true})
         })
@@ -87,6 +84,8 @@ class AddNewRules extends React.Component {
     handleSuccessSnackBarClose = () => {
         this.setState({
             isSuccess: false,
+        },()=>{
+            window.location.reload()
         })
     }
 
@@ -113,7 +112,7 @@ class AddNewRules extends React.Component {
 
                 <Snackbar open={this.state.isFailure} autoHideDuration={3000} onClose={this.handleFailureSnackBarClose}>
                     <Alert severity='error' variant="filled">
-                        Invalid Input!
+                        Network Error!
                     </Alert>
                 </Snackbar>
 
@@ -209,7 +208,7 @@ class AddNewRules extends React.Component {
                                                                     labelPlacement="end"
                                                                     checked={rule.applicable_all}
                                                                     onChange={() => {
-                                                                        setFieldValue(`subCategoryRules.${index}.applicable_all`, !rule.applicable_all)
+                                                                        setFieldValue(`subCategoryRules[${index}].applicable_all`, !rule.applicable_all)
                                                                     }}
                                                                 />
                                                             </div>
