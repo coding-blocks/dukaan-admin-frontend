@@ -109,7 +109,8 @@ class CouponForm extends React.Component {
             percentage: parseInt(this.props.data.coupon.percentage),
             amount: parseInt(this.props.data.coupon.amount),
             valid_start: new Date(this.props.data.coupon.valid_start),
-            valid_end: new Date(this.props.data.coupon.valid_end)
+            valid_end: new Date(this.props.data.coupon.valid_end),
+            comment: this.props.data.coupon.comment
         }
     }
 
@@ -300,7 +301,7 @@ class CouponForm extends React.Component {
                                             className="input-textarea"
                                             placeholder="Enter Description"
                                             name="authority_doc"
-                                            rows="4"
+                                            rows="3"
                                             value={values.authority_doc}
                                             onBlur={handleBlur}
                                             onChange={handleChange}
@@ -529,14 +530,32 @@ class CouponForm extends React.Component {
                                     </div>
 
                                     {!values.applicable_all_users &&
-                                    <FieldWithElement name="User*" nameCols={3} elementCols={9}
-                                                      elementClassName={"pl-4"} errorColor={'tomato'}>
-                                        <SelectedUsers
-                                            preFilledUsers={this.state.couponUsers}
-                                            onUsersSelected={this.onUsersSelected}
-                                        />
+                                        <FieldWithElement name="User*" nameCols={3} elementCols={9}
+                                                          elementClassName={"pl-4"} errorColor={'tomato'}>
+                                            <SelectedUsers
+                                                preFilledUsers={this.state.couponUsers}
+                                                onUsersSelected={this.onUsersSelected}
+                                            />
 
-                                    </FieldWithElement>}
+                                        </FieldWithElement>
+                                    }
+
+                                    {this.props.data.isEditMode &&
+                                        <FieldWithElement name={"Comment*"} nameCols={3} elementCols={9}
+                                                      elementClassName={"pl-4"}>
+                                        <textarea
+                                            type="text"
+                                            className="input-textarea"
+                                            placeholder="Enter Comment"
+                                            name="comment"
+                                            rows="3"
+                                            value={values.comment}
+                                            onBlur={handleBlur}
+                                            onChange={handleChange}
+                                            />
+
+                                        </FieldWithElement>
+                                    }
 
                                     <div className={"d-flex justify-content-center"}>
                                         <button
