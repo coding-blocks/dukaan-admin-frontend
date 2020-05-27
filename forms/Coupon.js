@@ -357,7 +357,7 @@ class CouponForm extends React.Component {
                                             onBlur={handleBlur}
                                             onChange={() => {
                                                 setFieldValue("category", this.props.handleCategoryChange(event))
-                                                setFieldValue("sub_category_id", this.props.resetSubCategoryRules())
+                                                setFieldValue("sub_category_id", "")
                                                 setFieldTouched("sub_category_id", false)
                                              }}
                                             value={values.category}
