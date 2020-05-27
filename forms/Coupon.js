@@ -1,18 +1,18 @@
-// import React from 'react'
-import React, {useEffect, useState} from 'react';
+import React from 'react'
 import FieldWithElement from '../components/FieldWithElement';
 import DatePicker from "react-datepicker";
 import {Formik} from 'formik';
 import ErrorHandler from "../helpers/ErrorHandler";
 import * as controller from '../controllers/v2/couponsV2'
-import userController from "../controllers/users";
 import Swal from "sweetalert2";
-import AsyncSelect from "react-select/async";
 import * as Yup from 'yup';
 import "react-datepicker/dist/react-datepicker.css";
 import SelectedUsers from "../components/SelectedUsers";
 import config from "../config";
+import CouponProductsNotice from '../components/CouponProductsNotice'
+import withReactContent from "sweetalert2-react-content";
 
+const ReactSwal = withReactContent(Swal);
 
 const couponSchema = Yup.object().shape({
     authority_doc: Yup.string()
@@ -139,11 +139,50 @@ class CouponForm extends React.Component {
         return true
     }
 
-    onSubmit = (fields) => {
+    onSubmit = async (fields) => {
+        if (fields.amount)
+            if( !(await this.getProductsWithMrpLessThanDiscount(fields)) ) 
+                return
+
         if (this.props.data.isEditMode) {
             this.submitEditFormShowingSweetAlert(fields);
         } else {
             this.submitAddFormShowingSweetAlert(fields);
+        }
+    }
+
+    getProductsWithMrpLessThanDiscount = async (formValues) => {
+        try {
+            const payload = {
+                amount: formValues.amount,
+                product_ids: await this.getCouponProductIds(),
+                category: formValues.category,
+                sub_category_id: formValues.sub_category_id,
+                mode: formValues.mode
+            }    
+            const response = await controller.getProductsWithMrpLessThanDiscount(payload)
+            if (!response.data.length) {
+                return true
+            }
+            const result = await ReactSwal.fire({
+                    title: "Products List",
+                    html: <CouponProductsNotice productList={response.data}/>,
+                    heightAuto:false,
+                    width: 600,
+                    confirmButtonColor: "#f66",
+                    confirmButtonText: "Proceed!",
+                    cancelButtonText: "Stop!",
+                    showCancelButton: true,
+                    showConfirmButton: true,
+                    showCloseButton: true
+                })
+            return result.value ? true : false
+        } catch (err) {
+            Swal.fire({
+                title: "Error in saving coupon!",
+                type: "error",
+                text: err
+            });
         }
     }
 

@@ -110,6 +110,10 @@ const getCoupon = (id) => {
     return axios.get(`/api/v2/admin/couponsv2/` + id)
 }
 
+const getProductsWithMrpLessThanDiscount = (data) => {
+    return axios.get(`/api/v2/admin/couponsv2/productsWithMrpLessThanDiscount`, {params: data})
+}
+
 
 export {
     fetchAddCouponData,
@@ -122,5 +126,6 @@ export {
     fetchEditCouponData,
     fetchAllCouponCategories,
     searchCoupons,
-    getCoupon
+    getCoupon,
+    getProductsWithMrpLessThanDiscount
 }
