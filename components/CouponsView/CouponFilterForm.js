@@ -102,8 +102,8 @@ class CouponFilterForm extends React.Component {
                                     name={"category"}
                                     onChange={this.handleCategoryChange}
                                     label="Category">
-                                    <MenuItem value="All Categories">
-                                        <em>All Categories</em>
+                                    <MenuItem value="">
+                                        <em>Select</em>
                                     </MenuItem>
                                     {
                                         this.state.categories.map((category) => {
@@ -128,8 +128,8 @@ class CouponFilterForm extends React.Component {
                                     label="Sub Category"
                                     name={"subCategoryId"}
                                     onChange={this.onFormInputChange}>
-                                    <MenuItem value="All Sub Categories">
-                                        <em>All Sub Categories</em>
+                                    <MenuItem value="">
+                                        <em>Select</em>
                                     </MenuItem>
                                     {
                                         this.state.subCategories.map((subCategory) => {
@@ -187,7 +187,7 @@ class CouponFilterForm extends React.Component {
                                             value={this.state.filterParams.active}
                                             name="active"
                                     />}
-                                label="Show Inactive"
+                                label="Show Active"
                             />
 
                             <Grid container justify="center">

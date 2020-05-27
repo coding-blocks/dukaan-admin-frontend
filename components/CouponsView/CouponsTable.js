@@ -29,6 +29,7 @@ class CouponsTable extends React.Component {
         super(props);
         this.state = {
             coupons: [],
+            totalCoupons: 0,
             rowsPerPage: 10,
             currentPage: 0,
             totalPages:0,
@@ -50,6 +51,7 @@ class CouponsTable extends React.Component {
         }).then((response) => {
             this.setState({
                 coupons: response.data.coupons,
+                totalCoupons: response.data.totalCoupons,
                 totalPages: response.data.pagesInfo.pageCount
             })
         }).catch((error) => {
@@ -154,6 +156,7 @@ class CouponsTable extends React.Component {
                                     <TableCell align="center" className={"red"}>MODE</TableCell>
                                     <TableCell align="center" className={"red"}>DISCOUNT</TableCell>
                                     <TableCell align="center" className={"red"}>LEFT</TableCell>
+                                    <TableCell align="center" className={"red"}>CREATED BY</TableCell>
                                     <TableCell align="center" className={"red"}>EDIT</TableCell>
                                     <TableCell align="center" className={"red"}>DELETE</TableCell>
                                 </TableRow>
@@ -170,14 +173,15 @@ class CouponsTable extends React.Component {
                                             coupon.mode === 'flat' ? coupon.amount : `${coupon.percentage}%`
                                         }</TableCell>
                                         <TableCell align="center">{coupon.left}</TableCell>
+                                        <TableCell align="center">{coupon.created_by}</TableCell>
+
                                         <TableCell align="center">
 
                                         <Button size="small" variant="outlined" 
                                                 style={{background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)" , color: 'white', border: 0,
                                                 borderRadius: 3, boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)'}} onClick={() => Router.push({
-                                                    pathname: '/admin/coupons2/edit',
-                                                    query: coupon,
-                                                  }, `/admin/coupons2/edit/${coupon.id}`)
+                                                    pathname: `/admin/coupons2/edit/${coupon.id}`
+                                                  })
                                                 }>
                                                 Edit
                                         </Button>
@@ -197,9 +201,9 @@ class CouponsTable extends React.Component {
                         </Table>
                     </TableContainer>
                     <PaginationTheme
-                        rowsPerPageOptions={[10]}
+                        rowsPerPageOptions={[5,10]}
                         component="div"
-                        count={this.state.totalPages}
+                        count={this.state.totalCoupons}
                         rowsPerPage={this.state.rowsPerPage}
                         page={this.state.currentPage}
                         onChangePage={this.handleChangePage}

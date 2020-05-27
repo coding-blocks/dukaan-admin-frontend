@@ -84,6 +84,14 @@ const searchCoupons = (queryParams, pagination) => {
 }
 
 const handleEditCoupon = (queryParams, couponId) => {
+
+    if (queryParams.mode === 'flat') {
+        delete queryParams.percentage
+        delete queryParams.max_discount
+    }  else {
+        delete queryParams.amount
+    }
+    
     let response = new Promise((resolve, reject) => {
         axios.patch(`/api/v2/admin/couponsV2/` + couponId, queryParams).then((r) => {
             resolve(r);
@@ -98,6 +106,14 @@ const handleDeleteCoupon = (id) => {
     return axios.delete(`/api/v2/admin/couponsv2/` + id)
 }
 
+const getCoupon = (id) => {
+    return axios.get(`/api/v2/admin/couponsv2/` + id)
+}
+
+const getProductsWithMrpLessThanDiscount = (data) => {
+    return axios.get(`/api/v2/admin/couponsv2/productsWithMrpLessThanDiscount`, {params: data})
+}
+
 
 export {
     fetchAddCouponData,
@@ -109,5 +125,7 @@ export {
     handleDeleteCoupon,
     fetchEditCouponData,
     fetchAllCouponCategories,
-    searchCoupons
+    searchCoupons,
+    getCoupon,
+    getProductsWithMrpLessThanDiscount
 }
