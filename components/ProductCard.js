@@ -39,6 +39,9 @@ function ProductCard({detail: productType, handleModifyProducts, products}) {
             {!productType.applicable_all ?
                 <div className="font-mds orange mt-3 px-md-6 px-5">
                     <Button
+                        onClick={() => {
+                            handleModifyProducts(productType.product_type_id)
+                        }}
                         color="primary">
                         View all {productType.product_type_name}
                     </Button>
