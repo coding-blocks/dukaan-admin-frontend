@@ -187,7 +187,7 @@ class CouponFilterForm extends React.Component {
                                             value={this.state.filterParams.active}
                                             name="active"
                                     />}
-                                label="Show Inactive"
+                                label="Show Active"
                             />
 
                             <Grid container justify="center">

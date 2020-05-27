@@ -156,6 +156,7 @@ class CouponsTable extends React.Component {
                                     <TableCell align="center" className={"red"}>MODE</TableCell>
                                     <TableCell align="center" className={"red"}>DISCOUNT</TableCell>
                                     <TableCell align="center" className={"red"}>LEFT</TableCell>
+                                    <TableCell align="center" className={"red"}>CREATED BY</TableCell>
                                     <TableCell align="center" className={"red"}>EDIT</TableCell>
                                     <TableCell align="center" className={"red"}>DELETE</TableCell>
                                 </TableRow>
@@ -172,6 +173,8 @@ class CouponsTable extends React.Component {
                                             coupon.mode === 'flat' ? coupon.amount : `${coupon.percentage}%`
                                         }</TableCell>
                                         <TableCell align="center">{coupon.left}</TableCell>
+                                        <TableCell align="center">{coupon.created_by}</TableCell>
+
                                         <TableCell align="center">
 
                                         <Button size="small" variant="outlined" 
