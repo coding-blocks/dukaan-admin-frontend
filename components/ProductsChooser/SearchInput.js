@@ -13,6 +13,7 @@ class SearchInput extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            searchInput: '',
             productSearchResults: [],
             selectedProducts: props.preFilledProducts ? props.preFilledProducts : []
         }
@@ -27,22 +28,29 @@ class SearchInput extends React.Component {
     }
 
     onSearchInputChange = (event) => {
-        if (event.target.value.length > 3) {
-            productsController.searchProducts({
-                organization_id: this.props.organizationId,
-                product_type_id: this.props.productTypeId,
-                name: event.target.value
-            }).then((response) => {
+        this.setState({
+            searchInput: event.target.value
+        }, () => {
+            this.handleSearch()
+        })
 
-                this.setState({
-                    productSearchResults: response.data
-                })
+    }
 
-            }).catch((err) => {
-                ErrorHandler.handle(err)
+    handleSearch = () => {
+        productsController.searchProducts({
+            organization_id: this.props.organizationId,
+            product_type_id: this.props.productTypeId,
+            description: this.state.searchInput
+        }).then((response) => {
+            this.setState({
+                productSearchResults: response.data
             })
-        }
-
+        }).catch((err) => {
+            this.setState({
+                productSearchResults: []
+            })
+            ErrorHandler.handle(err)
+        })
     }
 
 
@@ -64,13 +72,13 @@ class SearchInput extends React.Component {
                     onChange={this.handleChange}
                     value={this.state.selectedProducts}
                     getOptionLabel={(option) => {
-                        return `${option.name} @ ₹${option.mrp/100}`
+                        return option.description
                     }}
                     id="tags-standard"
                     disableCloseOnSelect
-                    filterSelectedOptions={true}
+                    filterSelectedOptions
                     getOptionSelected={(option, value) => {
-                        return option.name === value.name
+                        return option.id === value.id
                     }}
                     options={this.state.productSearchResults}
                     renderOption={(option, {selected}) => (
