@@ -21,7 +21,8 @@ const CouponProductsNotice = ({productList}) => {
         <div className={"d-flex align-items-center justify-content-center"}>
             <div className={"col-md-12 mt-1"}>
                 <span className="red pull-right ml-2 mb-1">
-                    *products with Mrp less than entered discount*
+                    <b>*Listed products have Mrp less than entered discount. Proceeding will
+                        make these products free for the generated coupon.*</b>
                 </span>
 
                 <TableContainer className={classes.table} component={Paper}>
@@ -36,7 +37,7 @@ const CouponProductsNotice = ({productList}) => {
                       {productList.map((product) => (
                         <TableRow key={product.id}>
                           <TableCell align="center">{product.name}</TableCell>
-                          <TableCell align="center">{product.mrp}</TableCell>
+                          <TableCell align="center">{product.mrp / 100}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

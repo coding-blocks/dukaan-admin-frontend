@@ -165,7 +165,7 @@ class CouponForm extends React.Component {
                 return true
             }
             const result = await ReactSwal.fire({
-                    title: "Products List",
+                    title: "Free Products!",
                     html: <CouponProductsNotice productList={response.data}/>,
                     heightAuto:false,
                     width: 600,
@@ -591,6 +591,7 @@ class CouponForm extends React.Component {
                                             value={values.comment}
                                             onBlur={handleBlur}
                                             onChange={handleChange}
+                                            required
                                             />
 
                                         </FieldWithElement>
