@@ -15,10 +15,6 @@ import ProductsChooserModal from "../../../../components/ProductsChooser/Product
 
 class EditCoupons extends React.Component {
 
-    static async getInitialProps({query}) {
-        return {query}
-    }
-
     constructor(props) {
         super(props);
         this.state = {
@@ -56,7 +52,13 @@ class EditCoupons extends React.Component {
     }
 
     componentDidMount() {
-        controller.getCoupon(this.props.query.cId).then((response) => {
+        const search = window.location.search;
+        const params = new URLSearchParams(search);
+        const couponId = params.get('couponId');
+        if (!couponId) {
+            window.location.href = '/'
+        }
+        controller.getCoupon(couponId).then((response) => {
             this.setState({
                 coupon: response.data
             })

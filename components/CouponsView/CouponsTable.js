@@ -177,7 +177,7 @@ class CouponsTable extends React.Component {
                                         <TableCell align="center">{coupon.created_by}</TableCell>
 
                                         <TableCell align="center">
-                                            <Link href={`/admin/coupons2/edit/${coupon.id}`}>
+                                            <Link href={`/admin/coupons2/edit?couponId=${coupon.id}`}>
                                                 <Button size="small" variant="outlined"
                                                         style={{background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)" , color: 'white', border: 0,
                                                             borderRadius: 3, boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)'}}>
