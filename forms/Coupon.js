@@ -74,7 +74,6 @@ const initialValues = {
     valid_end: new Date().setFullYear(new Date().getFullYear() + 1)
 }
 
-
 class CouponForm extends React.Component {
 
     constructor(props) {
@@ -426,7 +425,7 @@ class CouponForm extends React.Component {
                                                 showTimeSelect
                                                 timeFormat="HH:mm:ss"
                                                 timeIntervals={60}
-                                                minDate={new Date()}
+                                                minDate={values.valid_start}
                                                 onChange={date => setFieldValue('valid_end', date)}
                                                 timeCaption="time"
                                                 dateFormat="MMMM d, yyyy h:mm aa"
