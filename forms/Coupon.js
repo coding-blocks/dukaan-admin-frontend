@@ -425,7 +425,7 @@ class CouponForm extends React.Component {
                                                 showTimeSelect
                                                 timeFormat="HH:mm:ss"
                                                 timeIntervals={60}
-                                                minDate={values.valid_start}
+                                                minDate={new Date(values.valid_start).setDate(new Date(values.valid_start).getDate() + 1)}
                                                 onChange={date => setFieldValue('valid_end', date)}
                                                 timeCaption="time"
                                                 dateFormat="MMMM d, yyyy h:mm aa"
