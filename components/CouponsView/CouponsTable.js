@@ -8,6 +8,7 @@ import Grid from "@material-ui/core/Grid";
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Chip from "@material-ui/core/Chip";
 import * as controller from "../../controllers/v2/couponsV2";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import TablePagination from "@material-ui/core/TablePagination";
@@ -145,11 +146,8 @@ class CouponsTable extends React.Component {
                         <Grid container justify="center" className={"mb-1"}>
                             <h2 className={"title"}>Coupon Results</h2>
                          </Grid>
-                        <Table className={{
-                            table: {
-                                minWidth: 650,
-                            },
-                        }} aria-label="simple table">
+                        <Table aria-label="simple table"
+                        style={{borderTop: '1px solid red'}}>
                             <TableHead>
                                 <TableRow>
                                     <TableCell align="center" className={"red"}>CODE</TableCell>
@@ -164,37 +162,49 @@ class CouponsTable extends React.Component {
                             </TableHead>
                             <TableBody>
                                 {this.state.coupons.map((coupon) => (
-                                    <TableRow key={coupon.id}>
-                                        <TableCell align="center">
-                                            {coupon.code}
-                                        </TableCell>
-                                        <TableCell align="center">{coupon.category}</TableCell>
-                                        <TableCell align="center">{coupon.mode}</TableCell>
-                                        <TableCell align="center">{
-                                            coupon.mode === 'flat' ? coupon.amount : `${coupon.percentage}%`
-                                        }</TableCell>
-                                        <TableCell align="center">{coupon.left}</TableCell>
-                                        <TableCell align="center">{coupon.created_by}</TableCell>
+                                    <React.Fragment>
+                                        <TableRow key={coupon.id} 
+                                        style={{borderTop: '1px solid lightgrey'}}>
+                                            <TableCell align="center">
+                                                {coupon.code}
+                                            </TableCell>
+                                            <TableCell align="center">{coupon.category}</TableCell>
+                                            <TableCell align="center">{coupon.mode}</TableCell>
+                                            <TableCell align="center">{
+                                                coupon.mode === 'flat' ? coupon.amount : `${coupon.percentage}%`
+                                            }</TableCell>
+                                            <TableCell align="center">{coupon.left}</TableCell>
+                                            <TableCell align="center">{coupon.created_by}</TableCell>
 
-                                        <TableCell align="center">
-                                            <Link href={`/admin/coupons2/edit?couponId=${coupon.id}`}>
-                                                <Button size="small" variant="outlined"
-                                                        style={{background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)" , color: 'white', border: 0,
-                                                            borderRadius: 3, boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)'}}>
-                                                    Edit
+                                            <TableCell align="center">
+                                                <Link href={`/admin/coupons2/edit?couponId=${coupon.id}`}>
+                                                    <Button size="small" variant="outlined"
+                                                            style={{background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)" , color: 'white', border: 0,
+                                                                borderRadius: 3, boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)'}}>
+                                                        Edit
+                                                    </Button>
+                                                </Link>
+                                            </TableCell>
+
+                                            <TableCell align="center">
+                                                <Button size="small" variant="outlined" 
+                                                    style={{background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)" , color: 'white', border: 0,
+                                                    borderRadius: 3, boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)'}} onClick={() => { this.handleDeleteCoupon(coupon) }}>
+                                                    Delete
                                                 </Button>
-                                            </Link>
-                                        </TableCell>
+                                            </TableCell>
+                                        </TableRow>
 
-                                        <TableCell align="center">
-                                            <Button size="small" variant="outlined" 
-                                                style={{background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)" , color: 'white', border: 0,
-                                                borderRadius: 3, boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)'}} onClick={() => { this.handleDeleteCoupon(coupon) }}>
-                                                Delete
-                                            </Button>
-                                        </TableCell>
+                                        <TableRow>
+                                            <Chip 
+                                                label={coupon.sub_category_name}
+                                                className={"mt-2 ml-5 mb-2"}
+                                                variant="outlined"
+                                                color='primary'
+                                            />
+                                        </TableRow>
+                                    </React.Fragment>
 
-                                    </TableRow>
                                 ))}
                             </TableBody>
                         </Table>
