@@ -88,13 +88,13 @@ class Layout extends React.Component {
                       </button>
                       <div className="dropdown-content">
                         <div className="flex-row justify-content-center">
-                          <Link href="/admin/coupons">
+                          <Link href="/admin/coupons2">
                             <a>All</a>
                           </Link>
                         </div>
                         <div className="divider-h" />
                         <div className="flex-row justify-content-center">
-                          <Link href="/admin/coupons/add">
+                          <Link href="/admin/coupons2/add">
                             <a>Add New</a>
                           </Link>
                         </div>
