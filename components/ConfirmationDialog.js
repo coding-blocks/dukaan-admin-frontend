@@ -12,18 +12,18 @@ function ConfirmationDialog({isOpen, onAgree, onDisagree}) {
             <Dialog open={isOpen}
                     onClose={onDisagree}
             >
-                <DialogTitle id="alert-dialog-title">Warning</DialogTitle>
+                <DialogTitle id="alert-dialog-title">Switch Organization?</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        You have some unsaved changes
+                        You have some unsaved changes switching will clear them.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={onDisagree} color="primary">
-                        Disagree
+                        Cancel
                     </Button>
                     <Button onClick={onAgree} color="primary">
-                        Agree
+                        Clear
                     </Button>
                 </DialogActions>
             </Dialog>
