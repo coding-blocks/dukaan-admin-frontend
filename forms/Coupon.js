@@ -74,7 +74,6 @@ const initialValues = {
     valid_end: new Date().setFullYear(new Date().getFullYear() + 1)
 }
 
-
 class CouponForm extends React.Component {
 
     constructor(props) {
@@ -363,7 +362,7 @@ class CouponForm extends React.Component {
                                             onBlur={handleBlur}
                                             onChange={() => {
                                                 setFieldValue("category", this.props.handleCategoryChange(event))
-                                                setFieldValue("sub_category_id", this.props.resetSubCategoryRules())
+                                                setFieldValue("sub_category_id", "")
                                                 setFieldTouched("sub_category_id", false)
                                              }}
                                             value={values.category}
@@ -434,7 +433,7 @@ class CouponForm extends React.Component {
                                                 showTimeSelect
                                                 timeFormat="HH:mm:ss"
                                                 timeIntervals={60}
-                                                minDate={new Date()}
+                                                minDate={new Date(values.valid_start).setDate(new Date(values.valid_start).getDate() + 1)}
                                                 onChange={date => setFieldValue('valid_end', date)}
                                                 timeCaption="time"
                                                 dateFormat="MMMM d, yyyy h:mm aa"

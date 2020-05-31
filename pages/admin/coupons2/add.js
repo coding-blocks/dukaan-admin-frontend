@@ -84,14 +84,10 @@ class AddCoupons extends React.Component {
 
     handleCategoryChange = (event) => {
         this.fillSubCategories({category: event.target.value})
-        return event.target.value
-    }
-
-    resetSubCategoryRules = () => {
         this.setState({
             subCategoryRules: []
         })
-        return ""
+        return event.target.value
     }
 
     fillSubCategoryRules = (data) => {

@@ -9,39 +9,29 @@ import CheckLogin from "../../../../components/CheckLogin";
 import * as controller from '../../../../controllers/v2/couponsV2'
 import ErrorHandler from "../../../../helpers/ErrorHandler";
 import "../../../../styles/pages/admin/coupons2.scss";
-import Swal from 'sweetalert2'; 
+import Swal from 'sweetalert2';
 import ProductApplicabilityInfo from "../../../../components/ProductApplicabilityInfo";
 import ProductsChooserModal from "../../../../components/ProductsChooser/ProductsChooserModal";
 
-class EditCoupons extends React.Component { 
-
-    static async getInitialProps(ctx) {
-        const cId = ctx.query.cId
-        const response = await axios({
-            method: 'get',
-            url: `/api/v2/admin/couponsv2/` + cId,
-            headers: ctx.req ? { cookie: ctx.req.headers.cookie } : undefined
-          })
-        return { coupon: response.data }
-    }
+class EditCoupons extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
             loaded: false,
-            organizations:[],
-        	sub_category_id: null,
+            organizations: [],
+            sub_category_id: null,
             categories: [],
             subCategories: [],
             subCategoryRules: [],
-            coupon: this.props.coupon,
+            coupon: {},
 
             isModalOpen: false,
             modalProductTypeId: '',
             modalOrganizationId: '',
             couponProducts: {},
-            couponUsers:[],
-            isEditMode:true
+            couponUsers: [],
+            isEditMode: true
         }
     }
 
@@ -50,10 +40,10 @@ class EditCoupons extends React.Component {
         const groupBy = (array, key) => {
             return array.reduce((result, currentValue) => {
                 (result[currentValue[key]] = result[currentValue[key]] || []).push(
-                  currentValue
+                    currentValue
                 );
                 return result;
-            }, {}); 
+            }, {});
         };
         const productsGroupedByType = groupBy(products, 'product_type_id');
         this.setState({
@@ -62,17 +52,27 @@ class EditCoupons extends React.Component {
     }
 
     componentDidMount() {
-        controller.fetchEditCouponData(this.props.coupon)
-        .then(([subCategoryId, categories, subCategoryRules, subCategories, organizations, couponProducts, couponUsers]) => {
+        const search = window.location.search;
+        const params = new URLSearchParams(search);
+        const couponId = params.get('couponId');
+        if (!couponId) {
+            window.location.href = '/'
+        }
+        controller.getCoupon(couponId).then((response) => {
             this.setState({
-            	sub_category_id: subCategoryId.data,
+                coupon: response.data
+            })
+            return controller.fetchEditCouponData(response.data)
+        }).then(([subCategoryId, categories, subCategoryRules, subCategories, organizations, couponProducts, couponUsers]) => {
+            this.setState({
+                sub_category_id: subCategoryId.data,
                 categories: categories.data,
-            	subCategoryRules: subCategoryRules.data,
-            	subCategories: subCategories.data,
-            	organizations: organizations.data,
+                subCategoryRules: subCategoryRules.data,
+                subCategories: subCategories.data,
+                organizations: organizations.data,
                 modalOrganizationId: organizations.data[0].id,
                 couponUsers: couponUsers.data.map(u => u.user),
-            	loaded: true
+                loaded: true
             })
             this.fillcouponProducts(couponProducts.data)
         }).catch(error => {
@@ -122,33 +122,33 @@ class EditCoupons extends React.Component {
     }
 
     render() {
-     
+
         return (
             <div>
                 <Head title="Coding Blocks | Dukaan | Edit Coupon"/>
                 <Layout/>
                 <CheckLogin>
-                <div className={"col-md-12"}>
-                    {/* Title */}
-                    <div className={"d-flex justify-content-center mt-1 pt-3 pb-1"}>
-                        <h2 className={"title"}>Edit Coupon</h2>
-                    </div>
-	                {this.state.loaded &&
-	                    <div className={"col-md-6 pull-left"}>
-	                   	    <CouponForm data={this.state} handleSubCategoryChange={this.handleSubCategoryChange}/>
-	                    </div>
-	                }
-                    <div className={"col-md-6 pull-right"}>
-                        {/* Product applicability pane */}
-                        {this.state.subCategoryRules.length > 0 &&
+                    <div className={"col-md-12"}>
+                        {/* Title */}
+                        <div className={"d-flex justify-content-center mt-1 pt-3 pb-1"}>
+                            <h2 className={"title"}>Edit Coupon</h2>
+                        </div>
+                        {this.state.loaded &&
+                        <div className={"col-md-6 pull-left"}>
+                            <CouponForm data={this.state} handleSubCategoryChange={this.handleSubCategoryChange}/>
+                        </div>
+                        }
+                        <div className={"col-md-6 pull-right"}>
+                            {/* Product applicability pane */}
+                            {this.state.subCategoryRules.length > 0 &&
                             <ProductApplicabilityInfo productDetails={this.state.subCategoryRules}
                                                       couponProducts={this.state.couponProducts}
                                                       handleModifyProducts={this.handleOpenModal}
                             />
-                        }
-                    </div>
+                            }
+                        </div>
 
-                    { this.state.loaded && 
+                        {this.state.loaded &&
                         this.state.modalProductTypeId &&
                         this.state.modalOrganizationId ?
                             <div>
@@ -164,8 +164,8 @@ class EditCoupons extends React.Component {
                             </div>
                             :
                             <div/>
-                    }
-                </div>
+                        }
+                    </div>
                 </CheckLogin>
             </div>
         )
