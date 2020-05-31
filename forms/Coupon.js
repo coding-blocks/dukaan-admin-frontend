@@ -216,7 +216,7 @@ class CouponForm extends React.Component {
                         showConfirmButton: true,
                         confirmButtonText: "Okay"
                     }).then(() =>{
-                        window.location = `${config.domain}admin/coupons2`;
+                        window.location = `${config.domain}/admin/coupons2`;
                     });
                 }).catch(error => {
                     Swal.fire({
@@ -259,7 +259,7 @@ class CouponForm extends React.Component {
                         showConfirmButton: true,
                         confirmButtonText: "Okay"
                     }).then(() =>{
-                        window.location = `${config.domain}admin/coupons2`;
+                        window.location = `${config.domain}/admin/coupons2`;
                     });
                 }).catch(error => {
                     Swal.fire({
