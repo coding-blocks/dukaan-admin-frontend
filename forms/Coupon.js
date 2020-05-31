@@ -71,7 +71,7 @@ const initialValues = {
     percentage: null,
     amount: null,
     valid_start: Date.now(),
-    valid_end: new Date().setFullYear(new Date().getFullYear() + 1)
+    valid_end: new Date().setMonth(new Date().getMonth() + 1)
 }
 
 class CouponForm extends React.Component {
