@@ -93,6 +93,7 @@ class CouponForm extends React.Component {
 
 
     makeEditCouponContext = () => {
+
         return {
             authority_doc: this.props.data.coupon.authority_doc,
             code: this.props.data.coupon.code,
@@ -104,7 +105,7 @@ class CouponForm extends React.Component {
             sub_category_id: parseInt(this.props.data.sub_category_id),
             active: JSON.parse(this.props.data.coupon.active),
             applicable_all_users: JSON.parse(this.props.data.coupon.applicable_all_users),
-            max_discount: parseInt(this.props.data.coupon.max_discount),
+            max_discount: this.props.data.coupon.max_discount,
             percentage: parseInt(this.props.data.coupon.percentage),
             amount: parseInt(this.props.data.coupon.amount),
             valid_start: new Date(this.props.data.coupon.valid_start),
