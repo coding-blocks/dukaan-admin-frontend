@@ -25,6 +25,11 @@ const handleGetProducts = (queryParams, pageInfo) => {
 
 }
 
+export const searchProducts = (queryParams) => {
+    const query = querystring.stringify(queryParams);
+    return axios.get(`/api/v2/admin/products/search?${query}`)
+}
+
 /**
  * Saves the product edits on the server
  * @param {object} queryParams – Save data to be sent
@@ -118,5 +123,6 @@ module.exports = {
     handleGetProducts,
     handleAddProduct,
     handleEditProduct,
-    handleCalculatePrice
+    handleCalculatePrice,
+    searchProducts
 }
