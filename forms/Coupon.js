@@ -1,7 +1,7 @@
 import React from 'react'
 import FieldWithElement from '../components/FieldWithElement';
 import DatePicker from "react-datepicker";
-import {Formik} from 'formik';
+import {Formik, Field} from 'formik';
 import ErrorHandler from "../helpers/ErrorHandler";
 import * as controller from '../controllers/v2/couponsV2'
 import Swal from "sweetalert2";
@@ -17,7 +17,7 @@ const ReactSwal = withReactContent(Swal);
 const couponSchema = Yup.object().shape({
     authority_doc: Yup.string()
         .required('Description is required'),
-    code: Yup.string()
+    code: Yup.string().min(4)
         .required('Code is required'),
     category: Yup.string()
         .required('Category is required'),
@@ -137,6 +137,26 @@ class CouponForm extends React.Component {
             return false
         }
         return true
+    }
+
+    validateCode = async (code) => {
+        let error;
+        if (code.length > 4) {
+            await controller.getCodeAvailability(code).then((response) => {
+                if (!response.data.isCodeAvailable)
+                    error = 'Code already exists' 
+            }).catch((err) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Unable to check code availability!',
+                    confirmButtonColor: '#f66',
+                }).then(() => {
+                    window.location.reload()
+                })
+            })
+        }    
+        return error    
     }
 
     onSubmit = async (fields) => {
@@ -317,7 +337,7 @@ class CouponForm extends React.Component {
                                     <FieldWithElement name={"Code*"} nameCols={3} elementCols={9}
                                                       elementClassName={"pl-4"} errorColor={'tomato'}
                                                       errors={touched.code && errors.code}>
-                                        <input
+                                        <Field
                                             type="text"
                                             className="input-text"
                                             id={this.props.data.isEditMode ? "edit-code" : "code"}
@@ -326,6 +346,7 @@ class CouponForm extends React.Component {
                                             value={values.code}
                                             onBlur={handleBlur}
                                             onChange={handleChange}
+                                            validate={this.validateCode}
                                             disabled={this.props.data.isEditMode}/>
 
                                         {!this.props.data.isEditMode &&
