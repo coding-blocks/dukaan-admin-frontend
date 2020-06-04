@@ -114,6 +114,14 @@ const getProductsWithMrpLessThanDiscount = (data) => {
     return axios.get(`/api/v2/admin/couponsv2/productsWithMrpLessThanDiscount`, {params: data})
 }
 
+const getCodeAvailability = (code) => {
+    return axios.get(`/api/v2/admin/couponsv2/codeAvailability`, {
+        params: {
+            code: encodeURIComponent(code)
+        }
+    })
+}
+
 
 export {
     fetchAddCouponData,
@@ -127,5 +135,6 @@ export {
     fetchAllCouponCategories,
     searchCoupons,
     getCoupon,
-    getProductsWithMrpLessThanDiscount
+    getProductsWithMrpLessThanDiscount,
+    getCodeAvailability
 }
