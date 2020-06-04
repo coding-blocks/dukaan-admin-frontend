@@ -346,7 +346,7 @@ class CouponForm extends React.Component {
                                             value={values.code}
                                             onBlur={handleBlur}
                                             onChange={handleChange}
-                                            validate={this.validateCode}
+                                            validate={!this.props.data.isEditMode ? this.validateCode : ''}
                                             disabled={this.props.data.isEditMode}/>
 
                                         {!this.props.data.isEditMode &&
