@@ -603,6 +603,7 @@ class CouponForm extends React.Component {
                                             <SelectedUsers
                                                 preFilledUsers={this.state.couponUsers}
                                                 onUsersSelected={this.onUsersSelected}
+                                                isEverUsed={this.props.data.isEverUsed}
                                             />
 
                                         </FieldWithElement>

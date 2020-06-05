@@ -31,7 +31,8 @@ class EditCoupons extends React.Component {
             modalOrganizationId: '',
             couponProducts: {},
             couponUsers: [],
-            isEditMode: true
+            isEditMode: true,
+            isEverUsed: false
         }
     }
 
@@ -60,9 +61,11 @@ class EditCoupons extends React.Component {
         }
         controller.getCoupon(couponId).then((response) => {
             this.setState({
-                coupon: response.data
+                coupon: response.data.coupon,
+                isEverUsed: response.data.isEverUsed
             })
-            return controller.fetchEditCouponData(response.data)
+
+            return controller.fetchEditCouponData(response.data.coupon)
         }).then(([subCategoryId, categories, subCategoryRules, subCategories, organizations, couponProducts, couponUsers]) => {
             this.setState({
                 sub_category_id: subCategoryId.data,
@@ -111,7 +114,7 @@ class EditCoupons extends React.Component {
         this.setState({
             isModalOpen: false
         })
-    }
+    } 
 
     onProductsSelected = (productTypeId, products) => {
         const newCouponProducts = this.state.couponProducts

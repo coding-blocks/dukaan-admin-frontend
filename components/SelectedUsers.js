@@ -50,11 +50,12 @@ class SelectedUsers extends React.Component {
                 </Button>
 
                 <UsersChooserModal
-                    preFilledUsers={this.state.selectedUsers}
+                    preFilledUsers={this.props.preFilledUsers}
                     isModalOpen={this.state.isModalOpen}
                     handleModalClose={this.handleModalClose}
                     onUsersSelected={this.onUsersSelected}
                     handleOnSaveChanges={this.handleOnSaveChanges}
+                    isEverUsed={this.props.isEverUsed}
                 />
 
             </div>

@@ -35,6 +35,7 @@ function UsersChooserModal(props) {
                     <UsersChooser
                         preFilledUsers={props.preFilledUsers}
                         onUsersSelected={props.onUsersSelected}
+                        isEverUsed={props.isEverUsed}
                     />
 
                 </DialogContent>
