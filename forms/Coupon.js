@@ -79,7 +79,8 @@ class CouponForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            couponUsers: this.props.data.couponUsers
+            couponUsers: this.props.data.couponUsers,
+            isEditFormAndIsCouponEverUsed: this.props.data.isEditMode && this.props.data.isEverUsed
         }
     }
 
@@ -320,8 +321,8 @@ class CouponForm extends React.Component {
                                                 this.props.onOrganizationChange(e)
                                             }}
                                             value={values.organization_id}
-                                            className={this.props.data.isEditMode ? "edit-organization" : "organization"}
-                                            disabled={this.props.data.isEditMode}>
+                                            className={this.state.isEditFormAndIsCouponEverUsed ? "disabled-organization" : "organization"}
+                                            disabled={this.state.isEditFormAndIsCouponEverUsed}>
                                             {
                                                 this.props.data.organizations.map((organization) => {
                                                     return (
@@ -340,16 +341,16 @@ class CouponForm extends React.Component {
                                         <Field
                                             type="text"
                                             className="input-text"
-                                            id={this.props.data.isEditMode ? "edit-code" : "code"}
+                                            id={this.state.isEditFormAndIsCouponEverUsed ? "disabled-code" : "code"}
                                             placeholder="Enter Code"
                                             name="code"
                                             value={values.code}
                                             onBlur={handleBlur}
                                             onChange={handleChange}
                                             validate={!this.props.data.isEditMode ? this.validateCode : ''}
-                                            disabled={this.props.data.isEditMode}/>
+                                            disabled={this.state.isEditFormAndIsCouponEverUsed}/>
 
-                                        {!this.props.data.isEditMode &&
+                                        {!this.props.data.isEverUsed && 
                                         <span id="random_coupon" className="red pull-right mt-2 ml-2"
                                               onClick={() => setFieldValue("code", this.setRandomCouponCode())}>
     			                            	Generate Random Code
@@ -388,8 +389,8 @@ class CouponForm extends React.Component {
                                                 setFieldTouched("sub_category_id", false)
                                              }}
                                             value={values.category}
-                                            className={this.props.data.isEditMode ? "edit-category" : "category"}
-                                            disabled={this.props.data.isEditMode}>
+                                            className={this.state.isEditFormAndIsCouponEverUsed ? "disabled-category" : "category"}
+                                            disabled={this.state.isEditFormAndIsCouponEverUsed}>
                                             <option value="" key="">Select</option>
                                             {
                                                 this.props.data.categories.map((category) => {
@@ -414,8 +415,8 @@ class CouponForm extends React.Component {
                                                 setFieldValue("sub_category_id", this.props.handleSubCategoryChange(event, values.category))
                                             }}
                                             value={values.sub_category_id}
-                                            className={this.props.data.isEditMode ? "edit-subcategory" : "subcategory"}
-                                            disabled={this.props.data.isEditMode}>
+                                            className={this.state.isEditFormAndIsCouponEverUsed ? "disabled-subcategory" : "subcategory"}
+                                            disabled={this.state.isEditFormAndIsCouponEverUsed}>
                                             <option value="" key="">Select</option>
                                             {
                                                 this.props.data.subCategories.map((subcategory) => {
