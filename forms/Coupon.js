@@ -602,7 +602,8 @@ class CouponForm extends React.Component {
                                         <FieldWithElement name="User*" nameCols={3} elementCols={9}
                                                           elementClassName={"pl-4"} errorColor={'tomato'}>
                                             <SelectedUsers
-                                                preFilledUsers={this.state.couponUsers}
+                                                preFilledUsers={this.props.data.couponUsers}
+                                                currentCouponUsers={this.state.couponUsers}
                                                 onUsersSelected={this.onUsersSelected}
                                                 isEverUsed={this.props.data.isEverUsed}
                                             />

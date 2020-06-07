@@ -10,7 +10,7 @@ class UsersChooser extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedUsers: this.props.preFilledUsers ? this.props.preFilledUsers : [],
+            selectedUsers: this.props.currentCouponUsers ? this.props.currentCouponUsers : [],
             usersSearchResult: []
         }
     }
