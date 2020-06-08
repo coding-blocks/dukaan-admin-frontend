@@ -80,11 +80,11 @@ class EditCoupons extends React.Component {
         }
         controller.getCoupon(couponId).then((response) => {
             this.setState({
-                coupon: response.data.coupon,
-                isEverUsed: response.data.isEverUsed
+                coupon: response.data,
+                isEverUsed: response.data.is_ever_used
             })
 
-            return controller.fetchEditCouponData(response.data.coupon)
+            return controller.fetchEditCouponData(response.data)
         }).then(([subCategoryId, categories, subCategoryRules, subCategories, organizations, couponProducts, couponUsers]) => {
             this.setState({
                 sub_category_id: subCategoryId.data,
