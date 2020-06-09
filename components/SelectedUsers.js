@@ -11,7 +11,7 @@ class SelectedUsers extends React.Component {
         super(props);
         this.state = {
             isModalOpen: false,
-            selectedUsers: this.props.preFilledUsers ? this.props.preFilledUsers : [],
+            selectedUsers: this.props.currentCouponUsers ? this.props.currentCouponUsers : [],
         }
     }
 
@@ -33,13 +33,13 @@ class SelectedUsers extends React.Component {
     }
 
     render() {
-        const ButtonText = this.props.preFilledUsers.length > 0 ? 'Edit' : 'Add'
+        const ButtonText = this.props.currentCouponUsers.length > 0 ? 'Edit' : 'Add'
         const addIcon = <AddIcon fontSize={"small"}/>
         const editIcon = <EditIcon fontSize={"small"}/>
 
         return (
             <div style={{paddingTop: '10px', paddingLeft: '10px'}}>
-                <strong>{this.props.preFilledUsers.length} Users Selected</strong>
+                <strong>{this.props.currentCouponUsers.length} Users Selected</strong>
                 <Button style={{float: 'right', padding: '0'}}
                         variant="outlined"
                         size={"small"}
@@ -50,11 +50,13 @@ class SelectedUsers extends React.Component {
                 </Button>
 
                 <UsersChooserModal
-                    preFilledUsers={this.state.selectedUsers}
+                    preFilledUsers={this.props.preFilledUsers}
+                    currentCouponUsers={this.state.selectedUsers}
                     isModalOpen={this.state.isModalOpen}
                     handleModalClose={this.handleModalClose}
                     onUsersSelected={this.onUsersSelected}
                     handleOnSaveChanges={this.handleOnSaveChanges}
+                    isEverUsed={this.props.isEverUsed}
                 />
 
             </div>

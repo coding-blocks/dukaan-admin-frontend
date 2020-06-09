@@ -144,8 +144,7 @@ class AddCoupons extends React.Component {
                                         onUnsavedChanges={this.onUnsavedChanges}
                                         handleCategoryChange={this.handleCategoryChange}
                                         onOrganizationChange={this.onOrganizationChange}
-                                        handleSubCategoryChange={this.handleSubCategoryChange}
-                                        resetSubCategoryRules={this.resetSubCategoryRules}/>
+                                        handleSubCategoryChange={this.handleSubCategoryChange}/>
                         </div>
                         <div className={"col-md-6 pull-right"}>
                             {/* Product applicability pane */}
