@@ -36,6 +36,7 @@ class EditCoupons extends React.Component {
             isEditMode: true,
             isEverUsed: false,
             isConfirmationModalOpen: false,
+            isApplicableAllUsers: false,
         }
     }
 
@@ -81,7 +82,8 @@ class EditCoupons extends React.Component {
         controller.getCoupon(couponId).then((response) => {
             this.setState({
                 coupon: response.data,
-                isEverUsed: response.data.is_ever_used
+                isEverUsed: response.data.is_ever_used,
+                isApplicableAllUsers: response.data.applicable_all_users
             })
 
             return controller.fetchEditCouponData(response.data)

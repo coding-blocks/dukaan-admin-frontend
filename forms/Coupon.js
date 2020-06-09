@@ -211,10 +211,16 @@ class CouponForm extends React.Component {
         if (!this.handleCouponUserValidity(formValues.applicable_all_users)) {
             return
         }
+
+        if (formValues.applicable_all_users) {
+            formValues.oneauth_ids = []
+        } else{
+            const oneauthIds = this.getUserOneauthIds()
+            formValues.oneauth_ids = oneauthIds
+        }
+
         const productIds = this.getCouponProductIds()
         formValues.product_ids = productIds
-        const oneauthIds = this.getUserOneauthIds()
-        formValues.oneauth_ids = oneauthIds
 
         Swal.fire({
             title: "Create new coupon?",
@@ -254,8 +260,13 @@ class CouponForm extends React.Component {
         if (!this.handleCouponUserValidity(formValues.applicable_all_users)) {
             return
         }
-        const oneauthIds = this.getUserOneauthIds()
-        formValues.oneauth_ids = oneauthIds
+
+        if (formValues.applicable_all_users) {
+            formValues.oneauth_ids = []
+        } else{
+            const oneauthIds = this.getUserOneauthIds()
+            formValues.oneauth_ids = oneauthIds
+        }
         const productIds = this.getCouponProductIds()
         formValues.product_ids = productIds
 
@@ -592,9 +603,9 @@ class CouponForm extends React.Component {
                                                 checked={values.applicable_all_users}
                                                 onChange={() => {
                                                     setFieldValue("applicable_all_users", !values.applicable_all_users)
-                                                    this.setState({couponUsers: []})
                                                 }}
-                                                value={values.applicable_all_users}/>
+                                                value={values.applicable_all_users}
+                                                disabled={this.props.data.isApplicableAllUsers && this.state.isEditFormAndIsCouponEverUsed}/>
                                         </div>
                                     </div>
 
