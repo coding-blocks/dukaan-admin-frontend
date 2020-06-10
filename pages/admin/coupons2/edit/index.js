@@ -31,6 +31,7 @@ class EditCoupons extends React.Component {
             isModalOpen: false,
             modalProductTypeId: '',
             modalOrganizationId: '',
+            preFilledProducts: {},
             couponProducts: {},
             couponUsers: [],
             isEditMode: true,
@@ -68,6 +69,7 @@ class EditCoupons extends React.Component {
         };
         const productsGroupedByType = groupBy(products, 'product_type_id');
         this.setState({
+            preFilledProducts: productsGroupedByType,
             couponProducts: productsGroupedByType
         })
     }
@@ -157,10 +159,14 @@ class EditCoupons extends React.Component {
     } 
 
     onProductsSelected = (productTypeId, products) => {
-        const newCouponProducts = this.state.couponProducts
-        newCouponProducts[productTypeId] = products
+        const currentProductsForProductTypeId = {}
+        currentProductsForProductTypeId[productTypeId] = products
+
         this.setState({
-            couponProducts: newCouponProducts
+            couponProducts: {
+                ...this.state.couponProducts,
+                ...currentProductsForProductTypeId
+            }
         })
     }
 
@@ -207,13 +213,17 @@ class EditCoupons extends React.Component {
                             <div>
                                 <ProductsChooserModal
                                     preFilledProducts={
+                                        this.state.preFilledProducts[this.state.modalProductTypeId]
+                                    }
+                                    currentCouponProducts={
                                         this.state.couponProducts[this.state.modalProductTypeId]
                                     }
                                     isModalOpen={this.state.isModalOpen}
                                     handleCloseModal={this.handleCloseModal}
                                     onProductsSelected={this.onProductsSelected}
                                     organizationId={this.state.modalOrganizationId}
-                                    productTypeId={this.state.modalProductTypeId}/>
+                                    productTypeId={this.state.modalProductTypeId}
+                                    isEverUsed={this.state.isEverUsed}/>
                             </div>
                             :
                             <div/>

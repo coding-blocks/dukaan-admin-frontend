@@ -7,6 +7,8 @@ import PropTypes from "prop-types";
 import Checkbox from "@material-ui/core/Checkbox";
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import Chip from '@material-ui/core/Chip';
+
 
 class SearchInput extends React.Component {
 
@@ -15,16 +17,9 @@ class SearchInput extends React.Component {
         this.state = {
             searchInput: '',
             productSearchResults: [],
-            selectedProducts: props.preFilledProducts ? props.preFilledProducts : []
+            selectedProducts: props.currentCouponProducts ? props.currentCouponProducts : []
         }
 
-    }
-
-    componentDidMount() {
-        this.props.preFilledProducts ?
-            this.props.onProductsSelected(
-                this.props.preFilledProducts
-            ) : this.props.onProductsSelected([])
     }
 
     onSearchInputChange = (event) => {
@@ -56,7 +51,9 @@ class SearchInput extends React.Component {
 
     handleChange = (event, values) => {
         this.setState({
-            selectedProducts: values
+            selectedProducts: this.props.isEverUsed ? 
+                              [...this.props.preFilledProducts, ...values.filter((option) => this.props.preFilledProducts.indexOf(option) === -1 ) ] : 
+                              values,
         }, () => {
             this.props.onProductsSelected(this.state.selectedProducts)
         });
@@ -92,6 +89,15 @@ class SearchInput extends React.Component {
                             {option.description}
                         </React.Fragment>
                     )}
+                    renderTags={(tagValue, getTagProps) =>
+                    tagValue.map((option, index) => (
+                        <Chip
+                            label={option.description}
+                            {...getTagProps({ index })}
+                            disabled={this.props.isEverUsed ? this.props.preFilledProducts.indexOf(option) !== -1 : ''}
+                        />
+                        ))
+                    }
                     style={{width: 800}}
                     renderInput={(params) => (
                         <TextField
@@ -110,7 +116,8 @@ class SearchInput extends React.Component {
 
 SearchInput.propType = {
     productTypeId: PropTypes.number.isRequired,
-    organizationId: PropTypes.number.isRequired
+    organizationId: PropTypes.number.isRequired,
+    isEverUsed: PropTypes.bool.isRequired
 }
 
 export default SearchInput;
