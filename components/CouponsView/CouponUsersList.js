@@ -44,7 +44,7 @@ const CouponUsersList = ({ couponUsersList }) => {
                               <TableCell align="center">{couponUser.name}</TableCell>
                               <TableCell align="center">{couponUser.oneauth_id}</TableCell>
                               <TableCell align="center">{couponUser.email}</TableCell>
-                              <TableCell align="center">{couponUser.product}</TableCell>
+                              <TableCell align="center">{couponUser.productDescription}</TableCell>
                               <TableCell align="center">{couponUser.paymentStatus}</TableCell>
                             </TableRow>
                           ))}
