@@ -142,7 +142,7 @@ class CouponForm extends React.Component {
 
     validateCode = async (code) => {
         let error;
-        if (code.length > 4) {
+        if (code.length > 3) {
             await controller.getCodeAvailability(code).then((response) => {
                 if (!response.data.isCodeAvailable)
                     error = 'Code already exists' 

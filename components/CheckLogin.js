@@ -17,7 +17,7 @@ class CheckLogin extends React.Component {
   }
 
   componentDidMount() {
-    const dukaanToken = Cookies.get("dukaan-token");
+    const dukaanToken = Cookies.get("dukaan-admin-token");
       if (dukaanToken) {
           const userInfo = jwt.decode(dukaanToken);
           if (userInfo && userInfo.data.oneauth_id) {
