@@ -75,7 +75,7 @@ class CouponFilterForm extends React.Component {
         }
         return (
 
-            <div className={"d-flex col-md-8 offset-2 mt-5"}>
+            <div className={"d-flex col-md-11 offset-1 mt-5"}>
 
                 <div className={"border-card coupon-card"}>
                     {/* Title */}
