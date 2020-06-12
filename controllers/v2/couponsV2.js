@@ -122,6 +122,10 @@ const getCodeAvailability = (code) => {
     })
 }
 
+const getAppliedCouponUsersList = (data) => {
+    return axios.get(`/api/v2/admin/couponsv2/appliedCouponUsersList`, {params: data} )
+}
+
 
 export {
     fetchAddCouponData,
@@ -136,5 +140,6 @@ export {
     searchCoupons,
     getCoupon,
     getProductsWithMrpLessThanDiscount,
-    getCodeAvailability
+    getCodeAvailability,
+    getAppliedCouponUsersList
 }
