@@ -44,13 +44,13 @@ class CouponsSearch extends React.Component {
                 <Layout/>
                 <CheckLogin>
                     <div className={"col-md-12"}>
-                            <div className={"col-md-4 pull-left"}>
+                            <div className={"col-md-3 pull-left"}>
                                 <CouponFilterForm
                                     onSearchBtnClick={this.onSearchBtnClick}
                                 />
                             </div>
 
-                            <div className={"col-md-8 pull-right"}>
+                            <div className={"col-md-9 pull-right"}>
                                 <CouponsTable
                                     filterParams={this.state.filterParams}
                                     ref={this.couponTable}/>
