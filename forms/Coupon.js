@@ -552,6 +552,7 @@ class CouponForm extends React.Component {
                                             className={"input-text"}
                                             placeholder="Enter Left"
                                             name="left"
+                                            onBlur={handleBlur}
                                             onChange={handleChange}
                                             value={values.left}
                                             min={1}

@@ -126,6 +126,9 @@ const getAppliedCouponUsersList = (data) => {
     return axios.get(`/api/v2/admin/couponsv2/appliedCouponUsersList`, {params: data} )
 }
 
+const fetchBulkSubCategories = (data) => {
+    return axios.get(`/api/v2/admin/couponsv2/bulkSubCategories`, {params: data})
+}
 
 export {
     fetchAddCouponData,
@@ -141,5 +144,6 @@ export {
     getCoupon,
     getProductsWithMrpLessThanDiscount,
     getCodeAvailability,
-    getAppliedCouponUsersList
+    getAppliedCouponUsersList,
+    fetchBulkSubCategories
 }
