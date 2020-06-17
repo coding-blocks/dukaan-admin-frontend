@@ -57,8 +57,7 @@ class EditCoupons extends React.Component {
         this.setState({isConfirmationModalOpen: false})
     }
 
-    fillcouponProducts = (couponProducts) => {
-        const products = couponProducts.map(p => p.product)
+    fillcouponProducts = (products) => {
         const groupBy = (array, key) => {
             return array.reduce((result, currentValue) => {
                 (result[currentValue[key]] = result[currentValue[key]] || []).push(
@@ -114,7 +113,7 @@ class EditCoupons extends React.Component {
     fillSubCategories = (data) => {
         controller.fetchSubCategories(data).then((subCategories) => {
             this.setState({
-                subCategories: subCategories.data
+                subCategories: subCategories.data.filter((c) => !c.is_bulk)
             })
         }).catch((error) => {
             ErrorHandler.handle(error)

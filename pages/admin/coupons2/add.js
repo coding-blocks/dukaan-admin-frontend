@@ -75,7 +75,7 @@ class AddCoupons extends React.Component {
     fillSubCategories = (data) => {
         controller.fetchSubCategories(data).then((subCategories) => {
             this.setState({
-                subCategories: subCategories.data
+                subCategories: subCategories.data.filter((c) => !c.is_bulk)
             })
         }).catch((error) => {
             ErrorHandler.handle(error)
