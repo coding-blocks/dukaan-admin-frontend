@@ -13,7 +13,7 @@ class ProductsChooserV2 extends React.Component {
         super();
         this.state = {
             productType: null,
-            selectedProducts: []
+            selectedProducts: props.currentCouponProducts ? props.currentCouponProducts : []
         }
     }
 
@@ -53,6 +53,8 @@ class ProductsChooserV2 extends React.Component {
                     <h6 className="mb-3 title">Search {this.state.productType.name} Products</h6>
                     <SearchInput
                         preFilledProducts={this.props.preFilledProducts}
+                        currentCouponProducts={this.props.currentCouponProducts}
+                        isEverUsed={this.props.isEverUsed}
                         organizationId={this.props.organizationId}
                         onProductsSelected={this.onProductsSelected}
                         productTypeId={this.props.productTypeId}/>
@@ -74,7 +76,8 @@ class ProductsChooserV2 extends React.Component {
 ProductsChooserV2.propTypes = {
     productTypeId: PropTypes.number.isRequired,
     organizationId: PropTypes.number.isRequired,
-    onProductsSelected: PropTypes.func
+    onProductsSelected: PropTypes.func,
+    isEverUsed: PropTypes.bool.isRequired
 }
 
 export default ProductsChooserV2

@@ -12,6 +12,8 @@ import "../../../../styles/pages/admin/coupons2.scss";
 import Swal from 'sweetalert2';
 import ProductApplicabilityInfo from "../../../../components/ProductApplicabilityInfo";
 import ProductsChooserModal from "../../../../components/ProductsChooser/ProductsChooserModal";
+import ConfirmationDialog from "../../../../components/ConfirmationDialog";
+
 
 class EditCoupons extends React.Component {
 
@@ -29,10 +31,30 @@ class EditCoupons extends React.Component {
             isModalOpen: false,
             modalProductTypeId: '',
             modalOrganizationId: '',
+            preFilledProducts: {},
             couponProducts: {},
             couponUsers: [],
-            isEditMode: true
+            isEditMode: true,
+            isEverUsed: false,
+            isConfirmationModalOpen: false,
+            isApplicableAllUsers: false,
         }
+    }
+
+
+    onUnsavedChanges = () => {
+        this.setState({isConfirmationModalOpen: true})
+    }
+
+    onAgree = () => {
+        this.setState({
+            isConfirmationModalOpen: false,
+            couponProducts: {}
+        })
+    }
+
+    onDisagree = () => {
+        this.setState({isConfirmationModalOpen: false})
     }
 
     fillcouponProducts = (couponProducts) => {
@@ -47,6 +69,7 @@ class EditCoupons extends React.Component {
         };
         const productsGroupedByType = groupBy(products, 'product_type_id');
         this.setState({
+            preFilledProducts: productsGroupedByType,
             couponProducts: productsGroupedByType
         })
     }
@@ -60,8 +83,11 @@ class EditCoupons extends React.Component {
         }
         controller.getCoupon(couponId).then((response) => {
             this.setState({
-                coupon: response.data
+                coupon: response.data,
+                isEverUsed: response.data.is_ever_used,
+                isApplicableAllUsers: response.data.applicable_all_users
             })
+
             return controller.fetchEditCouponData(response.data)
         }).then(([subCategoryId, categories, subCategoryRules, subCategories, organizations, couponProducts, couponUsers]) => {
             this.setState({
@@ -84,6 +110,25 @@ class EditCoupons extends React.Component {
             });
         });
     }
+
+    fillSubCategories = (data) => {
+        controller.fetchSubCategories(data).then((subCategories) => {
+            this.setState({
+                subCategories: subCategories.data
+            })
+        }).catch((error) => {
+            ErrorHandler.handle(error)
+        })
+    };
+
+    handleCategoryChange = (event) => {
+        this.fillSubCategories({category: event.target.value})
+        this.setState({
+            subCategoryRules: []
+        })
+        return event.target.value
+    }
+
 
     fillSubCategoryRules = (data) => {
         controller.fetchSubCategoryRules(data).then((subCategoryRules) => {
@@ -111,13 +156,23 @@ class EditCoupons extends React.Component {
         this.setState({
             isModalOpen: false
         })
-    }
+    } 
 
     onProductsSelected = (productTypeId, products) => {
-        const newCouponProducts = this.state.couponProducts
-        newCouponProducts[productTypeId] = products
+        const currentProductsForProductTypeId = {}
+        currentProductsForProductTypeId[productTypeId] = products
+
         this.setState({
-            couponProducts: newCouponProducts
+            couponProducts: {
+                ...this.state.couponProducts,
+                ...currentProductsForProductTypeId
+            }
+        })
+    }
+
+    onOrganizationChange = (event) => {
+        this.setState({
+            modalOrganizationId: event.target.value
         })
     }
 
@@ -135,7 +190,11 @@ class EditCoupons extends React.Component {
                         </div>
                         {this.state.loaded &&
                         <div className={"col-md-6 pull-left"}>
-                            <CouponForm data={this.state} handleSubCategoryChange={this.handleSubCategoryChange}/>
+                            <CouponForm data={this.state}
+                                        onUnsavedChanges={this.onUnsavedChanges}
+                                        handleSubCategoryChange={this.handleSubCategoryChange}
+                                        onOrganizationChange={this.onOrganizationChange}
+                                        handleCategoryChange={this.handleCategoryChange}/>
                         </div>
                         }
                         <div className={"col-md-6 pull-right"}>
@@ -154,17 +213,24 @@ class EditCoupons extends React.Component {
                             <div>
                                 <ProductsChooserModal
                                     preFilledProducts={
+                                        this.state.preFilledProducts[this.state.modalProductTypeId]
+                                    }
+                                    currentCouponProducts={
                                         this.state.couponProducts[this.state.modalProductTypeId]
                                     }
                                     isModalOpen={this.state.isModalOpen}
                                     handleCloseModal={this.handleCloseModal}
                                     onProductsSelected={this.onProductsSelected}
                                     organizationId={this.state.modalOrganizationId}
-                                    productTypeId={this.state.modalProductTypeId}/>
+                                    productTypeId={this.state.modalProductTypeId}
+                                    isEverUsed={this.state.isEverUsed}/>
                             </div>
                             :
                             <div/>
                         }
+
+                        <ConfirmationDialog isOpen={this.state.isConfirmationModalOpen} onAgree={this.onAgree}
+                                            onDisagree={this.onDisagree}/>
                     </div>
                 </CheckLogin>
             </div>

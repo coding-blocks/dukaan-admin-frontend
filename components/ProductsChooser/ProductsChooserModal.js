@@ -18,12 +18,14 @@ const ProductsChooserModal = (props) => {
             <DialogContent>
                 <ProductsChooserV2
                     preFilledProducts={props.preFilledProducts}
+                    currentCouponProducts={props.currentCouponProducts}
                     onProductsSelected={(productTypeId, selectedProducts) => {
                         props.onProductsSelected(productTypeId, selectedProducts)
                         props.handleCloseModal()
                     }}
                     productTypeId={props.productTypeId}
-                    organizationId={props.organizationId}/>
+                    organizationId={props.organizationId}
+                    isEverUsed={props.isEverUsed}/>
             </DialogContent>
         </Dialog>
     )
@@ -31,10 +33,13 @@ const ProductsChooserModal = (props) => {
 
 ProductsChooserModal.propTypes = {
     preFilledProducts: PropTypes.any,
+    currentCouponProducts: PropTypes.any,
     productTypeId: PropTypes.number.isRequired,
     organizationId: PropTypes.number.isRequired,
     isModalOpen: PropTypes.bool.isRequired,
     onProductsSelected: PropTypes.func.isRequired,
-    handleCloseModal: PropTypes.func.isRequired
+    handleCloseModal: PropTypes.func.isRequired,
+    isEverUsed: PropTypes.bool.isRequired
+
 }
 export default ProductsChooserModal
