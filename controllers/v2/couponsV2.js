@@ -130,6 +130,10 @@ const fetchBulkSubCategories = (data) => {
     return axios.get(`/api/v2/admin/couponsv2/bulkSubCategories`, {params: data})
 }
 
+const handleAddBulkCoupons = (data) => {
+    return axios.post(`/api/v2/admin/couponsv2/bulk`, data)
+}
+
 export {
     fetchAddCouponData,
     generateRandomCouponCode,
@@ -145,5 +149,6 @@ export {
     getProductsWithMrpLessThanDiscount,
     getCodeAvailability,
     getAppliedCouponUsersList,
-    fetchBulkSubCategories
+    fetchBulkSubCategories,
+    handleAddBulkCoupons
 }

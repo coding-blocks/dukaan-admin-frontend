@@ -6,18 +6,25 @@ import * as Yup from 'yup';
 import FieldWithElement from '../components/FieldWithElement';
 import * as controller from '../controllers/v2/couponsV2'
 import Swal from 'sweetalert2';
+import config from "../config";
 
 const bulkCouponSchema = Yup.object().shape({
-    authority_doc: Yup.string()
+    authority_doc: Yup.string().min(3)
         .required('Description is required'),
     number_of_coupons: Yup.number()
+        .min(1, 'Must be greater or equals to 1')
         .required('No of coupons is required.'),
     code_length: Yup.number()
-        .required('No of coupons is required.'),
+        .min(10, 'Must be greater or equals to 10')
+        .required('code length is required.'),
     starts_with: Yup.string()
-        .required('Starts With is required'),
+        .min(2, 'must be greater or equals to 2')
+        .max(10, 'must be less or equals to 10')
+        .nullable().notRequired(),
     ends_with: Yup.string()
-        .required('Ends With is required'),    
+        .min(2, 'must be greater or equals to 2')
+        .max(10, 'must be less or equals to 10')
+        .nullable().notRequired(),
     category: Yup.string()
         .required('Category is required'),
     sub_category_id: Yup.number()
@@ -43,7 +50,7 @@ const bulkCouponSchema = Yup.object().shape({
             .required('Percentage is required'),
         otherwise: Yup.number().nullable().notRequired()
     }),
-     max_discount: Yup.number().when('mode', {
+    max_discount: Yup.number().when('mode', {
         is: (val) => val == "percentage",
         then: Yup.number().min(1)
             .nullable().notRequired(),
@@ -68,7 +75,7 @@ const initialValues = {
     active: false,
     applicable_all_users: true,
     percentage: null,
-    max_discount:null,
+    max_discount: null,
     amount: null,
     starts_with: '',
     ends_with: '',
@@ -80,6 +87,32 @@ class BulkCouponForm extends React.Component {
 
     constructor(props) {
         super(props)
+    }
+
+    getCouponProductIds = () => {
+        const couponProductsWithProuctTypeId = this.props.data.couponProducts
+        const products = Object.values(couponProductsWithProuctTypeId).flat()
+        return products.map(p => p.id)
+    }
+
+    onSubmit = async (fields) => {
+        fields.products = await this.getCouponProductIds()
+        controller.handleAddBulkCoupons(fields).then((response) => {
+            Swal.fire({
+                title: "Coupon added successfully!",
+                type: "success",
+                showConfirmButton: true
+            }).then(() => {
+                window.location = `${config.domain}/admin/coupons2`;
+            });
+        }).catch((error) => {
+            Swal.fire({
+                title: "Error adding coupons!",
+                text: error,
+                type: "error",
+                showConfirmButton: true
+            });
+        });
     }
 
     render() {
@@ -124,7 +157,7 @@ class BulkCouponForm extends React.Component {
                                     </FieldWithElement>
 
                                     {/* Code */}
-                                    <FieldWithElement name={"Number of Coupons"} nameCols={3} elementCols={9}
+                                    <FieldWithElement name={"Number of Coupons*"} nameCols={3} elementCols={9}
                                                       elementClassName={"pl-4"} errorColor={'tomato'}
                                                       errors={touched.number_of_coupons && errors.number_of_coupons}>
                                         <input
@@ -139,7 +172,7 @@ class BulkCouponForm extends React.Component {
                                     </FieldWithElement>
 
                                     {/* Length of code */}
-                                    <FieldWithElement name={"Total Code Length"} nameCols={3} elementCols={9}
+                                    <FieldWithElement name={"Total Code Length*"} nameCols={3} elementCols={9}
                                                       elementClassName={"pl-4"} errorColor={'tomato'}
                                                       errors={touched.code_length && errors.code_length}>
                                         <input
@@ -279,7 +312,7 @@ class BulkCouponForm extends React.Component {
                                     </FieldWithElement>
 
                                     {/* Mode */}
-                                    <FieldWithElement name={"Mode"} nameCols={3} elementCols={9}
+                                    <FieldWithElement name={"Mode*"} nameCols={3} elementCols={9}
                                                       elementClassName={"pl-4"} errorColor={'tomato'}
                                                       errors={touched.mode && errors.mode}>
                                         <select
@@ -304,7 +337,7 @@ class BulkCouponForm extends React.Component {
 
                                     {values.mode == "flat" &&
                                     /* Amount */
-                                    <FieldWithElement name={"Discount"} nameCols={3} elementCols={9} 
+                                    <FieldWithElement name={"Discount*"} nameCols={3} elementCols={9} 
                                                       elementClassName={"pl-4"} errorColor={'tomato'}
                                                       errors={touched.amount && errors.amount}>
                                         <input
@@ -321,7 +354,7 @@ class BulkCouponForm extends React.Component {
 
                                     {values.mode == "percentage" &&
                                         <div>
-                                            <FieldWithElement name={"Percentage"} nameCols={3} elementCols={9} 
+                                            <FieldWithElement name={"Percentage*    "} nameCols={3} elementCols={9} 
                                                               elementClassName={"pl-4"} errorColor={'tomato'}
                                                               errors={touched.percentage && errors.percentage}>
                                                 <input
