@@ -38,6 +38,7 @@ class EditCoupons extends React.Component {
             isEverUsed: false,
             isConfirmationModalOpen: false,
             isApplicableAllUsers: false,
+            isSubCategoryBulk: false
         }
     }
 
@@ -84,9 +85,9 @@ class EditCoupons extends React.Component {
             this.setState({
                 coupon: response.data,
                 isEverUsed: response.data.is_ever_used,
-                isApplicableAllUsers: response.data.applicable_all_users
+                isApplicableAllUsers: response.data.applicable_all_users,
+                isSubCategoryBulk: response.data.is_subcategory_bulk
             })
-
             return controller.fetchEditCouponData(response.data)
         }).then(([subCategoryId, categories, subCategoryRules, subCategories, organizations, couponProducts, couponUsers]) => {
             this.setState({
@@ -222,7 +223,8 @@ class EditCoupons extends React.Component {
                                     onProductsSelected={this.onProductsSelected}
                                     organizationId={this.state.modalOrganizationId}
                                     productTypeId={this.state.modalProductTypeId}
-                                    isEverUsed={this.state.isEverUsed}/>
+                                    isEverUsed={this.state.isEverUsed}
+                                    isSubCategoryBulk={this.state.isSubCategoryBulk}/>
                             </div>
                             :
                             <div/>

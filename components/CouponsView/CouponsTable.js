@@ -237,16 +237,13 @@ class CouponsTable extends React.Component {
                                         </TableCell>
 
                                         <TableCell align="center">
-                                        {!coupon.is_bulk_sub_category ? 
                                             <Link href={`/admin/coupons2/edit?couponId=${coupon.id}`}>
                                                 <Button size="small" variant="outlined"
                                                         className={classes.root}>
                                                     Edit
                                                 </Button>
                                             </Link>
-                                            :
-                                            "-"
-                                        }
+                                         
                                         </TableCell>
 
                                         <TableCell align="center">

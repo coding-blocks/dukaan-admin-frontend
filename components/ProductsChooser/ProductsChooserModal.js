@@ -25,7 +25,8 @@ const ProductsChooserModal = (props) => {
                     }}
                     productTypeId={props.productTypeId}
                     organizationId={props.organizationId}
-                    isEverUsed={props.isEverUsed}/>
+                    isEverUsed={props.isEverUsed}
+                    isSubCategoryBulk={props.isSubCategoryBulk}/>
             </DialogContent>
         </Dialog>
     )
@@ -39,7 +40,8 @@ ProductsChooserModal.propTypes = {
     isModalOpen: PropTypes.bool.isRequired,
     onProductsSelected: PropTypes.func.isRequired,
     handleCloseModal: PropTypes.func.isRequired,
-    isEverUsed: PropTypes.bool.isRequired
+    isEverUsed: PropTypes.bool.isRequired,
+    isSubCategoryBulk: PropTypes.bool
 
 }
 export default ProductsChooserModal
