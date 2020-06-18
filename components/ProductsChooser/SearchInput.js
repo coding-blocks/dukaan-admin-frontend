@@ -78,6 +78,7 @@ class SearchInput extends React.Component {
                         return option.id === value.id
                     }}
                     options={this.state.productSearchResults}
+                    disabled={ this.props.isSubCategoryBulk ? true : ''}
                     renderOption={(option, {selected}) => (
                         <React.Fragment>
                             <Checkbox

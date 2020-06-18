@@ -361,7 +361,7 @@ class CouponForm extends React.Component {
                                             validate={!this.props.data.isEditMode ? this.validateCode : ''}
                                             disabled={this.state.isEditFormAndIsCouponEverUsed || this.props.data.isSubCategoryBulk}/>
 
-                                        {!this.props.data.isEverUsed && 
+                                        { (!this.props.data.isEverUsed && !this.props.data.isSubCategoryBulk) && 
                                         <span id="random_coupon" className="red pull-right mt-2 ml-2"
                                               onClick={() => setFieldValue("code", this.setRandomCouponCode())}>
     			                            	Generate Random Code
