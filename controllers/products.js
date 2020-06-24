@@ -1,5 +1,6 @@
 import {axios} from "../DukaanAPI";
 import ErrorHandler from "../helpers/ErrorHandler";
+import organizationController from './organizations';
 
 const querystring = require('querystring');
 
@@ -118,11 +119,24 @@ const handleCalculatePrice = (formBody) => {
     return axios.post("/api/v2/admin/products/calculate", queryString);
 }
 
+const fetchOrganizations = () => {
+    return organizationController.getAllOrganizations()
+}
+
+const fetchGenerateLinkData = () => {
+    return fetchOrganizations()
+}
+
+const fetchCenters = (organizationId) => {
+    return organizationController.getOrganizationCenters(organizationId)
+}
 
 module.exports = {
     handleGetProducts,
     handleAddProduct,
     handleEditProduct,
     handleCalculatePrice,
-    searchProducts
+    searchProducts,
+    fetchGenerateLinkData,
+    fetchCenters
 }
