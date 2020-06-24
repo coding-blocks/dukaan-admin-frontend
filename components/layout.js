@@ -119,6 +119,12 @@ class Layout extends React.Component {
                             <a>Add New</a>
                           </Link>
                         </div>
+                        <div className="divider-h" />
+                        <div className="flex-row justify-content-center">
+                          <Link href="/admin/products/generateLink">
+                            <a>Generate Link</a>
+                          </Link>
+                        </div>
                       </div>
                     </li>
                   </div>

@@ -10,7 +10,12 @@ const getAllOrganizations = () => {
     return axios.get(`/api/v2/admin/organizations`)
 };
 
+const getOrganizationCenters = (id) => {
+	return axios.get(`/api/v2/admin/organizations/${id}/centers`)
+}
+
 
 module.exports = {
-    getAllOrganizations
+    getAllOrganizations,
+    getOrganizationCenters
 };
