@@ -24,10 +24,14 @@ const useStyles = makeStyles({
     },
 });
 
-const ProductLinkCard = ({ link, product, user, useCredits }) => {
+const ProductLinkCard = ({  product, user, useCredits }) => {
     
     const [open, setOpen] = React.useState(false);
 
+    const generatedLink = useCredits 
+                          ? `${config.domain}/buy?productId=${product.id}&oneauthId=${user.oneauth_id}&userCredits=true`
+                          :  `${config.domain}/buy?productId=${product.id}&oneauthId=${user.oneauth_id}`
+ 
     const handleClick = () => {
       setOpen(true);
     };
@@ -79,14 +83,11 @@ const ProductLinkCard = ({ link, product, user, useCredits }) => {
                   <Grid container wrap="wrap">
                         <Grid item xs={10}>
                             <Typography>
-                              {useCredits 
-                                  ? `${config.domain}/buy?productId=${product.id}&oneauthId=${user.oneauth_id}&userCredits=true`
-                                  : `${config.domain}/buy?productId=${product.id}&oneauthId=${user.oneauth_id}`
-                              }
+                              {generatedLink}
                             </Typography>
                         </Grid>
                         <Grid item xs={2}>
-                            <CopyToClipboard text={link}>
+                            <CopyToClipboard text={generatedLink}>
                                   <Button onClick={handleClick} title="copy to clipboard">
                                     <FileCopyIcon />
                                   </Button>
