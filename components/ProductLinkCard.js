@@ -76,6 +76,7 @@ const ProductLinkCard = ({  product, user, useCredits }) => {
                               <li>UserName: {user.username}</li>
                               <li>OneauthId: {user.oneauth_id}</li>
                               <li>Email: {user.email}</li>
+                              <li>Wallet Amount: {user.wallet_amount / 100}</li>
                           </ul>
                       </Grid>
                   </Grid>        
