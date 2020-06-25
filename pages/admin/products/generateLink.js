@@ -205,7 +205,7 @@ class GenerateLink extends React.Component {
                         <div className={"col-md-6 pull-right"}>
 
                             { this.state.generateLinkClicked && this.state.product && this.state.user &&
-                                <ProductLinkCard link={this.state.generatedLink}
+                                <ProductLinkCard
                                     product={this.state.product}
                                     user={this.state.user}
                                     useCredits={this.state.useCredits}
