@@ -1,59 +1,43 @@
-import React from 'react'
-import {withRouter} from 'next/router';
+import React from 'react';
+import { withRouter } from 'next/router';
+import BulkCouponForm from "../../../forms/BulkCoupon";
 import Head from '../../../components/head';
 import Layout from "../../../components/layout";
-import CouponForm from "../../../forms/Coupon";
-import CheckLogin from "../../../components/CheckLogin";
-import * as controller from '../../../controllers/v2/couponsV2'
-import ErrorHandler from "../../../helpers/ErrorHandler";
-import "../../../styles/pages/admin/coupons2.scss";
+import * as controllerV1 from '../../../controllers/coupons';
+import * as controllerV2 from '../../../controllers/v2/couponsV2'
 import Swal from 'sweetalert2';
+import CheckLogin from "../../../components/CheckLogin";
+import ErrorHandler from "../../../helpers/ErrorHandler";
 import ProductApplicabilityInfo from "../../../components/ProductApplicabilityInfo";
 import ProductsChooserModal from "../../../components/ProductsChooser/ProductsChooserModal";
 import ConfirmationDialog from "../../../components/ConfirmationDialog";
+import "../../../styles/pages/admin/coupons2.scss";
 
 
-class AddCoupons extends React.Component {
+class AddBulkCoupon extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
+            loading: false,
             organizations: [],
-            categories: [],
+            // categories: [],
             subCategories: [],
             subCategoryRules: [],
+            couponProducts: {},
             isModalOpen: false,
             modalProductTypeId: '',
             modalOrganizationId: '',
-            couponProducts: {},
-            couponUsers: [],
             isEditMode: false,
             isConfirmationModalOpen: false,
-        }
-    }
-
-    onUnsavedChanges = () => {
-        this.setState({isConfirmationModalOpen: true})
-    }
-
-    onAgree = () => {
-        this.setState({
-            isConfirmationModalOpen: false,
-            couponProducts: {}
-        })
-    }
-
-    onDisagree = () => {
-        this.setState({isConfirmationModalOpen: false})
+        };
     }
 
     componentDidMount() {
-        // This should only contain single function that
-        // should fetch every data required for this component.
-        controller.fetchAddCouponData().then(([categories, organizations]) => {
+        controllerV2.fetchAddCouponData().then(([categories, organizations]) => {
             this.setState({
+                // categories: categories.data,
                 organizations: organizations.data,
-                categories: categories.data,
                 modalOrganizationId: organizations.data[0].id
             })
         }).catch(error => {
@@ -66,6 +50,7 @@ class AddCoupons extends React.Component {
         });
     }
 
+
     onOrganizationChange = (event) => {
         this.setState({
             modalOrganizationId: event.target.value
@@ -73,9 +58,9 @@ class AddCoupons extends React.Component {
     }
 
     fillSubCategories = (data) => {
-        controller.fetchSubCategories(data).then((subCategories) => {
+        controllerV2.fetchBulkSubCategories(data).then((subCategories) => {
             this.setState({
-                subCategories: subCategories.data.filter((c) => !c.is_bulk)
+                subCategories: subCategories.data
             })
         }).catch((error) => {
             ErrorHandler.handle(error)
@@ -91,7 +76,7 @@ class AddCoupons extends React.Component {
     }
 
     fillSubCategoryRules = (data) => {
-        controller.fetchSubCategoryRules(data).then((subCategoryRules) => {
+        controllerV2.fetchSubCategoryRules(data).then((subCategoryRules) => {
             this.setState({
                 subCategoryRules: subCategoryRules.data,
             })
@@ -112,22 +97,42 @@ class AddCoupons extends React.Component {
         })
     }
 
-    handleCloseModal = () => {
+     handleCloseModal = () => {
         this.setState({
             isModalOpen: false
         })
     }
 
-
     onProductsSelected = (productTypeId, products) => {
-        const newCouponProducts = this.state.couponProducts
-        newCouponProducts[productTypeId] = products
+        const currentProductsForProductTypeId = {}
+        currentProductsForProductTypeId[productTypeId] = products
         this.setState({
-            couponProducts: newCouponProducts
+            couponProducts: {
+                ...this.state.couponProducts,
+                ...currentProductsForProductTypeId
+            }
         })
     }
 
+    onUnsavedChanges = () => {
+        this.setState({isConfirmationModalOpen: true})
+    }
+
+    onAgree = () => {
+        this.setState({
+            isConfirmationModalOpen: false,
+            couponProducts: {}
+        })
+    }
+
+    onDisagree = () => {
+        this.setState({isConfirmationModalOpen: false})
+    }
+
     render() {
+        if (!this.state.organizations) {
+            return <div>Loading...</div>
+        }
         return (
             <div>
                 <Head title="Coding Blocks | Dukaan | Add Coupon"/>
@@ -136,16 +141,18 @@ class AddCoupons extends React.Component {
                     <div className={"col-md-12"}>
                         {/* Title */}
                         <div className={"d-flex justify-content-center mt-1 pt-3 pb-1"}>
-                            <h2 className={"title"}>Add Coupon</h2>
+                            <h2 className={"title"}>Add Bulk Coupons</h2>
                         </div>
+
                         <div className={"col-md-6 pull-left"}>
-                            {/* Coupon Form */}
-                            <CouponForm data={this.state}
+                            <BulkCouponForm data={this.state}
                                         onUnsavedChanges={this.onUnsavedChanges}
-                                        handleCategoryChange={this.handleCategoryChange}
                                         onOrganizationChange={this.onOrganizationChange}
+                                        handleCategoryChange={this.handleCategoryChange}
                                         handleSubCategoryChange={this.handleSubCategoryChange}/>
                         </div>
+
+
                         <div className={"col-md-6 pull-right"}>
                             {/* Product applicability pane */}
                             {this.state.subCategoryRules.length > 0 &&
@@ -183,6 +190,7 @@ class AddCoupons extends React.Component {
             </div>
         )
     }
+
 }
 
-export default withRouter(AddCoupons)
+export default withRouter(AddBulkCoupon);

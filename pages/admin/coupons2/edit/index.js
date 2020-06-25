@@ -38,6 +38,7 @@ class EditCoupons extends React.Component {
             isEverUsed: false,
             isConfirmationModalOpen: false,
             isApplicableAllUsers: false,
+            isSubCategoryBulk: false
         }
     }
 
@@ -57,8 +58,7 @@ class EditCoupons extends React.Component {
         this.setState({isConfirmationModalOpen: false})
     }
 
-    fillcouponProducts = (couponProducts) => {
-        const products = couponProducts.map(p => p.product)
+    fillcouponProducts = (products) => {
         const groupBy = (array, key) => {
             return array.reduce((result, currentValue) => {
                 (result[currentValue[key]] = result[currentValue[key]] || []).push(
@@ -85,9 +85,9 @@ class EditCoupons extends React.Component {
             this.setState({
                 coupon: response.data,
                 isEverUsed: response.data.is_ever_used,
-                isApplicableAllUsers: response.data.applicable_all_users
+                isApplicableAllUsers: response.data.applicable_all_users,
+                isSubCategoryBulk: response.data.is_subcategory_bulk
             })
-
             return controller.fetchEditCouponData(response.data)
         }).then(([subCategoryId, categories, subCategoryRules, subCategories, organizations, couponProducts, couponUsers]) => {
             this.setState({
@@ -114,7 +114,7 @@ class EditCoupons extends React.Component {
     fillSubCategories = (data) => {
         controller.fetchSubCategories(data).then((subCategories) => {
             this.setState({
-                subCategories: subCategories.data
+                subCategories: subCategories.data.filter((c) => !c.is_bulk)
             })
         }).catch((error) => {
             ErrorHandler.handle(error)
@@ -223,7 +223,8 @@ class EditCoupons extends React.Component {
                                     onProductsSelected={this.onProductsSelected}
                                     organizationId={this.state.modalOrganizationId}
                                     productTypeId={this.state.modalProductTypeId}
-                                    isEverUsed={this.state.isEverUsed}/>
+                                    isEverUsed={this.state.isEverUsed}
+                                    isSubCategoryBulk={this.state.isSubCategoryBulk}/>
                             </div>
                             :
                             <div/>

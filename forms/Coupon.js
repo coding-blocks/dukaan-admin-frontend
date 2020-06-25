@@ -332,8 +332,8 @@ class CouponForm extends React.Component {
                                                 this.props.onOrganizationChange(e)
                                             }}
                                             value={values.organization_id}
-                                            className={this.state.isEditFormAndIsCouponEverUsed ? "disabled-organization" : "organization"}
-                                            disabled={this.state.isEditFormAndIsCouponEverUsed}>
+                                            className={ (this.state.isEditFormAndIsCouponEverUsed || this.props.data.isSubCategoryBulk) ? "disabled-organization" : "organization"}
+                                            disabled={this.state.isEditFormAndIsCouponEverUsed || this.props.data.isSubCategoryBulk}>
                                             {
                                                 this.props.data.organizations.map((organization) => {
                                                     return (
@@ -352,16 +352,16 @@ class CouponForm extends React.Component {
                                         <Field
                                             type="text"
                                             className="input-text"
-                                            id={this.state.isEditFormAndIsCouponEverUsed ? "disabled-code" : "code"}
+                                            id={ (this.state.isEditFormAndIsCouponEverUsed || this.props.data.isSubCategoryBulk) ? "disabled-code" : "code"}
                                             placeholder="Enter Code"
                                             name="code"
                                             value={values.code}
                                             onBlur={handleBlur}
                                             onChange={handleChange}
                                             validate={!this.props.data.isEditMode ? this.validateCode : ''}
-                                            disabled={this.state.isEditFormAndIsCouponEverUsed}/>
+                                            disabled={this.state.isEditFormAndIsCouponEverUsed || this.props.data.isSubCategoryBulk}/>
 
-                                        {!this.props.data.isEverUsed && 
+                                        { (!this.props.data.isEverUsed && !this.props.data.isSubCategoryBulk) && 
                                         <span id="random_coupon" className="red pull-right mt-2 ml-2"
                                               onClick={() => setFieldValue("code", this.setRandomCouponCode())}>
     			                            	Generate Random Code
@@ -400,8 +400,8 @@ class CouponForm extends React.Component {
                                                 setFieldTouched("sub_category_id", false)
                                              }}
                                             value={values.category}
-                                            className={this.state.isEditFormAndIsCouponEverUsed ? "disabled-category" : "category"}
-                                            disabled={this.state.isEditFormAndIsCouponEverUsed}>
+                                            className={ (this.state.isEditFormAndIsCouponEverUsed || this.props.data.isSubCategoryBulk) ? "disabled-category" : "category"}
+                                            disabled={this.state.isEditFormAndIsCouponEverUsed || this.props.data.isSubCategoryBulk}>
                                             <option value="" key="">Select</option>
                                             {
                                                 this.props.data.categories.map((category) => {
@@ -426,8 +426,8 @@ class CouponForm extends React.Component {
                                                 setFieldValue("sub_category_id", this.props.handleSubCategoryChange(event, values.category))
                                             }}
                                             value={values.sub_category_id}
-                                            className={this.state.isEditFormAndIsCouponEverUsed ? "disabled-subcategory" : "subcategory"}
-                                            disabled={this.state.isEditFormAndIsCouponEverUsed}>
+                                            className={ (this.state.isEditFormAndIsCouponEverUsed || this.props.data.isSubCategoryBulk) ? "disabled-subcategory" : "subcategory"}
+                                            disabled={this.state.isEditFormAndIsCouponEverUsed || this.props.data.isSubCategoryBulk}>
                                             <option value="" key="">Select</option>
                                             {
                                                 this.props.data.subCategories.map((subcategory) => {
@@ -564,6 +564,7 @@ class CouponForm extends React.Component {
                                             className={"input-text"}
                                             placeholder="Enter Left"
                                             name="left"
+                                            onBlur={handleBlur}
                                             onChange={handleChange}
                                             value={values.left}
                                             min={1}
@@ -605,7 +606,8 @@ class CouponForm extends React.Component {
                                                     setFieldValue("applicable_all_users", !values.applicable_all_users)
                                                 }}
                                                 value={values.applicable_all_users}
-                                                disabled={this.props.data.isApplicableAllUsers && this.state.isEditFormAndIsCouponEverUsed}/>
+                                                disabled={(this.props.data.isApplicableAllUsers && this.state.isEditFormAndIsCouponEverUsed)
+                                                            || this.props.data.isSubCategoryBulk}/>
                                         </div>
                                     </div>
 
