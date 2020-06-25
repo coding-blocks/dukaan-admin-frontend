@@ -59,7 +59,17 @@ const bulkCouponSchema = Yup.object().shape({
     applicable_all_users: Yup.boolean()
         .required("Field is required."),
     active: Yup.boolean()
-        .required("Field is required.")
+        .required("Field is required."),
+    min_product_mrp: Yup.number().when('mode', {
+        is: (val) => val == "flat",
+        then: Yup.number()
+            .min(1, 'must be greater or eqauls to 1')
+            .typeError('min product price is required')
+            .required('min product price is required.'),
+        otherwise: Yup.number()
+            .min(1, 'must be greater or eqauls to 1')
+            .nullable().notRequired()
+    }),
 });
 
 const initialValues = {
@@ -80,7 +90,8 @@ const initialValues = {
     starts_with: '',
     ends_with: '',
     valid_start: Date.now(),
-    valid_end: new Date().setMonth(new Date().getMonth() + 1)
+    valid_end: new Date().setMonth(new Date().getMonth() + 1),
+    min_product_mrp: null
 }
 
 class BulkCouponForm extends React.Component {
@@ -328,6 +339,7 @@ class BulkCouponForm extends React.Component {
                                                 setFieldTouched("percentage", false)
                                                 setFieldValue("max_discount", null)
                                                 setFieldTouched("max_discount", false)
+                                                setFieldTouched("min_product_mrp", false)
                                              }}
                                         >
                                             <option value="flat">Flat</option>
@@ -385,6 +397,21 @@ class BulkCouponForm extends React.Component {
 
                                         </div>
                                     }
+
+                                    <FieldWithElement
+                                            name={"Min product Mrp"} nameCols={3} elementCols={9} 
+                                            elementClassName={"pl-4"} errorColor={'tomato'} 
+                                            errors={touched.min_product_mrp && errors.min_product_mrp}>
+                                            <input
+                                                type="number"
+                                                className={"input-text"}
+                                                placeholder="Enter min product price"
+                                                name="min_product_mrp"
+                                                onBlur={handleBlur}
+                                                onChange={handleChange}
+                                                value={values.min_product_mrp}
+                                            />
+                                    </FieldWithElement>
 
                                     {/* Total number of times a coupon can be used*/}
                                     <FieldWithElement name={"How many times it can be used?"} nameCols={6}
