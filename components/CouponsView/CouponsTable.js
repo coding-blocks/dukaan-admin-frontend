@@ -243,6 +243,7 @@ class CouponsTable extends React.Component {
                                                     Edit
                                                 </Button>
                                             </Link>
+                                         
                                         </TableCell>
 
                                         <TableCell align="center">

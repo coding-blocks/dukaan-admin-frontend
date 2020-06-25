@@ -101,7 +101,7 @@ class ProductLinkForm extends React.Component {
                                             setFieldValue("user", value) }
                                         }
                                         getOptionLabel={(option) => {
-                                            return option ? `username: ${option.username}, oneauthId: ${option.oneauth_id}` : ''
+                                            return option.email
                                         }}
                                         getOptionSelected={(option, value) => {
                                             return option.id === value.id
@@ -115,7 +115,7 @@ class ProductLinkForm extends React.Component {
                                                     style={{marginRight: 8}}
                                                     checked={selected}
                                                 />
-                                                username: {option.username}, oneauthId: {option.oneauth_id}
+                                                {option.email}
                                             </React.Fragment>
                                         )}
                                         renderInput={(params) => (

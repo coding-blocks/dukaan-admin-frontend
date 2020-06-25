@@ -126,6 +126,26 @@ const getAppliedCouponUsersList = (data) => {
     return axios.get(`/api/v2/admin/couponsv2/appliedCouponUsersList`, {params: data} )
 }
 
+const fetchBulkSubCategories = (data) => {
+    return axios.get(`/api/v2/admin/couponsv2/bulkSubCategories`, {params: data})
+}
+
+const handleAddBulkCoupons = (data) => {
+    let response = new Promise((resolve, reject) => {
+        axios.post(`/api/v2/admin/couponsv2/bulk`, data).then((response) => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'coupons.txt');
+            document.body.appendChild(link);
+            link.click();
+            resolve(response.data);
+        }).catch((error) => {
+            reject(ErrorHandler.handle(error));
+        });
+    });
+    return response;
+}
 
 export {
     fetchAddCouponData,
@@ -141,5 +161,7 @@ export {
     getCoupon,
     getProductsWithMrpLessThanDiscount,
     getCodeAvailability,
-    getAppliedCouponUsersList
+    getAppliedCouponUsersList,
+    fetchBulkSubCategories,
+    handleAddBulkCoupons
 }

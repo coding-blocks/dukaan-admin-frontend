@@ -57,7 +57,8 @@ class ProductsChooserV2 extends React.Component {
                         isEverUsed={this.props.isEverUsed}
                         organizationId={this.props.organizationId}
                         onProductsSelected={this.onProductsSelected}
-                        productTypeId={this.props.productTypeId}/>
+                        productTypeId={this.props.productTypeId}
+                        isSubCategoryBulk={this.props.isSubCategoryBulk}/>
                     <div className={"mt-5"}>
                         <Button variant="outlined" color="primary"
                                 onClick={this.onSaveChangeClicked}
@@ -77,7 +78,8 @@ ProductsChooserV2.propTypes = {
     productTypeId: PropTypes.number.isRequired,
     organizationId: PropTypes.number.isRequired,
     onProductsSelected: PropTypes.func,
-    isEverUsed: PropTypes.bool.isRequired
+    isEverUsed: PropTypes.bool.isRequired,
+    isSubCategoryBulk: PropTypes.bool
 }
 
 export default ProductsChooserV2

@@ -51,7 +51,7 @@ class SearchInput extends React.Component {
 
     handleChange = (event, values) => {
         this.setState({
-            selectedProducts: this.props.isEverUsed ? 
+            selectedProducts: (this.props.isEverUsed || this.props.isSubCategoryBulk) ? 
                               [...this.props.preFilledProducts, ...values.filter((option) => this.props.preFilledProducts.indexOf(option) === -1 ) ] : 
                               values,
         }, () => {
@@ -78,6 +78,7 @@ class SearchInput extends React.Component {
                         return option.id === value.id
                     }}
                     options={this.state.productSearchResults}
+                    disabled={ this.props.isSubCategoryBulk }
                     renderOption={(option, {selected}) => (
                         <React.Fragment>
                             <Checkbox
@@ -94,7 +95,7 @@ class SearchInput extends React.Component {
                         <Chip
                             label={option.description}
                             {...getTagProps({ index })}
-                            disabled={this.props.isEverUsed ? this.props.preFilledProducts.indexOf(option) !== -1 : ''}
+                            disabled={ (this.props.isEverUsed || this.props.isSubCategoryBulk) ? this.props.preFilledProducts.indexOf(option) !== -1 : ''}
                         />
                         ))
                     }
@@ -117,7 +118,8 @@ class SearchInput extends React.Component {
 SearchInput.propType = {
     productTypeId: PropTypes.number.isRequired,
     organizationId: PropTypes.number.isRequired,
-    isEverUsed: PropTypes.bool.isRequired
+    isEverUsed: PropTypes.bool.isRequired,
+    isSubCategoryBulk: PropTypes.bool
 }
 
 export default SearchInput;
