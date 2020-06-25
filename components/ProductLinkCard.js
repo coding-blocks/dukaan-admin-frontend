@@ -65,8 +65,9 @@ const ProductLinkCard = ({  product, user, useCredits }) => {
                        <b> Product </b>
                         <ul>
                             <li> Name: {product.name} </li>
-                            <li> Mrp: {product.mrp / 100}</li>
                             <li> Description: {product.description} </li>
+                            <li className="red"> Type: {product.type}</li>
+                            <li> Mrp: {product.mrp / 100}</li>
 
                         </ul>
                       </Grid>
