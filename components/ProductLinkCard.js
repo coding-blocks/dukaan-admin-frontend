@@ -29,8 +29,8 @@ const ProductLinkCard = ({  product, user, useCredits }) => {
     const [open, setOpen] = React.useState(false);
 
     const generatedLink = useCredits 
-                          ? `${config.domain}/buy?productId=${product.id}&oneauthId=${user.oneauth_id}&userCredits=true`
-                          :  `${config.domain}/buy?productId=${product.id}&oneauthId=${user.oneauth_id}`
+                          ? `${config.domain}buy?productId=${product.id}&oneauthId=${user.oneauth_id}&userCredits=true`
+                          :  `${config.domain}buy?productId=${product.id}&oneauthId=${user.oneauth_id}`
  
     const handleClick = () => {
       setOpen(true);
