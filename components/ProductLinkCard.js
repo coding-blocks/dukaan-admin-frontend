@@ -29,7 +29,7 @@ const ProductLinkCard = ({  product, user, useCredits }) => {
     const [open, setOpen] = React.useState(false);
 
     const generatedLink = useCredits 
-                          ? `https://dukaan.codingblocks.com/buy?productId=${product.id}&oneauthId=${user.oneauth_id}&userCredits=true`
+                          ? `https://dukaan.codingblocks.com/buy?productId=${product.id}&oneauthId=${user.oneauth_id}&useCredits=true`
                           :  `https://dukaan.codingblocks.com/buy?productId=${product.id}&oneauthId=${user.oneauth_id}`
  
     const handleClick = () => {
