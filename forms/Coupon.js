@@ -174,7 +174,7 @@ class CouponForm extends React.Component {
 
     onSubmit = async (fields) => {
         if (fields.amount)
-            if( !(await this.getProductsWithMrpLessThanDiscount(fields)) ) 
+            if( !(await this.freeProductsNotice(fields)) ) 
                 return
 
         if (this.props.data.isEditMode) {
@@ -184,14 +184,15 @@ class CouponForm extends React.Component {
         }
     }
 
-    getProductsWithMrpLessThanDiscount = async (formValues) => {
+    freeProductsNotice = async (formValues) => {
         try {
             const payload = {
                 amount: formValues.amount,
                 product_ids: await this.getCouponProductIds(),
                 category: formValues.category,
                 sub_category_id: formValues.sub_category_id,
-                mode: formValues.mode
+                mode: formValues.mode,
+                min_product_mrp: formValues.min_product_mrp
             }    
             const response = await controller.getProductsWithMrpLessThanDiscount(payload)
             if (!response.data.length) {
