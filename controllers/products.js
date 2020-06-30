@@ -1,6 +1,8 @@
 import {axios} from "../DukaanAPI";
 import ErrorHandler from "../helpers/ErrorHandler";
 import organizationController from './organizations';
+import userController from './users';
+
 
 const querystring = require('querystring');
 
@@ -131,6 +133,26 @@ const fetchCenters = (organizationId) => {
     return organizationController.getOrganizationCenters(organizationId)
 }
 
+const sendBuyLinkEmail = (data) => {
+    return axios.post("/api/v2/admin/products/productBuyLinkEmail", data)
+}
+
+const getUserCartDetailsUrls = (data) => {
+    return userController.getUserCartDetailsUrls(data)
+}
+
+const getProductBuyLinkData = (data) => {
+    return Promise.all ([
+            getUserCartDetailsUrls({id: data.userId}),
+            handleCalculatePrice({
+                oneauthId: data.oneauthId,
+                productId: data.productId,
+                quantity: data.quantity,
+                useCredits: data.useCredits
+            })
+        ])
+}
+
 module.exports = {
     handleGetProducts,
     handleAddProduct,
@@ -138,5 +160,8 @@ module.exports = {
     handleCalculatePrice,
     searchProducts,
     fetchGenerateLinkData,
-    fetchCenters
+    fetchCenters,
+    sendBuyLinkEmail,
+    getUserCartDetailsUrls,
+    getProductBuyLinkData
 }
