@@ -269,10 +269,6 @@ class GenerateLink extends React.Component {
                         <CircularProgress color="inherit" />
                     </Backdrop>
 
-                    <div className={"d-flex justify-content-center mt-1 pt-3 pb-1"}>
-                        <h2 className={"title"}>Create Buy Link</h2>
-                    </div>
-
                     <div className={"row"}>
                         <div className={"col-md-3 pull-left"}>
                             <ProductLinkForm {...this.state}
@@ -309,7 +305,6 @@ class GenerateLink extends React.Component {
                                                 <TableCell align="center">Oneauth Id</TableCell>
                                                 <TableCell align="center">Email</TableCell>
                                                 <TableCell align="center">Mobile Number</TableCell>
-                                                <TableCell align="center">Credit Limit</TableCell>
                                                 <TableCell align="center">Address</TableCell>
                                               </TableRow>
                                             </TableHead>
@@ -319,11 +314,10 @@ class GenerateLink extends React.Component {
                                                     {this.state.user.firstname} {this.state.user.lastname}
                                                   </TableCell>
                                                   <TableCell align="center">{this.state.user.username}</TableCell>
-                                                  <TableCell align="center">{this.state.user.wallet_amount}</TableCell>
+                                                  <TableCell align="center">{this.state.user.wallet_amount /100}</TableCell>
                                                   <TableCell align="center">{this.state.user.oneauth_id}</TableCell>
                                                   <TableCell align="center">{this.state.user.email}</TableCell>
                                                   <TableCell align="center">{this.state.user.mobile_number}</TableCell>
-                                                  <TableCell align="center">{this.state.user.credit_limit}</TableCell>
                                                   <TableCell align="center">{this.state.user.permanent_address}</TableCell>
                                                 </TableRow>
                                             </TableBody>

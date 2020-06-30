@@ -82,7 +82,7 @@ class ProductLinkForm extends React.Component {
                 <div className={"border-card"}>
                     <div className={"d-flex justify-content-center mt-1 mb-3 pb-3"}>
                         <h2 className={"title"}>
-                            Generate
+                            Generate Buy Link
                         </h2>
                     </div>
 

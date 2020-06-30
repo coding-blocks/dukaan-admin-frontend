@@ -56,7 +56,7 @@ const ProductLinkCard = ({ link,  product, user, onSendEmailClick, calculatedAmo
                               <TableCell align="center">Discount</TableCell>
                               <TableCell align="center">Taxes</TableCell>
                               <TableCell align="center">Credits</TableCell>
-                              <TableCell align="center">Amount</TableCell>
+                              <TableCell align="center">Amount To Pay</TableCell>
                               <TableCell align="center">Type</TableCell>
                             </TableRow>
                           </TableHead>
@@ -69,8 +69,8 @@ const ProductLinkCard = ({ link,  product, user, onSendEmailClick, calculatedAmo
                                 <TableCell align="center">{calculatedAmountDetails.discount / 100}</TableCell>
                                 <TableCell align="center">{calculatedAmountDetails.tax /100}</TableCell>
                                 <TableCell align="center">{calculatedAmountDetails.creditsApplied /100 }</TableCell>
-                                <TableCell align="center">{calculatedAmountDetails.amount /100}</TableCell>
-                                <TableCell align="center">{product.type}</TableCell>
+                                <TableCell align="center" className={"red"}>{calculatedAmountDetails.amount /100}</TableCell>
+                                <TableCell align="center" className={"red"}><b>{product.type}</b></TableCell>
                               </TableRow>
                           </TableBody>
                       </Table>
@@ -82,8 +82,8 @@ const ProductLinkCard = ({ link,  product, user, onSendEmailClick, calculatedAmo
                           <b>Product Buy Link: </b>
                       </div>
 
-                      <div className={"col-md-6 offset-1"}>
-                          <b>{link}</b>
+                      <div className={"col-md-6"}>
+                          <b style={{color: '#509EE3'}}>{link}</b>
                           <CopyToClipboard text={link}>
                                 <Button onClick={handleClick} title="copy to clipboard">
                                   <FileCopyOutlinedIcon />
@@ -91,12 +91,7 @@ const ProductLinkCard = ({ link,  product, user, onSendEmailClick, calculatedAmo
                           </CopyToClipboard>
                       </div>
 
-                      <div className={"col-md-2"}>
-                          <Button color="primary" className={"ml-auto"} onClick={onSendEmailClick}>
-                              Send Email
-                              <EmailOutlinedIcon className={"ml-2"} />
-                          </Button>
-                      </div>
+                      
                   </div>
 
                   <div className={"divider-h mt-1"}></div>
