@@ -11,11 +11,23 @@ import ProductLinkCard from "../../../components/ProductLinkCard"
 import ErrorHandler from "../../../helpers/ErrorHandler";
 import Swal from 'sweetalert2';
 import { withStyles } from '@material-ui/core';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import Paper from '@material-ui/core/Paper';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Typography from '@material-ui/core/Typography';
+
 
 const useStyles = theme => ({
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
+    },
+    title: {
+        // minWidth: 650,
     },
 });
 
@@ -262,7 +274,7 @@ class GenerateLink extends React.Component {
                     </div>
 
                     <div className={"row"}>
-                        <div className={"col-md-4 pull-left"}>
+                        <div className={"col-md-3 pull-left"}>
                             <ProductLinkForm {...this.state}
                                 onOrganizationChange={this.onOrganizationChange}
                                 onCenterChange={this.onCenterChange}
@@ -277,29 +289,62 @@ class GenerateLink extends React.Component {
                             />
                         </div>
 
-                        <div className={"col-md-8 pull-right mt-5"}>
                             { this.state.generateLinkClicked &&
+                            <div className={"col-md-9 pull-right mt-5"}>
 
-                                <div className={"mr-5"}>
+                                {!this.state.loading &&
+                                    
+                                <div className={"row mr-5"}>
+                                    <TableContainer component={Paper}>
+                                        <Typography className={"ml-5 mt-2"} variant="h5" id="tableTitle" component="div">
+                                            <b> User Details </b>
+                                        </Typography>
+
+                                        <Table className={classes.table} aria-label="simple table">
+                                            <TableHead>
+                                              <TableRow>
+                                                <TableCell align="center">Name</TableCell>
+                                                <TableCell align="center">Username</TableCell>
+                                                <TableCell align="center">Wallet Amount</TableCell>
+                                                <TableCell align="center">Oneauth Id</TableCell>
+                                                <TableCell align="center">Email</TableCell>
+                                                <TableCell align="center">Mobile Number</TableCell>
+                                                <TableCell align="center">Credit Limit</TableCell>
+                                                <TableCell align="center">Address</TableCell>
+                                              </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                <TableRow key={this.state.user.id}>
+                                                  <TableCell component="th" scope="row" align="center">
+                                                    {this.state.user.firstname} {this.state.user.lastname}
+                                                  </TableCell>
+                                                  <TableCell align="center">{this.state.user.username}</TableCell>
+                                                  <TableCell align="center">{this.state.user.wallet_amount}</TableCell>
+                                                  <TableCell align="center">{this.state.user.oneauth_id}</TableCell>
+                                                  <TableCell align="center">{this.state.user.email}</TableCell>
+                                                  <TableCell align="center">{this.state.user.mobile_number}</TableCell>
+                                                  <TableCell align="center">{this.state.user.credit_limit}</TableCell>
+                                                  <TableCell align="center">{this.state.user.permanent_address}</TableCell>
+                                                </TableRow>
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </div>
+                                }
+
+                                <div className={"row mr-5 mt-4"}>
                                     <iframe
                                         src={this.state.activeCartIframeUrl}
                                         frameBorder="0"
                                         onLoad={this.hideSpinner}
                                         width="100%"
-                                        height="400"
+                                        height="220"
                                         allowtransparency='true'
                                         >
                                     </iframe>
                                 </div>
-                            }
-                        </div>
-                    </div>
 
-                    { this.state.generateLinkClicked &&
-
-                        <div className={"row mt-5 ml-5"}>
-
-                            <div className={"col-md-8 pull-left"}>
+                                <div className={"row mr-5 mt-4"}>
                                     <iframe
                                         src={this.state.purchasedProductIframeurl}
                                         frameBorder="0"
@@ -309,22 +354,25 @@ class GenerateLink extends React.Component {
                                         allowtransparency='true'
                                         >
                                     </iframe>
-                            </div>
+                                </div>
 
-                            <div className={"col-md-4 pull-right"}>
-                            {!this.state.loading &&
-                                <ProductLinkCard
-                                    product={this.state.product}
-                                    user={this.state.user}
-                                    useCredits={this.state.useCredits}
-                                    link={this.state.generatedLink}
-                                    onSendEmailClick={this.onSendEmailClick}
-                                    calculatedAmountDetails={this.state.calculatedAmountDetails}
-                                />
-                            }
+                                <div className={"row mr-5 mt-4 mb-3"}>
+
+                                    {!this.state.loading &&
+                                        <ProductLinkCard
+                                            product={this.state.product}
+                                            user={this.state.user}
+                                            useCredits={this.state.useCredits}
+                                            link={this.state.generatedLink}
+                                            onSendEmailClick={this.onSendEmailClick}
+                                            calculatedAmountDetails={this.state.calculatedAmountDetails}
+                                        />
+                                    }
+                                </div>
+
                             </div>
-                        </div>
-                    }
+                            }
+                    </div>
 
                 </CheckLogin>
             </div>

@@ -78,7 +78,7 @@ class ProductLinkForm extends React.Component {
         const { classes } = this.props;
 
         return (
-            <div className={"d-flex col-md-8 offset-1 mt-5"}>
+            <div className={"d-flex col-md-11 offset-1 mt-5"}>
                 <div className={"border-card"}>
                     <div className={"d-flex justify-content-center mt-1 mb-3 pb-3"}>
                         <h2 className={"title"}>
