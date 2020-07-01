@@ -59,6 +59,7 @@ const couponSchema = Yup.object().shape({
         .positive().nullable().notRequired(),
     max_product_mrp: Yup.number()
         .positive()
+        .max(Number.MAX_SAFE_INTEGER, 'entered value to large')
         .moreThan(Yup.ref('min_product_mrp'), 
             "must be greater than min product mrp")
         .nullable().notRequired()
