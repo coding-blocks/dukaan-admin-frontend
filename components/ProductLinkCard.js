@@ -82,7 +82,7 @@ const ProductLinkCard = ({ link,  product, user, onSendEmailClick, calculatedAmo
                           <b>Product Buy Link: </b>
                       </div>
 
-                      <div className={"col-md-6"}>
+                      <div className={"col-md-9"}>
                           <b style={{color: '#509EE3'}}>{link}</b>
                           <CopyToClipboard text={link}>
                                 <Button onClick={handleClick} title="copy to clipboard">
