@@ -67,7 +67,7 @@ class ProductLinkForm extends React.Component {
 
         let useCreditsQueryParams = ''
         if (fields.applyCredits)
-            useCreditsQueryParams = '/useCredits=true'
+            useCreditsQueryParams = '&useCredits=true'
 
         const link = `https://dukaan.codingblocks.com/buy?productId=${productId}&oneauthId=${oneauthId}${useCreditsQueryParams}`
         this.props.ongenerateLink(link)
