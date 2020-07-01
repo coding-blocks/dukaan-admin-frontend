@@ -1,5 +1,7 @@
 import React from 'react'
 import Head from '../../../components/head';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Layout from "../../../components/layout";
 import ProductLinkForm from "../../../forms/ProductLink";
 import CheckLogin from "../../../components/CheckLogin";
@@ -8,7 +10,26 @@ import * as userController from '../../../controllers/users'
 import ProductLinkCard from "../../../components/ProductLinkCard"
 import ErrorHandler from "../../../helpers/ErrorHandler";
 import Swal from 'sweetalert2';
+import { withStyles } from '@material-ui/core';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import Paper from '@material-ui/core/Paper';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Typography from '@material-ui/core/Typography';
 
+
+const useStyles = theme => ({
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+    },
+    title: {
+        // minWidth: 650,
+    },
+});
 
 class GenerateLink extends React.Component {
 
@@ -28,12 +49,19 @@ class GenerateLink extends React.Component {
             product:'',
             user:'',
             useCredits:false,
-            generateLinkClicked:false
+            generatedLink: '',
+            generateLinkClicked:false,
+            activeCartIframeUrl: '',
+            purchasedProductIframeurl: '',
+            calculatedAmountDetails: '',
+            loading: false,
         }
     }
 
     componentDidMount() {
-        controller.fetchGenerateLinkData().then((organizations) => {
+        controller.fetchGenerateLinkData({
+            user_id: this.state.user_id
+        }).then((organizations) => {
             this.setState({
                 organizations: organizations.data,
             })
@@ -126,8 +154,10 @@ class GenerateLink extends React.Component {
 
     handleProductChange = async (event, value) => {
         this.setState({
-            product: value
-        });
+            product: value,
+        })
+
+        this.unsetGeneratedLink()
     }
 
 
@@ -157,37 +187,90 @@ class GenerateLink extends React.Component {
         }
     }
 
-    handleUserChange = (event, value) => {
+    handleUserChange =  (event, value) => {
+
         this.setState({
             user: value,
-        });
+        })
+        this.unsetGeneratedLink()
     }
 
     onApplyCreditsChange = (event) => {
         this.setState({
             useCredits: !JSON.parse(event.target.value)
         })
+        this.unsetGeneratedLink()
     }
 
-    ongenerateLinkClick = () => {
-        this.setState({
-            generateLinkClicked: true
+    ongenerateLink = (link) => {
+
+        controller.getProductBuyLinkData({
+            userId: this.state.user.id,
+            oneauthId: this.state.user.oneauth_id,
+            productId: this.state.product.id,
+            quantity: 1,
+            useCredits: this.state.useCredits
+        }).then(([ [activeCartDetails, purchasedProductDetails], calculatedAmountDetails]) => {
+            this.setState({
+                activeCartIframeUrl: activeCartDetails.data.iframeUrl,
+                purchasedProductIframeurl: purchasedProductDetails.data.iframeUrl,
+                generatedLink: link,
+                generateLinkClicked: true,
+                calculatedAmountDetails: calculatedAmountDetails.data,
+                loading: true
+            })
         })
     }
 
+    unsetGeneratedLink = () => {
+        this.setState({
+            generatedLink: '',
+            generateLinkClicked: false
+        })
+    }
+
+    onSendEmailClick = () => {
+        controller.sendBuyLinkEmail({
+            user_id: this.state.user.id,
+            link: this.state.generatedLink
+        }).then((response) => {
+            Swal.fire({
+              title: "Success",
+              text: "Email sent successfully!",    
+              icon: "success",
+            });
+        }).catch((err) => {
+            Swal.fire({
+                type: "error",
+                title: "Error",
+                text: "Error sending email!"
+            });
+        })
+    }
+
+    hideSpinner = () => {
+        this.setState({
+          loading: false
+        });
+    };
+
     render() {
+        const { classes } = this.props;
+
         return (
             <div>
+
+
                 <Head title="Coding Blocks | Dukaan | Generate Product Link"/>
                 <Layout/>
                 <CheckLogin>
-                    <div className={"col-md-12"}>
 
-                        <div className={"d-flex justify-content-center mt-1 pt-3 pb-1"}>
-                            <h2 className={"title"}>Create Buy Link</h2>
-                        </div>
-                        
-                        <div className={"col-md-5 offset-1 pull-left"}>
+                    <Backdrop className={classes.backdrop} open={this.state.loading}>
+                        <CircularProgress color="inherit" />
+                    </Backdrop>
+
+                    <div className={"row"}>
+                        <div className={"col-md-3 pull-left"}>
                             <ProductLinkForm {...this.state}
                                 onOrganizationChange={this.onOrganizationChange}
                                 onCenterChange={this.onCenterChange}
@@ -198,26 +281,97 @@ class GenerateLink extends React.Component {
                                 handleUserChange={this.handleUserChange}
                                 handleProductChange={this.handleProductChange}
                                 onApplyCreditsChange={this.onApplyCreditsChange}
-                                ongenerateLinkClick={this.ongenerateLinkClick}
+                                ongenerateLink={this.ongenerateLink}
                             />
                         </div>
 
-                        <div className={"col-md-6 pull-right"}>
+                            { this.state.generateLinkClicked &&
+                            <div className={"col-md-9 pull-right mt-5"}>
 
-                            { this.state.generateLinkClicked && this.state.product && this.state.user &&
-                                <ProductLinkCard
-                                    product={this.state.product}
-                                    user={this.state.user}
-                                    useCredits={this.state.useCredits}
-                                />
+                                {!this.state.loading &&
+                                    
+                                <div className={"row mr-5"}>
+                                    <TableContainer component={Paper}>
+                                        <Typography className={"ml-5 mt-2"} variant="h5" id="tableTitle" component="div">
+                                            <b> User Details </b>
+                                        </Typography>
+
+                                        <Table className={classes.table} aria-label="simple table">
+                                            <TableHead>
+                                              <TableRow>
+                                                <TableCell align="center">Name</TableCell>
+                                                <TableCell align="center">Username</TableCell>
+                                                <TableCell align="center">Wallet Amount</TableCell>
+                                                <TableCell align="center">Oneauth Id</TableCell>
+                                                <TableCell align="center">Email</TableCell>
+                                                <TableCell align="center">Mobile Number</TableCell>
+                                                <TableCell align="center">Address</TableCell>
+                                              </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                <TableRow key={this.state.user.id}>
+                                                  <TableCell component="th" scope="row" align="center">
+                                                    {this.state.user.firstname} {this.state.user.lastname}
+                                                  </TableCell>
+                                                  <TableCell align="center">{this.state.user.username}</TableCell>
+                                                  <TableCell align="center">{this.state.user.wallet_amount /100}</TableCell>
+                                                  <TableCell align="center">{this.state.user.oneauth_id}</TableCell>
+                                                  <TableCell align="center">{this.state.user.email}</TableCell>
+                                                  <TableCell align="center">{this.state.user.mobile_number}</TableCell>
+                                                  <TableCell align="center">{this.state.user.permanent_address}</TableCell>
+                                                </TableRow>
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </div>
+                                }
+
+                                <div className={"row mr-5 mt-4"}>
+                                    <iframe
+                                        src={this.state.activeCartIframeUrl}
+                                        frameBorder="0"
+                                        onLoad={this.hideSpinner}
+                                        width="100%"
+                                        height="220"
+                                        allowtransparency='true'
+                                        >
+                                    </iframe>
+                                </div>
+
+                                <div className={"row mr-5 mt-4"}>
+                                    <iframe
+                                        src={this.state.purchasedProductIframeurl}
+                                        frameBorder="0"
+                                        onLoad={this.hideSpinner}
+                                        width="100%"
+                                        height="350"
+                                        allowtransparency='true'
+                                        >
+                                    </iframe>
+                                </div>
+
+                                <div className={"row mr-5 mt-4 mb-3"}>
+
+                                    {!this.state.loading &&
+                                        <ProductLinkCard
+                                            product={this.state.product}
+                                            user={this.state.user}
+                                            useCredits={this.state.useCredits}
+                                            link={this.state.generatedLink}
+                                            onSendEmailClick={this.onSendEmailClick}
+                                            calculatedAmountDetails={this.state.calculatedAmountDetails}
+                                        />
+                                    }
+                                </div>
+
+                            </div>
                             }
-                        </div>
-
                     </div>
+
                 </CheckLogin>
             </div>
         )
     }
 }
 
-export default GenerateLink
+export default withStyles(useStyles)(GenerateLink)
