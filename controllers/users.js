@@ -60,11 +60,27 @@ const updateUserDetails = (values) => {
 
 };
 
+const getUsersActiveCartDetailsUrl = (data) => {
+    return axios.get(`api/v2/admin/users/activeCartDetails`, {params: data})
+}
+
+const getUsersPurchasedProductsDetialsUrl = (data) => {
+    return axios.get(`api/v2/admin/users/purchasedProductsDetails`, {params: data})
+}
+
+const getUserCartDetailsUrls = (data) => {
+  return Promise.all([
+          getUsersActiveCartDetailsUrl(data),
+          getUsersPurchasedProductsDetialsUrl(data)
+      ])
+}
+
 module.exports = {
   handleGetUserByEmailOrPhone,
   handleAddUser,
   handleGetUserById,
   getUsernameAvailability,
   getUserByFromOneAuthByOneAuthId,
-  updateUserDetails
+  updateUserDetails,
+  getUserCartDetailsUrls
 };

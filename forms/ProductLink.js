@@ -60,8 +60,17 @@ class ProductLinkForm extends React.Component {
         super(props)
     }
 
-    generateLink = () => {
-        this.props.ongenerateLinkClick()
+    generateLink = (fields) => {
+
+        const productId = fields.product.id
+        const oneauthId = fields.user.oneauth_id
+
+        let useCreditsQueryParams = ''
+        if (fields.applyCredits)
+            useCreditsQueryParams = '/useCredits=true'
+
+        const link = `${config.domain}buy?productId=${productId}&oneauthId=${oneauthId}${useCreditsQueryParams}`
+        this.props.ongenerateLink(link)
     }
 
     render() {
@@ -69,11 +78,11 @@ class ProductLinkForm extends React.Component {
         const { classes } = this.props;
 
         return (
-            <div className={"d-flex col-md-8 offset-1 mt-5"}>
+            <div className={"d-flex col-md-11 offset-1 mt-5"}>
                 <div className={"border-card"}>
                     <div className={"d-flex justify-content-center mt-1 mb-3 pb-3"}>
                         <h2 className={"title"}>
-                            Generate
+                            Generate Buy Link
                         </h2>
                     </div>
 
@@ -96,7 +105,7 @@ class ProductLinkForm extends React.Component {
                                         onClose={() => { this.props.onAutoCompleteClose('user') }}
                                         loading={this.props.selectUserOpen && !this.props.userSearchResults.length}
                                         value={values.user}
-                                        onChange={(e, value) => {
+                                        onChange={ (e, value) => {
                                             this.props.handleUserChange(e, value)
                                             setFieldValue("user", value) }
                                         }

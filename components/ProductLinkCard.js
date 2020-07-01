@@ -1,101 +1,101 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import Avatar from '@material-ui/core/Avatar';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Button from '@material-ui/core/Button';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import Grid from "@material-ui/core/Grid";
-import Typography from '@material-ui/core/Typography';
+import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
+import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import config from "../config";
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import Paper from '@material-ui/core/Paper';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Typography from '@material-ui/core/Typography';
 
 
-const useStyles = makeStyles({
-    root: {
-        maxWidth: 400,
-    },
-    media: {
-        objectFit: 'cover',
-    },
-});
-
-const ProductLinkCard = ({  product, user, useCredits }) => {
+const ProductLinkCard = ({ link,  product, user, onSendEmailClick, calculatedAmountDetails }) => {
     
     const [open, setOpen] = React.useState(false);
 
-    const generatedLink = useCredits 
-                          ? `${config.domain}buy?productId=${product.id}&oneauthId=${user.oneauth_id}&userCredits=true`
-                          :  `${config.domain}buy?productId=${product.id}&oneauthId=${user.oneauth_id}`
- 
     const handleClick = () => {
-      setOpen(true);
-    };
+        setOpen(true);
+    }
 
     const handleClose = (event, reason) => {
-      if (reason === 'clickaway') {
-        return;
-      }
+        if (reason === 'clickaway') {
+          return;
+        }
 
       setOpen(false);
-    };
-
-    const classes = useStyles();
+    }
 
     return (
-        <div className={"d-flex col-md-8 offset-1 mt-5"}>
-
-        <Card className={classes.root} style={{width: '100%'}}>
+        <Card style={{width: '100%'}}>
             <CardActionArea>
-              <CardMedia
-                className={classes.media}
-                component="img"
-                alt=""
-                height="180"
-                image={product.image_url}
-                title="Link"
-              />
               <CardContent>
-                  <Grid container wrap="wrap" spacing={2}>
-                      <Grid item xs={6}>
-                       <b> Product </b>
-                        <ul>
-                            <li> Name: {product.name} </li>
-                            <li> Description: {product.description} </li>
-                            <li className="red"> Type: {product.type}</li>
-                            <li> Mrp: {product.mrp / 100}</li>
 
-                        </ul>
-                      </Grid>
-                      <Grid item xs={6}>
-                          <b> User </b>
-                          <ul>
-                              <li>UserName: {user.username}</li>
-                              <li>OneauthId: {user.oneauth_id}</li>
-                              <li>Email: {user.email}</li>
-                              <li>Wallet Amount: {user.wallet_amount / 100}</li>
-                          </ul>
-                      </Grid>
-                  </Grid>        
-                  <hr/>
-                  <Grid container wrap="wrap">
-                        <Grid item xs={10}>
-                            <Typography>
-                              {generatedLink}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={2}>
-                            <CopyToClipboard text={generatedLink}>
-                                  <Button onClick={handleClick} title="copy to clipboard">
-                                    <FileCopyIcon />
-                                  </Button>
-                            </CopyToClipboard>
-                        </Grid>
-                  </Grid>
+                <TableContainer>
+                      <Typography className={"ml-5 mt-2"} variant="h5" id="tableTitle" component="div">
+                          <b> {product.description} </b>
+                      </Typography>
+
+                      <Table aria-label="simple table">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell align="center">Product Name</TableCell>
+                              <TableCell align="center">Product Mrp</TableCell>
+                              <TableCell align="center">Discount</TableCell>
+                              <TableCell align="center">Taxes</TableCell>
+                              <TableCell align="center">Credits</TableCell>
+                              <TableCell align="center">Amount To Pay</TableCell>
+                              <TableCell align="center">Type</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                              <TableRow key={product.id}>
+                                <TableCell component="th" scope="row" align="center">
+                                  {product.name}
+                                </TableCell>
+                                <TableCell align="center">{product.mrp / 100}</TableCell>
+                                <TableCell align="center">{calculatedAmountDetails.discount / 100}</TableCell>
+                                <TableCell align="center">{calculatedAmountDetails.tax /100}</TableCell>
+                                <TableCell align="center">{calculatedAmountDetails.creditsApplied /100 }</TableCell>
+                                <TableCell align="center" className={"red"}>{calculatedAmountDetails.amount /100}</TableCell>
+                                <TableCell align="center" className={"red"}><b>{product.type}</b></TableCell>
+                              </TableRow>
+                          </TableBody>
+                      </Table>
+                  </TableContainer>
+
+
+                  <div className={"row mt-4"}>
+                      <div className={"col-md-2 offset-1"}>
+                          <b>Product Buy Link: </b>
+                      </div>
+
+                      <div className={"col-md-6"}>
+                          <b style={{color: '#509EE3'}}>{link}</b>
+                          <CopyToClipboard text={link}>
+                                <Button onClick={handleClick} title="copy to clipboard">
+                                  <FileCopyOutlinedIcon />
+                                </Button>
+                          </CopyToClipboard>
+                      </div>
+
+                      
+                  </div>
+
+                  <div className={"divider-h mt-1"}></div>
+
                   <Snackbar
                       anchorOrigin={{
                         vertical: 'bottom',
@@ -113,10 +113,10 @@ const ProductLinkCard = ({  product, user, useCredits }) => {
                         </React.Fragment>
                     }
                   />
-              </CardContent>
+
+                </CardContent>
             </CardActionArea>
         </Card>
-        </div>
     );
 }
 
