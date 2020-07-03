@@ -67,6 +67,9 @@ const bulkCouponSchema = Yup.object().shape({
         .max(Number.MAX_SAFE_INTEGER, 'entered value to large')
         .moreThan(Yup.ref('min_product_mrp'), 
             "must be greater than min product mrp")
+        .nullable().notRequired(),
+    cashback: Yup.number()
+        .min(1).max(100)
         .nullable().notRequired()
 });
 
@@ -90,7 +93,8 @@ const initialValues = {
     valid_start: Date.now(),
     valid_end: new Date().setMonth(new Date().getMonth() + 1),
     min_product_mrp: null,
-    max_product_mrp: null
+    max_product_mrp: null,
+    cashback: null
 }
 
 class BulkCouponForm extends React.Component {
@@ -403,7 +407,7 @@ class BulkCouponForm extends React.Component {
                                             <input
                                                 type="number"
                                                 className={"input-text"}
-                                                placeholder="Enter min product price"
+                                                placeholder="Enter min product mrp"
                                                 name="min_product_mrp"
                                                 onBlur={handleBlur}
                                                 onChange={handleChange}
@@ -412,17 +416,32 @@ class BulkCouponForm extends React.Component {
                                     </FieldWithElement>
 
                                     <FieldWithElement
-                                            name={"Min product Mrp"} nameCols={3} elementCols={9} 
+                                            name={"Max product Mrp"} nameCols={3} elementCols={9} 
                                             elementClassName={"pl-4"} errorColor={'tomato'} 
                                             errors={touched.max_product_mrp && errors.max_product_mrp}>
                                             <input
                                                 type="number"
                                                 className={"input-text"}
-                                                placeholder="Enter min product price"
+                                                placeholder="Enter max product mrp"
                                                 name="max_product_mrp"
                                                 onBlur={handleBlur}
                                                 onChange={handleChange}
                                                 value={values.max_product_mrp}
+                                            />
+                                    </FieldWithElement>
+
+                                    <FieldWithElement
+                                            name={"cashback(%)"} nameCols={3} elementCols={9} 
+                                            elementClassName={"pl-4"} errorColor={'tomato'} 
+                                            errors={touched.cashback && errors.cashback}>
+                                            <input
+                                                type="number"
+                                                className={"input-text"}
+                                                placeholder="Enter cashback"
+                                                name="cashback"
+                                                onBlur={handleBlur}
+                                                onChange={handleChange}
+                                                value={values.cashback}
                                             />
                                     </FieldWithElement>
 
