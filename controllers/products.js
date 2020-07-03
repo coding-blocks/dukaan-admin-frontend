@@ -141,6 +141,10 @@ const getUserCartDetailsUrls = (data) => {
     return userController.getUserCartDetailsUrls(data)
 }
 
+const makeShortenedUrl = (data) => {
+    return axios.post("/api/v2/admin/products/shortenedUrl", data)
+}
+
 const getProductBuyLinkData = (data) => {
     return Promise.all ([
             getUserCartDetailsUrls({id: data.userId}),
@@ -149,7 +153,8 @@ const getProductBuyLinkData = (data) => {
                 productId: data.productId,
                 quantity: data.quantity,
                 useCredits: data.useCredits
-            })
+            }),
+            makeShortenedUrl({longUrl: data.link}),
         ])
 }
 

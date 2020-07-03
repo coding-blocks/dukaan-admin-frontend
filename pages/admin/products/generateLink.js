@@ -55,6 +55,7 @@ class GenerateLink extends React.Component {
             purchasedProductIframeurl: '',
             calculatedAmountDetails: '',
             loading: false,
+            shortenedUrl: ''
         }
     }
 
@@ -203,21 +204,22 @@ class GenerateLink extends React.Component {
     }
 
     ongenerateLink = (link) => {
-
         controller.getProductBuyLinkData({
             userId: this.state.user.id,
             oneauthId: this.state.user.oneauth_id,
             productId: this.state.product.id,
             quantity: 1,
-            useCredits: this.state.useCredits
-        }).then(([ [activeCartDetails, purchasedProductDetails], calculatedAmountDetails]) => {
+            useCredits: this.state.useCredits,
+            link: link
+        }).then(([ [activeCartDetails, purchasedProductDetails], calculatedAmountDetails, shortenedUrl]) => {
             this.setState({
                 activeCartIframeUrl: activeCartDetails.data.iframeUrl,
                 purchasedProductIframeurl: purchasedProductDetails.data.iframeUrl,
                 generatedLink: link,
                 generateLinkClicked: true,
                 calculatedAmountDetails: calculatedAmountDetails.data,
-                loading: true
+                loading: true,
+                shortenedUrl: shortenedUrl.data.url
             })
         })
     }
@@ -357,7 +359,7 @@ class GenerateLink extends React.Component {
                                             product={this.state.product}
                                             user={this.state.user}
                                             useCredits={this.state.useCredits}
-                                            link={this.state.generatedLink}
+                                            link={this.state.shortenedUrl}
                                             onSendEmailClick={this.onSendEmailClick}
                                             calculatedAmountDetails={this.state.calculatedAmountDetails}
                                         />
