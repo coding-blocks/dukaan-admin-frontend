@@ -7,6 +7,7 @@ import ProductLinkForm from "../../../forms/ProductLink";
 import CheckLogin from "../../../components/CheckLogin";
 import * as controller from '../../../controllers/products'
 import * as userController from '../../../controllers/users'
+import * as couponController from '../../../controllers/v2/couponsV2'
 import ProductLinkCard from "../../../components/ProductLinkCard"
 import ErrorHandler from "../../../helpers/ErrorHandler";
 import Swal from 'sweetalert2';
@@ -55,6 +56,8 @@ class GenerateLink extends React.Component {
             purchasedProductIframeurl: '',
             calculatedAmountDetails: '',
             loading: false,
+            subCategories: [],
+            coupons: []
         }
     }
 
@@ -155,6 +158,8 @@ class GenerateLink extends React.Component {
     handleProductChange = async (event, value) => {
         this.setState({
             product: value,
+            subCategories: [],
+            coupons: []
         })
 
         this.unsetGeneratedLink()
@@ -191,6 +196,8 @@ class GenerateLink extends React.Component {
 
         this.setState({
             user: value,
+            subCategories: [],
+            coupons: []
         })
         this.unsetGeneratedLink()
     }
@@ -200,6 +207,36 @@ class GenerateLink extends React.Component {
             useCredits: !JSON.parse(event.target.value)
         })
         this.unsetGeneratedLink()
+    }
+
+
+    fillSubCategories = (data) => {
+        couponController.fetchSubCategories(data).then((subCategories) => {
+            this.setState({
+                subCategories: subCategories.data
+            })
+        }).catch((error) => {
+            ErrorHandler.handle(error)
+        })
+    };
+
+    handleCategoryChange = (event) => {
+        this.fillSubCategories({category: event.target.value})
+    }
+
+    handleSubCategoryChange = (category, subCategoryId) => {
+        couponController.fetchCouponsApplicableForAUserAndProduct({
+            user_id: this.state.user.id,
+            product_id: this.state.product.id,
+            category: category,
+            sub_category_id: subCategoryId
+        }).then((response) => {
+            this.setState({
+                coupons: response.data
+            })
+        }).catch((error) => {
+            ErrorHandler.handle(error)
+        })
     }
 
     ongenerateLink = (link) => {
@@ -282,6 +319,8 @@ class GenerateLink extends React.Component {
                                 handleProductChange={this.handleProductChange}
                                 onApplyCreditsChange={this.onApplyCreditsChange}
                                 ongenerateLink={this.ongenerateLink}
+                                handleCategoryChange={this.handleCategoryChange}
+                                handleSubCategoryChange={this.handleSubCategoryChange}
                             />
                         </div>
 
