@@ -342,6 +342,8 @@ class BulkCouponForm extends React.Component {
                                                 setFieldTouched("percentage", false)
                                                 setFieldValue("max_discount", null)
                                                 setFieldTouched("max_discount", false)
+                                                setFieldValue("cashback", null)
+                                                setFieldTouched("cashback", false)
                                              }}
                                         >
                                             <option value="flat">Flat</option>
@@ -377,7 +379,11 @@ class BulkCouponForm extends React.Component {
                                                     placeholder="Enter Percentage"
                                                     name="percentage"
                                                     onBlur={handleBlur}
-                                                    onChange={handleChange}
+                                                    onChange={(e) => {
+                                                        handleChange(e)
+                                                        if (e.target.value == 100)
+                                                            setFieldValue("cashback" , "")
+                                                    }}
                                                     value={values.percentage}
                                                 />
                                             </FieldWithElement>
@@ -394,6 +400,22 @@ class BulkCouponForm extends React.Component {
                                                     onBlur={handleBlur}
                                                     onChange={handleChange}
                                                     value={values.max_discount}
+                                                />
+                                            </FieldWithElement>
+
+                                            <FieldWithElement
+                                                name={"cashback(%)"} nameCols={3} elementCols={9} 
+                                                elementClassName={"pl-4"} errorColor={'tomato'} 
+                                                errors={touched.cashback && errors.cashback}>
+                                                <input
+                                                    type="number"
+                                                    className={"input-text"}
+                                                    id={values.percentage === 100 ? "disabled-cashback" : "cashback"}
+                                                    placeholder="Enter cashback"
+                                                    name="cashback"
+                                                    onBlur={handleBlur}
+                                                    onChange={handleChange}
+                                                    value={values.cashback}
                                                 />
                                             </FieldWithElement>
 
@@ -430,20 +452,7 @@ class BulkCouponForm extends React.Component {
                                             />
                                     </FieldWithElement>
 
-                                    <FieldWithElement
-                                            name={"cashback(%)"} nameCols={3} elementCols={9} 
-                                            elementClassName={"pl-4"} errorColor={'tomato'} 
-                                            errors={touched.cashback && errors.cashback}>
-                                            <input
-                                                type="number"
-                                                className={"input-text"}
-                                                placeholder="Enter cashback"
-                                                name="cashback"
-                                                onBlur={handleBlur}
-                                                onChange={handleChange}
-                                                value={values.cashback}
-                                            />
-                                    </FieldWithElement>
+                                    
 
                                     {/* Total number of times a coupon can be used*/}
                                     <FieldWithElement name={"How many times it can be used?"} nameCols={6}
