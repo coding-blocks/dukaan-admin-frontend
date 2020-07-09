@@ -172,6 +172,9 @@ class AddBulkCoupon extends React.Component {
                                         preFilledProducts={
                                             this.state.couponProducts[this.state.modalProductTypeId]
                                         }
+                                        currentCouponProducts={
+                                            this.state.couponProducts[this.state.modalProductTypeId]
+                                        }
                                         isModalOpen={this.state.isModalOpen}
                                         handleCloseModal={this.handleCloseModal}
                                         onProductsSelected={this.onProductsSelected}
