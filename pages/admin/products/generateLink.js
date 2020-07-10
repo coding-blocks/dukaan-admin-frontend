@@ -193,12 +193,33 @@ class GenerateLink extends React.Component {
     }
 
     handleUserChange =  (event, value) => {
-
-        this.setState({
-            user: value,
-            subCategories: [],
-            coupons: []
-        })
+        
+        if (!value) {
+            this.setState({
+                user: value,
+                activeCartIframeUrl: '',
+                purchasedProductIframeurl: '',
+                loading: false,
+                subCategories: [],
+                coupons: [],
+            })
+        } else {
+            controller.getUserCartDetailsUrls({
+                id: value.id
+            }).then(([activeCartDetails, purchasedProductDetails]) => {
+                this.setState({
+                    user: value,
+                    activeCartIframeUrl: activeCartDetails.data.iframeUrl,
+                    purchasedProductIframeurl: purchasedProductDetails.data.iframeUrl,
+                    loading: true,
+                    subCategories: [],
+                    coupons: [],
+                })
+            }).catch((error) => {
+                ErrorHandler.handle(error)
+            })
+        }
+        
         this.unsetGeneratedLink()
     }
 
@@ -240,21 +261,16 @@ class GenerateLink extends React.Component {
     }
 
     ongenerateLink = (link) => {
-
         controller.getProductBuyLinkData({
-            userId: this.state.user.id,
             oneauthId: this.state.user.oneauth_id,
             productId: this.state.product.id,
             quantity: 1,
             useCredits: this.state.useCredits
-        }).then(([ [activeCartDetails, purchasedProductDetails], calculatedAmountDetails]) => {
+        }).then((calculatedAmountDetails) => {
             this.setState({
-                activeCartIframeUrl: activeCartDetails.data.iframeUrl,
-                purchasedProductIframeurl: purchasedProductDetails.data.iframeUrl,
                 generatedLink: link,
                 generateLinkClicked: true,
                 calculatedAmountDetails: calculatedAmountDetails.data,
-                loading: true
             })
         })
     }
@@ -324,74 +340,77 @@ class GenerateLink extends React.Component {
                             />
                         </div>
 
-                            { this.state.generateLinkClicked &&
                             <div className={"col-md-9 pull-right mt-5"}>
 
-                                {!this.state.loading &&
+                                {!this.state.loading && this.state.user &&
                                     
-                                <div className={"row mr-5"}>
-                                    <TableContainer component={Paper}>
-                                        <Typography className={"ml-5 mt-2"} variant="h5" id="tableTitle" component="div">
-                                            <b> User Details </b>
-                                        </Typography>
+                                    <div className={"row mr-5"}>
+                                        <TableContainer component={Paper}>
+                                            <Typography className={"ml-5 mt-2"} variant="h5" id="tableTitle" component="div">
+                                                <b> User Details </b>
+                                            </Typography>
 
-                                        <Table className={classes.table} aria-label="simple table">
-                                            <TableHead>
-                                              <TableRow>
-                                                <TableCell align="center">Name</TableCell>
-                                                <TableCell align="center">Username</TableCell>
-                                                <TableCell align="center">Wallet Amount</TableCell>
-                                                <TableCell align="center">Oneauth Id</TableCell>
-                                                <TableCell align="center">Email</TableCell>
-                                                <TableCell align="center">Mobile Number</TableCell>
-                                                <TableCell align="center">Address</TableCell>
-                                              </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                <TableRow key={this.state.user.id}>
-                                                  <TableCell component="th" scope="row" align="center">
-                                                    {this.state.user.firstname} {this.state.user.lastname}
-                                                  </TableCell>
-                                                  <TableCell align="center">{this.state.user.username}</TableCell>
-                                                  <TableCell align="center">{this.state.user.wallet_amount /100}</TableCell>
-                                                  <TableCell align="center">{this.state.user.oneauth_id}</TableCell>
-                                                  <TableCell align="center">{this.state.user.email}</TableCell>
-                                                  <TableCell align="center">{this.state.user.mobile_number}</TableCell>
-                                                  <TableCell align="center">{this.state.user.permanent_address}</TableCell>
-                                                </TableRow>
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
-                                </div>
+                                            <Table className={classes.table} aria-label="simple table">
+                                                <TableHead>
+                                                  <TableRow>
+                                                    <TableCell align="center">Name</TableCell>
+                                                    <TableCell align="center">Username</TableCell>
+                                                    <TableCell align="center">Wallet Amount</TableCell>
+                                                    <TableCell align="center">Oneauth Id</TableCell>
+                                                    <TableCell align="center">Email</TableCell>
+                                                    <TableCell align="center">Mobile Number</TableCell>
+                                                    <TableCell align="center">Address</TableCell>
+                                                  </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    <TableRow key={this.state.user.id}>
+                                                      <TableCell component="th" scope="row" align="center">
+                                                        {this.state.user.firstname} {this.state.user.lastname}
+                                                      </TableCell>
+                                                      <TableCell align="center">{this.state.user.username}</TableCell>
+                                                      <TableCell align="center">{this.state.user.wallet_amount /100}</TableCell>
+                                                      <TableCell align="center">{this.state.user.oneauth_id}</TableCell>
+                                                      <TableCell align="center">{this.state.user.email}</TableCell>
+                                                      <TableCell align="center">{this.state.user.mobile_number}</TableCell>
+                                                      <TableCell align="center">{this.state.user.permanent_address}</TableCell>
+                                                    </TableRow>
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </div>
                                 }
 
-                                <div className={"row mr-5 mt-4"}>
-                                    <iframe
-                                        src={this.state.activeCartIframeUrl}
-                                        frameBorder="0"
-                                        onLoad={this.hideSpinner}
-                                        width="100%"
-                                        height="220"
-                                        allowtransparency='true'
-                                        >
-                                    </iframe>
-                                </div>
+                                {this.state.user &&
+                                    <div>
+                                    <div className={"row mr-5 mt-4"}>
+                                        <iframe
+                                            src={this.state.activeCartIframeUrl}
+                                            frameBorder="0"
+                                            onLoad={this.hideSpinner}
+                                            width="100%"
+                                            height="220"
+                                            allowtransparency='true'
+                                            >
+                                        </iframe>
+                                    </div>
 
-                                <div className={"row mr-5 mt-4"}>
-                                    <iframe
-                                        src={this.state.purchasedProductIframeurl}
-                                        frameBorder="0"
-                                        onLoad={this.hideSpinner}
-                                        width="100%"
-                                        height="350"
-                                        allowtransparency='true'
-                                        >
-                                    </iframe>
-                                </div>
+                                    <div className={"row mr-5 mt-4"}>
+                                        <iframe
+                                            src={this.state.purchasedProductIframeurl}
+                                            frameBorder="0"
+                                            onLoad={this.hideSpinner}
+                                            width="100%"
+                                            height="350"
+                                            allowtransparency='true'
+                                            >
+                                        </iframe>
+                                    </div>
+                                    </div>
+                                }
 
                                 <div className={"row mr-5 mt-4 mb-3"}>
 
-                                    {!this.state.loading &&
+                                    {!this.state.loading && this.state.generateLinkClicked &&
                                         <ProductLinkCard
                                             product={this.state.product}
                                             user={this.state.user}
@@ -404,7 +423,6 @@ class GenerateLink extends React.Component {
                                 </div>
 
                             </div>
-                            }
                     </div>
 
                 </CheckLogin>

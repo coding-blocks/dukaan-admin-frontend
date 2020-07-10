@@ -64,7 +64,6 @@ class ProductLinkForm extends React.Component {
     }
 
     generateLink = (fields) => {
-
         const productId = fields.product.id
         const oneauthId = fields.user.oneauth_id
 
@@ -74,7 +73,7 @@ class ProductLinkForm extends React.Component {
 
         let couponQueryParams = ''
         if (fields.coupon)
-            couponQueryParams = `&coupon=${fields.coupon}`
+            couponQueryParams = `&coupon=${fields.coupon.code}`
 
         const link = `https://dukaan.codingblocks.com/buy?productId=${productId}&oneauthId=${oneauthId}${useCreditsQueryParams}
                         ${couponQueryParams}`
@@ -222,7 +221,8 @@ class ProductLinkForm extends React.Component {
                                                 return (
                                                     <MenuItem
                                                         key={center.id}
-                                                        value={center.id}>{
+                                                        value={center.id}
+                                                        >{
                                                         center.name
                                                     }</MenuItem>
                                                 )
@@ -356,29 +356,33 @@ class ProductLinkForm extends React.Component {
 
                                 <FormControl variant="outlined" size={"medium"}
                                     fullWidth={true} className={"mb-4"}>
-                                    <InputLabel id="coupon">Coupon</InputLabel>
 
-                                    <Select
+
+
+                                    <Autocomplete
+                                        autoComplete={true}
+                                        fullWidth={true}
+                                        id="coupon"
+                                        options={this.props.coupons}
                                         value={values.coupon}
-                                        name={"coupon"}
-                                        label="coupon"
-                                        onChange={handleChange}>
-
-                                        <MenuItem value="">
-                                            <em>Select</em>
-                                        </MenuItem>
-
-                                        {
-                                            this.props.coupons.map((coupon) => {
-                                                return (
-                                                    <MenuItem key={coupon.id} 
-                                                        value={coupon.code}>
-                                                        {coupon.code}
-                                                    </MenuItem>
-                                                    )
-                                            })
+                                        onChange={ (e, value) => {
+                                            setFieldValue("coupon", value)
+                                        }}
+                                        getOptionLabel={(option) => {
+                                            return option.code
+                                        }}
+                                        getOptionSelected={(option, value) => {
+                                            return option.id === value.id
+                                        }}
+                                        
+                                        renderInput={(params) => 
+                                            <TextField {...params} 
+                                            name="coupon"
+                                            label="Coupon" 
+                                            variant="outlined" />
                                         }
-                                    </Select>
+                                    />
+                                   
                                 </FormControl>
 
 
