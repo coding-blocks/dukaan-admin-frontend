@@ -75,8 +75,7 @@ class ProductLinkForm extends React.Component {
         if (fields.coupon)
             couponQueryParams = `&coupon=${fields.coupon.code}`
 
-        const link = `https://dukaan.codingblocks.com/buy?productId=${productId}&oneauthId=${oneauthId}${useCreditsQueryParams}
-                        ${couponQueryParams}`
+        const link = `https://dukaan.codingblocks.com/buy?productId=${productId}&oneauthId=${oneauthId}${useCreditsQueryParams}${couponQueryParams}`
 
         this.props.ongenerateLink(link)
     }
