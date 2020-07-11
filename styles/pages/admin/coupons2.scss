@@ -10,7 +10,7 @@
   font-size: 13pt !important;
 }
 
-.disabled-category, .disabled-organization, .disabled-subcategory, #disabled-code {
+.disabled-category, .disabled-organization, .disabled-subcategory, #disabled-code, #disabled-cashback {
 	cursor: not-allowed;
 }
 
@@ -30,3 +30,6 @@
   padding-top: 5px;
 }
 
+.mui-tooltip {
+	font-size: 10px;
+}
