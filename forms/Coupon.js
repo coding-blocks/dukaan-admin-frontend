@@ -11,6 +11,7 @@ import SelectedUsers from "../components/SelectedUsers";
 import config from "../config";
 import CouponProductsNotice from '../components/CouponProductsNotice'
 import withReactContent from "sweetalert2-react-content";
+import Tooltip from '@material-ui/core/Tooltip';
 
 const ReactSwal = withReactContent(Swal);
 
@@ -581,17 +582,21 @@ class CouponForm extends React.Component {
                                             name={"cashback(%)"} nameCols={3} elementCols={9} 
                                             elementClassName={"pl-4"} errorColor={'tomato'} 
                                             errors={touched.cashback && errors.cashback}>
-                                            <input
-                                                type="number"
-                                                className={"input-text"}
-                                                id={values.percentage === 100 ? "disabled-cashback" : "cashback"}
-                                                placeholder="Enter cashback"
-                                                name="cashback"
-                                                onBlur={handleBlur}
-                                                onChange={handleChange}
-                                                value={values.cashback}
-                                                disabled={values.percentage === 100}
-                                            />
+
+                                            <Tooltip title={<span className={"mui-tooltip"}>% of product price to be added as cashback</span>} 
+                                            placement="bottom-end">
+                                                <input
+                                                    type="number"
+                                                    className={"input-text"}
+                                                    id={values.percentage === 100 ? "disabled-cashback" : "cashback"}
+                                                    placeholder="Enter cashback"
+                                                    name="cashback"
+                                                    onBlur={handleBlur}
+                                                    onChange={handleChange}
+                                                    value={values.cashback}
+                                                    disabled={values.percentage === 100}
+                                                />
+                                            </Tooltip>
                                         </FieldWithElement>
 
                                     </div>

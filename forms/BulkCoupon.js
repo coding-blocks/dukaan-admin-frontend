@@ -7,6 +7,7 @@ import FieldWithElement from '../components/FieldWithElement';
 import * as controller from '../controllers/v2/couponsV2'
 import Swal from 'sweetalert2';
 import config from "../config";
+import Tooltip from '@material-ui/core/Tooltip';
 
 const bulkCouponSchema = Yup.object().shape({
     authority_doc: Yup.string().min(3)
@@ -407,16 +408,20 @@ class BulkCouponForm extends React.Component {
                                                 name={"cashback(%)"} nameCols={3} elementCols={9} 
                                                 elementClassName={"pl-4"} errorColor={'tomato'} 
                                                 errors={touched.cashback && errors.cashback}>
-                                                <input
-                                                    type="number"
-                                                    className={"input-text"}
-                                                    id={values.percentage === 100 ? "disabled-cashback" : "cashback"}
-                                                    placeholder="Enter cashback"
-                                                    name="cashback"
-                                                    onBlur={handleBlur}
-                                                    onChange={handleChange}
-                                                    value={values.cashback}
-                                                />
+
+                                                <Tooltip title={<span className={"mui-tooltip"}>% of product price to be added as cashback</span>} 
+                                                placement="bottom-end">
+                                                    <input
+                                                        type="number"
+                                                        className={"input-text"}
+                                                        id={values.percentage === 100 ? "disabled-cashback" : "cashback"}
+                                                        placeholder="Enter cashback"
+                                                        name="cashback"
+                                                        onBlur={handleBlur}
+                                                        onChange={handleChange}
+                                                        value={values.cashback}
+                                                    />
+                                                </Tooltip>
                                             </FieldWithElement>
 
                                         </div>
