@@ -142,15 +142,12 @@ const getUserCartDetailsUrls = (data) => {
 }
 
 const getProductBuyLinkData = (data) => {
-    return Promise.all ([
-            getUserCartDetailsUrls({id: data.userId}),
-            handleCalculatePrice({
+    return  handleCalculatePrice({
                 oneauthId: data.oneauthId,
                 productId: data.productId,
                 quantity: data.quantity,
                 useCredits: data.useCredits
             })
-        ])
 }
 
 module.exports = {
