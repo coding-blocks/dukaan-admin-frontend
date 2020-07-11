@@ -21,15 +21,11 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 
-
 const useStyles = theme => ({
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
-    },
-    title: {
-        // minWidth: 650,
-    },
+    }
 });
 
 class GenerateLink extends React.Component {
@@ -56,7 +52,6 @@ class GenerateLink extends React.Component {
             purchasedProductIframeurl: '',
             calculatedAmountDetails: '',
             loading: false,
-            subCategories: [],
             coupons: []
         }
     }
@@ -158,7 +153,6 @@ class GenerateLink extends React.Component {
     handleProductChange = async (event, value) => {
         this.setState({
             product: value,
-            subCategories: [],
             coupons: []
         })
 
@@ -200,7 +194,6 @@ class GenerateLink extends React.Component {
                 activeCartIframeUrl: '',
                 purchasedProductIframeurl: '',
                 loading: false,
-                subCategories: [],
                 coupons: [],
             })
         } else {
@@ -212,7 +205,6 @@ class GenerateLink extends React.Component {
                     activeCartIframeUrl: activeCartDetails.data.iframeUrl,
                     purchasedProductIframeurl: purchasedProductDetails.data.iframeUrl,
                     loading: true,
-                    subCategories: [],
                     coupons: [],
                 })
             }).catch((error) => {
@@ -230,27 +222,20 @@ class GenerateLink extends React.Component {
         this.unsetGeneratedLink()
     }
 
-
-    fillSubCategories = (data) => {
-        couponController.fetchSubCategories(data).then((subCategories) => {
-            this.setState({
-                subCategories: subCategories.data
-            })
-        }).catch((error) => {
-            ErrorHandler.handle(error)
-        })
-    };
-
     handleCategoryChange = (event) => {
-        this.fillSubCategories({category: event.target.value})
-    }
+        
+        if (!event.target.value) {
+            this.setState({
+                coupons: []
+            })
+            return
+        }
 
-    handleSubCategoryChange = (category, subCategoryId) => {
         couponController.fetchCouponsApplicableForAUserAndProduct({
             user_id: this.state.user.id,
             product_id: this.state.product.id,
-            category: category,
-            sub_category_id: subCategoryId
+            category: event.target.value,
+            organization_id: this.state.organizationId
         }).then((response) => {
             this.setState({
                 coupons: response.data
@@ -309,11 +294,8 @@ class GenerateLink extends React.Component {
 
     render() {
         const { classes } = this.props;
-
         return (
             <div>
-
-
                 <Head title="Coding Blocks | Dukaan | Generate Product Link"/>
                 <Layout/>
                 <CheckLogin>
@@ -336,7 +318,6 @@ class GenerateLink extends React.Component {
                                 onApplyCreditsChange={this.onApplyCreditsChange}
                                 ongenerateLink={this.ongenerateLink}
                                 handleCategoryChange={this.handleCategoryChange}
-                                handleSubCategoryChange={this.handleSubCategoryChange}
                             />
                         </div>
 
