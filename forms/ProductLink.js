@@ -53,7 +53,6 @@ const initialValues = {
     user: '',
     applyCredits: false,
     category: '',
-    sub_category_id: '',
     coupon: ''
 }
 
@@ -116,7 +115,6 @@ class ProductLinkForm extends React.Component {
                                             this.props.handleUserChange(e, value)
                                             setFieldValue("user", value)
                                             setFieldValue("category", '')
-                                            setFieldValue("sub_category_id", '')
                                             setFieldValue("coupon", '')
                                         }}
                                         getOptionLabel={(option) => {
@@ -245,7 +243,6 @@ class ProductLinkForm extends React.Component {
                                             this.props.handleProductChange(e, value)
                                             setFieldValue("product", value)
                                             setFieldValue("category", '')
-                                            setFieldValue("sub_category_id", '')
                                             setFieldValue("coupon", '')
                                         }}
                                         value={values.product}
@@ -307,8 +304,6 @@ class ProductLinkForm extends React.Component {
                                         onChange={(e) => {
                                             this.props.handleCategoryChange(e)
                                             setFieldValue("category", e.target.value)
-                                            setFieldValue("sub_category_id", '')
-
                                         }}
                                         disabled={!this.props.product || !this.props.user}
                                         >
@@ -321,42 +316,8 @@ class ProductLinkForm extends React.Component {
                                     </Select>
                                 </FormControl>
 
-
                                 <FormControl variant="outlined" size={"medium"}
                                     fullWidth={true} className={"mb-4"}>
-                                    <InputLabel id="sub_category_id">Coupon sub category</InputLabel>
-
-                                    <Select
-                                        value={values.sub_category_id}
-                                        name={"Sub Category"}
-                                        label="Coupon sub category"
-                                        onChange={(e) => {
-                                            this.props.handleSubCategoryChange(values.category, e.target.value)
-                                            setFieldValue("sub_category_id", e.target.value)
-                                        }}>
-
-                                        <MenuItem value="">
-                                            <em>Select</em>
-                                        </MenuItem>
-
-                                        {
-                                            this.props.subCategories.map((subCategory) => {
-                                                return (
-                                                    <MenuItem key={subCategory.id} 
-                                                        value={subCategory.id}>
-                                                        {subCategory.name}
-                                                    </MenuItem>
-                                                    )
-                                            })
-                                        }
-                                    </Select>
-                                </FormControl>
-
-
-                                <FormControl variant="outlined" size={"medium"}
-                                    fullWidth={true} className={"mb-4"}>
-
-
 
                                     <Autocomplete
                                         autoComplete={true}
