@@ -52,6 +52,8 @@ const initialValues = {
     product: '',
     user: '',
     applyCredits: false,
+    category: '',
+    coupon: ''
 }
 
 class ProductLinkForm extends React.Component {
@@ -61,7 +63,6 @@ class ProductLinkForm extends React.Component {
     }
 
     generateLink = (fields) => {
-
         const productId = fields.product.id
         const oneauthId = fields.user.oneauth_id
 
@@ -69,7 +70,12 @@ class ProductLinkForm extends React.Component {
         if (fields.applyCredits)
             useCreditsQueryParams = '&useCredits=true'
 
-        const link = `https://dukaan.codingblocks.com/buy?productId=${productId}&oneauthId=${oneauthId}${useCreditsQueryParams}`
+        let couponQueryParams = ''
+        if (fields.coupon)
+            couponQueryParams = `&coupon=${fields.coupon.code}`
+
+        const link = `https://dukaan.codingblocks.com/buy?productId=${productId}&oneauthId=${oneauthId}${useCreditsQueryParams}${couponQueryParams}`
+
         this.props.ongenerateLink(link)
     }
 
@@ -107,8 +113,10 @@ class ProductLinkForm extends React.Component {
                                         value={values.user}
                                         onChange={ (e, value) => {
                                             this.props.handleUserChange(e, value)
-                                            setFieldValue("user", value) }
-                                        }
+                                            setFieldValue("user", value)
+                                            setFieldValue("category", '')
+                                            setFieldValue("coupon", '')
+                                        }}
                                         getOptionLabel={(option) => {
                                             return option.email
                                         }}
@@ -210,7 +218,8 @@ class ProductLinkForm extends React.Component {
                                                 return (
                                                     <MenuItem
                                                         key={center.id}
-                                                        value={center.id}>{
+                                                        value={center.id}
+                                                        >{
                                                         center.name
                                                     }</MenuItem>
                                                 )
@@ -232,8 +241,10 @@ class ProductLinkForm extends React.Component {
                                         loading={this.props.selectProductOpen && !this.props.productSearchResults.length}
                                         onChange={(e, value) => {
                                             this.props.handleProductChange(e, value)
-                                            setFieldValue("product", value) }
-                                        }
+                                            setFieldValue("product", value)
+                                            setFieldValue("category", '')
+                                            setFieldValue("coupon", '')
+                                        }}
                                         value={values.product}
                                         getOptionLabel={(option) => {
                                             return option.description
@@ -280,6 +291,62 @@ class ProductLinkForm extends React.Component {
                                     </span>}
 
                                 </FormControl>
+
+
+                                <FormControl variant="outlined" size={"medium"}
+                                    fullWidth={true} className={"mb-4"}>
+                                    <InputLabel id="category">Coupon category</InputLabel>
+
+                                    <Select
+                                        value={values.category}
+                                        name={"category"}
+                                        label="Coupon category"
+                                        onChange={(e) => {
+                                            this.props.handleCategoryChange(e)
+                                            setFieldValue("category", e.target.value)
+                                        }}
+                                        disabled={!this.props.product || !this.props.user}
+                                        >
+
+                                        <MenuItem value="">
+                                            <em>Select</em>
+                                        </MenuItem>
+                                        <MenuItem value="special_discount"> Special Discount </MenuItem>
+                                        <MenuItem value="telecounselor"> Telecounselor </MenuItem>
+                                        <MenuItem value="campaign"> Campaign </MenuItem>
+                                    </Select>
+                                </FormControl>
+
+                                <FormControl variant="outlined" size={"medium"}
+                                    fullWidth={true} className={"mb-4"}>
+
+                                    <Autocomplete
+                                        autoComplete={true}
+                                        fullWidth={true}
+                                        id="coupon"
+                                        options={this.props.coupons}
+                                        value={values.coupon}
+                                        onChange={ (e, value) => {
+                                            setFieldValue("coupon", value)
+                                        }}
+                                        getOptionLabel={(option) => {
+                                            return option.code
+                                        }}
+                                        getOptionSelected={(option, value) => {
+                                            return option.id === value.id
+                                        }}
+                                        
+                                        renderInput={(params) => 
+                                            <TextField {...params} 
+                                            name="coupon"
+                                            label="Coupon" 
+                                            variant="outlined" />
+                                        }
+                                    />
+                                   
+                                </FormControl>
+
+
 
                                 <FormControlLabel 
                                     className={"mb-4"}

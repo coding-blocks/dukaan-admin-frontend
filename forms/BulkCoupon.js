@@ -7,6 +7,7 @@ import FieldWithElement from '../components/FieldWithElement';
 import * as controller from '../controllers/v2/couponsV2'
 import Swal from 'sweetalert2';
 import config from "../config";
+import Tooltip from '@material-ui/core/Tooltip';
 
 const bulkCouponSchema = Yup.object().shape({
     authority_doc: Yup.string().min(3)
@@ -67,6 +68,9 @@ const bulkCouponSchema = Yup.object().shape({
         .max(Number.MAX_SAFE_INTEGER, 'entered value to large')
         .moreThan(Yup.ref('min_product_mrp'), 
             "must be greater than min product mrp")
+        .nullable().notRequired(),
+    cashback: Yup.number()
+        .min(1).max(100)
         .nullable().notRequired()
 });
 
@@ -90,7 +94,8 @@ const initialValues = {
     valid_start: Date.now(),
     valid_end: new Date().setMonth(new Date().getMonth() + 1),
     min_product_mrp: null,
-    max_product_mrp: null
+    max_product_mrp: null,
+    cashback: null
 }
 
 class BulkCouponForm extends React.Component {
@@ -338,6 +343,8 @@ class BulkCouponForm extends React.Component {
                                                 setFieldTouched("percentage", false)
                                                 setFieldValue("max_discount", null)
                                                 setFieldTouched("max_discount", false)
+                                                setFieldValue("cashback", null)
+                                                setFieldTouched("cashback", false)
                                              }}
                                         >
                                             <option value="flat">Flat</option>
@@ -373,7 +380,11 @@ class BulkCouponForm extends React.Component {
                                                     placeholder="Enter Percentage"
                                                     name="percentage"
                                                     onBlur={handleBlur}
-                                                    onChange={handleChange}
+                                                    onChange={(e) => {
+                                                        handleChange(e)
+                                                        if (e.target.value == 100)
+                                                            setFieldValue("cashback" , "")
+                                                    }}
                                                     value={values.percentage}
                                                 />
                                             </FieldWithElement>
@@ -393,6 +404,26 @@ class BulkCouponForm extends React.Component {
                                                 />
                                             </FieldWithElement>
 
+                                            <FieldWithElement
+                                                name={"cashback(%)"} nameCols={3} elementCols={9} 
+                                                elementClassName={"pl-4"} errorColor={'tomato'} 
+                                                errors={touched.cashback && errors.cashback}>
+
+                                                <Tooltip title={<span className={"mui-tooltip"}>% of product price to be added as cashback</span>} 
+                                                placement="bottom-end">
+                                                    <input
+                                                        type="number"
+                                                        className={"input-text"}
+                                                        id={values.percentage === 100 ? "disabled-cashback" : "cashback"}
+                                                        placeholder="Enter cashback"
+                                                        name="cashback"
+                                                        onBlur={handleBlur}
+                                                        onChange={handleChange}
+                                                        value={values.cashback}
+                                                    />
+                                                </Tooltip>
+                                            </FieldWithElement>
+
                                         </div>
                                     }
 
@@ -403,7 +434,7 @@ class BulkCouponForm extends React.Component {
                                             <input
                                                 type="number"
                                                 className={"input-text"}
-                                                placeholder="Enter min product price"
+                                                placeholder="Enter min product mrp"
                                                 name="min_product_mrp"
                                                 onBlur={handleBlur}
                                                 onChange={handleChange}
@@ -412,19 +443,21 @@ class BulkCouponForm extends React.Component {
                                     </FieldWithElement>
 
                                     <FieldWithElement
-                                            name={"Min product Mrp"} nameCols={3} elementCols={9} 
+                                            name={"Max product Mrp"} nameCols={3} elementCols={9} 
                                             elementClassName={"pl-4"} errorColor={'tomato'} 
                                             errors={touched.max_product_mrp && errors.max_product_mrp}>
                                             <input
                                                 type="number"
                                                 className={"input-text"}
-                                                placeholder="Enter min product price"
+                                                placeholder="Enter max product mrp"
                                                 name="max_product_mrp"
                                                 onBlur={handleBlur}
                                                 onChange={handleChange}
                                                 value={values.max_product_mrp}
                                             />
                                     </FieldWithElement>
+
+                                    
 
                                     {/* Total number of times a coupon can be used*/}
                                     <FieldWithElement name={"How many times it can be used?"} nameCols={6}

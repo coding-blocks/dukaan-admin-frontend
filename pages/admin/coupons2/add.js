@@ -120,10 +120,13 @@ class AddCoupons extends React.Component {
 
 
     onProductsSelected = (productTypeId, products) => {
-        const newCouponProducts = this.state.couponProducts
-        newCouponProducts[productTypeId] = products
+        const currentProductsForProductTypeId = {}
+        currentProductsForProductTypeId[productTypeId] = products
         this.setState({
-            couponProducts: newCouponProducts
+            couponProducts: {
+                ...this.state.couponProducts,
+                ...currentProductsForProductTypeId
+            }
         })
     }
 
@@ -163,6 +166,9 @@ class AddCoupons extends React.Component {
                                 <div>
                                     <ProductsChooserModal
                                         preFilledProducts={
+                                            this.state.couponProducts[this.state.modalProductTypeId]
+                                        }
+                                        currentCouponProducts={
                                             this.state.couponProducts[this.state.modalProductTypeId]
                                         }
                                         isModalOpen={this.state.isModalOpen}
