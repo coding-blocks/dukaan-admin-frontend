@@ -313,6 +313,7 @@ class ProductLinkForm extends React.Component {
                                         </MenuItem>
                                         <MenuItem value="special_discount"> Special Discount </MenuItem>
                                         <MenuItem value="telecounselor"> Telecounselor </MenuItem>
+                                        <MenuItem value="campaign"> Campaign </MenuItem>
                                     </Select>
                                 </FormControl>
 
