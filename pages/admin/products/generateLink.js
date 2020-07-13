@@ -286,7 +286,7 @@ class GenerateLink extends React.Component {
         })
     }
 
-    hideSpinner = () => {
+    handleLoading = () => {
         this.setState({
           loading: false
         });
@@ -299,10 +299,6 @@ class GenerateLink extends React.Component {
                 <Head title="Coding Blocks | Dukaan | Generate Product Link"/>
                 <Layout/>
                 <CheckLogin>
-
-                    <Backdrop className={classes.backdrop} open={this.state.loading}>
-                        <CircularProgress color="inherit" />
-                    </Backdrop>
 
                     <div className={"row"}>
                         <div className={"col-md-3 pull-left"}>
@@ -367,7 +363,7 @@ class GenerateLink extends React.Component {
                                         <iframe
                                             src={this.state.activeCartIframeUrl}
                                             frameBorder="0"
-                                            onLoad={this.hideSpinner}
+                                            onLoad={this.handleLoading}
                                             width="100%"
                                             height="220"
                                             allowtransparency='true'
@@ -379,7 +375,7 @@ class GenerateLink extends React.Component {
                                         <iframe
                                             src={this.state.purchasedProductIframeurl}
                                             frameBorder="0"
-                                            onLoad={this.hideSpinner}
+                                            onLoad={this.handleLoading}
                                             width="100%"
                                             height="350"
                                             allowtransparency='true'
