@@ -1,6 +1,5 @@
 import React from 'react'
 import Head from '../../../components/head';
-import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Layout from "../../../components/layout";
 import ProductLinkForm from "../../../forms/ProductLink";
@@ -11,7 +10,6 @@ import * as couponController from '../../../controllers/v2/couponsV2'
 import ProductLinkCard from "../../../components/ProductLinkCard"
 import ErrorHandler from "../../../helpers/ErrorHandler";
 import Swal from 'sweetalert2';
-import { withStyles } from '@material-ui/core';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -20,13 +18,6 @@ import Paper from '@material-ui/core/Paper';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
-
-const useStyles = theme => ({
-    backdrop: {
-        zIndex: theme.zIndex.drawer + 1,
-        color: '#fff',
-    }
-});
 
 class GenerateLink extends React.Component {
 
@@ -286,23 +277,18 @@ class GenerateLink extends React.Component {
         })
     }
 
-    hideSpinner = () => {
+    handleLoading = () => {
         this.setState({
           loading: false
         });
     };
 
     render() {
-        const { classes } = this.props;
         return (
             <div>
                 <Head title="Coding Blocks | Dukaan | Generate Product Link"/>
                 <Layout/>
                 <CheckLogin>
-
-                    <Backdrop className={classes.backdrop} open={this.state.loading}>
-                        <CircularProgress color="inherit" />
-                    </Backdrop>
 
                     <div className={"row"}>
                         <div className={"col-md-3 pull-left"}>
@@ -331,7 +317,7 @@ class GenerateLink extends React.Component {
                                                 <b> User Details </b>
                                             </Typography>
 
-                                            <Table className={classes.table} aria-label="simple table">
+                                            <Table aria-label="simple table">
                                                 <TableHead>
                                                   <TableRow>
                                                     <TableCell align="center">Name</TableCell>
@@ -367,7 +353,7 @@ class GenerateLink extends React.Component {
                                         <iframe
                                             src={this.state.activeCartIframeUrl}
                                             frameBorder="0"
-                                            onLoad={this.hideSpinner}
+                                            onLoad={this.handleLoading}
                                             width="100%"
                                             height="220"
                                             allowtransparency='true'
@@ -379,7 +365,7 @@ class GenerateLink extends React.Component {
                                         <iframe
                                             src={this.state.purchasedProductIframeurl}
                                             frameBorder="0"
-                                            onLoad={this.hideSpinner}
+                                            onLoad={this.handleLoading}
                                             width="100%"
                                             height="350"
                                             allowtransparency='true'
@@ -412,4 +398,4 @@ class GenerateLink extends React.Component {
     }
 }
 
-export default withStyles(useStyles)(GenerateLink)
+export default GenerateLink
