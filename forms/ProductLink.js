@@ -327,6 +327,7 @@ class ProductLinkForm extends React.Component {
                                         options={this.props.coupons}
                                         value={values.coupon}
                                         onChange={ (e, value) => {
+                                            this.props.handleCouponChange(value)
                                             setFieldValue("coupon", value)
                                         }}
                                         getOptionLabel={(option) => {
