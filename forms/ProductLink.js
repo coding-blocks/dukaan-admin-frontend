@@ -304,6 +304,7 @@ class ProductLinkForm extends React.Component {
                                         onChange={(e) => {
                                             this.props.handleCategoryChange(e)
                                             setFieldValue("category", e.target.value)
+                                            setFieldValue("coupon", '')
                                         }}
                                         disabled={!this.props.product || !this.props.user}
                                         >

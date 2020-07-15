@@ -65,11 +65,11 @@ const ProductLinkCard = ({ link,  product, user, onSendEmailClick, calculatedAmo
                                 <TableCell component="th" scope="row" align="center">
                                   {product.name}
                                 </TableCell>
-                                <TableCell align="center">{product.mrp / 100}</TableCell>
+                                <TableCell align="center">{calculatedAmountDetails.productMrp / 100}</TableCell>
                                 <TableCell align="center">{calculatedAmountDetails.discount / 100}</TableCell>
                                 <TableCell align="center">{calculatedAmountDetails.tax /100}</TableCell>
-                                <TableCell align="center">{calculatedAmountDetails.creditsApplied /100 }</TableCell>
-                                <TableCell align="center" className={"red"}>{calculatedAmountDetails.amount /100}</TableCell>
+                                <TableCell align="center">{calculatedAmountDetails.applicableCredits /100 }</TableCell>
+                                <TableCell align="center" className={"red"}>{calculatedAmountDetails.amountPayable /100}</TableCell>
                                 <TableCell align="center" className={"red"}><b>{product.type}</b></TableCell>
                               </TableRow>
                           </TableBody>

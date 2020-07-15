@@ -216,6 +216,8 @@ class GenerateLink extends React.Component {
 
     handleCategoryChange = (event) => {
         
+        this.unsetGeneratedLink()
+        
         if (!event.target.value) {
             this.setState({
                 coupons: []
@@ -239,6 +241,9 @@ class GenerateLink extends React.Component {
 
     
     handleCouponChange = (coupon) => {
+
+        this.unsetGeneratedLink()
+
         if (!coupon)
             return this.setState({coupon: ''})
 
