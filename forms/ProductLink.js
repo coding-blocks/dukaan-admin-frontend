@@ -6,14 +6,14 @@ import Checkbox from "@material-ui/core/Checkbox";
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import config from "../config";
-import ErrorHandler from "../helpers/ErrorHandler";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import {Formik, Field} from 'formik';
+import { Formik, Field} from 'formik';
 import Grid from "@material-ui/core/Grid";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
+import Swal from "sweetalert2";
 import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core';
@@ -60,6 +60,7 @@ class ProductLinkForm extends React.Component {
 
     constructor(props) {
         super(props)
+        this.formik = React.createRef();
     }
 
     generateLink = (fields) => {
@@ -79,10 +80,14 @@ class ProductLinkForm extends React.Component {
         this.props.ongenerateLink(link)
     }
 
+    handleCustomCouponCreation = (coupon) => {
+        this.formik.current.setFieldValue("category", coupon.category)
+        this.formik.current.setFieldValue("coupon", coupon)
+        this.props.handleCategoryChange(coupon.category)
+    }
+
     render() {
-
         const { classes } = this.props;
-
         return (
             <div className={"d-flex col-md-11 offset-1 mt-5"}>
                 <div className={"border-card"}>
@@ -93,7 +98,7 @@ class ProductLinkForm extends React.Component {
                     </div>
 
                     <Formik initialValues={initialValues}  validationSchema={ProductLinkSchema}
-                        onSubmit={this.generateLink}>
+                        onSubmit={this.generateLink} ref={this.formik}>
 
                         {({values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting
                             , setFieldValue, setFieldTouched}) => (
@@ -300,9 +305,10 @@ class ProductLinkForm extends React.Component {
                                     <Select
                                         value={values.category}
                                         name={"category"}
+                                        id="categoryji"
                                         label="Coupon category"
                                         onChange={(e) => {
-                                            this.props.handleCategoryChange(e)
+                                            this.props.handleCategoryChange(e.target.value)
                                             setFieldValue("category", e.target.value)
                                         }}
                                         disabled={!this.props.product || !this.props.user}
@@ -343,7 +349,14 @@ class ProductLinkForm extends React.Component {
                                             variant="outlined" />
                                         }
                                     />
-                                   
+
+                                    {values.user && values.product &&
+                                        <span id="generateCoupon" className="red pull-right mt-3 ml-auto" 
+                                        style={{cursor: "pointer"}} onClick={() => this.props.onCustomCouponClick() }>
+                                            Create Custom Coupon
+                                        </span>
+                                    }
+
                                 </FormControl>
 
 

@@ -2,6 +2,7 @@ import React from 'react'
 import Head from '../../../components/head';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import CustomCouponForm from "../../../forms/CustomCoupon";
 import Layout from "../../../components/layout";
 import ProductLinkForm from "../../../forms/ProductLink";
 import CheckLogin from "../../../components/CheckLogin";
@@ -20,6 +21,9 @@ import Paper from '@material-ui/core/Paper';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
+import withReactContent from "sweetalert2-react-content";
+
+const ReactSwal = withReactContent(Swal);
 
 const useStyles = theme => ({
     backdrop: {
@@ -32,6 +36,7 @@ class GenerateLink extends React.Component {
 
     constructor(props) {
         super(props);
+        this.buyLinkForm = React.createRef();
         this.state = {
             organizationId:'',
             organizations: [],
@@ -222,9 +227,9 @@ class GenerateLink extends React.Component {
         this.unsetGeneratedLink()
     }
 
-    handleCategoryChange = (event) => {
+    handleCategoryChange = (category) => {
         
-        if (!event.target.value) {
+        if (!category) {
             this.setState({
                 coupons: []
             })
@@ -234,7 +239,7 @@ class GenerateLink extends React.Component {
         couponController.fetchCouponsApplicableForAUserAndProduct({
             user_id: this.state.user.id,
             product_id: this.state.product.id,
-            category: event.target.value,
+            category: category,
             organization_id: this.state.organizationId
         }).then((response) => {
             this.setState({
@@ -292,6 +297,52 @@ class GenerateLink extends React.Component {
         });
     };
 
+    
+
+    onCustomCouponClick = async () => {
+
+        await ReactSwal.fire({
+            title: "Create Custom coupon",
+            html: <CustomCouponForm handleAddCustomCoupon={this.handleAddCustomCoupon}/>,
+            heightAuto:false,
+            width: 500,
+            showCancelButton: false,
+            showConfirmButton: false,
+            showCloseButton: false
+        })
+    }
+
+    onCustomCouponCreation = async (coupon) => {
+        this.setState({
+            coupon: coupon,
+        })
+        await this.buyLinkForm.current.handleCustomCouponCreation(coupon);
+    }
+
+    handleAddCustomCoupon = (data) => {
+        couponController.handleAddCustomCoupon({
+            user_id: this.state.user.id,
+            product_id: this.state.product.id,
+            organization_id: this.state.organizationId,
+            percentage: data.percentage,
+            expiration: data.expiration
+        }).then((response) => {
+            Swal.fire({
+              title: "Success",
+              text: `Coupon ${response.data.code} created successfully!`,    
+              icon: "success",
+            });
+            this.onCustomCouponCreation(response.data)
+        }).catch((error) => {
+            ErrorHandler.handle(error)
+            Swal.fire({
+                type: "error",
+                title: "Error adding custom coupon!",
+                text: error
+            });
+        })
+    }
+
     render() {
         const { classes } = this.props;
         return (
@@ -318,6 +369,8 @@ class GenerateLink extends React.Component {
                                 onApplyCreditsChange={this.onApplyCreditsChange}
                                 ongenerateLink={this.ongenerateLink}
                                 handleCategoryChange={this.handleCategoryChange}
+                                onCustomCouponClick={this.onCustomCouponClick}
+                                ref={this.buyLinkForm}
                             />
                         </div>
 

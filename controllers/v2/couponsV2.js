@@ -151,6 +151,10 @@ const fetchCouponsApplicableForAUserAndProduct = (data) => {
     return axios.get(`/api/v2/admin/couponsv2/userAndProductSpecificCoupons`, {params: data})
 }
 
+const handleAddCustomCoupon = (data) => {
+    return axios.post(`/api/v2/admin/couponsv2/addCustomCoupon`, data)
+}
+
 export {
     fetchAddCouponData,
     generateRandomCouponCode,
@@ -168,5 +172,6 @@ export {
     getAppliedCouponUsersList,
     fetchBulkSubCategories,
     handleAddBulkCoupons,
-    fetchCouponsApplicableForAUserAndProduct
+    fetchCouponsApplicableForAUserAndProduct,
+    handleAddCustomCoupon
 }
