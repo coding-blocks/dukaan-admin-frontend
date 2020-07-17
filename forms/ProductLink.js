@@ -305,7 +305,7 @@ class ProductLinkForm extends React.Component {
                                     <Select
                                         value={values.category}
                                         name={"category"}
-                                        id="categoryji"
+                                        id="category"
                                         label="Coupon category"
                                         onChange={(e) => {
                                             this.props.handleCategoryChange(e.target.value)
