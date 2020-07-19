@@ -6,6 +6,8 @@ import Grid from "@material-ui/core/Grid";
 import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
 import * as Yup from 'yup';
+import jwt from "jsonwebtoken";
+import Cookies from 'js-cookie'
 
 const CustomCouponForm = ({handleAddCustomCoupon}) => {
 
@@ -14,14 +16,20 @@ const CustomCouponForm = ({handleAddCustomCoupon}) => {
         expiration: ''
     }
 
+    const admin_discount_limit = () => {
+        const dukaanToken = Cookies.get("dukaan-token");
+        const userInfo = jwt.decode(dukaanToken);
+        return userInfo.data.admin_discount_limit
+    } 
+
     const validationSchema = Yup.object().shape({
         percentage: Yup.number()
             .min(1, 'must be greater than 0')
-            .max(100, 'must be less or equals to 100')
+            .max( admin_discount_limit() ? admin_discount_limit() : 100)
             .required('Discount is required'),
         expiration: Yup.number()
             .required('Coupon Expiration is required')
-    });
+    })
 
     const handleAddCoupon = (formFields) => {
         handleAddCustomCoupon(formFields)
@@ -43,9 +51,10 @@ const CustomCouponForm = ({handleAddCustomCoupon}) => {
                                 placement="bottom-end">
 
                                 <TextField name="percentage" 
+                                    type="number"
                                     label="Discount"
                                     variant="outlined" 
-                                    placeholder="Discount"
+                                    placeholder="Enter Discount in percentage"
                                     value={values.percentage}
                                     onBlur={handleBlur}
                                     onChange={handleChange}
@@ -65,9 +74,10 @@ const CustomCouponForm = ({handleAddCustomCoupon}) => {
                                 placement="bottom-end">
 
                                 <TextField name="expiration" 
+                                    type="number"
                                     label="Expiration"
                                     variant="outlined" 
-                                    placeholder="Expiration"
+                                    placeholder="Enter Expiration in hours"
                                     value={values.expiration}
                                     onBlur={handleBlur}
                                     onChange={handleChange}

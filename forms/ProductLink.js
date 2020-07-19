@@ -353,7 +353,7 @@ class ProductLinkForm extends React.Component {
                                     {values.user && values.product &&
                                         <span id="generateCoupon" className="red pull-right mt-3 ml-auto" 
                                         style={{cursor: "pointer"}} onClick={() => this.props.onCustomCouponClick() }>
-                                            Create Custom Coupon
+                                            ADD CUSTOM DISCOUNT 
                                         </span>
                                     }
 

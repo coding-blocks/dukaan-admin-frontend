@@ -293,7 +293,7 @@ class GenerateLink extends React.Component {
     onCustomCouponClick = async () => {
 
         await ReactSwal.fire({
-            title: "Create Custom coupon",
+            title: "Add custom discount",
             html: <CustomCouponForm handleAddCustomCoupon={this.handleAddCustomCoupon}/>,
             heightAuto:false,
             width: 500,
@@ -318,11 +318,6 @@ class GenerateLink extends React.Component {
             percentage: data.percentage,
             expiration: data.expiration
         }).then((response) => {
-            Swal.fire({
-              title: "Success",
-              text: `Coupon ${response.data.code} created successfully!`,    
-              icon: "success",
-            });
             this.onCustomCouponCreation(response.data)
         }).catch((error) => {
             ErrorHandler.handle(error)
