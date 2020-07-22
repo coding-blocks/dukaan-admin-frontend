@@ -318,7 +318,9 @@ class GenerateLink extends React.Component {
             percentage: data.percentage,
             expiration: data.expiration
         }).then((response) => {
+            Swal.close()
             this.onCustomCouponCreation(response.data)
+
         }).catch((error) => {
             ErrorHandler.handle(error)
             Swal.fire({
