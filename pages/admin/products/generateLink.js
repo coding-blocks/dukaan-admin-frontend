@@ -359,6 +359,19 @@ class GenerateLink extends React.Component {
 
                             <div className={"col-md-9 pull-right mt-5"}>
 
+                                {!this.state.loading && this.state.generateLinkClicked &&
+                                    <div className={"row mr-5 mt-4 mb-4"}>
+                                        <ProductLinkCard
+                                            product={this.state.product}
+                                            user={this.state.user}
+                                            useCredits={this.state.useCredits}
+                                            link={this.state.generatedLink}
+                                            onSendEmailClick={this.onSendEmailClick}
+                                            calculatedAmountDetails={this.state.calculatedAmountDetails}
+                                        />
+                                    </div>
+                                }
+
                                 {!this.state.loading && this.state.user &&
                                     
                                     <div className={"row mr-5"}>
@@ -425,19 +438,7 @@ class GenerateLink extends React.Component {
                                     </div>
                                 }
 
-                                <div className={"row mr-5 mt-4 mb-3"}>
-
-                                    {!this.state.loading && this.state.generateLinkClicked &&
-                                        <ProductLinkCard
-                                            product={this.state.product}
-                                            user={this.state.user}
-                                            useCredits={this.state.useCredits}
-                                            link={this.state.generatedLink}
-                                            onSendEmailClick={this.onSendEmailClick}
-                                            calculatedAmountDetails={this.state.calculatedAmountDetails}
-                                        />
-                                    }
-                                </div>
+                                
 
                             </div>
                     </div>

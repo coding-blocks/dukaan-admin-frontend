@@ -45,7 +45,9 @@ const ProductLinkCard = ({ link,  product, user, onSendEmailClick, calculatedAmo
 
                 <TableContainer>
                       <Typography className={"ml-5 mt-2"} variant="h5" id="tableTitle" component="div">
-                          <b> {product.description} </b>
+                          <b> Buy Link </b> 
+                          <br/>
+                          <p className={"red"}>{product.description}</p>
                       </Typography>
 
                       <Table aria-label="simple table">
