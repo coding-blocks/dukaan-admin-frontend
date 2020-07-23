@@ -240,10 +240,15 @@ class GenerateLink extends React.Component {
         }).catch((error) => {
             ErrorHandler.handle(error)
         })
+        
+        this.unsetGeneratedLink()
     }
 
     
     handleCouponChange = (coupon) => {
+
+        this.unsetGeneratedLink()
+
         if (!coupon)
             return this.setState({coupon: ''})
 
