@@ -48,7 +48,8 @@ class GenerateLink extends React.Component {
             purchasedProductIframeurl: '',
             calculatedAmountDetails: '',
             loading: false,
-            coupons: []
+            coupons: [],
+            coupon: ''
         }
     }
 
@@ -241,12 +242,23 @@ class GenerateLink extends React.Component {
         })
     }
 
+    
+    handleCouponChange = (coupon) => {
+        if (!coupon)
+            return this.setState({coupon: ''})
+
+        this.setState({
+            coupon: coupon.code
+        })
+    }
+
     ongenerateLink = (link) => {
         controller.getProductBuyLinkData({
             oneauthId: this.state.user.oneauth_id,
             productId: this.state.product.id,
             quantity: 1,
-            useCredits: this.state.useCredits
+            useCredits: this.state.useCredits,
+            coupon: this.state.coupon
         }).then((calculatedAmountDetails) => {
             this.setState({
                 generatedLink: link,
@@ -352,6 +364,7 @@ class GenerateLink extends React.Component {
                                 onApplyCreditsChange={this.onApplyCreditsChange}
                                 ongenerateLink={this.ongenerateLink}
                                 handleCategoryChange={this.handleCategoryChange}
+                                handleCouponChange={this.handleCouponChange}
                                 onCustomCouponClick={this.onCustomCouponClick}
                                 ref={this.buyLinkForm}
                             />

@@ -142,12 +142,10 @@ const getUserCartDetailsUrls = (data) => {
 }
 
 const getProductBuyLinkData = (data) => {
-    return  handleCalculatePrice({
-                oneauthId: data.oneauthId,
-                productId: data.productId,
-                quantity: data.quantity,
-                useCredits: data.useCredits
-            })
+    if (!data.coupon)
+        delete data.coupon
+
+    return  handleCalculatePrice(data)
 }
 
 module.exports = {
