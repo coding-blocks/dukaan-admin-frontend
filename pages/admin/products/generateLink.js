@@ -317,7 +317,7 @@ class GenerateLink extends React.Component {
 
     onCustomCouponCreation = async (coupon) => {
         this.setState({
-            coupon: coupon,
+            coupon: coupon.code,
         })
         await this.buyLinkForm.current.handleCustomCouponCreation(coupon);
     }

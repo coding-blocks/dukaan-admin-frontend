@@ -23,7 +23,7 @@ import Typography from '@material-ui/core/Typography';
 
 
 const ProductLinkCard = ({ link,  product, user, onSendEmailClick, calculatedAmountDetails }) => {
-    
+
     const [open, setOpen] = React.useState(false);
 
     const handleClick = () => {
@@ -70,8 +70,8 @@ const ProductLinkCard = ({ link,  product, user, onSendEmailClick, calculatedAmo
                                 <TableCell align="center">{product.mrp / 100}</TableCell>
                                 <TableCell align="center">{calculatedAmountDetails.discount / 100}</TableCell>
                                 <TableCell align="center">{calculatedAmountDetails.tax /100}</TableCell>
-                                <TableCell align="center">{calculatedAmountDetails.creditsApplied /100 }</TableCell>
-                                <TableCell align="center" className={"red"}>{calculatedAmountDetails.amount /100}</TableCell>
+                                <TableCell align="center">{calculatedAmountDetails.applicableCredits /100 }</TableCell>
+                                <TableCell align="center" className={"red"}>{calculatedAmountDetails.amountPayable /100}</TableCell>
                                 <TableCell align="center" className={"red"}><b>{product.type}</b></TableCell>
                               </TableRow>
                           </TableBody>
