@@ -223,8 +223,10 @@ class GenerateLink extends React.Component {
         
         if (!category) {
             this.setState({
-                coupons: []
+                coupons: [],
+                coupon: ''
             })
+            this.unsetGeneratedLink()
             return
         }
 
@@ -240,7 +242,7 @@ class GenerateLink extends React.Component {
         }).catch((error) => {
             ErrorHandler.handle(error)
         })
-        
+
         this.unsetGeneratedLink()
     }
 
