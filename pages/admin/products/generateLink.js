@@ -1,6 +1,7 @@
 import React from 'react'
 import Head from '../../../components/head';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import CustomCouponForm from "../../../forms/CustomCoupon";
 import Layout from "../../../components/layout";
 import ProductLinkForm from "../../../forms/ProductLink";
 import CheckLogin from "../../../components/CheckLogin";
@@ -18,11 +19,15 @@ import Paper from '@material-ui/core/Paper';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
+import withReactContent from "sweetalert2-react-content";
+
+const ReactSwal = withReactContent(Swal);
 
 class GenerateLink extends React.Component {
 
     constructor(props) {
         super(props);
+        this.buyLinkForm = React.createRef();
         this.state = {
             organizationId:'',
             organizations: [],
@@ -43,7 +48,8 @@ class GenerateLink extends React.Component {
             purchasedProductIframeurl: '',
             calculatedAmountDetails: '',
             loading: false,
-            coupons: []
+            coupons: [],
+            coupon: ''
         }
     }
 
@@ -213,19 +219,21 @@ class GenerateLink extends React.Component {
         this.unsetGeneratedLink()
     }
 
-    handleCategoryChange = (event) => {
+    handleCategoryChange = (category) => {
         
-        if (!event.target.value) {
+        if (!category) {
             this.setState({
-                coupons: []
+                coupons: [],
+                coupon: ''
             })
+            this.unsetGeneratedLink()
             return
         }
 
         couponController.fetchCouponsApplicableForAUserAndProduct({
             user_id: this.state.user.id,
             product_id: this.state.product.id,
-            category: event.target.value,
+            category: category,
             organization_id: this.state.organizationId
         }).then((response) => {
             this.setState({
@@ -234,6 +242,21 @@ class GenerateLink extends React.Component {
         }).catch((error) => {
             ErrorHandler.handle(error)
         })
+
+        this.unsetGeneratedLink()
+    }
+
+    
+    handleCouponChange = (coupon) => {
+
+        this.unsetGeneratedLink()
+
+        if (!coupon)
+            return this.setState({coupon: ''})
+
+        this.setState({
+            coupon: coupon.code
+        })
     }
 
     ongenerateLink = (link) => {
@@ -241,7 +264,8 @@ class GenerateLink extends React.Component {
             oneauthId: this.state.user.oneauth_id,
             productId: this.state.product.id,
             quantity: 1,
-            useCredits: this.state.useCredits
+            useCredits: this.state.useCredits,
+            coupon: this.state.coupon
         }).then((calculatedAmountDetails) => {
             this.setState({
                 generatedLink: link,
@@ -283,6 +307,49 @@ class GenerateLink extends React.Component {
         });
     };
 
+    
+
+    onCustomCouponClick = async () => {
+
+        await ReactSwal.fire({
+            title: "Add custom discount",
+            html: <CustomCouponForm handleAddCustomCoupon={this.handleAddCustomCoupon}/>,
+            heightAuto:false,
+            width: 500,
+            showCancelButton: false,
+            showConfirmButton: false,
+            showCloseButton: false
+        })
+    }
+
+    onCustomCouponCreation = async (coupon) => {
+        this.setState({
+            coupon: coupon.code,
+        })
+        await this.buyLinkForm.current.handleCustomCouponCreation(coupon);
+    }
+
+    handleAddCustomCoupon = (data) => {
+        couponController.handleAddCustomCoupon({
+            user_id: this.state.user.id,
+            product_id: this.state.product.id,
+            organization_id: this.state.organizationId,
+            percentage: data.percentage,
+            expiration: data.expiration
+        }).then((response) => {
+            Swal.close()
+            this.onCustomCouponCreation(response.data)
+
+        }).catch((error) => {
+            ErrorHandler.handle(error)
+            Swal.fire({
+                type: "error",
+                title: "Error adding custom coupon!",
+                text: error
+            });
+        })
+    }
+
     render() {
         return (
             <div>
@@ -304,10 +371,26 @@ class GenerateLink extends React.Component {
                                 onApplyCreditsChange={this.onApplyCreditsChange}
                                 ongenerateLink={this.ongenerateLink}
                                 handleCategoryChange={this.handleCategoryChange}
+                                handleCouponChange={this.handleCouponChange}
+                                onCustomCouponClick={this.onCustomCouponClick}
+                                ref={this.buyLinkForm}
                             />
                         </div>
 
                             <div className={"col-md-9 pull-right mt-5"}>
+
+                                {!this.state.loading && this.state.generateLinkClicked &&
+                                    <div className={"row mr-5 mt-4 mb-4"}>
+                                        <ProductLinkCard
+                                            product={this.state.product}
+                                            user={this.state.user}
+                                            useCredits={this.state.useCredits}
+                                            link={this.state.generatedLink}
+                                            onSendEmailClick={this.onSendEmailClick}
+                                            calculatedAmountDetails={this.state.calculatedAmountDetails}
+                                        />
+                                    </div>
+                                }
 
                                 {!this.state.loading && this.state.user &&
                                     
@@ -375,19 +458,7 @@ class GenerateLink extends React.Component {
                                     </div>
                                 }
 
-                                <div className={"row mr-5 mt-4 mb-3"}>
-
-                                    {!this.state.loading && this.state.generateLinkClicked &&
-                                        <ProductLinkCard
-                                            product={this.state.product}
-                                            user={this.state.user}
-                                            useCredits={this.state.useCredits}
-                                            link={this.state.generatedLink}
-                                            onSendEmailClick={this.onSendEmailClick}
-                                            calculatedAmountDetails={this.state.calculatedAmountDetails}
-                                        />
-                                    }
-                                </div>
+                                
 
                             </div>
                     </div>

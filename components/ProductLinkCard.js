@@ -23,7 +23,7 @@ import Typography from '@material-ui/core/Typography';
 
 
 const ProductLinkCard = ({ link,  product, user, onSendEmailClick, calculatedAmountDetails }) => {
-    
+
     const [open, setOpen] = React.useState(false);
 
     const handleClick = () => {
@@ -45,7 +45,9 @@ const ProductLinkCard = ({ link,  product, user, onSendEmailClick, calculatedAmo
 
                 <TableContainer>
                       <Typography className={"ml-5 mt-2"} variant="h5" id="tableTitle" component="div">
-                          <b> {product.description} </b>
+                          <b> Buy Link </b> 
+                          <br/>
+                          <p className={"red"}>{product.description}</p>
                       </Typography>
 
                       <Table aria-label="simple table">
@@ -65,11 +67,11 @@ const ProductLinkCard = ({ link,  product, user, onSendEmailClick, calculatedAmo
                                 <TableCell component="th" scope="row" align="center">
                                   {product.name}
                                 </TableCell>
-                                <TableCell align="center">{product.mrp / 100}</TableCell>
+                                <TableCell align="center">{calculatedAmountDetails.productMrp / 100}</TableCell>
                                 <TableCell align="center">{calculatedAmountDetails.discount / 100}</TableCell>
                                 <TableCell align="center">{calculatedAmountDetails.tax /100}</TableCell>
-                                <TableCell align="center">{calculatedAmountDetails.creditsApplied /100 }</TableCell>
-                                <TableCell align="center" className={"red"}>{calculatedAmountDetails.amount /100}</TableCell>
+                                <TableCell align="center">{calculatedAmountDetails.applicableCredits /100 }</TableCell>
+                                <TableCell align="center" className={"red"}>{calculatedAmountDetails.amountPayable /100}</TableCell>
                                 <TableCell align="center" className={"red"}><b>{product.type}</b></TableCell>
                               </TableRow>
                           </TableBody>
