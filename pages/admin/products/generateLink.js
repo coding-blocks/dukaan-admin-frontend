@@ -49,16 +49,17 @@ class GenerateLink extends React.Component {
             calculatedAmountDetails: '',
             loading: false,
             coupons: [],
-            coupon: ''
+            coupon: '',
+            addressStates: []
         }
     }
 
     componentDidMount() {
-        controller.fetchGenerateLinkData({
-            user_id: this.state.user_id
-        }).then((organizations) => {
+        controller.fetchGenerateLinkData()
+        .then(([organizations, states]) => {
             this.setState({
                 organizations: organizations.data,
+                addressStates: states.data
             })
         }).catch(error => {
             ErrorHandler.handle(error)
@@ -374,6 +375,7 @@ class GenerateLink extends React.Component {
                                 handleCouponChange={this.handleCouponChange}
                                 onCustomCouponClick={this.onCustomCouponClick}
                                 ref={this.buyLinkForm}
+                                unsetGeneratedLink={this.unsetGeneratedLink}
                             />
                         </div>
 
