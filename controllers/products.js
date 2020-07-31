@@ -2,7 +2,7 @@ import {axios} from "../DukaanAPI";
 import ErrorHandler from "../helpers/ErrorHandler";
 import organizationController from './organizations';
 import userController from './users';
-
+import resourcesController from "./resources";
 
 const querystring = require('querystring');
 
@@ -126,7 +126,10 @@ const fetchOrganizations = () => {
 }
 
 const fetchGenerateLinkData = () => {
-    return fetchOrganizations()
+    return Promise.all([
+        fetchOrganizations(),
+        resourcesController.getStates()
+        ])
 }
 
 const fetchCenters = (organizationId) => {

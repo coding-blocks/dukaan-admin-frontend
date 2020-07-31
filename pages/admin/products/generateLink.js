@@ -43,16 +43,17 @@ class GenerateLink extends React.Component {
             purchasedProductIframeurl: '',
             calculatedAmountDetails: '',
             loading: false,
-            coupons: []
+            coupons: [],
+            addressStates: []
         }
     }
 
     componentDidMount() {
-        controller.fetchGenerateLinkData({
-            user_id: this.state.user_id
-        }).then((organizations) => {
+        controller.fetchGenerateLinkData()
+        .then(([organizations, states]) => {
             this.setState({
                 organizations: organizations.data,
+                addressStates: states.data
             })
         }).catch(error => {
             ErrorHandler.handle(error)
@@ -304,6 +305,7 @@ class GenerateLink extends React.Component {
                                 onApplyCreditsChange={this.onApplyCreditsChange}
                                 ongenerateLink={this.ongenerateLink}
                                 handleCategoryChange={this.handleCategoryChange}
+                                unsetGeneratedLink={this.unsetGeneratedLink}
                             />
                         </div>
 

@@ -53,7 +53,8 @@ const initialValues = {
     user: '',
     applyCredits: false,
     category: '',
-    coupon: ''
+    coupon: '',
+    state: ''
 }
 
 class ProductLinkForm extends React.Component {
@@ -74,7 +75,11 @@ class ProductLinkForm extends React.Component {
         if (fields.coupon)
             couponQueryParams = `&coupon=${fields.coupon.code}`
 
-        const link = `https://dukaan.codingblocks.com/buy?productId=${productId}&oneauthId=${oneauthId}${useCreditsQueryParams}${couponQueryParams}`
+        let stateQueryParams = ''
+        if (fields.state)
+            stateQueryParams = `&state=${fields.state}`
+
+        const link = `https://dukaan.codingblocks.com/buy?productId=${productId}&oneauthId=${oneauthId}${useCreditsQueryParams}${couponQueryParams}${stateQueryParams}`
 
         this.props.ongenerateLink(link)
     }
@@ -347,6 +352,36 @@ class ProductLinkForm extends React.Component {
                                 </FormControl>
 
 
+                                <FormControl variant="outlined" size={"medium"}
+                                    fullWidth={true} className={"mb-4"}>
+                                    <InputLabel id="state">State</InputLabel>
+
+                                    <Select
+                                        value={values.state}
+                                        name={"state"}
+                                        onChange={(e) => {
+                                            this.props.unsetGeneratedLink()
+                                            setFieldValue("state", e.target.value)
+                                        }}
+                                        label="State">
+
+                                        <MenuItem value="">
+                                            <em>Select</em>
+                                        </MenuItem>
+                                        {
+                                            this.props.addressStates.map((state) => {
+                                                return (
+                                                    <MenuItem
+                                                        key={state.id}
+                                                        value={state.state_code}>{
+                                                        state.name
+                                                    }</MenuItem>
+                                                )
+                                            })
+                                        }
+
+                                    </Select>
+                                </FormControl>
 
                                 <FormControlLabel 
                                     className={"mb-4"}
