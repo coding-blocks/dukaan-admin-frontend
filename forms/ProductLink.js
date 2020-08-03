@@ -5,7 +5,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Checkbox from "@material-ui/core/Checkbox";
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
-import config from "../config";
+import * as controller from '../controllers/buyLink'
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { Formik, Field} from 'formik';
@@ -65,24 +65,22 @@ class ProductLinkForm extends React.Component {
     }
 
     generateLink = (fields) => {
-        const productId = fields.product.id
-        const oneauthId = fields.user.oneauth_id
 
-        let useCreditsQueryParams = ''
-        if (fields.applyCredits)
-            useCreditsQueryParams = '&useCredits=true'
-
-        let couponQueryParams = ''
-        if (fields.coupon)
-            couponQueryParams = `&coupon=${fields.coupon.code}`
-
-        let stateQueryParams = ''
-        if (fields.state)
-            stateQueryParams = `&state=${fields.state}`
-
-        const link = `https://dukaan.codingblocks.com/buy?productId=${productId}&oneauthId=${oneauthId}${useCreditsQueryParams}${couponQueryParams}${stateQueryParams}`
-
-        this.props.ongenerateLink(link)
+        controller.handleAddBuyLink({
+            user_id: fields.user.id,
+            product_id: fields.product.id,
+            coupon_id: fields.coupon ? fields.coupon.id : '',
+            use_credits: fields.applyCredits,
+            state_id: fields.state,
+        }).then((response) => {
+            this.props.ongenerateLink(response.data.short_url)
+        }).catch((error) => {
+            Swal.fire({
+                title: "Error while creating link!",
+                type: "error",
+                text: error
+            });
+        });
     }
 
     handleCustomCouponCreation = (coupon) => {
@@ -388,7 +386,7 @@ class ProductLinkForm extends React.Component {
                                                 return (
                                                     <MenuItem
                                                         key={state.id}
-                                                        value={state.state_code}>{
+                                                        value={state.id}>{
                                                         state.name
                                                     }</MenuItem>
                                                 )
