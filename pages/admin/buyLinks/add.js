@@ -458,9 +458,7 @@ class GenerateLink extends React.Component {
                                         </iframe>
                                     </div>
                                     </div>
-                                }
-
-                                
+                                }                                
 
                             </div>
                     </div>
