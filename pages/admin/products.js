@@ -238,7 +238,7 @@ class Products extends React.Component {
                               <td>{Formatter.formatCurrency(p.mrp)}</td>
                               <td>{Formatter.formatCurrency(p.list_price)}</td>
                               <td>{p.display_slug}</td>
-                              <td>{p.listed && "Yes"}{!p.listed && "No"}</td>
+                              <td>{ JSON.parse(p.listed) ? "Yes" : "No" }</td>
                               <td>
                                 <button
                                   className={"button-solid btn btn-default"}
