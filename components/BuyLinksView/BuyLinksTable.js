@@ -159,7 +159,7 @@ class BuyLinksTable extends React.Component {
                                             {buyLink.use_credits ? 'Applicable' : 'Not Applicable'}
                                         </TableCell>
                                         <TableCell align="center">
-                                            {buyLink.created_by}
+                                            {buyLink.buyLink_creator.firstname} {buyLink.buyLink_creator.lastname} 
                                         </TableCell>
 
                                     </TableRow>

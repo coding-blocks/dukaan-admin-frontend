@@ -126,7 +126,7 @@ class BuyLinkFilterForm extends React.Component {
 
     handleProductChange = async (event, value) => {
         let newFilterParams = this.state.filterParams;
-        newFilterParams['product_id'] = value.id
+        newFilterParams['product_id'] = value ? value.id : ''
         this.setState(prevState => ({
           filterParams: newFilterParams
         }));
@@ -134,7 +134,7 @@ class BuyLinkFilterForm extends React.Component {
 
     handleUserChange = async (event, value) => {
         let newFilterParams = this.state.filterParams;
-        newFilterParams['user_id'] = value.id
+        newFilterParams['user_id'] = value ? value.id : ''
         this.setState(prevState => ({
           filterParams: newFilterParams
         }));
