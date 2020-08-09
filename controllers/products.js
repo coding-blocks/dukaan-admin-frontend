@@ -51,6 +51,16 @@ const handleEditProduct = (queryParams) => {
     delete queryParams.extension_of;
     delete queryParams.duration;
     delete queryParams.product_extensions;
+    delete queryParams.center_id;
+    delete queryParams.emi_min_base;
+    delete queryParams.emi_min_repeat;
+    delete queryParams.instances;
+    delete queryParams.per_user;
+    delete queryParams.organization_id;
+    delete queryParams.product_category_id;
+    delete queryParams.product_category;
+    delete queryParams.owner_client_id;
+
     Object.keys(queryParams).forEach((key) => {
         if (queryParams[key] == null) {
             queryParams[key] = "";
