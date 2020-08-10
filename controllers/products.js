@@ -60,6 +60,7 @@ const handleEditProduct = (queryParams) => {
     delete queryParams.product_category_id;
     delete queryParams.product_category;
     delete queryParams.owner_client_id;
+    delete queryParams.users;
 
     Object.keys(queryParams).forEach((key) => {
         if (queryParams[key] == null) {
