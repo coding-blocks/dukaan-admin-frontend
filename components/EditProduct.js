@@ -20,6 +20,7 @@ class EditProduct extends React.Component {
     let queryParams = this.state.queryParams;
     queryParams.referral = false;
     queryParams.campaign = false;
+    queryParams.listed = JSON.parse(queryParams.listed);
     this.setState({
       queryParams
     })
