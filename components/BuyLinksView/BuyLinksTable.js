@@ -125,6 +125,7 @@ class BuyLinksTable extends React.Component {
                                     <TableCell align="center" className={"red"}>USER</TableCell>
                                     <TableCell align="center" className={"red"}>PRODUCT</TableCell>
                                     <TableCell align="center" className={"red"}>URL</TableCell>
+                                    <TableCell align="center" className={"red"}>CODE</TableCell>
                                     <TableCell align="center" className={"red"}>STATUS</TableCell>
                                     <TableCell align="center" className={"red"}>COUPON</TableCell>
                                     <TableCell align="center" className={"red"}>STATE</TableCell>
@@ -145,6 +146,9 @@ class BuyLinksTable extends React.Component {
                                         </TableCell>
                                         <TableCell align="center">
                                            {buyLink.short_url}
+                                        </TableCell>
+                                        <TableCell align="center">
+                                           {buyLink.code}
                                         </TableCell>
                                         <TableCell align="center">
                                            {buyLink.active === true ? 'Active' : 'Inactive'}
