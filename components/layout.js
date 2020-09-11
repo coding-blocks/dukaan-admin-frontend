@@ -125,14 +125,29 @@ class Layout extends React.Component {
                             <a>Add New</a>
                           </Link>
                         </div>
+                      </div>
+                    </li>
+
+                    <li className="dropdown">
+                      <button className="dropbtn dropdown-toggle">
+                        Buy Links
+                        <i className="fa fa-caret-down pl-2" />
+                      </button>
+                      <div className="dropdown-content">
+                        <div className="flex-row justify-content-center">
+                          <Link href="/admin/buyLinks">
+                            <a>All</a>
+                          </Link>
+                        </div>
                         <div className="divider-h" />
                         <div className="flex-row justify-content-center">
-                          <Link href="/admin/products/generateLink">
-                            <a>Generate Link</a>
+                          <Link href="/admin/buyLinks/add">
+                            <a>Add New</a>
                           </Link>
                         </div>
                       </div>
                     </li>
+
                   </div>
                 )}
                 <li className="nav-items pointer capitalize">
