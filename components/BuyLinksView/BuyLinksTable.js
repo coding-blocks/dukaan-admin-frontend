@@ -69,9 +69,11 @@ class BuyLinksTable extends React.Component {
                 totalPages: response.data.pagesInfo.pageCount
             })
         }).catch((error) => {
+            let titleText = error.response.data.invalidCoupon ? error.response.data.invalidCoupon
+                            : 'Error while fetching buy links!'
             Swal.fire({
                 type: 'error',
-                title: 'Error while fetching buy links!',
+                title: titleText,
                 text: error
             });
             this.setState({
