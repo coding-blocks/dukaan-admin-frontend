@@ -118,7 +118,7 @@ class BulkCouponForm extends React.Component {
                 type: "success",
                 showConfirmButton: true
             }).then(() => {
-                window.location = `${config.domain}/admin/coupons2`;
+                // window.location = `${config.domain}/admin/coupons2`;
             });
         }).catch((error) => {
             Swal.fire({
