@@ -22,11 +22,11 @@ class CouponsSearch extends React.Component {
         this.couponTable = React.createRef();
         this.state = {
             filterParams: {
-                active:true
+                active:true,
+                expired:false
             }
         }
     }
-
 
     onSearchBtnClick = (filterParams) => {
         this.setState({

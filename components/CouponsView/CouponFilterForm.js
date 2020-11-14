@@ -22,10 +22,10 @@ class CouponFilterForm extends React.Component {
             subCategories: [],
             filterParams: {
                 active: true,
+                expired: false
             }
         }
     }
-
 
     componentDidMount() {
         controller.fetchAllCouponCategories().then((response) => {
@@ -59,7 +59,7 @@ class CouponFilterForm extends React.Component {
 
     onFormInputChange = (event) => {
         let newFilterParams = this.state.filterParams;
-        newFilterParams[event.target.name] = (event.target.name === 'active' ? !JSON.parse(event.target.value) : event.target.value)
+        newFilterParams[event.target.name] = (event.target.name === 'active' || event.target.name === 'expired'  ? !JSON.parse(event.target.value) : event.target.value)
         this.setState(prevState => ({
           filterParams: newFilterParams
         }));
@@ -188,6 +188,18 @@ class CouponFilterForm extends React.Component {
                                             name="active"
                                     />}
                                 label="Show Active"
+                            />
+
+                            {/* Expiry */}
+                            <FormControlLabel
+                                className={"mb-4"}
+                                control={
+                                    <Switch checked={this.state.filterParams.expired}
+                                            onChange={this.onFormInputChange}
+                                            value={this.state.filterParams.expired}
+                                            name="expired"
+                                    />}
+                                label="Expired"
                             />
 
                             <Grid container justify="center">
