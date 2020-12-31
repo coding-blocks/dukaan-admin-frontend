@@ -18,7 +18,7 @@ app.prepare().then(() => {
     if (!code) {
       res.redirect('/login');
     } else {
-      axios.post(config.backend.token_url, {code: code}).then((response) => {
+      axios.post(config.dukaan_backend.token_url, {code: code}).then((response) => {
         const jwtToken = response.data.jwtToken;
         res.cookie('dukaan-token', jwtToken)
         res.redirect('/');
