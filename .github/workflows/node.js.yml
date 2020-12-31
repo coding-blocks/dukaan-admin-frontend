@@ -16,5 +16,5 @@ jobs:
     - uses: actions/checkout@master
     - name: Install Dependencies
       run: yarn install
-    - name: Build
-      run: yarn build
+    - name: Build and generate static output
+      run: yarn deploy
