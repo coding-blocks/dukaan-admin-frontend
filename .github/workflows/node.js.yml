@@ -3,27 +3,20 @@
 
 name: Node.js CI
 
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request 
+# events but only for the master branch
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
+    
 jobs:
-  build:
-
+  deploy:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [10.x, 12.x, 14.x]
-
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: node createEnv.js
-    - run: yarn install
-    - run: yarn deploy
+    - uses: actions/checkout@master
+    - name: Install Dependencies
+      run: yarn install
+    - name: Build
+      run: yarn build
