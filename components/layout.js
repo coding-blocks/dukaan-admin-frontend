@@ -148,6 +148,16 @@ class Layout extends React.Component {
                       </div>
                     </li>
 
+                    {this.state.loggedIn && this.state.admin  && (
+                      
+                      <li class="ml-4">
+                          <Link href="/admin/reconcile">
+                          <a> Reconcile </a>
+                          </Link>
+                      </li>
+                      
+                    )}
+
                   </div>
                 )}
                 <li className="nav-items pointer capitalize">

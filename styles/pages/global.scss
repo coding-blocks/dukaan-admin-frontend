@@ -1,6 +1,7 @@
 @import "../../../node_modules/@syncfusion/ej2-base/styles/material.css";
 @import "../../../node_modules/@syncfusion/ej2-inputs/styles/material.css";
 @import "../../../node_modules/@syncfusion/ej2-dropdowns/styles/material.css";
+
 .title {
   font-weight: 100;
 }
@@ -41,4 +42,16 @@ select {
 
 form {
   width: 100%;
+}
+
+.border {
+  border: solid 1px black !important;
+}
+
+.bg-blue {
+  background-color: #c9dfff;
+}
+
+.bg-green {
+  background-color: #b2e4bb;
 }
