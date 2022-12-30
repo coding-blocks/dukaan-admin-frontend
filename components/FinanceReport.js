@@ -1,7 +1,6 @@
 import React from 'react';
 import Head from "./head";
 import Layout from "./layout";
-import "../styles/pages/admin/products.scss";
 import purchasesController from "../controllers/purchases.js";
 import Loader from './loader';
 import CheckLogin from "./CheckLogin";

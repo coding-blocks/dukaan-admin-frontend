@@ -11,7 +11,6 @@ import ErrorHandler from "../../../helpers/ErrorHandler";
 import ProductApplicabilityInfo from "../../../components/ProductApplicabilityInfo";
 import ProductsChooserModal from "../../../components/ProductsChooser/ProductsChooserModal";
 import ConfirmationDialog from "../../../components/ConfirmationDialog";
-import "../../../styles/pages/admin/coupons2.scss";
 
 
 class AddBulkCoupon extends React.Component {

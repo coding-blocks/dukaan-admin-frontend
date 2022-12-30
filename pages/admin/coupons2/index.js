@@ -12,7 +12,6 @@ import ProductsChooser from "../../../components/ProductsChooser";
 import Formatter from "../../../helpers/formatter";
 import Pagination from "../../../components/Pagination";
 import Loader from "../../../components/loader";
-import "../../../styles/pages/admin/coupons2.scss";
 
 
 class CouponsSearch extends React.Component {

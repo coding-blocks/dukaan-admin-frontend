@@ -3,7 +3,6 @@
  */
 
 import React from 'react';
-import "../styles/components/Pagination.scss";
 
 class Pagination extends React.Component {
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import Select from 'react-select';
 import productsController from "../controllers/products";
-import "../styles/components/ProductsChooser.scss";
 import Swal from 'sweetalert2';
 
 class ProductsChooser extends React.Component {

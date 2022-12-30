@@ -3,7 +3,6 @@
  */
 
 import React from "react";
-import "../../../styles/pages/admin/coupons.scss";
 import Head from "../../../components/head";
 import Layout from "../../../components/layout";
 import {Field, Formik} from "formik";

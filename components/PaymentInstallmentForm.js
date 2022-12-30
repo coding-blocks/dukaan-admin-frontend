@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import FieldWithElement from "./FieldWithElement";
-import "../styles/pages/admin/coupons.scss";
 import Swal from "sweetalert2";
 import formatter from "../helpers/formatter"
 import resourcesController from "../controllers/resources";

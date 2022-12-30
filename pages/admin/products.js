@@ -1,7 +1,6 @@
 import React from 'react';
 import Head from "../../components/head";
 import Layout from "../../components/layout";
-import "../../styles/pages/admin/products.scss";
 import FieldWithElement from '../../components/FieldWithElement';
 import controller from "../../controllers/products.js";
 import Loader from '../../components/loader';

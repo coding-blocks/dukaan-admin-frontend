@@ -1,5 +1,4 @@
 import React from "react";
-import "../styles/components/Price.scss";
 import formatter from "../helpers/formatter";
 
 class Price extends React.Component {

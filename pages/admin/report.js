@@ -1,7 +1,6 @@
 import React from 'react';
 import Head from "../../components/head";
 import Layout from "../../components/layout";
-import "../../styles/pages/admin/products.scss";
 import purchasesController from "../../controllers/purchases.js";
 import Loader from '../../components/loader';
 import FinanceReport from "../../components/FinanceReport";

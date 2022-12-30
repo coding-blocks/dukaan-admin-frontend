@@ -6,7 +6,6 @@ import Loader from '../../../components/loader';
 import FieldWithElement from '../../../components/FieldWithElement';
 import controller from '../../../controllers/coupons';
 import organizationController from '../../../controllers/organizations';
-import "../../../styles/pages/admin/coupons.scss";
 import Swal from 'sweetalert2';
 import ProductsChooser from "../../../components/ProductsChooser";
 import CheckLogin from "../../../components/CheckLogin";

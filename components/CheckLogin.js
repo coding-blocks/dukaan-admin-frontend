@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 import Head from "./head";
 import Layout from "./layout";
 import Loader from "./loader";
-import "../styles/components/CheckLogin.scss";
 
 class CheckLogin extends React.Component {
   constructor(props) {

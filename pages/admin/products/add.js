@@ -5,7 +5,6 @@ import Swal from 'sweetalert2';
 import Head from '../../../components/head';
 import Layout from "../../../components/layout";
 import Loader from '../../../components/loader';
-import "../../../styles/pages/admin/products.scss";
 import ImageChooser from '../../../components/ImageChooser';
 import CheckLogin from '../../../components/CheckLogin';
 

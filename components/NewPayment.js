@@ -1,6 +1,5 @@
 import React from "react";
 import FieldWithElement from "./FieldWithElement";
-import "../styles/pages/admin/coupons.scss";
 import "../DukaanAPI";
 import Swal from "sweetalert2";
 import Cookies from 'js-cookie'

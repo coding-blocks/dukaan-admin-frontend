@@ -3,7 +3,6 @@ import Link from "next/link";
 import Cookies from 'js-cookie'
 import jwt from "jsonwebtoken";
 import config from "../config";
-import "../styles/components/layout.scss";
 
 class Layout extends React.Component {
   constructor(props) {
