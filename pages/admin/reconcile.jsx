@@ -172,7 +172,7 @@ export default function Reconcile() {
         <h3 className="t-align-c">Reconciler</h3>
 
         <div className="my-3 px-5">
-          <span className="bold font-md">Select Date Range</span>
+          <span className="bold font-md">Select Date Range to Download CSV</span>
           <div>
             <label for="start-date">Start Date:</label>
             <input type="date" id="start-date" name="start0date" onChange={(e) => setStartDate(e.target.value)}></input>
