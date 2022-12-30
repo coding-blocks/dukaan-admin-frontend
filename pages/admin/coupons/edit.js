@@ -6,7 +6,6 @@ import ProductsChooser from '../../../components/ProductsChooser';
 import DatePicker from "react-datepicker";
 import ErrorBoundary from "../../../components/ErrorBoundary";
 import * as moment from 'moment'
-import "react-datepicker/dist/react-datepicker.css";
 
 class EditCoupon extends React.Component {
     constructor(props) {

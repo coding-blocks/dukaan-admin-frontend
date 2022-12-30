@@ -6,7 +6,6 @@ import ErrorHandler from "../helpers/ErrorHandler";
 import * as controller from '../controllers/v2/couponsV2'
 import Swal from "sweetalert2";
 import * as Yup from 'yup';
-import "react-datepicker/dist/react-datepicker.css";
 import SelectedUsers from "../components/SelectedUsers";
 import config from "../config";
 import CouponProductsNotice from '../components/CouponProductsNotice'

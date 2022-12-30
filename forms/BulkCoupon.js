@@ -1,7 +1,6 @@
 import React from 'react';
 import { Formik, Field } from 'formik';
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import * as Yup from 'yup';
 import FieldWithElement from '../components/FieldWithElement';
 import * as controller from '../controllers/v2/couponsV2'
