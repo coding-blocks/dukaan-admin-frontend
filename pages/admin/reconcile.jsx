@@ -128,7 +128,7 @@ export default function Reconcile() {
         row.push(invoice.product.name)
         row.push(invoice.list_price / 100)
         row.push(invoice.final_price / 100)
-        row.push(invoice.cart.total_discount / 100)
+        row.push(invoice.discount_availed / 100)
         row.push(invoice.cgst / 100)
         row.push(invoice.igst / 100)
         row.push(invoice.sgst / 100)
@@ -246,7 +246,7 @@ export default function Reconcile() {
                         <TableCell>{invoice.product.name}</TableCell>
                         <TableCell>{invoice.list_price / 100}</TableCell>
                         <TableCell>{invoice.final_price / 100}</TableCell>
-                        <TableCell>{invoice.cart.total_discount / 100}</TableCell>
+                        <TableCell>{invoice.discount_availed / 100}</TableCell>
                         <TableCell>{invoice.cgst / 100}</TableCell>
                         <TableCell>{invoice.igst / 100}</TableCell>
                         <TableCell>{invoice.sgst / 100}</TableCell>
