@@ -1,0 +1,20 @@
+name: deploy
+
+on: 
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: pm2 start
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          script: cd frontends/dukaan-admin-frontend && yarn && pm2 startOrRestart ecosystem.config.js --env production
+     
