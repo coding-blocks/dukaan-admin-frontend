@@ -16,5 +16,5 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
-          script: cd frontends/dukaan-admin-frontend && yarn && pm2 startOrRestart ecosystem.config.js --env production
+          script: cd frontends/dukaan-admin-frontend && yarn && yarn build && pm2 startOrRestart ecosystem.config.js --env production
      
