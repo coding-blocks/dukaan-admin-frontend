@@ -29,9 +29,11 @@ const PaginationTheme = withStyles({
 })(TablePagination);
 
 export default function Reconcile() {
+  const [reconcilationDate, setReconcilationDate] = useState(null);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [comment, setComment] = useState('')
+  const [orderIds, setOrderIds] = useState('');
   const [showModal, setShowModal] = useState(false)
   const [offset, setOffset] = useState(0)
   const [limit, setLimit] = useState(25)
@@ -56,10 +58,6 @@ export default function Reconcile() {
     setLimit(parseInt(event.target.value, 10))
   }
 
-  function handleModalClose(e) {
-    console.log(e)
-  }
-
   function handleSelectRow(selected, invoice_id) {
     if(selected) {
       setSelectedInvoiceIds([...selectedInvoiceIds, invoice_id])
@@ -71,9 +69,15 @@ export default function Reconcile() {
     }
   }
 
+  async function handleFetchInvoices() {
+    const response = await fetchInvoices({ offset, limit, orderIds })
+      setInvoices(response.data.data)
+      setPaginationMeta({ currentPage: response.data.pagesInfo.currentPage, count: response.data.pagesInfo.count})
+  }
+
   async function handleMarkReconciled() {
     try {
-      await markReconciled({ invoiceIds: selectedInvoiceIds, comment })
+      await markReconciled({ invoiceIds: selectedInvoiceIds, comment, reconciled_at: reconcilationDate })
       setShowModal(false)
       Swal.fire({
         title: "Invoices reconciled successfully!",
@@ -119,7 +123,7 @@ export default function Reconcile() {
     try {
       const response = await fetchInvoices({ startDate, endDate })
       const invoices = response.data.data
-      const data = [['Name','Email','Product','List Price','Final Price', 'Discount', 'CGST','IGST','SGST','Tax','Final Amount','RazorPay Order Id','RazorPay Payment Id','Status', 'Date of Sale', 'Invoice Link','Reconciled By']]
+      const data = [['Name','Email','Product','List Price','Final Price', 'Discount', 'CGST','IGST','SGST','Tax','Final Amount','RazorPay Order Id','RazorPay Payment Id','Status', 'Date of Sale', 'Invoice Link','Reconciled By', 'Reconciled At', 'Recocile Comment']]
   
       invoices.map(invoice => {
         const row = []
@@ -140,6 +144,8 @@ export default function Reconcile() {
         row.push(invoice.transaction?.date_of_sale)
         row.push(invoice.invoice_link || 'N/A')
         row.push(invoice.reconciledBy ? `${invoice.reconciledBy.firstname} ${invoice.reconciledBy.lastname}(${invoice.reconciledBy.oneauth_id}`: 'N/A' )
+        row.push(invoice.reconciled_at ? moment(invoice.reconciled_at).toDate() : 'N/A' )
+        row.push(invoice.reconcile_comment || 'N/A' )
         data.push(row)
       })
       let workbook = XLSX.utils.book_new();
@@ -157,7 +163,7 @@ export default function Reconcile() {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetchInvoices({ offset, limit })
+      const response = await fetchInvoices({ offset, limit, ...(orderIds.length ? { orderIds } : {}) })
       setInvoices(response.data.data)
       setPaginationMeta({ currentPage: response.data.pagesInfo.currentPage, count: response.data.pagesInfo.count})
     }
@@ -172,7 +178,10 @@ export default function Reconcile() {
         <h3 className="t-align-c">Reconciler</h3>
 
         <div className="my-3 px-5">
-          <span className="bold font-md">Select Date Range to Download CSV</span>
+          <div>
+            <span className="bold font-md">Select Date Range to Download CSV</span>
+            <Button variant='outlined' className="p-2 mx-3" disabled={!!!startDate || !!!endDate} onClick={() => handleDownloadCsv()}>Download Csv</Button>
+          </div>
           <div>
             <label for="start-date">Start Date:</label>
             <input type="date" id="start-date" name="start0date" onChange={(e) => setStartDate(e.target.value)}></input>
@@ -183,6 +192,11 @@ export default function Reconcile() {
           </div>
         </div>
         
+        <div className="py-3 px-5">
+          <span className="bold font-md">Filter by Razorpay Order Ids </span><span className="red font-xs">(Enter "," separated Order Ids)</span>
+          <textarea className="border my-3" name="" id="" cols="30" rows="10" onChange={(e) => setOrderIds(e.target.value)}></textarea>
+          <Button variant='outlined' disabled={!!!orderIds} onClick={() => handleFetchInvoices()}>Search</Button>
+        </div>
 
         <div className=" d-flex justify-content-center">
           <Grid xs={11} className={"mt-4 mr-5"}>
@@ -206,7 +220,7 @@ export default function Reconcile() {
                           </div>
                           <div className="divider-h" />
                           <div className="flex-row justify-content-center">
-                            <button className="p-2" disabled={!!!startDate || !!!endDate} onClick={() => handleDownloadCsv()}>Download Csv</button>
+                            
                           </div>
                         </div>
                       </li>
@@ -301,8 +315,9 @@ export default function Reconcile() {
             aria-describedby="simple-modal-description">
             <DialogContent>
               <h4>Add Comment</h4>
-              <textarea placeholder="Comments..." name="" id="" cols="30" rows="10" onChange={(e) => setComment(e.target.value)}></textarea>
-              <Button variant="outlined" disabled={!!!comment} onClick={() => handleMarkReconciled()}>Mark as Reconciled</Button>
+              Reconcilation Date: <input type="date" id="reconcilation-date" name="reconcilation-date" onChange={(e) => setReconcilationDate(e.target.value)}></input>
+              <textarea className="border my-3" placeholder="Comments..." name="" id="" cols="30" rows="10" onChange={(e) => setComment(e.target.value)}></textarea>
+              <Button variant="outlined" disabled={!!!comment || !!!reconcilationDate} onClick={() => handleMarkReconciled()}>Mark as Reconciled</Button>
             </DialogContent>
       </Dialog>
     </div>
