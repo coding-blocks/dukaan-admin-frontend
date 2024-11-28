@@ -41,7 +41,7 @@
     "js-cookie": "^2.2.0",
     "js-cookies": "^1.0.4",
     "jsonwebtoken": "^8.5.1",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "next": "12.2.5",
     "prop-types": "^15.7.2",
     "query-string": "^6.12.1",
