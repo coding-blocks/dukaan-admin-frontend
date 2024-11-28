@@ -33,7 +33,7 @@
     "@sentry/browser": "^5.6.3",
     "@syncfusion/ej2-react-dropdowns": "^17.2.39",
     "@syncfusion/ej2-react-grids": "^17.2.39",
-    "axios": "^0.19.0",
+    "axios": "^0.21.2",
     "cookie-parser": "^1.4.4",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
