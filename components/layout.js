@@ -16,7 +16,7 @@ class Layout extends React.Component {
   }
 
   componentDidMount() {
-    const dukaanToken = Cookies.get("dukaan-token");
+    const dukaanToken = Cookies.get("vmc_auth");
     if (dukaanToken) {
       const userInfo = jwt.decode(dukaanToken);
       this.setState({
@@ -159,18 +159,20 @@ class Layout extends React.Component {
 
                   </div>
                 )}
+                {this.state.loggedIn && (
                 <li className="nav-items pointer capitalize">
                   <img
                     src={this.state.pic}
-                    className={"pic"}
+                    className="pic"
                     width={48}
                     height={48}
-                    align={"absmiddle"}
+                    align="absmiddle"
                   />
                   <Link href="https://account.codingblocks.com">
                     <a className="active name">Hi, {this.state.name}</a>
                   </Link>
                 </li>
+              )}
                 {this.state.loggedIn && (
                   <li className="nav-items pointer">
                     <a href="/logout">
@@ -182,7 +184,7 @@ class Layout extends React.Component {
                     </a>
                   </li>
                 )}
-                {!this.state.loggedIn && (
+                {/* {!this.state.loggedIn && (
                   <li className="nav-items pointer">
                     <a href="/login">
                       <div className="button-solid lg">
@@ -192,7 +194,7 @@ class Layout extends React.Component {
                       </div>
                     </a>
                   </li>
-                )}
+                )} */}
               </ul>
             </div>
           </div>

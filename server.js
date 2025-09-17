@@ -20,7 +20,7 @@ app.prepare().then(() => {
     } else {
       axios.post(config.dukaan_backend.token_url, {code: code}).then((response) => {
         const jwtToken = response.data.jwtToken;
-        res.cookie('dukaan-token', jwtToken)
+        res.cookie('vmc_auth', jwtToken)
         res.redirect('/');
       }).catch((error) => {
         // res.redirect('/login');
