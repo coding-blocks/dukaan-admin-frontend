@@ -34,8 +34,8 @@ const CheckLogin = (props) => {
     const dukaanToken = Cookies.get("vmc_auth");
     if (dukaanToken) {
       const userInfo = jwt.decode(dukaanToken);
-      if (userInfo && userInfo.data.oneauth_id) {
-        if (userInfo.data.role === "admin" || userInfo.data.role === "staff") {
+      if (userInfo && userInfo.oneauth_id) {
+        if (userInfo.role === "admin" || userInfo.role === "staff") {
           setAuthState({
             loggedIn: true,
             loading: false,

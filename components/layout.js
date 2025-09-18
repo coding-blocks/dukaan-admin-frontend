@@ -20,12 +20,12 @@ class Layout extends React.Component {
     if (dukaanToken) {
       const userInfo = jwt.decode(dukaanToken);
       this.setState({
-        name: userInfo.data.firstname + " " + userInfo.data.lastname,
-        center_id: userInfo.data.center_id,
-        pic: userInfo.data.photo,
+        name: userInfo.firstname + " " + userInfo.lastname,
+        center_id: userInfo.center_id,
+        pic: userInfo.photo,
         loggedIn: true,
-        admin: userInfo.data.role === "admin" || userInfo.data.role === "staff",
-        finance_manager: userInfo.data.role === "finance_manager"
+        admin: userInfo.role === "admin" || userInfo.role === "staff",
+        finance_manager: userInfo.role === "finance_manager"
       });
     }
   }
