@@ -1,6 +1,9 @@
 import React from 'react';
 import FieldWithElement from '../../../components/FieldWithElement';
 import controller from '../../../controllers/products';
+import {getAllProductTypes} from '../../../controllers/productTypes';
+import {handleGetAllProductCategories} from '../../../controllers/productCategories';
+import {getAllCenters} from '../../../controllers/centers';
 import Swal from 'sweetalert2';
 import Head from '../../../components/head';
 import Layout from "../../../components/layout";
@@ -14,6 +17,13 @@ class AddProduct extends React.Component {
     super(props);
     this.state = {
       loading: false,
+      productCategories: [],
+      productTypes: [],
+      productTypeOptions: [
+        { value: 'course', label: 'Course' },
+        { value: 'test', label: 'Test' },
+      ],
+      centers: [],
       queryParams: {
         name: "",
         emi_min_base: 3000,
@@ -29,7 +39,9 @@ class AddProduct extends React.Component {
         is_offline: false,
         type: "course",
         redirect_url: "",
-        product_category_id: 1
+        product_category_id: "",
+        product_type_id: "",
+        per_user: 1
       }
     };
   }
@@ -103,6 +115,68 @@ class AddProduct extends React.Component {
     this.setState(prevState => ({
       queryParams: newQueryParams
     }));
+  }
+
+  componentDidMount() {
+    this.fetchProductCategories();
+    this.fetchProductTypes();
+    this.fetchCenters();
+  }
+
+  fetchProductCategories = async () => {
+    try {
+      const response = await handleGetAllProductCategories();
+      this.setState({ 
+        productCategories: response.data,
+        loadingMeta: false
+      });
+    } catch (error) {
+      console.error('Error fetching product categories:', error);
+      this.setState({ loadingMeta: false });
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to load product categories",
+        type: "error",
+        showConfirmButton: true
+      });
+    }
+  }
+
+  fetchProductTypes = async () => {
+    try {
+      const response = await getAllProductTypes();
+      this.setState({ 
+        productTypes: response.data,
+        loadingMeta: false
+      });
+    } catch (error) {
+      console.error('Error fetching product types:', error);
+      this.setState({ loadingMeta: false });
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to load product types",
+        type: "error",
+        showConfirmButton: true
+      });
+    }
+  }
+  fetchCenters = async () => {
+    try {
+      const response = await getAllCenters();
+      this.setState({ 
+        centers: response.data,
+        loadingMeta: false
+      });
+    } catch (error) {
+      console.error('Error fetching centers:', error);
+      this.setState({ loadingMeta: false });
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to load centers",
+        type: "error",
+        showConfirmButton: true
+      });
+    }
   }
 
   render() {
@@ -194,6 +268,57 @@ class AddProduct extends React.Component {
                       />
                     </FieldWithElement>
 
+                    {/* Product Category */}
+                    <FieldWithElement name={"Category"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <select
+                        name="product_category_id"
+                        onChange={this.handleQueryParamChange}
+                        value={this.state.queryParams.product_category_id}
+                        required
+                      >
+                        <option value="">Select Category</option>
+                        {this.state.productCategories.map(category => (
+                          <option key={category.id} value={category.id}>
+                            {category.name}
+                          </option>
+                        ))}
+                      </select>
+                    </FieldWithElement>
+
+                    {/* Product Type */}
+                    <FieldWithElement name={"Product Type"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <select
+                        name="product_type_id"
+                        onChange={this.handleQueryParamChange}
+                        value={this.state.queryParams.product_type_id}
+                        required
+                      >
+                        <option value="">Select Product Type</option>
+                        {this.state.productTypes.map(type => (
+                          <option key={type.id} value={type.id}>
+                            {type.name}
+                          </option>
+                        ))}
+                      </select>
+                    </FieldWithElement>
+
+                    {/* Centers*/}
+                    <FieldWithElement name={" Centers"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                      <select
+                        name="center_id"
+                        onChange={this.handleQueryParamChange}
+                        value={this.state.queryParams.center_id}
+                        required
+                      >
+                        <option value="">Select Center</option>
+                        {this.state.centers.map(type => (
+                          <option key={type.id} value={type.id}>
+                            {type.name}
+                          </option>
+                        ))}
+                      </select>
+                    </FieldWithElement>
+
                     {/* Image URL */}
                     <FieldWithElement name={"Image URL"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                       {this.state.queryParams.image_url &&
@@ -246,8 +371,11 @@ class AddProduct extends React.Component {
                         defaultValue={this.state.queryParams.type}
                         required
                       >
-                        <option value="course">Course</option>
-                        <option value="test">Test</option>
+                      {this.state.productTypeOptions.map(option => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
                       </select>
                     </FieldWithElement>
 
