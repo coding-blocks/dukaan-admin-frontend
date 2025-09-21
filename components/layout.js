@@ -42,7 +42,7 @@ class Layout extends React.Component {
               <Link href="/">
                 <a className="logo-link">
                   <img
-                    src="/static/img/dukaan.png"
+                    src="https://vmc-staging.codingblocks.com/images/receipt-logo.png"
                     className="nav-logo pointer"
                   />
                 </a>
@@ -53,7 +53,7 @@ class Layout extends React.Component {
           <div className="dsp-none-sm justify-content-center">
             <div className="nav-right">
               <ul className="nav-list">
-                {this.state.loggedIn && (this.state.admin ||
+                {/* {this.state.loggedIn && (this.state.admin ||
                     this.state.finance_manager || this.state.staff) && (
                 <div>
                     <li>
@@ -62,7 +62,7 @@ class Layout extends React.Component {
                         </Link>
                     </li>
                  </div>
-                )}
+                )} */}
                 {this.state.loggedIn && this.state.admin && (
                   <div>
 
@@ -127,7 +127,7 @@ class Layout extends React.Component {
                       </div>
                     </li>
 
-                    <li className="dropdown">
+                    {/* <li className="dropdown">
                       <button className="dropbtn dropdown-toggle">
                         Buy Links
                         <i className="fa fa-caret-down pl-2" />
@@ -145,9 +145,9 @@ class Layout extends React.Component {
                           </Link>
                         </div>
                       </div>
-                    </li>
+                    </li> */}
 
-                    {this.state.loggedIn && this.state.admin  && (
+                    {/* {this.state.loggedIn && this.state.admin  && (
                       
                       <li class="ml-4">
                           <Link href="/admin/reconcile">
@@ -155,7 +155,7 @@ class Layout extends React.Component {
                           </Link>
                       </li>
                       
-                    )}
+                    )} */}
 
                   </div>
                 )}
