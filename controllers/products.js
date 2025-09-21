@@ -162,6 +162,13 @@ const getProductBuyLinkData = (data) => {
     return  handleCalculatePrice(data)
 }
 
+const handleDeleteProduct = (productId) => {
+    return axios.delete(`/api/v2/admin/products/${productId}`);
+}
+export const getProductById = (productId) => {
+    return axios.get(`/api/v2/admin/products/${productId}`);
+}
+
 module.exports = {
     handleGetProducts,
     handleAddProduct,
@@ -172,5 +179,7 @@ module.exports = {
     fetchCenters,
     sendBuyLinkEmail,
     getUserCartDetailsUrls,
-    getProductBuyLinkData
+    getProductBuyLinkData,
+    handleDeleteProduct,
+    getProductById
 }
