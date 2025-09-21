@@ -1,0 +1,129 @@
+.not-logged-in {
+    text-align: center;
+    h2 {
+        margin-top: 150px;
+    }
+    h3 {
+        margin-top: 30px;
+    }
+}
+.admin-auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  padding: 20px;
+}
+
+.admin-auth-card {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 450px;
+  margin: 2rem auto;
+}
+
+.admin-auth-card h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #333;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.form-group input:disabled {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+}
+
+.admin-auth-card button {
+  width: 100%;
+  padding: 15px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background 0.3s ease;
+}
+
+.admin-auth-card button:hover:not(:disabled) {
+  background: #5a67d8;
+}
+
+.admin-auth-card button:disabled {
+  background: #a0aec0;
+  cursor: not-allowed;
+}
+
+.error-message {
+  background: #fed7d7;
+  color: #c53030;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  border-left: 4px solid #f56565;
+}
+
+.success-message {
+  background: #c6f6d5;
+  color: #2d774d;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  border-left: 4px solid #48bb78;
+}
+
+.toggle-auth {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: #718096;
+}
+
+.toggle-auth span {
+  color: #667eea;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.toggle-auth span:hover {
+  color: #5a67d8;
+}
+
+.note {
+  margin-top: 1.5rem;
+  padding: 12px;
+  background: #e9d8fd;
+  border: 1px solid #d6bcfa;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #553c9a;
+  line-height: 1.5;
+}

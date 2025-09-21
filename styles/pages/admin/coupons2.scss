@@ -1,0 +1,35 @@
+
+
+#random_coupon {
+  font-size: 12pt;
+  cursor: pointer;
+}
+
+.input-textarea {
+  border-radius: 10px;
+  font-size: 13pt !important;
+}
+
+.disabled-category, .disabled-organization, .disabled-subcategory, #disabled-code, #disabled-cashback {
+	cursor: not-allowed;
+}
+
+.orange{
+  color:#f2734c;
+}
+
+.card-title{
+  padding-bottom:15px;
+}
+
+.tool-tip{
+  display: flex;
+}
+
+.tool-tip-title{
+  padding-top: 5px;
+}
+
+.mui-tooltip {
+	font-size: 10px;
+}

@@ -1,0 +1,71 @@
+{
+  "name": "dukaan-admin-frontend",
+  "version": "0.0.1",
+  "description": "Frontend for Coding Blocks Dukaan",
+  "scripts": {
+    "dev": "next dev -p 5959",
+    "build": "next build",
+    "start": "NODE_ENV=production next start",
+    "export": "next export",
+    "deploy": "next build && next export",
+    "eject": "next eject",
+    "preinstall": "node -e \"if(process.env.npm_execpath.indexOf('yarn') === -1) throw new Error('You must use Yarn to install, not NPM')\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coding-blocks/dukaan-admin-frontend.git"
+  },
+  "keywords": [
+    "dukaan",
+    "coding",
+    "blocks",
+    "nextjs",
+    "next",
+    "react",
+    "node",
+    "nodejs",
+    "frontend"
+  ],
+  "dependencies": {
+    "@material-ui/core": "^4.9.13",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.52",
+    "@sentry/browser": "^5.6.3",
+    "@syncfusion/ej2-react-dropdowns": "^17.2.39",
+    "@syncfusion/ej2-react-grids": "^17.2.39",
+    "axios": "^0.19.0",
+    "cookie-parser": "^1.4.4",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "formik": "^1.5.8",
+    "js-cookie": "^2.2.0",
+    "js-cookies": "^1.0.4",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.24.0",
+    "next": "12.2.5",
+    "prop-types": "^15.7.2",
+    "query-string": "^6.12.1",
+    "react": "^18.2.0",
+    "react-copy-to-clipboard": "^5.0.2",
+    "react-datepicker": "^4.8.0",
+    "react-dom": "^18.2.0",
+    "react-modal": "^3.9.1",
+    "react-select": "^3.0.4",
+    "react-spinners": "^0.6.1",
+    "sass": "^1.57.1",
+    "sweetalert2": "^8.13.0",
+    "sweetalert2-react-content": "^1.1.0",
+    "xlsx": "^0.18.5",
+    "yup": "^0.28.5"
+  },
+  "bugs": {
+    "url": "https://github.com/coding-blocks/dukaan-admin-frontend"
+  },
+  "homepage": "https://github.com/coding-blocks/dukaan-admin-frontend#readme",
+  "devDependencies": {
+    "@sentry/webpack-plugin": "^1.8.1",
+    "css-loader": "^2.0.0",
+    "sass-loader": "^7.1.0",
+    "webpack": "^4.39.1"
+  }
+}
