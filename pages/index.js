@@ -1,12 +1,9 @@
 import React from "react";
-import Link from "next/link";
 import Head from "../components/head";
 import Layout from "../components/layout";
-import AddUser from "../components/AddUser";
 import CheckLogin from "../components/CheckLogin";
 import userController from "../controllers/users";
 import ErrorBoundary from "../components/ErrorBoundary";
-import AsyncSelect from "react-select/async";
 import ErrorHandler from "../helpers/ErrorHandler";
 
 
@@ -99,45 +96,21 @@ class Home extends React.Component {
                     <div>
                         <Head title="Coding Blocks | Dukaan"/>
                         <Layout>
-                            {/* Search User */}
-                            <div className="container mt-4">
-                                <div className="row">
-                                    <div className="col-md-12 col-12">
-                                        <div>
-                                            <form
-                                                id={"email-search-form"}
-                                                className={"row align-items-center"}>
-                                                <div className={"col-md-3 col-6"}>
-                                                    <select id={"search-field-option"} required={true}
-                                                            defaultValue={this.state.searchOption}
-                                                            onChange={this.handleSearchOptionChange}>
-                                                        <option value={"email"}>Search by email</option>
-                                                        <option value={"phone"}>Search by phone</option>
-                                                    </select>
-
-                                                </div>
-                                                <div className="col-md-7 col-6">
-                                                    <AsyncSelect
-                                                        cacheOptions
-                                                        defaultOptions
-                                                        placeholder={this.state.searchPlaceholder}
-                                                        loadOptions={this.loadOptions}
-                                                        onChange={this.handleInputChange}/>
-                                                </div>
-
-
-                                                <Link href={`/admin/orders?id=${this.state.id}`}>
-                                                    <button
-                                                        id="search"
-                                                        className="button-solid mb-1"
-                                                        style={{fontSize: "1.3rem"}}>
-                                                        Search
-                                                    </button>
-                                                </Link>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    <AddUser/>
+                            <div style={{
+                                minHeight: '90vh',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: '#f9f9f9'
+                            }}>
+                                <div style={{ textAlign: 'center' }}>
+                                    <h1 className="title" style={{
+                                        fontSize: '3rem',
+                                        fontWeight: '100',
+                                        color: '#333',
+                                    }}>
+                                        VMC Products and Coupons Portal
+                                    </h1>
                                 </div>
                             </div>
                         </Layout>

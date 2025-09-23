@@ -1,6 +1,10 @@
 import React from 'react';
 import FieldWithElement from './FieldWithElement';
 import controller from '../controllers/products';
+import { getAllProductTypes } from '../controllers/productTypes';
+import { handleGetAllProductCategories } from '../controllers/productCategories';
+import { getAllCenters } from '../controllers/centers';
+import Swal from 'sweetalert2';
 import Loader from './loader';
 import ImageChooser from './ImageChooser';
 
@@ -10,6 +14,10 @@ class EditProduct extends React.Component {
     super(props);
     this.state = {
       loading: false,
+      loadingMeta: true,
+      productCategories: [],
+      productTypes: [],
+      centers: [],
       queryParams: props.product || {},
       productInfo: props.product || {},
       errorMessage: ''
@@ -17,13 +25,63 @@ class EditProduct extends React.Component {
   }
 
   componentDidMount() {
+    this.fetchProductCategories();
+    this.fetchProductTypes();
+    this.fetchCenters();
+    
     let queryParams = this.state.queryParams;
-    queryParams.referral = false;
-    queryParams.campaign = false;
-    queryParams.listed = JSON.parse(queryParams.listed);
+    queryParams.referral = queryParams.referral || false;
+    queryParams.campaign = queryParams.campaign || false;
+    queryParams.listed = queryParams.listed ? JSON.parse(queryParams.listed) : false;
+    queryParams.is_offline = queryParams.is_offline || false;
+    
+    if (queryParams.are_coupons_applicable === undefined) {
+      queryParams.are_coupons_applicable = true;
+    }
+    
     this.setState({
-      queryParams
-    })
+      queryParams,
+      loadingMeta: false
+    });
+  }
+
+  fetchProductCategories = async () => {
+    try {
+      const response = await handleGetAllProductCategories();
+      this.setState({ 
+        productCategories: response.data,
+        loadingMeta: false
+      });
+    } catch (error) {
+      console.error('Error fetching product categories:', error);
+      this.setState({ loadingMeta: false });
+    }
+  }
+
+  fetchProductTypes = async () => {
+    try {
+      const response = await getAllProductTypes();
+      this.setState({ 
+        productTypes: response.data,
+        loadingMeta: false
+      });
+    } catch (error) {
+      console.error('Error fetching product types:', error);
+      this.setState({ loadingMeta: false });
+    }
+  }
+
+  fetchCenters = async () => {
+    try {
+      const response = await getAllCenters();
+      this.setState({ 
+        centers: response.data,
+        loadingMeta: false
+      });
+    } catch (error) {
+      console.error('Error fetching centers:', error);
+      this.setState({ loadingMeta: false });
+    }
   }
 
   /**
@@ -85,7 +143,15 @@ class EditProduct extends React.Component {
         loading: true,
         errorMessage: ''
       });
-      controller.handleEditProduct(this.state.queryParams).then((response) => {
+      
+      const payload = { ...this.state.queryParams };
+      
+      delete payload.is_payment_required;
+      delete payload.meta;
+      delete payload.coupons_disabled;
+      delete payload.is_partially_payable;
+      
+      controller.handleEditProduct(payload).then((response) => {
         if (response) {
           this.setState({
             loading: false,
@@ -94,17 +160,33 @@ class EditProduct extends React.Component {
           let productInfo = this.state.queryParams;
           productInfo.id = this.state.productInfo.id;
           this.props.callback(productInfo);
+          
+          Swal.fire({
+            title: "Product updated successfully!",
+            type: "success",
+            showConfirmButton: true
+          });
         }
       }).catch((error) => {
         this.setState({
           loading: false,
           errorMessage: error
         });
+        Swal.fire({
+          title: "Error updating product!",
+          text: error,
+          type: "error",
+          showConfirmButton: true
+        });
       });
     }
   }
 
   render() {
+    if (this.state.loadingMeta) {
+      return <Loader />;
+    }
+
     return (
       <div>
         <div className={"d-flex align-items-center justify-content-center"}>
@@ -188,6 +270,54 @@ class EditProduct extends React.Component {
                       required
                     />
                   </FieldWithElement>
+                  <FieldWithElement name={"Category"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    <select
+                      name="product_category_id"
+                      value={this.state.productInfo.product_category_id}
+                      onChange={this.handleQueryParamChange}
+                      required
+                    >
+                      <option value="">Select Category</option>
+                      {this.state.productCategories.map(category => (
+                        <option key={category.id} value={category.id}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                  </FieldWithElement>
+
+                  <FieldWithElement name={"Product Type"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    <select
+                      name="product_type_id"
+                      value={this.state.productInfo.product_type_id}
+                      onChange={this.handleQueryParamChange}
+                      required
+                    >
+                      <option value="">Select Product Type</option>
+                      {this.state.productTypes.map(type => (
+                        <option key={type.id} value={type.id}>
+                          {type.name}
+                        </option>
+                      ))}
+                    </select>
+                  </FieldWithElement>
+
+                  <FieldWithElement name={"Center"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    <select
+                      name="center_id"
+                      value={this.state.productInfo.center_id}
+                      onChange={this.handleQueryParamChange}
+                      required
+                    >
+                      <option value="">Select Center</option>
+                      {this.state.centers.map(center => (
+                        <option key={center.id} value={center.id}>
+                          {center.name}
+                        </option>
+                      ))}
+                    </select>
+                  </FieldWithElement>
+
                   <FieldWithElement name={"Image URL"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                     <img
                       src={this.state.queryParams.image_url}
@@ -251,6 +381,18 @@ class EditProduct extends React.Component {
                       checked={this.state.queryParams.listed}
                       name="listed"
                       value="Listed?" />Listed?
+                    <input
+                      type="checkbox"
+                      onChange={this.handleCheckboxChange}
+                      checked={this.state.queryParams.referral}
+                      name="referral"
+                      value="Referral" />Add to Referral Coupons
+                    <input
+                      type="checkbox"
+                      onChange={this.handleCheckboxChange}
+                      checked={this.state.queryParams.campaign}
+                      name="campaign"
+                      value="Campaign" />Add to Campaign Coupons
                   </div>
 
                   <div className={"d-flex justify-content-center"}>
