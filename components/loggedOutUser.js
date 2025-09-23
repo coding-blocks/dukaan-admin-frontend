@@ -1,9 +1,21 @@
 import React from 'react';
 import Head from "./head";
 import Layout from "./layout";
+import CheckLogin from './CheckLogin';
 
 class LoggedOutUser extends React.Component {
   render() {
+    const isAdminRoute = window.location.pathname.startsWith('/admin');
+    
+    if (isAdminRoute) {
+      return (
+        <div>
+          <Head title={"Admin Login | Dukaan"} />
+          <CheckLogin />
+        </div>
+      );
+    }
+
       return (<div>
           <Head title={"Dukaan | Coding Blocks"} />
           <Layout />

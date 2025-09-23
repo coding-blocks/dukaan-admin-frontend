@@ -12,7 +12,7 @@ class Logout extends React.Component {
     }
 
     componentDidMount() {
-        Cookies.remove('dukaan-token', {
+        Cookies.remove('vmc_auth', {
             expires: 7,
             path: '/',
             domain: config.dukaan_backend.cookie_domain

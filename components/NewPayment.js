@@ -72,7 +72,7 @@ class NewPayment extends React.Component {
             });
             return centers.data
         }).then((centers) => {
-            const dukaanToken = Cookies.get("dukaan-token");
+            const dukaanToken = Cookies.get("vmc_auth");
             if (dukaanToken) {
                 const userInfo = jwt.decode(dukaanToken);
                 let formValues = {...this.state.formValues}

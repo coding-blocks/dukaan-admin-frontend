@@ -16,16 +16,16 @@ class Layout extends React.Component {
   }
 
   componentDidMount() {
-    const dukaanToken = Cookies.get("dukaan-token");
+    const dukaanToken = Cookies.get("vmc_auth");
     if (dukaanToken) {
       const userInfo = jwt.decode(dukaanToken);
       this.setState({
-        name: userInfo.data.firstname + " " + userInfo.data.lastname,
-        center_id: userInfo.data.center_id,
-        pic: userInfo.data.photo,
+        name: userInfo.firstname + " " + userInfo.lastname,
+        center_id: userInfo.center_id,
+        pic: userInfo.photo,
         loggedIn: true,
-        admin: userInfo.data.role === "admin" || userInfo.data.role === "staff",
-        finance_manager: userInfo.data.role === "finance_manager"
+        admin: userInfo.role === "admin" || userInfo.role === "staff",
+        finance_manager: userInfo.role === "finance_manager"
       });
     }
   }
@@ -42,7 +42,7 @@ class Layout extends React.Component {
               <Link href="/">
                 <a className="logo-link">
                   <img
-                    src="/static/img/dukaan.png"
+                    src="https://vmc-staging.codingblocks.com/images/receipt-logo.png"
                     className="nav-logo pointer"
                   />
                 </a>
@@ -53,7 +53,7 @@ class Layout extends React.Component {
           <div className="dsp-none-sm justify-content-center">
             <div className="nav-right">
               <ul className="nav-list">
-                {this.state.loggedIn && (this.state.admin ||
+                {/* {this.state.loggedIn && (this.state.admin ||
                     this.state.finance_manager || this.state.staff) && (
                 <div>
                     <li>
@@ -62,7 +62,7 @@ class Layout extends React.Component {
                         </Link>
                     </li>
                  </div>
-                )}
+                )} */}
                 {this.state.loggedIn && this.state.admin && (
                   <div>
 
@@ -127,7 +127,7 @@ class Layout extends React.Component {
                       </div>
                     </li>
 
-                    <li className="dropdown">
+                    {/* <li className="dropdown">
                       <button className="dropbtn dropdown-toggle">
                         Buy Links
                         <i className="fa fa-caret-down pl-2" />
@@ -145,9 +145,9 @@ class Layout extends React.Component {
                           </Link>
                         </div>
                       </div>
-                    </li>
+                    </li> */}
 
-                    {this.state.loggedIn && this.state.admin  && (
+                    {/* {this.state.loggedIn && this.state.admin  && (
                       
                       <li class="ml-4">
                           <Link href="/admin/reconcile">
@@ -155,22 +155,24 @@ class Layout extends React.Component {
                           </Link>
                       </li>
                       
-                    )}
+                    )} */}
 
                   </div>
                 )}
+                {this.state.loggedIn && (
                 <li className="nav-items pointer capitalize">
                   <img
                     src={this.state.pic}
-                    className={"pic"}
+                    className="pic"
                     width={48}
                     height={48}
-                    align={"absmiddle"}
+                    align="absmiddle"
                   />
                   <Link href="https://account.codingblocks.com">
                     <a className="active name">Hi, {this.state.name}</a>
                   </Link>
                 </li>
+              )}
                 {this.state.loggedIn && (
                   <li className="nav-items pointer">
                     <a href="/logout">
@@ -182,7 +184,7 @@ class Layout extends React.Component {
                     </a>
                   </li>
                 )}
-                {!this.state.loggedIn && (
+                {/* {!this.state.loggedIn && (
                   <li className="nav-items pointer">
                     <a href="/login">
                       <div className="button-solid lg">
@@ -192,7 +194,7 @@ class Layout extends React.Component {
                       </div>
                     </a>
                   </li>
-                )}
+                )} */}
               </ul>
             </div>
           </div>

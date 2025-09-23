@@ -17,7 +17,7 @@ const CustomCouponForm = ({handleAddCustomCoupon}) => {
     }
 
     const admin_discount_limit = () => {
-        const dukaanToken = Cookies.get("dukaan-token");
+        const dukaanToken = Cookies.get("vmc_auth");
         const userInfo = jwt.decode(dukaanToken);
         return userInfo.data.admin_discount_limit
     } 
