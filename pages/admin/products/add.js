@@ -2,7 +2,7 @@ import React from 'react';
 import FieldWithElement from '../../../components/FieldWithElement';
 import controller from '../../../controllers/products';
 import {getAllProductTypes} from '../../../controllers/productTypes';
-import {handleGetAllProductCategories} from '../../../controllers/productCategories';
+import {handleGetAllProductCategories} from '../../../controllers/productcategories';
 import {getAllCenters} from '../../../controllers/centers';
 import Swal from 'sweetalert2';
 import Head from '../../../components/head';

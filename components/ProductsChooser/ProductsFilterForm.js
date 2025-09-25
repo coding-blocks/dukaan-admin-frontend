@@ -9,7 +9,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import * as productCategoryController from '../../controllers/productCategories';
+import * as productCategoryController from '../../controllers/productcategories';
 import * as productTypeController from '../../controllers/productTypes';
 
 class ProductsFilterForm extends React.Component {
