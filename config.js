@@ -3,13 +3,13 @@
  */
 
 const settings = {
-    domain: process.env.DOMAIN || "http://localhost:5959",
+    domain: process.env.DOMAIN || "https://vmc-dukaan-admin.codingblocks.com",
     client_id: process.env.CLIENT_ID || "2106494837",
     oneauth: {
         domain: process.env.ONEAUTH_URL || "http://account.codingblocks.com"
     },
     dukaan_backend: {
-        domain: process.env.API_URL || "http://localhost:2929"
+        domain: process.env.API_URL || "https://vmc-dukaan.codingblocks.com"
     }
 }
 
@@ -26,7 +26,7 @@ const config = {
     dukaan_backend: {
         domain: settings.dukaan_backend.domain,
         token_url: process.env.TOKEN_URL || `${settings.dukaan_backend.domain}/auth/token`,
-        cookie_domain: process.env.COOKIE_DOMAIN
+    cookie_domain: process.env.COOKIE_DOMAIN
     },
 };
 
