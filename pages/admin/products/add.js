@@ -3,7 +3,7 @@ import FieldWithElement from '../../../components/FieldWithElement';
 import controller from '../../../controllers/products';
 import {getAllProductTypes} from '../../../controllers/productTypes';
 import {handleGetAllProductCategories} from '../../../controllers/productCategories';
-import {getAllCenters} from '../../../controllers/centers';
+// import {getAllCenters} from '../../../controllers/centers';
 import Swal from 'sweetalert2';
 import Head from '../../../components/head';
 import Layout from "../../../components/layout";
@@ -23,7 +23,7 @@ class AddProduct extends React.Component {
         { value: 'course', label: 'Course' },
         { value: 'test', label: 'Test' },
       ],
-      centers: [],
+      // centers: [],
       queryParams: {
         name: "",
         emi_min_base: 3000,
@@ -120,7 +120,7 @@ class AddProduct extends React.Component {
   componentDidMount() {
     this.fetchProductCategories();
     this.fetchProductTypes();
-    this.fetchCenters();
+    // this.fetchCenters();
   }
 
   fetchProductCategories = async () => {
@@ -160,24 +160,24 @@ class AddProduct extends React.Component {
       });
     }
   }
-  fetchCenters = async () => {
-    try {
-      const response = await getAllCenters();
-      this.setState({ 
-        centers: response.data,
-        loadingMeta: false
-      });
-    } catch (error) {
-      console.error('Error fetching centers:', error);
-      this.setState({ loadingMeta: false });
-      Swal.fire({
-        title: "Error!",
-        text: "Failed to load centers",
-        type: "error",
-        showConfirmButton: true
-      });
-    }
-  }
+  // fetchCenters = async () => {
+  //   try {
+  //     const response = await getAllCenters();
+  //     this.setState({ 
+  //       centers: response.data,
+  //       loadingMeta: false
+  //     });
+  //   } catch (error) {
+  //     console.error('Error fetching centers:', error);
+  //     this.setState({ loadingMeta: false });
+  //     Swal.fire({
+  //       title: "Error!",
+  //       text: "Failed to load centers",
+  //       type: "error",
+  //       showConfirmButton: true
+  //     });
+  //   }
+  // }
 
   render() {
     return (
@@ -303,7 +303,7 @@ class AddProduct extends React.Component {
                     </FieldWithElement>
 
                     {/* Centers*/}
-                    <FieldWithElement name={" Centers"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                    {/* <FieldWithElement name={" Centers"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                       <select
                         name="center_id"
                         onChange={this.handleQueryParamChange}
@@ -317,7 +317,7 @@ class AddProduct extends React.Component {
                           </option>
                         ))}
                       </select>
-                    </FieldWithElement>
+                    </FieldWithElement> */}
 
                     {/* Image URL */}
                     <FieldWithElement name={"Image URL"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
