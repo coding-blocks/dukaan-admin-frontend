@@ -3,7 +3,7 @@ import FieldWithElement from './FieldWithElement';
 import controller from '../controllers/products';
 import { getAllProductTypes } from '../controllers/productTypes';
 import { handleGetAllProductCategories } from '../controllers/productcategories';
-import { getAllCenters } from '../controllers/centers';
+// import { getAllCenters } from '../controllers/centers';
 import Swal from 'sweetalert2';
 import Loader from './loader';
 import ImageChooser from './ImageChooser';
@@ -17,7 +17,7 @@ class EditProduct extends React.Component {
       loadingMeta: true,
       productCategories: [],
       productTypes: [],
-      centers: [],
+      // centers: [],
       queryParams: props.product || {},
       productInfo: props.product || {},
       errorMessage: ''
@@ -27,7 +27,7 @@ class EditProduct extends React.Component {
   componentDidMount() {
     this.fetchProductCategories();
     this.fetchProductTypes();
-    this.fetchCenters();
+    // this.fetchCenters();
     
     let queryParams = this.state.queryParams;
     queryParams.referral = queryParams.referral || false;
@@ -71,18 +71,18 @@ class EditProduct extends React.Component {
     }
   }
 
-  fetchCenters = async () => {
-    try {
-      const response = await getAllCenters();
-      this.setState({ 
-        centers: response.data,
-        loadingMeta: false
-      });
-    } catch (error) {
-      console.error('Error fetching centers:', error);
-      this.setState({ loadingMeta: false });
-    }
-  }
+  // fetchCenters = async () => {
+  //   try {
+  //     const response = await getAllCenters();
+  //     this.setState({ 
+  //       centers: response.data,
+  //       loadingMeta: false
+  //     });
+  //   } catch (error) {
+  //     console.error('Error fetching centers:', error);
+  //     this.setState({ loadingMeta: false });
+  //   }
+  // }
 
   /**
    * Changes the value of the specified key in the queryParams object
@@ -302,7 +302,7 @@ class EditProduct extends React.Component {
                     </select>
                   </FieldWithElement>
 
-                  <FieldWithElement name={"Center"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
+                  {/* <FieldWithElement name={"Center"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                     <select
                       name="center_id"
                       value={this.state.productInfo.center_id}
@@ -316,7 +316,7 @@ class EditProduct extends React.Component {
                         </option>
                       ))}
                     </select>
-                  </FieldWithElement>
+                  </FieldWithElement> */}
 
                   <FieldWithElement name={"Image URL"} nameCols={3} elementCols={9} elementClassName={"pl-4"}>
                     <img
