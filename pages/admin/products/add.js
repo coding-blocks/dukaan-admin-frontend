@@ -277,7 +277,7 @@ class AddProduct extends React.Component {
                         required
                       >
                         <option value="">Select Category</option>
-                        {this.state.productCategories.map(category => (
+                        {Array.isArray(this.state.productCategories) && this.state.productCategories.map(category => (
                           <option key={category.id} value={category.id}>
                             {category.name}
                           </option>
@@ -294,7 +294,7 @@ class AddProduct extends React.Component {
                         required
                       >
                         <option value="">Select Product Type</option>
-                        {this.state.productTypes.map(type => (
+                        {Array.isArray(this.state.productTypes) && this.state.productTypes.map(type => (
                           <option key={type.id} value={type.id}>
                             {type.name}
                           </option>
@@ -311,7 +311,7 @@ class AddProduct extends React.Component {
                         required
                       >
                         <option value="">Select Center</option>
-                        {this.state.centers.map(type => (
+                        {Array.isArray(this.state.centers) && this.state.centers.map(type => (
                           <option key={type.id} value={type.id}>
                             {type.name}
                           </option>
