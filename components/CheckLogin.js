@@ -42,7 +42,7 @@ const CheckLogin = (props) => {
             admin: true,
             finance_manager: false
           });
-        } else if (userInfo.data.role === 'finance_manager') {
+        } else if (userInfo.role === 'finance_manager') {
           setAuthState({
             loggedIn: true,
             loading: false,
