@@ -75,6 +75,21 @@ const getUserCartDetailsUrls = (data) => {
       ])
 }
 
+const handleLogout = () => {
+  const response = new Promise((resolve, reject) => {
+    axios
+      .post(`/auth/admin/logout`)
+      .then(r => {
+        resolve(r);
+      })
+      .catch(error => {
+        console.error('Logout API error:', error);
+        resolve(); 
+      });
+  });
+  return response;
+};
+
 module.exports = {
   handleGetUserByEmailOrPhone,
   handleAddUser,
@@ -82,5 +97,6 @@ module.exports = {
   getUsernameAvailability,
   getUserByFromOneAuthByOneAuthId,
   updateUserDetails,
-  getUserCartDetailsUrls
+  getUserCartDetailsUrls,
+  handleLogout
 };

@@ -4,6 +4,7 @@ import Layout from '../components/layout';
 import config from "../config";
 import Cookies from 'js-cookie';
 import Loader from '../components/loader';
+import { handleLogout } from '../controllers/users';
 
 class Logout extends React.Component {
 
@@ -11,14 +12,19 @@ class Logout extends React.Component {
         super(props);
     }
 
-    componentDidMount() {
-        Cookies.remove('vmc_auth', {
-            expires: 7,
-            path: '/',
-            domain: config.dukaan_backend.cookie_domain
-        });
-        window.location = config.domain;
+  async componentDidMount() {
+    try {
+      await handleLogout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      Cookies.remove('vmx_auth', {
+        path: '/',
+        domain: config.dukaan_backend.cookie_domain
+      });
+      window.location = config.domain;
     }
+}
 
     render() {
         return (
