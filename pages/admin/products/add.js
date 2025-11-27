@@ -41,7 +41,8 @@ class AddProduct extends React.Component {
         redirect_url: "",
         product_category_id: "",
         product_type_id: "",
-        per_user: 1
+        per_user: 1,
+        organization_id: 1,
       }
     };
   }
